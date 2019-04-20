@@ -1,0 +1,35 @@
+//
+//  NetworkManager.swift
+//  PoliticalDebateApp_iOS
+//
+//  Created by Samy on 4/19/19.
+//  Copyright © 2019 PoliticalDebateApp. All rights reserved.
+//
+
+import Moya
+import RxSwift
+
+public var appBaseURL: String {
+    #warning("To change urls")
+    #if DEBUG
+    // In our build phases we have a script that runs after ProcessInfoPlistFile & allows HTTP for the `Debug` environment
+    return "http://localhost:8000/api/v1/"
+    #else
+    return "https://server:8000/api/v1/"
+    #endif
+}
+
+private protocol Networkable {
+    associatedtype AppAPI: TargetType
+
+    var provider: MoyaProvider<AppAPI> { get }
+    func makeRequest(with appAPI: AppAPI) -> Single<Response>
+}
+
+public struct NetworkManager<T>: Networkable where T: TargetType {
+    fileprivate let provider = MoyaProvider<T>(plugins: [NetworkLoggerPlugin(verbose: true)])
+
+    public func makeRequest(with appAPI: T) -> Single<Response> {
+        return provider.rx.request(appAPI)
+    }
+}

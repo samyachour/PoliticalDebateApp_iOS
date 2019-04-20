@@ -10,17 +10,15 @@ For our iOS app we use Swift and ReactiveX.
 
 Dependencies:
 - Swift 4.2
-- [RxSwift/RxCocoa](https://github.com/ReactiveX/RxSwift) 4.1.2
-- [Alamofire](https://github.com/Alamofire/Alamofire) 4.7.2
-- [IQKeyboardManagerSwift](https://github.com/hackiftekhar/IQKeyboardManager) 6.0.1
-- [MBProgressHUD](https://github.com/jdg/MBProgressHUD) 1.0.0
-- [KIF](https://github.com/kif-framework/KIF) 3.7.3
-- [OHHTTPStubs/Swift](https://github.com/AliSoftware/OHHTTPStubs) 6.1.0
-- [SwiftLint](https://github.com/realm/SwiftLint) (manual)
+- [RxSwift/RxCocoa/RxBlocking/RxTest](https://github.com/ReactiveX/RxSwift) 4.5.0
+- [SwiftLint](https://github.com/realm/SwiftLint) 0.31.0
+- [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) 5.0.0
+- [Moya](https://github.com/Moya/Moya) 13.0.0
+    - [Alamofire](https://github.com/Alamofire/Alamofire) 4.8.2
+    - [Result](https://github.com/antitypical/Result) 4.1.0
 
 Instructions:
 - download or clone project
 - run pod install
-- install swift lint `brew install swiftlint`
 - open workspace
 - build project
