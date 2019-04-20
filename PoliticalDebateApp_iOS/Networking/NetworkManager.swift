@@ -12,7 +12,7 @@ import RxSwift
 public var appBaseURL: String {
     #warning("To change urls")
     #if DEBUG
-    // In our build phases we have a script that runs after ProcessInfoPlistFile & allows HTTP for the `Debug` environment
+    // In our build phases we have a script that runs after ProcessInfoPlistFile & allows ATS HTTP for the Debug environment
     return "http://localhost:8000/api/v1/"
     #else
     return "https://server:8000/api/v1/"
@@ -31,5 +31,12 @@ public struct NetworkManager<T>: Networkable where T: TargetType {
 
     public func makeRequest(with appAPI: T) -> Single<Response> {
         return provider.rx.request(appAPI)
+    }
+
+    // For returning stubbed sample data for the given API
+    fileprivate let stubbingProvider = MoyaProvider<T>(stubClosure: MoyaProvider.immediatelyStub)
+
+    public func makeTestRequest(with appAPI: T) -> Single<Response> {
+        return stubbingProvider.rx.request(appAPI)
     }
 }

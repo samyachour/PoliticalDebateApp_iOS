@@ -24,12 +24,15 @@
 		2E23A708226ADA6200B2DCC3 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A707226ADA6200B2DCC3 /* NetworkManager.swift */; };
 		2E23A709226ADD7600B2DCC3 /* DebateAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A704226AD39200B2DCC3 /* DebateAPI.swift */; };
 		2E23A70B226ADD8100B2DCC3 /* DebateAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */; };
-		2E23A70C226ADDBA00B2DCC3 /* DebateAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */; };
 		2E23A70F226ADF2800B2DCC3 /* Debate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A70E226ADF2800B2DCC3 /* Debate.json */; };
 		2E23A711226ADFA100B2DCC3 /* Debates.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A710226ADFA100B2DCC3 /* Debates.json */; };
 		2E23A713226AE36600B2DCC3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A712226AE36600B2DCC3 /* Constants.swift */; };
 		2E5C5F43226B08220007BCAF /* StringDateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* StringDateExtension.swift */; };
 		2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
+		2E5C5F46226B1DFB0007BCAF /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A707226ADA6200B2DCC3 /* NetworkManager.swift */; };
+		2E5C5F47226B1E780007BCAF /* StringDateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* StringDateExtension.swift */; };
+		2E5C5F48226B1E990007BCAF /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
+		2E5C5F4C226B21D20007BCAF /* DebateAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */; };
 		B5307AE15A1C031FA189B26E /* Pods_PoliticalDebateApp_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */; };
 		C1F8594D1844FD5A725FD14D /* Pods_PoliticalDebateApp_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B294A5E6DD428B59EE9B92B6 /* Pods_PoliticalDebateApp_iOS.framework */; };
 		C8A8D5D71259D82EE76A8AB8 /* Pods_PoliticalDebateApp_iOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E9127E5132AA34688E16C18 /* Pods_PoliticalDebateApp_iOSUITests.framework */; };
@@ -197,7 +200,6 @@
 		2E23A6FB226ACDDD00B2DCC3 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */,
 				2E23A704226AD39200B2DCC3 /* DebateAPI.swift */,
 				2E23A707226ADA6200B2DCC3 /* NetworkManager.swift */,
 			);
@@ -247,6 +249,7 @@
 		2E23A70D226ADF0900B2DCC3 /* StubbedResponses */ = {
 			isa = PBXGroup;
 			children = (
+				2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */,
 				2E23A70E226ADF2800B2DCC3 /* Debate.json */,
 				2E23A710226ADFA100B2DCC3 /* Debates.json */,
 			);
@@ -568,9 +571,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E23A70C226ADDBA00B2DCC3 /* DebateAPI+Testing.swift in Sources */,
 				2E23A708226ADA6200B2DCC3 /* NetworkManager.swift in Sources */,
 				2E23A702226ACE5600B2DCC3 /* Debate.swift in Sources */,
+				2E5C5F4C226B21D20007BCAF /* DebateAPI+Testing.swift in Sources */,
 				2E23A6C5226AC7B300B2DCC3 /* ViewController.swift in Sources */,
 				2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
 				2E5C5F43226B08220007BCAF /* StringDateExtension.swift in Sources */,
@@ -587,8 +590,11 @@
 			files = (
 				2E23A703226ACE5600B2DCC3 /* Debate.swift in Sources */,
 				2E23A709226ADD7600B2DCC3 /* DebateAPI.swift in Sources */,
+				2E5C5F47226B1E780007BCAF /* StringDateExtension.swift in Sources */,
+				2E5C5F46226B1DFB0007BCAF /* NetworkManager.swift in Sources */,
 				2E23A6DB226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.swift in Sources */,
 				2E23A70B226ADD8100B2DCC3 /* DebateAPI+Testing.swift in Sources */,
+				2E5C5F48226B1E990007BCAF /* PlainDjangoEncoding.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

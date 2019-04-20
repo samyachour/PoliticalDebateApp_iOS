@@ -7,9 +7,12 @@
 //
 
 import XCTest
+import RxSwift
 @testable import PoliticalDebateApp_iOS
 
 class PoliticalDebateApp_iOSTests: XCTestCase {
+
+    let disposeBag = DisposeBag()
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -19,9 +22,15 @@ class PoliticalDebateApp_iOSTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() {
+    func testGetSingleDebate() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let testAPI = NetworkManager<DebateAPI>()
+        testAPI.makeTestRequest(with: .debate(primaryKey: 1)).subscribe(onSuccess: { response in
+            if let debate = try? JSONDecoder().decode(Debate.self, from: response.data) {
+                XCTAssert(debate.title == "test_debate_pro")
+            }
+        }, onError: nil).disposed(by: disposeBag)
     }
 
     func testPerformanceExample() {
