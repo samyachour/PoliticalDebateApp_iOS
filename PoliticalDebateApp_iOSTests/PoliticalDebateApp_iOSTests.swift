@@ -25,7 +25,7 @@ class PoliticalDebateApp_iOSTests: XCTestCase {
     func testGetSingleDebate() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        let testAPI = NetworkManager<DebateAPI>()
+        let testAPI = NetworkService<DebateAPI>()
         testAPI.makeTestRequest(with: .debate(primaryKey: 1)).subscribe(onSuccess: { response in
             if let debate = try? JSONDecoder().decode(Debate.self, from: response.data) {
                 XCTAssert(debate.title == "test_debate_pro")

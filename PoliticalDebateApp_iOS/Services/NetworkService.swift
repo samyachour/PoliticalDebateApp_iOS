@@ -1,5 +1,5 @@
 //
-//  NetworkManager.swift
+//  NetworkService.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 4/19/19.
@@ -26,7 +26,7 @@ private protocol Networkable {
     func makeRequest(with appAPI: AppAPI) -> Single<Response>
 }
 
-public struct NetworkManager<T>: Networkable where T: TargetType {
+public struct NetworkService<T>: Networkable where T: TargetType {
     fileprivate let provider = MoyaProvider<T>(plugins: [NetworkLoggerPlugin(verbose: true)])
 
     public func makeRequest(with appAPI: T) -> Single<Response> {

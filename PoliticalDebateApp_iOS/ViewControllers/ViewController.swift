@@ -11,13 +11,13 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    var temp: NetworkManager<DebateAPI>?
+    var temp: NetworkService<DebateAPI>?
     let tempD = DisposeBag()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        temp = NetworkManager<DebateAPI>()
+        temp = NetworkService<DebateAPI>()
         temp?.makeRequest(with: .debate(primaryKey: 1) ).subscribe(
         onSuccess: { response in
             print(try? JSONDecoder().decode(Debate.self, from: response.data))
