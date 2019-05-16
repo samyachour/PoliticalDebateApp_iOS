@@ -22,10 +22,10 @@ public struct PlainDjangoEncoding: ParameterEncoding {
             parameters.values.count == 1,
             urlRequest.httpMethod == "GET"
         else {
-                throw AFError.parameterEncodingFailed(
-                    reason: AFError.ParameterEncodingFailureReason.propertyListEncodingFailed(
-                        error: PlainDjangoEncodingError.invalidParameterNumber
-                ))
+            throw AFError.parameterEncodingFailed(
+                reason: AFError.ParameterEncodingFailureReason.propertyListEncodingFailed(
+                    error: PlainDjangoEncodingError.invalidParameterNumber
+            ))
         }
 
         guard let url = urlRequest.url else {
