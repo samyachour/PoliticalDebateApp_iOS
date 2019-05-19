@@ -7,10 +7,12 @@
 //
 
 import Moya
+import RxCocoa
 import RxSwift
+import RxSwiftExt
 
 public var appBaseURL: String {
-    #warning("To change urls")
+    // TODO: Change URLs
     #if DEBUG
     // In our build phases we have a script that runs after ProcessInfoPlistFile & allows ATS HTTP for the Debug environment
     return "http://localhost:8000/api/v1/"
@@ -27,10 +29,22 @@ private protocol Networkable {
 }
 
 public struct NetworkService<T>: Networkable where T: TargetType {
-    fileprivate let provider = MoyaProvider<T>(plugins: [NetworkLoggerPlugin(verbose: true)])
+    fileprivate let provider = MoyaProvider<T>(plugins: [
+        NetworkLoggerPlugin(verbose: true),
+        AccessTokenPlugin { SessionManager.shared.publicAccessToken }
+        ])
+
+    private let maxAttemptCount: UInt = 4
 
     public func makeRequest(with appAPI: T) -> Single<Response> {
         return provider.rx.request(appAPI)
+            .filterSuccessfulStatusAndRedirectCodes()
+            .asObservable()
+            .retryWhen(SessionManager.shared.refreshAccessTokenIfNeeded)
+            // in case of an error initial delay will be 1 second,
+            // every next delay will be doubled
+            .retry(.exponentialDelayed(maxCount: maxAttemptCount, initial: 1.0, multiplier: 1.0))
+            .asSingle()
     }
 
     // For returning stubbed sample data for the given API

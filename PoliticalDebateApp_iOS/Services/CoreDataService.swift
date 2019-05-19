@@ -7,3 +7,5 @@
 //
 
 import Foundation
+
+// TODO: Set up for parallel use alongside saving to backend

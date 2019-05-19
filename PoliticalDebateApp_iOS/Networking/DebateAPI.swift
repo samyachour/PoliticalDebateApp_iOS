@@ -51,3 +51,14 @@ extension DebateAPI: TargetType {
     }
 
 }
+
+extension DebateAPI: AccessTokenAuthorizable {
+
+    var authorizationType: AuthorizationType {
+        switch self {
+        case .debate,
+             .debates:
+            return .none
+        }
+    }
+}
