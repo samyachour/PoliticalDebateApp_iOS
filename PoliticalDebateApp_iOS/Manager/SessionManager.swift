@@ -26,7 +26,7 @@ class SessionManager {
     private var accessToken: String? {
         didSet {
             if let accessToken = accessToken {
-                saveTokenToKeychain(accessToken, withKey: SessionConstants.accessTokenKey)
+                saveTokenToKeychain(accessToken, withKey: AuthConstants.accessTokenKey)
             }
         }
     }
@@ -43,15 +43,15 @@ class SessionManager {
     private var refreshToken: String? {
         didSet {
             if let refreshToken = refreshToken {
-                saveTokenToKeychain(refreshToken, withKey: SessionConstants.refreshTokenKey)
+                saveTokenToKeychain(refreshToken, withKey: AuthConstants.refreshTokenKey)
             }
         }
     }
 
     // MARK: Keychain
     public func resumeSession() {
-        accessToken = KeychainService.load(key: SessionConstants.accessTokenKey)?.to(type: type(of: accessToken))
-        refreshToken = KeychainService.load(key: SessionConstants.refreshTokenKey)?.to(type: type(of: refreshToken))
+        accessToken = KeychainService.load(key: AuthConstants.accessTokenKey)?.to(type: type(of: accessToken))
+        refreshToken = KeychainService.load(key: AuthConstants.refreshTokenKey)?.to(type: type(of: refreshToken))
     }
 
     // If the user is authenticated, save the token to the user's keychain
@@ -64,11 +64,13 @@ class SessionManager {
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
                 moyaError.response?.statusCode == 401,
-                // Make sure we have a refresh token
-                let refreshToken = SessionManager.shared.refreshToken,
                 // Make sure this is our first refresh attempt
                 index == 0 else {
-                    return .error(error)// Pass the error along
+                    return .error(error) // Pass the error along
+            }
+            guard let refreshToken = SessionManager.shared.refreshToken else { // Make sure we have a refresh token
+                // TODO: Log the user out
+                throw error // cancel source request
             }
             return NetworkService<AuthAPI>().makeRequest(with: .tokenRefresh(refreshToken: refreshToken))
                 .asObservable()
@@ -84,9 +86,8 @@ class SessionManager {
         }
     }
 
-    public func login(email: String, userName: String, password: String) -> Single<Void> {
+    public func login(email: String, password: String) -> Single<Void> {
         return NetworkService<AuthAPI>().makeRequest(with: .tokenObtain(email: email,
-                                                                        username: userName,
                                                                         password: password))
             .flatMap({ (response) -> Single<Void> in
                 switch response.statusCode {
@@ -104,7 +105,6 @@ class SessionManager {
             })
     }
 }
-
 
 // MARK: Custom error
 public enum SessionError {

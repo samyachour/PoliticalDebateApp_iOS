@@ -1,0 +1,7 @@
+[
+    {
+        "debate": 1,
+        "completed": false,
+        "seen_points": ["main - test_point", "secondary - test_point", "secondary - test_point"]
+    }
+]

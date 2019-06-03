@@ -16,6 +16,12 @@ extension AuthAPI {
             return StubAccess.stubbedResponse("TokenRefresh")
         case .tokenObtain:
             return StubAccess.stubbedResponse("TokenObtain")
+        case .registerUser,
+             .changePassword,
+             .requestPasswordReset,
+             .changeEmail,
+             .delete:
+            return StubAccess.stubbedResponse("Empty")
         }
     }
 }

@@ -18,12 +18,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         temp = NetworkService<DebateAPI>()
-        temp?.makeRequest(with: .debate(primaryKey: 1) ).subscribe(
-        onSuccess: { response in
-            print(try? JSONDecoder().decode(Debate.self, from: response.data))
-        }, onError: { error in
-            print(error)
-        }).disposed(by: tempD)
+        temp?.makeRequest(with: .debate(primaryKey: 2) )
+            .map(Debate.self)
+            .subscribe(onSuccess: { debate in
+                print(debate)
+            }).disposed(by: tempD)
     }
 
 }

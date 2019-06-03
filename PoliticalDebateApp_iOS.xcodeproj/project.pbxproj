@@ -13,7 +13,7 @@
 		2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */; };
 		2E23A6CD226AC7B300B2DCC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6CC226AC7B300B2DCC3 /* Assets.xcassets */; };
 		2E23A6D0226AC7B300B2DCC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6CE226AC7B300B2DCC3 /* LaunchScreen.storyboard */; };
-		2E23A6DB226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6DA226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.swift */; };
+		2E23A6DB226AC7B400B2DCC3 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6DA226AC7B400B2DCC3 /* APITests.swift */; };
 		2E23A6E6226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6E5226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift */; };
 		2E23A6F6226AC7D400B2DCC3 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6F3226AC7D400B2DCC3 /* .swiftlint.yml */; };
 		2E23A6F7226AC7D400B2DCC3 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6F4226AC7D400B2DCC3 /* .gitignore */; };
@@ -25,17 +25,40 @@
 		2E23A709226ADD7600B2DCC3 /* DebateAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A704226AD39200B2DCC3 /* DebateAPI.swift */; };
 		2E23A70B226ADD8100B2DCC3 /* DebateAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */; };
 		2E23A70F226ADF2800B2DCC3 /* Debate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A70E226ADF2800B2DCC3 /* Debate.json */; };
-		2E23A711226ADFA100B2DCC3 /* Debates.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A710226ADFA100B2DCC3 /* Debates.json */; };
+		2E23A711226ADFA100B2DCC3 /* DebateSearch.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A710226ADFA100B2DCC3 /* DebateSearch.json */; };
 		2E23A713226AE36600B2DCC3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A712226AE36600B2DCC3 /* Constants.swift */; };
+		2E25AE062290F56C00E75A02 /* Empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E25AE052290F56C00E75A02 /* Empty.json */; };
+		2E36795F22A4ABA0008190FE /* Progress.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E36795E22A4ABA0008190FE /* Progress.json */; };
+		2E36796122A4ABAE008190FE /* ProgressAll.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E36796022A4ABAE008190FE /* ProgressAll.json */; };
+		2E36796322A4AC42008190FE /* Starred.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E36796222A4AC42008190FE /* Starred.json */; };
+		2E36796522A4B278008190FE /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796422A4B278008190FE /* Progress.swift */; };
+		2E36796722A4B280008190FE /* Starred.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796622A4B280008190FE /* Starred.swift */; };
+		2E36796822A4B422008190FE /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796422A4B278008190FE /* Progress.swift */; };
+		2E36796922A4B424008190FE /* Starred.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796622A4B280008190FE /* Starred.swift */; };
 		2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* String+Date.swift */; };
 		2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
 		2E5C5F47226B1E780007BCAF /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* String+Date.swift */; };
 		2E5C5F48226B1E990007BCAF /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
 		2E5C5F58226B29E90007BCAF /* DebateAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */; };
 		2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F56226B29A30007BCAF /* StubAccess.swift */; };
-		2E5C5F5A226B2A7C0007BCAF /* Debates.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A710226ADFA100B2DCC3 /* Debates.json */; };
+		2E5C5F5A226B2A7C0007BCAF /* DebateSearch.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A710226ADFA100B2DCC3 /* DebateSearch.json */; };
 		2E5C5F5B226B2A8D0007BCAF /* Debate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A70E226ADF2800B2DCC3 /* Debate.json */; };
 		2E5C5F5C226B2D720007BCAF /* StubAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F56226B29A30007BCAF /* StubAccess.swift */; };
+		2E69093F22A3AABF00DF486A /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967438226BD34E00821A73 /* SessionManager.swift */; };
+		2E69094022A3AAE600DF486A /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
+		2E69094122A3AAF300DF486A /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743A226BDA8A00821A73 /* KeychainService.swift */; };
+		2E69094222A3AB1700DF486A /* AuthAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */; };
+		2E69094322A3AB2800DF486A /* AccessToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FD9D22908ED70093B6A7 /* AccessToken.swift */; };
+		2E69094422A3AB2B00DF486A /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
+		2E69094522A3AB4900DF486A /* Data+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743D226BE20600821A73 /* Data+Conversion.swift */; };
+		2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094622A4931100DF486A /* ProgressAPI.swift */; };
+		2E69094822A4931100DF486A /* ProgressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094622A4931100DF486A /* ProgressAPI.swift */; };
+		2E69094A22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */; };
+		2E69094B22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */; };
+		2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
+		2E69094E22A4932700DF486A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
+		2E69095022A4933400DF486A /* StarredAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094F22A4933400DF486A /* StarredAPI+Testing.swift */; };
+		2E69095122A4933400DF486A /* StarredAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094F22A4933400DF486A /* StarredAPI+Testing.swift */; };
 		2E967439226BD34E00821A73 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967438226BD34E00821A73 /* SessionManager.swift */; };
 		2E96743B226BDA8A00821A73 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743A226BDA8A00821A73 /* KeychainService.swift */; };
 		2E96743E226BE20600821A73 /* Data+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743D226BE20600821A73 /* Data+Conversion.swift */; };
@@ -83,7 +106,7 @@
 		2E23A6CF226AC7B300B2DCC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2E23A6D1226AC7B300B2DCC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E23A6D6226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PoliticalDebateApp_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2E23A6DA226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoliticalDebateApp_iOSTests.swift; sourceTree = "<group>"; };
+		2E23A6DA226AC7B400B2DCC3 /* APITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITests.swift; sourceTree = "<group>"; };
 		2E23A6DC226AC7B400B2DCC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E23A6E1226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PoliticalDebateApp_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E23A6E5226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoliticalDebateApp_iOSUITests.swift; sourceTree = "<group>"; };
@@ -96,11 +119,21 @@
 		2E23A707226ADA6200B2DCC3 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DebateAPI+Testing.swift"; sourceTree = "<group>"; };
 		2E23A70E226ADF2800B2DCC3 /* Debate.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Debate.json; sourceTree = "<group>"; };
-		2E23A710226ADFA100B2DCC3 /* Debates.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Debates.json; sourceTree = "<group>"; };
+		2E23A710226ADFA100B2DCC3 /* DebateSearch.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DebateSearch.json; sourceTree = "<group>"; };
 		2E23A712226AE36600B2DCC3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		2E25AE052290F56C00E75A02 /* Empty.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Empty.json; sourceTree = "<group>"; };
+		2E36795E22A4ABA0008190FE /* Progress.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Progress.json; sourceTree = "<group>"; };
+		2E36796022A4ABAE008190FE /* ProgressAll.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ProgressAll.json; sourceTree = "<group>"; };
+		2E36796222A4AC42008190FE /* Starred.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Starred.json; sourceTree = "<group>"; };
+		2E36796422A4B278008190FE /* Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Progress.swift; sourceTree = "<group>"; };
+		2E36796622A4B280008190FE /* Starred.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Starred.swift; sourceTree = "<group>"; };
 		2E5C5F42226B08220007BCAF /* String+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Date.swift"; sourceTree = "<group>"; };
 		2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainDjangoEncoding.swift; sourceTree = "<group>"; };
 		2E5C5F56226B29A30007BCAF /* StubAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubAccess.swift; sourceTree = "<group>"; };
+		2E69094622A4931100DF486A /* ProgressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAPI.swift; sourceTree = "<group>"; };
+		2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProgressAPI+Testing.swift"; sourceTree = "<group>"; };
+		2E69094C22A4932700DF486A /* StarredAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredAPI.swift; sourceTree = "<group>"; };
+		2E69094F22A4933400DF486A /* StarredAPI+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StarredAPI+Testing.swift"; sourceTree = "<group>"; };
 		2E967438226BD34E00821A73 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		2E96743A226BDA8A00821A73 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		2E96743D226BE20600821A73 /* Data+Conversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Conversion.swift"; sourceTree = "<group>"; };
@@ -210,7 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				2E23A70D226ADF0900B2DCC3 /* StubbedResponses */,
-				2E23A6DA226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.swift */,
+				2E23A6DA226AC7B400B2DCC3 /* APITests.swift */,
 				2E23A6DC226AC7B400B2DCC3 /* Info.plist */,
 			);
 			path = PoliticalDebateApp_iOSTests;
@@ -232,6 +265,10 @@
 				2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */,
 				2EA3D1A1228D35AC00019324 /* AuthAPI.swift */,
 				2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */,
+				2E69094622A4931100DF486A /* ProgressAPI.swift */,
+				2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */,
+				2E69094C22A4932700DF486A /* StarredAPI.swift */,
+				2E69094F22A4933400DF486A /* StarredAPI+Testing.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -251,6 +288,8 @@
 				2E23A701226ACE5600B2DCC3 /* Debate.swift */,
 				2ED2FD9D22908ED70093B6A7 /* AccessToken.swift */,
 				2ED2FDA12290CC210093B6A7 /* TokenPair.swift */,
+				2E36796422A4B278008190FE /* Progress.swift */,
+				2E36796622A4B280008190FE /* Starred.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -286,9 +325,13 @@
 			children = (
 				2E5C5F56226B29A30007BCAF /* StubAccess.swift */,
 				2E23A70E226ADF2800B2DCC3 /* Debate.json */,
-				2E23A710226ADFA100B2DCC3 /* Debates.json */,
+				2E23A710226ADFA100B2DCC3 /* DebateSearch.json */,
 				2EA3D1A5228D36C700019324 /* TokenRefresh.json */,
 				2ED2FD9F2290CAF80093B6A7 /* TokenObtain.json */,
+				2E25AE052290F56C00E75A02 /* Empty.json */,
+				2E36795E22A4ABA0008190FE /* Progress.json */,
+				2E36796022A4ABAE008190FE /* ProgressAll.json */,
+				2E36796222A4AC42008190FE /* Starred.json */,
 			);
 			path = StubbedResponses;
 			sourceTree = "<group>";
@@ -425,7 +468,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E5C5F5B226B2A8D0007BCAF /* Debate.json in Resources */,
-				2E5C5F5A226B2A7C0007BCAF /* Debates.json in Resources */,
+				2E5C5F5A226B2A7C0007BCAF /* DebateSearch.json in Resources */,
 				2E23A6F8226AC7D400B2DCC3 /* README.md in Resources */,
 				2E23A6F7226AC7D400B2DCC3 /* .gitignore in Resources */,
 				2E23A6F6226AC7D400B2DCC3 /* .swiftlint.yml in Resources */,
@@ -439,7 +482,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E23A711226ADFA100B2DCC3 /* Debates.json in Resources */,
+				2E36795F22A4ABA0008190FE /* Progress.json in Resources */,
+				2E36796322A4AC42008190FE /* Starred.json in Resources */,
+				2E25AE062290F56C00E75A02 /* Empty.json in Resources */,
+				2E36796122A4ABAE008190FE /* ProgressAll.json in Resources */,
+				2E23A711226ADFA100B2DCC3 /* DebateSearch.json in Resources */,
 				2E23A70F226ADF2800B2DCC3 /* Debate.json in Resources */,
 				2ED2FDA02290CAF80093B6A7 /* TokenObtain.json in Resources */,
 				2EA3D1A6228D36C700019324 /* TokenRefresh.json in Resources */,
@@ -626,21 +673,27 @@
 			files = (
 				2E96743B226BDA8A00821A73 /* KeychainService.swift in Sources */,
 				2E23A708226ADA6200B2DCC3 /* NetworkService.swift in Sources */,
+				2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */,
 				2E23A702226ACE5600B2DCC3 /* Debate.swift in Sources */,
 				2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */,
 				2E967439226BD34E00821A73 /* SessionManager.swift in Sources */,
+				2E36796522A4B278008190FE /* Progress.swift in Sources */,
 				2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */,
 				2E23A6C5226AC7B300B2DCC3 /* ViewController.swift in Sources */,
 				2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
 				2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */,
 				2E967440226BE91000821A73 /* CoreDataService.swift in Sources */,
+				2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */,
 				2E5C5F58226B29E90007BCAF /* DebateAPI+Testing.swift in Sources */,
 				2ED2FD9E22908ED70093B6A7 /* AccessToken.swift in Sources */,
+				2E36796722A4B280008190FE /* Starred.swift in Sources */,
 				2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */,
 				2E5C5F5C226B2D720007BCAF /* StubAccess.swift in Sources */,
 				2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */,
 				2E96743E226BE20600821A73 /* Data+Conversion.swift in Sources */,
 				2EA3D1A4228D35C000019324 /* AuthAPI+Testing.swift in Sources */,
+				2E69095022A4933400DF486A /* StarredAPI+Testing.swift in Sources */,
+				2E69094A22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */,
 				2E23A705226AD39200B2DCC3 /* DebateAPI.swift in Sources */,
 				2E23A713226AE36600B2DCC3 /* Constants.swift in Sources */,
 				2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */,
@@ -652,11 +705,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E23A703226ACE5600B2DCC3 /* Debate.swift in Sources */,
+				2E69094322A3AB2800DF486A /* AccessToken.swift in Sources */,
 				2E23A709226ADD7600B2DCC3 /* DebateAPI.swift in Sources */,
+				2E69093F22A3AABF00DF486A /* SessionManager.swift in Sources */,
+				2E69095122A4933400DF486A /* StarredAPI+Testing.swift in Sources */,
 				2E967443226BEA9700821A73 /* NetworkService.swift in Sources */,
+				2E36796822A4B422008190FE /* Progress.swift in Sources */,
+				2E69094122A3AAF300DF486A /* KeychainService.swift in Sources */,
 				2E5C5F47226B1E780007BCAF /* String+Date.swift in Sources */,
-				2E23A6DB226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.swift in Sources */,
+				2E69094522A3AB4900DF486A /* Data+Conversion.swift in Sources */,
+				2E23A6DB226AC7B400B2DCC3 /* APITests.swift in Sources */,
+				2E69094022A3AAE600DF486A /* AuthAPI.swift in Sources */,
 				2E23A70B226ADD8100B2DCC3 /* DebateAPI+Testing.swift in Sources */,
+				2E69094822A4931100DF486A /* ProgressAPI.swift in Sources */,
+				2E69094222A3AB1700DF486A /* AuthAPI+Testing.swift in Sources */,
+				2E69094422A3AB2B00DF486A /* TokenPair.swift in Sources */,
+				2E36796922A4B424008190FE /* Starred.swift in Sources */,
+				2E69094E22A4932700DF486A /* StarredAPI.swift in Sources */,
+				2E69094B22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */,
 				2E5C5F48226B1E990007BCAF /* PlainDjangoEncoding.swift in Sources */,
 				2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */,
 			);

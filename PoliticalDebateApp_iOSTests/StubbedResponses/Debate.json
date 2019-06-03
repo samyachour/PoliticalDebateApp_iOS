@@ -2,6 +2,7 @@
     "pk": 1,
     "title": "test_debate",
     "last_updated": "2019-03-17",
+    "total_points": 5,
     "debate_map": {
     	"pro - point description": {
     		"non-sequitur rebuttal": "point formatted as non-sequitur rebuttal",
@@ -9,12 +10,12 @@
     		"images": { "image name": "url" },
     		"con - point description": {
     			"non-sequitur rebuttal": "point formatted as non-sequitur rebuttal",
-    			"hyperlinks": {""},
-    			"images": {""},
-    			"pro - point description": {""}
+    			"hyperlinks": {"":""},
+    			"images": {"":""},
+                "pro - point description": {"":""}
     		},
-    		"con - point description": {""}
+            "con - point description": {"":""}
 		},
-		"con - point description": {""}
+        "con - point description": {"":""}
 	}
 }

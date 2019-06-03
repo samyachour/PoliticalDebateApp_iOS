@@ -1,5 +1,5 @@
 //
-//  API.swift
+//  DebateAPI.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 4/19/19.
@@ -10,7 +10,12 @@ import Moya
 
 enum DebateAPI {
     case debate(primaryKey: Int)
-    case debates
+    case debateSearch(searchString: String)
+}
+
+public enum DebateConstants {
+    static let primaryKey = "pk"
+    static let searchStringKey = "search_string"
 }
 
 extension DebateAPI: TargetType {
@@ -24,15 +29,15 @@ extension DebateAPI: TargetType {
         switch self {
         case .debate:
             return "debate/"
-        case .debates:
-            return "debates/"
+        case .debateSearch:
+            return "debate/search/"
         }
     }
 
     var method: Moya.Method {
         switch self {
         case .debate,
-        .debates:
+        .debateSearch:
             return .get
         }
     }
@@ -40,9 +45,9 @@ extension DebateAPI: TargetType {
     var task: Task {
         switch self {
         case .debate(let primaryKey):
-            return .requestParameters(parameters: ["pk" : primaryKey], encoding: PlainDjangoEncoding())
-        case .debates:
-            return .requestPlain
+            return .requestParameters(parameters: [DebateConstants.primaryKey : primaryKey], encoding: PlainDjangoEncoding())
+        case .debateSearch(let searchString):
+            return .requestParameters(parameters: [DebateConstants.searchStringKey : searchString], encoding: PlainDjangoEncoding())
         }
     }
 
@@ -57,7 +62,7 @@ extension DebateAPI: AccessTokenAuthorizable {
     var authorizationType: AuthorizationType {
         switch self {
         case .debate,
-             .debates:
+             .debateSearch:
             return .none
         }
     }

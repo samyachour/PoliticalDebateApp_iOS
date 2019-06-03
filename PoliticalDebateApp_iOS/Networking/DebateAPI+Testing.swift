@@ -1,5 +1,5 @@
 //
-//  API+Testing.swift
+//  DebateAPI+Testing.swift
 //  PoliticalDebateApp_iOSTests
 //
 //  Created by Samy on 4/19/19.
@@ -14,8 +14,8 @@ extension DebateAPI {
         switch self {
         case .debate:
             return StubAccess.stubbedResponse("Debate")
-        case .debates:
-            return StubAccess.stubbedResponse("Debates")
+        case .debateSearch:
+            return StubAccess.stubbedResponse("DebateSearch")
         }
     }
 }

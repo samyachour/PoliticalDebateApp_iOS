@@ -10,11 +10,24 @@ import Moya
 
 enum AuthAPI {
     case tokenRefresh(refreshToken: String)
-    case tokenObtain(email: String, username: String, password: String)
+    case tokenObtain(email: String, password: String)
+    case registerUser(email: String, password: String)
+    case changePassword(oldPassword: String, newPassword: String)
+    case requestPasswordReset(email: String, forceSend: Bool?)
+    case changeEmail(newEmail: String)
+    case delete
 }
 
 public enum AuthConstants {
-    static let tokenRefreshKey = "refresh"
+    static let accessTokenKey = "access"
+    static let refreshTokenKey = "refresh"
+    static let emailKey = "email"
+    static let usernameKey = "username"
+    static let passwordKey = "password"
+    static let oldPasswordKey = "old_password"
+    static let newPasswordKey = "new_password"
+    static let forceSendKey = "force_send"
+    static let newEmailKey = "new_email"
 }
 
 extension AuthAPI: TargetType {
@@ -30,13 +43,28 @@ extension AuthAPI: TargetType {
             return "token/refresh/"
         case .tokenObtain:
             return "token/obtain/"
+        case .registerUser:
+            return "register/"
+        case .changePassword:
+            return "change-password/"
+        case .requestPasswordReset:
+            return "request-password-reset/"
+        case .changeEmail:
+            return "change-email/"
+        case .delete:
+            return "delete/"
         }
     }
 
     var method: Moya.Method {
         switch self {
         case .tokenRefresh,
-             .tokenObtain:
+             .tokenObtain,
+             .registerUser,
+             .changePassword,
+             .requestPasswordReset,
+             .changeEmail,
+             .delete:
             return .post
         }
     }
@@ -44,12 +72,29 @@ extension AuthAPI: TargetType {
     var task: Task {
         switch self {
         case .tokenRefresh(let refreshToken):
-            return .requestParameters(parameters: ["refresh" : refreshToken], encoding: JSONEncoding.default)
-        case .tokenObtain(let email, let username, let password):
-            return .requestParameters(parameters: ["email": email,
-                                                   "username": username,
-                                                   "password": password],
+            return .requestParameters(parameters: [AuthConstants.refreshTokenKey : refreshToken], encoding: JSONEncoding.default)
+        case .tokenObtain(let email, let password):
+            // SimpleJWT requires 'username' parameter for obtaining tokens
+            return .requestParameters(parameters: [AuthConstants.usernameKey: email,
+                                                   AuthConstants.passwordKey: password],
                                       encoding: JSONEncoding.default)
+        case .registerUser(let email, let password):
+            return .requestParameters(parameters: [AuthConstants.emailKey: email,
+                                                   AuthConstants.passwordKey: password],
+                                      encoding: JSONEncoding.default)
+        case .changePassword(let oldPassword, let newPassword):
+            return .requestParameters(parameters: [AuthConstants.oldPasswordKey: oldPassword,
+                                                   AuthConstants.newPasswordKey: newPassword],
+                                      encoding: JSONEncoding.default)
+        case .requestPasswordReset(let email, let forceSend):
+            var params: [String: Any] = [AuthConstants.emailKey: email]
+            params[AuthConstants.forceSendKey] = forceSend
+            return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+        case .changeEmail(let newEmail):
+            return .requestParameters(parameters: [AuthConstants.newEmailKey: newEmail],
+                                      encoding: JSONEncoding.default)
+        case .delete:
+            return .requestPlain
         }
     }
 
@@ -64,8 +109,14 @@ extension AuthAPI: AccessTokenAuthorizable {
     var authorizationType: AuthorizationType {
         switch self {
         case .tokenRefresh,
-             .tokenObtain:
+             .tokenObtain,
+             .registerUser,
+             .requestPasswordReset:
             return .none
+        case .changePassword,
+             .changeEmail,
+             .delete:
+            return .bearer
         }
     }
 }
