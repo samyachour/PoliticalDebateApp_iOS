@@ -6,6 +6,7 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import RxCocoa
 import RxSwift
 
 public class DebateListViewModel {
@@ -14,10 +15,13 @@ public class DebateListViewModel {
 
     // MARK: API calls
 
-    // TODO: Combine latest of search input and picker choice and make search query
+    public func subscribeToSearchAndSortQueries(searchInput: PublishSubject<String>, sortSelection: Driver<SortByOption>) {
+        // TODO: Hit search API endpoint which should then update collectionView
+        // Show status message on error
+    }
 }
 
-public enum SortByOptions: Int, CaseIterable {
+public enum SortByOption: Int, CaseIterable {
     case sortBy
     case lastUpdated
     case starred

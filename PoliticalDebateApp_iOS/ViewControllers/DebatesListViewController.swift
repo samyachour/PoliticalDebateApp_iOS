@@ -6,8 +6,9 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
-import RxSwift
 import UIKit
+import RxCocoa
+import RxSwift
 
 // Acts as our home view as well
 class DebatesListViewController: UIViewController {
@@ -45,7 +46,7 @@ class DebatesListViewController: UIViewController {
         }
     }
 
-    private let searchTriggered = PublishSubject<String>()
+    private let searchTriggeredSubject = PublishSubject<String>()
 
     // MARK: Action handlers
 
@@ -53,13 +54,13 @@ class DebatesListViewController: UIViewController {
 
     @objc private func accountTapped() {}
 
-    @objc private func didTapToDismissKeyboardOrPickerView() {
+    @objc private func didCompleteSearchInputOrPickerSelection() {
         if searchTextField.isFirstResponder {
             // No matter the sender that dismisses the keyboard, run a search query w/ the given text
-            searchTriggered.onNext(searchTextField.text ?? "")
+            searchTriggeredSubject.onNext(searchTextField.text ?? "")
             searchTextField.resignFirstResponder()
         }
-        if pickerIsOnScreen {
+        if pickerIsOnScreen { // If user taps away to dismiss picker, they have not changed selection
             removePickerView()
         }
     }
@@ -72,10 +73,10 @@ class DebatesListViewController: UIViewController {
     private static let cornerButtonYDistance: CGFloat = 12.0
     private static let cornerButtonXDistance: CGFloat = 16.0
     private static let buttonFont = UIFont.primaryRegular()
-    private static let sortByDefaultlabel = SortByOptions.sortBy.stringValue
+    private static let sortByDefaultlabel = SortByOption.sortBy.stringValue
     private static let cornerRadius: CGFloat = 4.0
     private var pickerIsOnScreen: Bool {
-        return sortByPicker.superview == self.view
+        return sortByPickerView.superview == self.view
     }
 
     // MARK: UI Elements
@@ -101,7 +102,7 @@ class DebatesListViewController: UIViewController {
         return sortByButton
     }()
 
-    private let sortByPicker = UIPickerView()
+    private let sortByPickerView = UIPickerView()
 
     private let searchTextField: UITextField = {
         let searchTextField = UITextField(frame: .zero)
@@ -117,7 +118,10 @@ class DebatesListViewController: UIViewController {
 
     private let searchButtonBar: UIToolbar = {
         let searchButtonBar = UIToolbar()
-        let searchButton = UIBarButtonItem(title: "Search", style: .plain, target: self, action: #selector(didTapToDismissKeyboardOrPickerView))
+        let searchButton = UIBarButtonItem(title: "Search",
+                                           style: .plain,
+                                           target: self,
+                                           action: #selector(didCompleteSearchInputOrPickerSelection))
         searchButton.tintColor = DebatesListViewController.selectedColor
         searchButton.setTitleTextAttributes([.font : DebatesListViewController.buttonFont as Any], for: .normal)
         searchButtonBar.items = [searchButton]
@@ -136,8 +140,8 @@ extension DebatesListViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let shouldHandleTouch = (!searchTextField.frame.contains(touch.location(in: self.view)) && searchTextField.isFirstResponder) ||
-                (!sortByPicker.frame.contains(touch.location(in: self.view)) && pickerIsOnScreen)
-            if shouldHandleTouch { didTapToDismissKeyboardOrPickerView() }
+                (!sortByPickerView.frame.contains(touch.location(in: self.view)) && pickerIsOnScreen)
+            if shouldHandleTouch { didCompleteSearchInputOrPickerSelection() }
         }
         super.touchesBegan(touches, with: event)
     }
@@ -166,8 +170,8 @@ extension DebatesListViewController: UITextFieldDelegate {
     }
 
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if string == "\n" {
-            didTapToDismissKeyboardOrPickerView()
+        if string == "\n" { // If user clicks enter perform search
+            didCompleteSearchInputOrPickerSelection()
             return false
         }
         return true
@@ -185,15 +189,19 @@ extension DebatesListViewController {
         sortByButton.addTarget(self, action: #selector(installPickerView), for: .touchUpInside)
 
         // Set up picker options
-        Observable.just(SortByOptions.allCases.map { $0.stringValue })
-            .bind(to: sortByPicker.rx.itemTitles) { _, optionLabel in
+        Observable.just(SortByOption.allCases.map { $0.stringValue })
+            .bind(to: sortByPickerView.rx.itemTitles) { _, optionLabel in
                 optionLabel
             }.disposed(by: disposeBag)
 
-        _ = sortByPicker.rx.itemSelected.asDriver().do(onNext: { [weak self] item in
+        let sortSelectionObservable = sortByPickerView.rx.itemSelected.asDriver().do(onNext: { [weak self] item in
             self?.updateSortBySelection(with: item.row)
-            self?.removePickerView()
-        })
+            self?.didCompleteSearchInputOrPickerSelection()
+        }).map { item -> SortByOption in
+            return SortByOption(rawValue: item.row) ?? .sortBy
+        }
+
+        viewModel.subscribeToSearchAndSortQueries(searchInput: searchTriggeredSubject, sortSelection: sortSelectionObservable)
     }
 
     private func installViewConstraints() {
@@ -225,10 +233,10 @@ extension DebatesListViewController {
 
     }
 
-    // MARK: Sort by picker handling
+    // MARK: sortByPickerView handling
     private func updateSortBySelection(with pickerChoice: Int) {
         UIView.transition(with: sortByButton, duration: 0.3, options: .transitionCrossDissolve, animations: { [weak self] in
-            let optionSelected = SortByOptions(rawValue: pickerChoice)
+            let optionSelected = SortByOption(rawValue: pickerChoice)
             self?.sortByButton.setTitle(optionSelected?.stringValue ?? DebatesListViewController.sortByDefaultlabel,
                                         for: .normal)
             self?.sortByButton.setTitleColor(optionSelected?.selectionColor, for: .normal)
@@ -236,26 +244,26 @@ extension DebatesListViewController {
     }
 
     @objc private func installPickerView() {
-        sortByPicker.alpha = 0.0
-        view.addSubview(sortByPicker)
+        sortByPickerView.alpha = 0.0
+        view.addSubview(sortByPickerView)
 
-        sortByPicker.translatesAutoresizingMaskIntoConstraints = false
-        sortByPicker.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8).isActive = true
-        sortByPicker.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+        sortByPickerView.translatesAutoresizingMaskIntoConstraints = false
+        sortByPickerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8).isActive = true
+        sortByPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
-        sortByPicker.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+        sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
                                               constant: DebatesListViewController.cornerButtonXDistance).isActive = true
 
         UIView.animate(withDuration: 0.4) { [weak self] in
-            self?.sortByPicker.alpha = 1.0
+            self?.sortByPickerView.alpha = 1.0
         }
     }
 
     private func removePickerView() {
         UIView.animate(withDuration: 0.4, animations: { [weak self] in
-            self?.sortByPicker.alpha = 0.0
+            self?.sortByPickerView.alpha = 0.0
             }, completion: { [weak self] _ in // flag not reliable
-                self?.sortByPicker.removeFromSuperview()
+                self?.sortByPickerView.removeFromSuperview()
         })
 
     }
