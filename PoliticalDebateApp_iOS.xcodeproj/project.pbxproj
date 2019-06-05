@@ -17,6 +17,10 @@
 		2E0D84B122A70F2600E4B0E7 /* Manrope-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D849F22A70F2600E4B0E7 /* Manrope-Regular.otf */; };
 		2E0D84B222A70F2600E4B0E7 /* Manrope-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D84A022A70F2600E4B0E7 /* Manrope-Bold.otf */; };
 		2E0D84B422A70F2600E4B0E7 /* Manrope-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D84A222A70F2600E4B0E7 /* Manrope-Medium.otf */; };
+		2E0D84BA22A7952400E4B0E7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84B922A7952400E4B0E7 /* LoginViewController.swift */; };
+		2E0D84BC22A7952F00E4B0E7 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BB22A7952F00E4B0E7 /* LoginViewModel.swift */; };
+		2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */; };
+		2E0D84C022A7954300E4B0E7 /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */; };
 		2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */; };
 		2E23A6C5226AC7B300B2DCC3 /* DebatesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C4226AC7B300B2DCC3 /* DebatesListViewController.swift */; };
 		2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */; };
@@ -118,6 +122,10 @@
 		2E0D849F22A70F2600E4B0E7 /* Manrope-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Regular.otf"; sourceTree = "<group>"; };
 		2E0D84A022A70F2600E4B0E7 /* Manrope-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Bold.otf"; sourceTree = "<group>"; };
 		2E0D84A222A70F2600E4B0E7 /* Manrope-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Medium.otf"; sourceTree = "<group>"; };
+		2E0D84B922A7952400E4B0E7 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		2E0D84BB22A7952F00E4B0E7 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
 		2E23A6BF226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PoliticalDebateApp_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2E23A6C4226AC7B300B2DCC3 /* DebatesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebatesListViewController.swift; sourceTree = "<group>"; };
@@ -365,6 +373,8 @@
 			isa = PBXGroup;
 			children = (
 				2E23A6C4226AC7B300B2DCC3 /* DebatesListViewController.swift */,
+				2E0D84B922A7952400E4B0E7 /* LoginViewController.swift */,
+				2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -373,6 +383,8 @@
 			isa = PBXGroup;
 			children = (
 				2E0D848522A6FA9C00E4B0E7 /* DebatesListViewModel.swift */,
+				2E0D84BB22A7952F00E4B0E7 /* LoginViewModel.swift */,
+				2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -743,17 +755,21 @@
 				2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
 				2E36796522A4B278008190FE /* Progress.swift in Sources */,
 				2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */,
+				2E0D84BC22A7952F00E4B0E7 /* LoginViewModel.swift in Sources */,
 				2E23A6C5226AC7B300B2DCC3 /* DebatesListViewController.swift in Sources */,
 				2E0D848422A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift in Sources */,
 				2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
 				2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */,
 				2E967440226BE91000821A73 /* CoreDataService.swift in Sources */,
+				2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */,
 				2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */,
 				2E5C5F58226B29E90007BCAF /* DebateAPI+Testing.swift in Sources */,
 				2ED2FD9E22908ED70093B6A7 /* AccessToken.swift in Sources */,
 				2E0D848A22A7057300E4B0E7 /* UIColor+Custom.swift in Sources */,
 				2E36796722A4B280008190FE /* Starred.swift in Sources */,
+				2E0D84C022A7954300E4B0E7 /* AccountViewModel.swift in Sources */,
 				2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */,
+				2E0D84BA22A7952400E4B0E7 /* LoginViewController.swift in Sources */,
 				2E5C5F5C226B2D720007BCAF /* StubAccess.swift in Sources */,
 				2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */,
 				2E96743E226BE20600821A73 /* Data+Conversion.swift in Sources */,

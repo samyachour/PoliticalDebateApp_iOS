@@ -12,12 +12,16 @@ import RxSwift
 public class DebateListViewModel {
 
     // MARK: Observables
+    private let disposeBag = DisposeBag()
 
     // MARK: API calls
 
     public func subscribeToSearchAndSortQueries(searchInput: PublishSubject<String>, sortSelection: Driver<SortByOption>) {
         // TODO: Hit search API endpoint which should then update collectionView
         // Show status message on error
+
+        // Just until I set it up fully
+        sortSelection.drive(onNext: nil, onCompleted: nil).disposed(by: disposeBag)
     }
 }
 

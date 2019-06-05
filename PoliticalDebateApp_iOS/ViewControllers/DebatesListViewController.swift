@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 
 // Acts as our home view as well
-class DebatesListViewController: UIViewController {
+public class DebatesListViewController: UIViewController {
 
     public required init(viewModel: DebateListViewModel) {
         self.viewModel = viewModel
@@ -50,9 +50,15 @@ class DebatesListViewController: UIViewController {
 
     // MARK: Action handlers
 
-    @objc private func loginTapped() {}
+    @objc private func loginTapped() {
+        navigationController?.pushViewController(LoginViewController(viewModel: LoginViewModel()),
+                                                 animated: true)
+    }
 
-    @objc private func accountTapped() {}
+    @objc private func accountTapped() {
+        navigationController?.pushViewController(AccountViewController(viewModel: AccountViewModel()),
+                                                 animated: true)
+    }
 
     @objc private func didCompleteSearchInputOrPickerSelection() {
         if searchTextField.isFirstResponder {
@@ -135,10 +141,14 @@ class DebatesListViewController: UIViewController {
 
 }
 
+// Gesture recognizer
 extension DebatesListViewController {
 
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    // Can't use TapGesture because I need to trigger the instant the user interacts w/ the screen
+    // e.g. beginning of scroll, long press, etc.
+    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
+            // If it was outside our search text field while editing or picker view while open
             let shouldHandleTouch = (!searchTextField.frame.contains(touch.location(in: self.view)) && searchTextField.isFirstResponder) ||
                 (!sortByPickerView.frame.contains(touch.location(in: self.view)) && pickerIsOnScreen)
             if shouldHandleTouch { didCompleteSearchInputOrPickerSelection() }
@@ -233,7 +243,7 @@ extension DebatesListViewController {
 
     }
 
-    // MARK: sortByPickerView handling
+    // MARK: sortByPickerView UI handling
     private func updateSortBySelection(with pickerChoice: Int) {
         UIView.transition(with: sortByButton, duration: 0.3, options: .transitionCrossDissolve, animations: { [weak self] in
             let optionSelected = SortByOption(rawValue: pickerChoice)
