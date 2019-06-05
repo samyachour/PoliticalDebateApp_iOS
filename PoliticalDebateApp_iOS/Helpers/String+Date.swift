@@ -15,9 +15,7 @@ extension String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = format
-        let date = dateFormatter.date(from: self)
-
-        return date
+        return dateFormatter.date(from: self)
 
     }
 }

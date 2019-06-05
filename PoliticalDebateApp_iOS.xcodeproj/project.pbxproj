@@ -7,9 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E0D848422A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */; };
+		2E0D848622A6FA9C00E4B0E7 /* DebatesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848522A6FA9C00E4B0E7 /* DebatesListViewModel.swift */; };
+		2E0D848822A7054A00E4B0E7 /* UIFont+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */; };
+		2E0D848A22A7057300E4B0E7 /* UIColor+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */; };
+		2E0D84A722A70F2600E4B0E7 /* Manrope-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D849522A70F2600E4B0E7 /* Manrope-Semibold.otf */; };
+		2E0D84A822A70F2600E4B0E7 /* Manrope-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D849622A70F2600E4B0E7 /* Manrope-Light.otf */; };
+		2E0D84AE22A70F2600E4B0E7 /* Manrope-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D849C22A70F2600E4B0E7 /* Manrope-Thin.otf */; };
+		2E0D84B122A70F2600E4B0E7 /* Manrope-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D849F22A70F2600E4B0E7 /* Manrope-Regular.otf */; };
+		2E0D84B222A70F2600E4B0E7 /* Manrope-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D84A022A70F2600E4B0E7 /* Manrope-Bold.otf */; };
+		2E0D84B422A70F2600E4B0E7 /* Manrope-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D84A222A70F2600E4B0E7 /* Manrope-Medium.otf */; };
 		2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */; };
-		2E23A6C5226AC7B300B2DCC3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C4226AC7B300B2DCC3 /* ViewController.swift */; };
-		2E23A6C8226AC7B300B2DCC3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6C6226AC7B300B2DCC3 /* Main.storyboard */; };
+		2E23A6C5226AC7B300B2DCC3 /* DebatesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C4226AC7B300B2DCC3 /* DebatesListViewController.swift */; };
 		2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */; };
 		2E23A6CD226AC7B300B2DCC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6CC226AC7B300B2DCC3 /* Assets.xcassets */; };
 		2E23A6D0226AC7B300B2DCC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6CE226AC7B300B2DCC3 /* LaunchScreen.storyboard */; };
@@ -68,6 +77,8 @@
 		2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
 		2EA3D1A4228D35C000019324 /* AuthAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */; };
 		2EA3D1A6228D36C700019324 /* TokenRefresh.json in Resources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A5228D36C700019324 /* TokenRefresh.json */; };
+		2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
+		2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
 		2ED2FD9E22908ED70093B6A7 /* AccessToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FD9D22908ED70093B6A7 /* AccessToken.swift */; };
 		2ED2FDA02290CAF80093B6A7 /* TokenObtain.json in Resources */ = {isa = PBXBuildFile; fileRef = 2ED2FD9F2290CAF80093B6A7 /* TokenObtain.json */; };
 		2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
@@ -97,10 +108,19 @@
 		1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E9127E5132AA34688E16C18 /* Pods_PoliticalDebateApp_iOSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2162EE9CB2F8CA1A2CF41A7A /* Pods-PoliticalDebateApp_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+Priority.swift"; sourceTree = "<group>"; };
+		2E0D848522A6FA9C00E4B0E7 /* DebatesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebatesListViewModel.swift; sourceTree = "<group>"; };
+		2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Custom.swift"; sourceTree = "<group>"; };
+		2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Custom.swift"; sourceTree = "<group>"; };
+		2E0D849522A70F2600E4B0E7 /* Manrope-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Semibold.otf"; sourceTree = "<group>"; };
+		2E0D849622A70F2600E4B0E7 /* Manrope-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Light.otf"; sourceTree = "<group>"; };
+		2E0D849C22A70F2600E4B0E7 /* Manrope-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Thin.otf"; sourceTree = "<group>"; };
+		2E0D849F22A70F2600E4B0E7 /* Manrope-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Regular.otf"; sourceTree = "<group>"; };
+		2E0D84A022A70F2600E4B0E7 /* Manrope-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Bold.otf"; sourceTree = "<group>"; };
+		2E0D84A222A70F2600E4B0E7 /* Manrope-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Medium.otf"; sourceTree = "<group>"; };
 		2E23A6BF226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PoliticalDebateApp_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2E23A6C4226AC7B300B2DCC3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		2E23A6C7226AC7B300B2DCC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2E23A6C4226AC7B300B2DCC3 /* DebatesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebatesListViewController.swift; sourceTree = "<group>"; };
 		2E23A6CA226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PoliticalDebateApp_iOS.xcdatamodel; sourceTree = "<group>"; };
 		2E23A6CC226AC7B300B2DCC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2E23A6CF226AC7B300B2DCC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -142,6 +162,8 @@
 		2EA3D1A1228D35AC00019324 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
 		2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthAPI+Testing.swift"; sourceTree = "<group>"; };
 		2EA3D1A5228D36C700019324 /* TokenRefresh.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TokenRefresh.json; sourceTree = "<group>"; };
+		2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
+		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2ED2FD9D22908ED70093B6A7 /* AccessToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessToken.swift; sourceTree = "<group>"; };
 		2ED2FD9F2290CAF80093B6A7 /* TokenObtain.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TokenObtain.json; sourceTree = "<group>"; };
 		2ED2FDA12290CC210093B6A7 /* TokenPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPair.swift; sourceTree = "<group>"; };
@@ -194,6 +216,35 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		2E0D848B22A70B7D00E4B0E7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2E0D848C22A70BA100E4B0E7 /* Fonts */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		2E0D848C22A70BA100E4B0E7 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				2E0D849422A70F2600E4B0E7 /* Manrope */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		2E0D849422A70F2600E4B0E7 /* Manrope */ = {
+			isa = PBXGroup;
+			children = (
+				2E0D849522A70F2600E4B0E7 /* Manrope-Semibold.otf */,
+				2E0D849622A70F2600E4B0E7 /* Manrope-Light.otf */,
+				2E0D849C22A70F2600E4B0E7 /* Manrope-Thin.otf */,
+				2E0D849F22A70F2600E4B0E7 /* Manrope-Regular.otf */,
+				2E0D84A022A70F2600E4B0E7 /* Manrope-Bold.otf */,
+				2E0D84A222A70F2600E4B0E7 /* Manrope-Medium.otf */,
+			);
+			path = Manrope;
+			sourceTree = "<group>";
+		};
 		2E23A6B6226AC7B300B2DCC3 = {
 			isa = PBXGroup;
 			children = (
@@ -222,15 +273,15 @@
 		2E23A6C1226AC7B300B2DCC3 /* PoliticalDebateApp_iOS */ = {
 			isa = PBXGroup;
 			children = (
-				2E96743C226BDFEA00821A73 /* Services */,
 				2E23A700226ACE0300B2DCC3 /* ViewModels */,
 				2E23A6FF226ACDFD00B2DCC3 /* ViewControllers */,
-				2E23A6FE226ACDF600B2DCC3 /* Helpers */,
 				2E23A6FD226ACDED00B2DCC3 /* Models */,
 				2E23A6FC226ACDE200B2DCC3 /* Manager */,
+				2E96743C226BDFEA00821A73 /* Services */,
 				2E23A6FB226ACDDD00B2DCC3 /* Networking */,
+				2E23A6FE226ACDF600B2DCC3 /* Helpers */,
+				2E0D848B22A70B7D00E4B0E7 /* Resources */,
 				2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */,
-				2E23A6C6226AC7B300B2DCC3 /* Main.storyboard */,
 				2E23A6CC226AC7B300B2DCC3 /* Assets.xcassets */,
 				2E23A6CE226AC7B300B2DCC3 /* LaunchScreen.storyboard */,
 				2E23A6D1226AC7B300B2DCC3 /* Info.plist */,
@@ -297,10 +348,15 @@
 		2E23A6FE226ACDF600B2DCC3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */,
+				2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */,
+				2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */,
 				2E23A712226AE36600B2DCC3 /* Constants.swift */,
 				2E5C5F42226B08220007BCAF /* String+Date.swift */,
 				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
 				2E96743D226BE20600821A73 /* Data+Conversion.swift */,
+				2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */,
+				2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -308,7 +364,7 @@
 		2E23A6FF226ACDFD00B2DCC3 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				2E23A6C4226AC7B300B2DCC3 /* ViewController.swift */,
+				2E23A6C4226AC7B300B2DCC3 /* DebatesListViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -316,6 +372,7 @@
 		2E23A700226ACE0300B2DCC3 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				2E0D848522A6FA9C00E4B0E7 /* DebatesListViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -468,13 +525,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E5C5F5B226B2A8D0007BCAF /* Debate.json in Resources */,
+				2E0D84B422A70F2600E4B0E7 /* Manrope-Medium.otf in Resources */,
+				2E0D84B222A70F2600E4B0E7 /* Manrope-Bold.otf in Resources */,
 				2E5C5F5A226B2A7C0007BCAF /* DebateSearch.json in Resources */,
+				2E0D84AE22A70F2600E4B0E7 /* Manrope-Thin.otf in Resources */,
 				2E23A6F8226AC7D400B2DCC3 /* README.md in Resources */,
 				2E23A6F7226AC7D400B2DCC3 /* .gitignore in Resources */,
+				2E0D84A722A70F2600E4B0E7 /* Manrope-Semibold.otf in Resources */,
 				2E23A6F6226AC7D400B2DCC3 /* .swiftlint.yml in Resources */,
+				2E0D84B122A70F2600E4B0E7 /* Manrope-Regular.otf in Resources */,
+				2E0D84A822A70F2600E4B0E7 /* Manrope-Light.otf in Resources */,
 				2E23A6D0226AC7B300B2DCC3 /* LaunchScreen.storyboard in Resources */,
 				2E23A6CD226AC7B300B2DCC3 /* Assets.xcassets in Resources */,
-				2E23A6C8226AC7B300B2DCC3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -677,20 +739,26 @@
 				2E23A702226ACE5600B2DCC3 /* Debate.swift in Sources */,
 				2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */,
 				2E967439226BD34E00821A73 /* SessionManager.swift in Sources */,
+				2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
+				2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
 				2E36796522A4B278008190FE /* Progress.swift in Sources */,
 				2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */,
-				2E23A6C5226AC7B300B2DCC3 /* ViewController.swift in Sources */,
+				2E23A6C5226AC7B300B2DCC3 /* DebatesListViewController.swift in Sources */,
+				2E0D848422A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift in Sources */,
 				2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
 				2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */,
 				2E967440226BE91000821A73 /* CoreDataService.swift in Sources */,
 				2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */,
 				2E5C5F58226B29E90007BCAF /* DebateAPI+Testing.swift in Sources */,
 				2ED2FD9E22908ED70093B6A7 /* AccessToken.swift in Sources */,
+				2E0D848A22A7057300E4B0E7 /* UIColor+Custom.swift in Sources */,
 				2E36796722A4B280008190FE /* Starred.swift in Sources */,
 				2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */,
 				2E5C5F5C226B2D720007BCAF /* StubAccess.swift in Sources */,
 				2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */,
 				2E96743E226BE20600821A73 /* Data+Conversion.swift in Sources */,
+				2E0D848622A6FA9C00E4B0E7 /* DebatesListViewModel.swift in Sources */,
+				2E0D848822A7054A00E4B0E7 /* UIFont+Custom.swift in Sources */,
 				2EA3D1A4228D35C000019324 /* AuthAPI+Testing.swift in Sources */,
 				2E69095022A4933400DF486A /* StarredAPI+Testing.swift in Sources */,
 				2E69094A22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */,
@@ -752,14 +820,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		2E23A6C6226AC7B300B2DCC3 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2E23A6C7226AC7B300B2DCC3 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		2E23A6CE226AC7B300B2DCC3 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
