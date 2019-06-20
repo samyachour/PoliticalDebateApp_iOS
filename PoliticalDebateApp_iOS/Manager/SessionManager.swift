@@ -11,7 +11,7 @@ import Moya
 import RxCocoa
 import RxSwift
 
-class SessionManager {
+public class SessionManager {
 
     public static let shared = SessionManager()
     private init() {}

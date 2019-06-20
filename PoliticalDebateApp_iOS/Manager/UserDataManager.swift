@@ -10,4 +10,4 @@
 // Save to backend if session is active i.e. user is logged in
 // Save to core data always
 
-import Foundation
+public class UserDataManager {}
