@@ -1,5 +1,5 @@
 {
     "debate": 1,
-    "completed": false,
+    "completed_percentage": 10,
     "seen_points": ["main - test_point", "secondary - test_point", "secondary - test_point"]
 }

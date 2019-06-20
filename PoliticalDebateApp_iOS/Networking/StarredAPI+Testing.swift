@@ -12,7 +12,7 @@ extension StarredAPI {
 
     var sampleData: Data {
         switch self {
-        case .starDebate:
+        case .starOrUnstarDebates:
             return StubAccess.stubbedResponse("Empty")
         case .loadAllStarred:
             return StubAccess.stubbedResponse("Starred")

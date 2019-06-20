@@ -12,7 +12,8 @@ extension ProgressAPI {
 
     var sampleData: Data {
         switch self {
-        case .saveProgress:
+        case .saveProgress,
+             .saveBatchProgress:
             return StubAccess.stubbedResponse("Empty")
         case .loadProgress:
             return StubAccess.stubbedResponse("Progress")

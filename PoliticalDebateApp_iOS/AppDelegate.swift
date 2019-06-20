@@ -14,7 +14,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var navigationController: UINavigationController?
+    var mainNavigationController: UINavigationController?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -25,8 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if let window = window {
             let rootVC = DebatesListViewController(viewModel: DebateListViewModel()) // TODO: Change VC
-            navigationController = UINavigationController(rootViewController: rootVC)
-            window.rootViewController = navigationController
+            mainNavigationController = UINavigationController(rootViewController: rootVC)
+            window.rootViewController = mainNavigationController
             window.makeKeyAndVisible()
         }
 

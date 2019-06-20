@@ -12,10 +12,12 @@ enum ProgressAPI {
     case saveProgress(debatePrimaryKey: Int, debatePoint: String)
     case loadProgress(debatePrimaryKey: Int)
     case loadAllProgress
+    case saveBatchProgress(batchProgress: [Progress])
 }
 
 public enum ProgressConstants {
     static let debatePointKey = "debate_point"
+    static let allDebatePointsKeys = "all_debate_points"
 }
 
 extension ProgressAPI: TargetType {
@@ -31,12 +33,15 @@ extension ProgressAPI: TargetType {
              .loadProgress,
              .loadAllProgress:
             return "progress/"
+        case .saveBatchProgress:
+            return "progress/batch/"
         }
     }
 
     var method: Moya.Method {
         switch self {
-        case .saveProgress:
+        case .saveProgress,
+             .saveBatchProgress:
             return .post
         case .loadProgress,
              .loadAllProgress:
@@ -54,6 +59,8 @@ extension ProgressAPI: TargetType {
             return .requestParameters(parameters: [DebateConstants.primaryKey: debatePrimaryKey], encoding: PlainDjangoEncoding())
         case .loadAllProgress:
             return .requestPlain
+        case .saveBatchProgress(let batchProgress):
+            return .requestParameters(parameters: [ProgressConstants.allDebatePointsKeys : batchProgress], encoding: JSONEncoding.default)
         }
     }
 
@@ -69,7 +76,8 @@ extension ProgressAPI: AccessTokenAuthorizable {
         switch self {
         case .saveProgress,
              .loadProgress,
-             .loadAllProgress:
+             .loadAllProgress,
+             .saveBatchProgress:
             return .bearer
         }
     }

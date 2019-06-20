@@ -6,9 +6,9 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
-import UIKit
 import RxCocoa
 import RxSwift
+import UIKit
 
 public class LoginViewController: UIViewController {
 
@@ -35,5 +35,10 @@ public class LoginViewController: UIViewController {
     // MARK: Observers & Observables
 
     private let viewModel: LoginViewModel
+
+    // MARK: Action handlers
+
+    // MARK: UI Properties
+
 
 }

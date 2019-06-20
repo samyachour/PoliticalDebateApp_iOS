@@ -39,6 +39,7 @@ public struct NetworkService<T>: Networkable where T: TargetType {
     public func makeRequest(with appAPI: T) -> Single<Response> {
         return provider.rx.request(appAPI)
             .filterSuccessfulStatusAndRedirectCodes()
+            .do(onError: ThrottleHandler.checkForThrottle)
             .asObservable()
             .retryWhen(SessionManager.shared.refreshAccessTokenIfNeeded)
             // in case of an error initial delay will be 1 second,

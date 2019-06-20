@@ -9,12 +9,13 @@
 import Moya
 
 enum StarredAPI {
-    case starDebate(debatePrimaryKey: Int)
+    case starOrUnstarDebates(starred: [Int], unstarred: [Int])
     case loadAllStarred
 }
 
 public enum StarredConstants {
     static let starredListKey = "starred_list"
+    static let unstarredListKey = "unstarred_list"
 }
 
 extension StarredAPI: TargetType {
@@ -26,15 +27,15 @@ extension StarredAPI: TargetType {
 
     var path: String {
         switch self {
-        case .starDebate,
+        case .starOrUnstarDebates,
              .loadAllStarred:
-            return "starred-list/"
+            return "starred/"
         }
     }
 
     var method: Moya.Method {
         switch self {
-        case .starDebate:
+        case .starOrUnstarDebates:
             return .post
         case .loadAllStarred:
             return .get
@@ -43,8 +44,8 @@ extension StarredAPI: TargetType {
 
     var task: Task {
         switch self {
-        case .starDebate(let debatePrimaryKey):
-            return .requestParameters(parameters: [DebateConstants.primaryKey : debatePrimaryKey], encoding: JSONEncoding.default)
+        case .starOrUnstarDebates(let starred, let unstarred):
+            return .requestParameters(parameters: [StarredConstants.starredListKey : starred, StarredConstants.unstarredListKey : unstarred], encoding: JSONEncoding.default)
         case .loadAllStarred:
             return .requestPlain
         }
@@ -60,7 +61,7 @@ extension StarredAPI: AccessTokenAuthorizable {
 
     var authorizationType: AuthorizationType {
         switch self {
-        case .starDebate,
+        case .starOrUnstarDebates,
              .loadAllStarred:
             return .bearer
         }

@@ -6,9 +6,9 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
-import UIKit
 import RxCocoa
 import RxSwift
+import UIKit
 
 public class AccountViewController: UIViewController {
 
@@ -37,4 +37,3 @@ public class AccountViewController: UIViewController {
     private let viewModel: AccountViewModel
 
 }
-

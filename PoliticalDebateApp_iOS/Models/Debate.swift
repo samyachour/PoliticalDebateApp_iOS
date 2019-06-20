@@ -11,6 +11,7 @@ import SwiftyJSON
 struct Debate {
     let primaryKey: Int
     let title: String
+    let shortTitle: String
     let lastUpdated: Date?
     let totalPoints: Int
     let debateMap: JSON?
@@ -20,6 +21,7 @@ extension Debate: Decodable {
     enum DebateCodingKeys: String, CodingKey {
         case primaryKey = "pk"
         case title
+        case shortTitle = "short_title"
         case lastUpdated = "last_updated"
         case totalPoints = "total_points"
         case debateMap = "debate_map"
@@ -29,6 +31,7 @@ extension Debate: Decodable {
         let container = try decoder.container(keyedBy: DebateCodingKeys.self)
 
         primaryKey = try container.decode(Int.self, forKey: .primaryKey)
+        shortTitle = try container.decode(String.self, forKey: .shortTitle)
         title = try container.decode(String.self, forKey: .title)
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()
         totalPoints = try container.decode(Int.self, forKey: .totalPoints)

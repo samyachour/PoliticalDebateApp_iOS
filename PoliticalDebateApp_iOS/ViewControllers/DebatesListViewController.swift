@@ -6,9 +6,9 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
-import UIKit
 import RxCocoa
 import RxSwift
+import UIKit
 
 // Acts as our home view as well
 public class DebatesListViewController: UIViewController {
@@ -208,7 +208,7 @@ extension DebatesListViewController {
             self?.updateSortBySelection(with: item.row)
             self?.didCompleteSearchInputOrPickerSelection()
         }).map { item -> SortByOption in
-            return SortByOption(rawValue: item.row) ?? .sortBy
+            SortByOption(rawValue: item.row) ?? .sortBy
         }
 
         viewModel.subscribeToSearchAndSortQueries(searchInput: searchTriggeredSubject, sortSelection: sortSelectionObservable)
@@ -260,9 +260,9 @@ extension DebatesListViewController {
         sortByPickerView.translatesAutoresizingMaskIntoConstraints = false
         sortByPickerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8).isActive = true
         sortByPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                               constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
+                                                   constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
         sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                              constant: DebatesListViewController.cornerButtonXDistance).isActive = true
+                                                  constant: DebatesListViewController.cornerButtonXDistance).isActive = true
 
         UIView.animate(withDuration: 0.4) { [weak self] in
             self?.sortByPickerView.alpha = 1.0

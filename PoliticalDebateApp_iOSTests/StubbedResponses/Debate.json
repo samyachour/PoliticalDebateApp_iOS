@@ -1,6 +1,7 @@
 {
     "pk": 1,
     "title": "test_debate",
+    "short_title": "test",
     "last_updated": "2019-03-17",
     "total_points": 5,
     "debate_map": {

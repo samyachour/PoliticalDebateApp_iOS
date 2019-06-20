@@ -81,6 +81,7 @@
 		2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
 		2EA3D1A4228D35C000019324 /* AuthAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */; };
 		2EA3D1A6228D36C700019324 /* TokenRefresh.json in Resources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A5228D36C700019324 /* TokenRefresh.json */; };
+		2EBE46C422BB3FCA0087BC56 /* ThrottleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C322BB3FCA0087BC56 /* ThrottleHandler.swift */; };
 		2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
 		2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
 		2ED2FD9E22908ED70093B6A7 /* AccessToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FD9D22908ED70093B6A7 /* AccessToken.swift */; };
@@ -170,6 +171,7 @@
 		2EA3D1A1228D35AC00019324 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
 		2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthAPI+Testing.swift"; sourceTree = "<group>"; };
 		2EA3D1A5228D36C700019324 /* TokenRefresh.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TokenRefresh.json; sourceTree = "<group>"; };
+		2EBE46C322BB3FCA0087BC56 /* ThrottleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleHandler.swift; sourceTree = "<group>"; };
 		2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2ED2FD9D22908ED70093B6A7 /* AccessToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessToken.swift; sourceTree = "<group>"; };
@@ -408,11 +410,20 @@
 		2E96743C226BDFEA00821A73 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				2EBE46C222BB3FBC0087BC56 /* Helpers */,
 				2E23A707226ADA6200B2DCC3 /* NetworkService.swift */,
 				2E96743A226BDA8A00821A73 /* KeychainService.swift */,
 				2E96743F226BE91000821A73 /* CoreDataService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		2EBE46C222BB3FBC0087BC56 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				2EBE46C322BB3FCA0087BC56 /* ThrottleHandler.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		CAEF5118B43D4999D207811B /* Frameworks */ = {
@@ -779,6 +790,7 @@
 				2E69095022A4933400DF486A /* StarredAPI+Testing.swift in Sources */,
 				2E69094A22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */,
 				2E23A705226AD39200B2DCC3 /* DebateAPI.swift in Sources */,
+				2EBE46C422BB3FCA0087BC56 /* ThrottleHandler.swift in Sources */,
 				2E23A713226AE36600B2DCC3 /* Constants.swift in Sources */,
 				2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */,
 			);
