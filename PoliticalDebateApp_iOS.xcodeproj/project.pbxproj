@@ -983,6 +983,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U64BTXUUVE;
 				INFOPLIST_FILE = PoliticalDebateApp_iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1002,6 +1003,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U64BTXUUVE;
 				INFOPLIST_FILE = PoliticalDebateApp_iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1017,7 +1019,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AFCB4D323C984F53B2217668 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U64BTXUUVE;
@@ -1039,7 +1041,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AAC19EF7DF8E9E43D162A455 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U64BTXUUVE;
@@ -1061,7 +1063,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E6FC36CDDAF615B806EA261D /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U64BTXUUVE;
 				INFOPLIST_FILE = PoliticalDebateApp_iOSUITests/Info.plist;
@@ -1082,7 +1084,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A4042BE1D4716D71FE5919AA /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U64BTXUUVE;
 				INFOPLIST_FILE = PoliticalDebateApp_iOSUITests/Info.plist;
