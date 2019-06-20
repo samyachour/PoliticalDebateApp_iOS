@@ -45,7 +45,8 @@ extension StarredAPI: TargetType {
     var task: Task {
         switch self {
         case .starOrUnstarDebates(let starred, let unstarred):
-            return .requestParameters(parameters: [StarredConstants.starredListKey : starred, StarredConstants.unstarredListKey : unstarred], encoding: JSONEncoding.default)
+            return .requestParameters(parameters: [StarredConstants.starredListKey : starred, StarredConstants.unstarredListKey : unstarred],
+                                      encoding: JSONEncoding.default)
         case .loadAllStarred:
             return .requestPlain
         }

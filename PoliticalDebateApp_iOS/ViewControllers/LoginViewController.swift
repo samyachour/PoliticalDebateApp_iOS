@@ -40,5 +40,4 @@ public class LoginViewController: UIViewController {
 
     // MARK: UI Properties
 
-
 }

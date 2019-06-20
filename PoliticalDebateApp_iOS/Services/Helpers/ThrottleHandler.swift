@@ -29,11 +29,12 @@ public class ThrottleHandler {
 
         let throttleAlert = UIAlertController(title: "You are doing that too much",
                                               message: "Please try again in \(timeRemaining)",
-            preferredStyle: .alert)
+                                              preferredStyle: .alert)
         throttleAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
 
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-            let mainNavigationController = appDelegate.mainNavigationController {
+            let mainNavigationController = appDelegate.mainNavigationController,
+            mainNavigationController.presentedViewController == nil {
             mainNavigationController.visibleViewController?.present(throttleAlert, animated: true, completion: nil)
         }
     }
