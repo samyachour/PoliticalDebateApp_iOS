@@ -6,18 +6,44 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
-struct Starred {
-    let starredList: [Int]
+import CoreData
+
+public struct Starred {
+    var starredList: [PrimaryKey]
+    var unstarredList: [PrimaryKey]?
+
+    public init(starredList: [PrimaryKey], unstarredList: [PrimaryKey]? = nil) {
+        self.starredList = starredList
+        self.unstarredList = unstarredList
+    }
 }
 
-extension Starred: Decodable {
-    enum StarredCodingKeys: String, CodingKey {
+extension Starred: Codable {
+    private enum CodingKeys: String, CodingKey {
         case starredList = "starred_list"
+        case unstarredList = "unstarred_list"
     }
 
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: StarredCodingKeys.self)
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        starredList = try container.decode([Int].self, forKey: .starredList)
+        starredList = try container.decode([PrimaryKey].self, forKey: .starredList)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(starredList, forKey: .starredList)
+        try container.encode(unstarredList, forKey: .unstarredList)
+    }
+}
+
+// Initializing from CoreData model
+extension Starred {
+    public init?(from starred: LocalStarred) {
+        guard let starredList = starred.starredList?.allObjects as? [LocalDebate] else {
+            return nil
+        }
+
+        self.init(starredList: starredList.map { Int($0.primaryKey) })
     }
 }

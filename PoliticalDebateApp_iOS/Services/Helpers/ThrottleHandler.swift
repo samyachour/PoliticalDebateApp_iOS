@@ -32,10 +32,6 @@ public class ThrottleHandler {
                                               preferredStyle: .alert)
         throttleAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
 
-        if let appDelegate = AppDelegate.shared,
-            let mainNavigationController = appDelegate.mainNavigationController,
-            mainNavigationController.presentedViewController == nil {
-            mainNavigationController.visibleViewController?.present(throttleAlert, animated: true, completion: nil)
-        }
+        safelyShowAlert(alert: throttleAlert)
     }
 }

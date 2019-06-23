@@ -9,7 +9,7 @@
 import Moya
 
 enum StarredAPI {
-    case starOrUnstarDebates(starred: [Int], unstarred: [Int])
+    case starOrUnstarDebates(starred: [PrimaryKey], unstarred: [PrimaryKey])
     case loadAllStarred
 }
 

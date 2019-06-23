@@ -16,6 +16,10 @@ public class DebateListViewModel {
 
     // MARK: API calls
 
+    // TODO: If not authenticated call CoreDataService.loadPersistentContainer and use core data
+
+    // TODO: Load all starred and all progress then manually filter
+
     public func subscribeToSearchAndSortQueries(searchInput: PublishSubject<String>, sortSelection: Driver<SortByOption>) {
         // TODO: Hit search API endpoint which should then update collectionView
         // Show status message on error

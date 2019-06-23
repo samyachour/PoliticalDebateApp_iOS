@@ -37,6 +37,9 @@ public struct NetworkService<T>: Networkable where T: TargetType {
     private let maxAttemptCount: UInt = 4
 
     public func makeRequest(with appAPI: T) -> Single<Response> {
+        #if TEST
+        return makeTestRequest(with: appAPI)
+        #else
         return provider.rx.request(appAPI)
             .filterSuccessfulStatusAndRedirectCodes()
             .do(onError: ThrottleHandler.checkForThrottle)
@@ -46,12 +49,13 @@ public struct NetworkService<T>: Networkable where T: TargetType {
             // every next delay will be doubled
             .retry(.exponentialDelayed(maxCount: maxAttemptCount, initial: 1.0, multiplier: 1.0))
             .asSingle()
+        #endif
     }
 
     // For returning stubbed sample data for the given API
     fileprivate let stubbingProvider = MoyaProvider<T>(stubClosure: MoyaProvider.immediatelyStub)
 
-    public func makeTestRequest(with appAPI: T) -> Single<Response> {
+    private func makeTestRequest(with appAPI: T) -> Single<Response> {
         return stubbingProvider.rx.request(appAPI)
     }
 }

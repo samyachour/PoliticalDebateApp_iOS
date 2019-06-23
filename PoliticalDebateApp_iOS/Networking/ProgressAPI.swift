@@ -9,8 +9,8 @@
 import Moya
 
 enum ProgressAPI {
-    case saveProgress(debatePrimaryKey: Int, debatePoint: String)
-    case loadProgress(debatePrimaryKey: Int)
+    case saveProgress(debatePrimaryKey: PrimaryKey, debatePoint: String)
+    case loadProgress(debatePrimaryKey: PrimaryKey)
     case loadAllProgress
     case saveBatchProgress(batchProgress: [Progress])
 }

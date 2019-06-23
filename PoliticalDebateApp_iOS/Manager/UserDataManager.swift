@@ -8,6 +8,6 @@
 
 // TODO: Manage saving users starred, progress points, etc.
 // Save to backend if session is active i.e. user is logged in
-// Save to core data always
+// Else save to core data
 
 public class UserDataManager {}

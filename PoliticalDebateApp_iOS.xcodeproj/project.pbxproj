@@ -26,58 +26,78 @@
 		2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */; };
 		2E23A6CD226AC7B300B2DCC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6CC226AC7B300B2DCC3 /* Assets.xcassets */; };
 		2E23A6D0226AC7B300B2DCC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6CE226AC7B300B2DCC3 /* LaunchScreen.storyboard */; };
-		2E23A6DB226AC7B400B2DCC3 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6DA226AC7B400B2DCC3 /* APITests.swift */; };
+		2E23A6DB226AC7B400B2DCC3 /* NetworkAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6DA226AC7B400B2DCC3 /* NetworkAPITests.swift */; };
 		2E23A6E6226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6E5226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift */; };
 		2E23A6F6226AC7D400B2DCC3 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6F3226AC7D400B2DCC3 /* .swiftlint.yml */; };
 		2E23A6F7226AC7D400B2DCC3 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6F4226AC7D400B2DCC3 /* .gitignore */; };
 		2E23A6F8226AC7D400B2DCC3 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6F5226AC7D400B2DCC3 /* README.md */; };
 		2E23A702226ACE5600B2DCC3 /* Debate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A701226ACE5600B2DCC3 /* Debate.swift */; };
-		2E23A703226ACE5600B2DCC3 /* Debate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A701226ACE5600B2DCC3 /* Debate.swift */; };
 		2E23A705226AD39200B2DCC3 /* DebateAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A704226AD39200B2DCC3 /* DebateAPI.swift */; };
 		2E23A708226ADA6200B2DCC3 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A707226ADA6200B2DCC3 /* NetworkService.swift */; };
-		2E23A709226ADD7600B2DCC3 /* DebateAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A704226AD39200B2DCC3 /* DebateAPI.swift */; };
-		2E23A70B226ADD8100B2DCC3 /* DebateAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */; };
 		2E23A70F226ADF2800B2DCC3 /* Debate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A70E226ADF2800B2DCC3 /* Debate.json */; };
 		2E23A711226ADFA100B2DCC3 /* DebateSearch.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A710226ADFA100B2DCC3 /* DebateSearch.json */; };
 		2E23A713226AE36600B2DCC3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A712226AE36600B2DCC3 /* Constants.swift */; };
 		2E25AE062290F56C00E75A02 /* Empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E25AE052290F56C00E75A02 /* Empty.json */; };
+		2E30A8E522BF4587007E386A /* StarredCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */; };
+		2E30A8E922BF4773007E386A /* SafelyShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */; };
+		2E30A8FC22BF4BED007E386A /* DebatesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848522A6FA9C00E4B0E7 /* DebatesListViewModel.swift */; };
+		2E30A8FD22BF4BED007E386A /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BB22A7952F00E4B0E7 /* LoginViewModel.swift */; };
+		2E30A8FE22BF4BED007E386A /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */; };
+		2E30A8FF22BF4BED007E386A /* DebatesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C4226AC7B300B2DCC3 /* DebatesListViewController.swift */; };
+		2E30A90022BF4BED007E386A /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84B922A7952400E4B0E7 /* LoginViewController.swift */; };
+		2E30A90122BF4BED007E386A /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */; };
+		2E30A90222BF4BED007E386A /* Debate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A701226ACE5600B2DCC3 /* Debate.swift */; };
+		2E30A90322BF4BED007E386A /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
+		2E30A90422BF4BED007E386A /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796422A4B278008190FE /* Progress.swift */; };
+		2E30A90522BF4BED007E386A /* Starred.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796622A4B280008190FE /* Starred.swift */; };
+		2E30A90622BF4BED007E386A /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967438226BD34E00821A73 /* SessionManager.swift */; };
+		2E30A90722BF4BED007E386A /* UserDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967441226BE91C00821A73 /* UserDataManager.swift */; };
+		2E30A90822BF4BED007E386A /* ThrottleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C322BB3FCA0087BC56 /* ThrottleHandler.swift */; };
+		2E30A90922BF4BED007E386A /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A707226ADA6200B2DCC3 /* NetworkService.swift */; };
+		2E30A90A22BF4BED007E386A /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743A226BDA8A00821A73 /* KeychainService.swift */; };
+		2E30A90D22BF4BED007E386A /* StarredCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */; };
+		2E30A90E22BF4BED007E386A /* DebateAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A704226AD39200B2DCC3 /* DebateAPI.swift */; };
+		2E30A90F22BF4BED007E386A /* DebateAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */; };
+		2E30A91022BF4BED007E386A /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
+		2E30A91122BF4BED007E386A /* AuthAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */; };
+		2E30A91222BF4BED007E386A /* ProgressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094622A4931100DF486A /* ProgressAPI.swift */; };
+		2E30A91322BF4BED007E386A /* ProgressAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */; };
+		2E30A91422BF4BED007E386A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
+		2E30A91522BF4BED007E386A /* StarredAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094F22A4933400DF486A /* StarredAPI+Testing.swift */; };
+		2E30A91622BF4BED007E386A /* NSLayoutConstraint+Priority.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */; };
+		2E30A91722BF4BED007E386A /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
+		2E30A91822BF4BED007E386A /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
+		2E30A91922BF4BED007E386A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A712226AE36600B2DCC3 /* Constants.swift */; };
+		2E30A91A22BF4BED007E386A /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* String+Date.swift */; };
+		2E30A91B22BF4BED007E386A /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
+		2E30A91C22BF4BED007E386A /* UIFont+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */; };
+		2E30A91D22BF4BED007E386A /* UIColor+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */; };
+		2E30A91E22BF4BED007E386A /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C522BBD5180087BC56 /* DebugLog.swift */; };
+		2E30A91F22BF4BED007E386A /* SafelyShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */; };
+		2E30A92022BF4BED007E386A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */; };
+		2E30A92222BFE168007E386A /* ProgressCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */; };
+		2E30A92422BFE25A007E386A /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */; };
+		2E30A92522BFE33F007E386A /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743F226BE91000821A73 /* CoreDataService.swift */; };
 		2E36795F22A4ABA0008190FE /* Progress.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E36795E22A4ABA0008190FE /* Progress.json */; };
 		2E36796122A4ABAE008190FE /* ProgressAll.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E36796022A4ABAE008190FE /* ProgressAll.json */; };
 		2E36796322A4AC42008190FE /* Starred.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E36796222A4AC42008190FE /* Starred.json */; };
 		2E36796522A4B278008190FE /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796422A4B278008190FE /* Progress.swift */; };
 		2E36796722A4B280008190FE /* Starred.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796622A4B280008190FE /* Starred.swift */; };
-		2E36796822A4B422008190FE /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796422A4B278008190FE /* Progress.swift */; };
-		2E36796922A4B424008190FE /* Starred.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796622A4B280008190FE /* Starred.swift */; };
 		2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* String+Date.swift */; };
 		2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
-		2E5C5F47226B1E780007BCAF /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* String+Date.swift */; };
-		2E5C5F48226B1E990007BCAF /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
 		2E5C5F58226B29E90007BCAF /* DebateAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */; };
 		2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F56226B29A30007BCAF /* StubAccess.swift */; };
 		2E5C5F5A226B2A7C0007BCAF /* DebateSearch.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A710226ADFA100B2DCC3 /* DebateSearch.json */; };
 		2E5C5F5B226B2A8D0007BCAF /* Debate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A70E226ADF2800B2DCC3 /* Debate.json */; };
 		2E5C5F5C226B2D720007BCAF /* StubAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F56226B29A30007BCAF /* StubAccess.swift */; };
-		2E69093F22A3AABF00DF486A /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967438226BD34E00821A73 /* SessionManager.swift */; };
-		2E69094022A3AAE600DF486A /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
-		2E69094122A3AAF300DF486A /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743A226BDA8A00821A73 /* KeychainService.swift */; };
-		2E69094222A3AB1700DF486A /* AuthAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */; };
-		2E69094322A3AB2800DF486A /* AccessToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FD9D22908ED70093B6A7 /* AccessToken.swift */; };
-		2E69094422A3AB2B00DF486A /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
-		2E69094522A3AB4900DF486A /* Data+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743D226BE20600821A73 /* Data+Conversion.swift */; };
 		2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094622A4931100DF486A /* ProgressAPI.swift */; };
-		2E69094822A4931100DF486A /* ProgressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094622A4931100DF486A /* ProgressAPI.swift */; };
 		2E69094A22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */; };
-		2E69094B22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */; };
 		2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
-		2E69094E22A4932700DF486A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
 		2E69095022A4933400DF486A /* StarredAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094F22A4933400DF486A /* StarredAPI+Testing.swift */; };
-		2E69095122A4933400DF486A /* StarredAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094F22A4933400DF486A /* StarredAPI+Testing.swift */; };
 		2E967439226BD34E00821A73 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967438226BD34E00821A73 /* SessionManager.swift */; };
 		2E96743B226BDA8A00821A73 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743A226BDA8A00821A73 /* KeychainService.swift */; };
-		2E96743E226BE20600821A73 /* Data+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743D226BE20600821A73 /* Data+Conversion.swift */; };
 		2E967440226BE91000821A73 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743F226BE91000821A73 /* CoreDataService.swift */; };
 		2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967441226BE91C00821A73 /* UserDataManager.swift */; };
-		2E967443226BEA9700821A73 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A707226ADA6200B2DCC3 /* NetworkService.swift */; };
 		2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
 		2EA3D1A4228D35C000019324 /* AuthAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */; };
 		2EA3D1A6228D36C700019324 /* TokenRefresh.json in Resources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A5228D36C700019324 /* TokenRefresh.json */; };
@@ -85,9 +105,9 @@
 		2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C522BBD5180087BC56 /* DebugLog.swift */; };
 		2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
 		2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
-		2ED2FD9E22908ED70093B6A7 /* AccessToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FD9D22908ED70093B6A7 /* AccessToken.swift */; };
 		2ED2FDA02290CAF80093B6A7 /* TokenObtain.json in Resources */ = {isa = PBXBuildFile; fileRef = 2ED2FD9F2290CAF80093B6A7 /* TokenObtain.json */; };
 		2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
+		2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */; };
 		B5307AE15A1C031FA189B26E /* Pods_PoliticalDebateApp_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */; };
 		C1F8594D1844FD5A725FD14D /* Pods_PoliticalDebateApp_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B294A5E6DD428B59EE9B92B6 /* Pods_PoliticalDebateApp_iOS.framework */; };
 		C8A8D5D71259D82EE76A8AB8 /* Pods_PoliticalDebateApp_iOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E9127E5132AA34688E16C18 /* Pods_PoliticalDebateApp_iOSUITests.framework */; };
@@ -136,7 +156,7 @@
 		2E23A6CF226AC7B300B2DCC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2E23A6D1226AC7B300B2DCC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E23A6D6226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PoliticalDebateApp_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2E23A6DA226AC7B400B2DCC3 /* APITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITests.swift; sourceTree = "<group>"; };
+		2E23A6DA226AC7B400B2DCC3 /* NetworkAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkAPITests.swift; sourceTree = "<group>"; };
 		2E23A6DC226AC7B400B2DCC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E23A6E1226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PoliticalDebateApp_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E23A6E5226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoliticalDebateApp_iOSUITests.swift; sourceTree = "<group>"; };
@@ -152,6 +172,8 @@
 		2E23A710226ADFA100B2DCC3 /* DebateSearch.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DebateSearch.json; sourceTree = "<group>"; };
 		2E23A712226AE36600B2DCC3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2E25AE052290F56C00E75A02 /* Empty.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Empty.json; sourceTree = "<group>"; };
+		2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredCoreDataAPI.swift; sourceTree = "<group>"; };
+		2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafelyShowAlert.swift; sourceTree = "<group>"; };
 		2E36795E22A4ABA0008190FE /* Progress.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Progress.json; sourceTree = "<group>"; };
 		2E36796022A4ABAE008190FE /* ProgressAll.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ProgressAll.json; sourceTree = "<group>"; };
 		2E36796222A4AC42008190FE /* Starred.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Starred.json; sourceTree = "<group>"; };
@@ -166,7 +188,6 @@
 		2E69094F22A4933400DF486A /* StarredAPI+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StarredAPI+Testing.swift"; sourceTree = "<group>"; };
 		2E967438226BD34E00821A73 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		2E96743A226BDA8A00821A73 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
-		2E96743D226BE20600821A73 /* Data+Conversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Conversion.swift"; sourceTree = "<group>"; };
 		2E96743F226BE91000821A73 /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
 		2E967441226BE91C00821A73 /* UserDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataManager.swift; sourceTree = "<group>"; };
 		2EA3D1A1228D35AC00019324 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
@@ -176,14 +197,17 @@
 		2EBE46C522BBD5180087BC56 /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
 		2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
-		2ED2FD9D22908ED70093B6A7 /* AccessToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessToken.swift; sourceTree = "<group>"; };
 		2ED2FD9F2290CAF80093B6A7 /* TokenObtain.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TokenObtain.json; sourceTree = "<group>"; };
 		2ED2FDA12290CC210093B6A7 /* TokenPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPair.swift; sourceTree = "<group>"; };
+		2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressCoreDataAPI.swift; sourceTree = "<group>"; };
 		7A7E42EE5FCED9A963BBF6E4 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.release.xcconfig"; sourceTree = "<group>"; };
 		A4042BE1D4716D71FE5919AA /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; sourceTree = "<group>"; };
 		AAC19EF7DF8E9E43D162A455 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		ADB9BD0CDD1CBE12528061F6 /* Pods-PoliticalDebateApp_iOS.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.test.xcconfig"; sourceTree = "<group>"; };
 		AFCB4D323C984F53B2217668 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B294A5E6DD428B59EE9B92B6 /* Pods_PoliticalDebateApp_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB4B5C9A06643441D9D82F7F /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.test.xcconfig"; sourceTree = "<group>"; };
+		C0ABC1F301196AEFDF8D01AC /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.test.xcconfig"; sourceTree = "<group>"; };
 		E6FC36CDDAF615B806EA261D /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -224,6 +248,9 @@
 				AAC19EF7DF8E9E43D162A455 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */,
 				E6FC36CDDAF615B806EA261D /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */,
 				A4042BE1D4716D71FE5919AA /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */,
+				ADB9BD0CDD1CBE12528061F6 /* Pods-PoliticalDebateApp_iOS.test.xcconfig */,
+				BB4B5C9A06643441D9D82F7F /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */,
+				C0ABC1F301196AEFDF8D01AC /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -231,6 +258,7 @@
 		2E0D848B22A70B7D00E4B0E7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2E23A6CC226AC7B300B2DCC3 /* Assets.xcassets */,
 				2E0D848C22A70BA100E4B0E7 /* Fonts */,
 			);
 			path = Resources;
@@ -290,14 +318,13 @@
 				2E23A6FD226ACDED00B2DCC3 /* Models */,
 				2E23A6FC226ACDE200B2DCC3 /* Manager */,
 				2E96743C226BDFEA00821A73 /* Services */,
+				2EEDE91322BEE985000A4F2B /* LocalData */,
 				2E23A6FB226ACDDD00B2DCC3 /* Networking */,
 				2E23A6FE226ACDF600B2DCC3 /* Helpers */,
 				2E0D848B22A70B7D00E4B0E7 /* Resources */,
 				2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */,
-				2E23A6CC226AC7B300B2DCC3 /* Assets.xcassets */,
 				2E23A6CE226AC7B300B2DCC3 /* LaunchScreen.storyboard */,
 				2E23A6D1226AC7B300B2DCC3 /* Info.plist */,
-				2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */,
 			);
 			path = PoliticalDebateApp_iOS;
 			sourceTree = "<group>";
@@ -306,7 +333,7 @@
 			isa = PBXGroup;
 			children = (
 				2E23A70D226ADF0900B2DCC3 /* StubbedResponses */,
-				2E23A6DA226AC7B400B2DCC3 /* APITests.swift */,
+				2E23A6DA226AC7B400B2DCC3 /* NetworkAPITests.swift */,
 				2E23A6DC226AC7B400B2DCC3 /* Info.plist */,
 			);
 			path = PoliticalDebateApp_iOSTests;
@@ -349,7 +376,6 @@
 			isa = PBXGroup;
 			children = (
 				2E23A701226ACE5600B2DCC3 /* Debate.swift */,
-				2ED2FD9D22908ED70093B6A7 /* AccessToken.swift */,
 				2ED2FDA12290CC210093B6A7 /* TokenPair.swift */,
 				2E36796422A4B278008190FE /* Progress.swift */,
 				2E36796622A4B280008190FE /* Starred.swift */,
@@ -366,10 +392,10 @@
 				2E23A712226AE36600B2DCC3 /* Constants.swift */,
 				2E5C5F42226B08220007BCAF /* String+Date.swift */,
 				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
-				2E96743D226BE20600821A73 /* Data+Conversion.swift */,
 				2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */,
 				2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */,
 				2EBE46C522BBD5180087BC56 /* DebugLog.swift */,
+				2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -427,6 +453,16 @@
 				2EBE46C322BB3FCA0087BC56 /* ThrottleHandler.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		2EEDE91322BEE985000A4F2B /* LocalData */ = {
+			isa = PBXGroup;
+			children = (
+				2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */,
+				2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */,
+				2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */,
+			);
+			path = LocalData;
 			sourceTree = "<group>";
 		};
 		CAEF5118B43D4999D207811B /* Frameworks */ = {
@@ -760,13 +796,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */,
+				2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */,
 				2E96743B226BDA8A00821A73 /* KeychainService.swift in Sources */,
 				2E23A708226ADA6200B2DCC3 /* NetworkService.swift in Sources */,
 				2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */,
 				2E23A702226ACE5600B2DCC3 /* Debate.swift in Sources */,
+				2E30A8E922BF4773007E386A /* SafelyShowAlert.swift in Sources */,
 				2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */,
 				2E967439226BD34E00821A73 /* SessionManager.swift in Sources */,
 				2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
+				2E30A8E522BF4587007E386A /* StarredCoreDataAPI.swift in Sources */,
 				2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
 				2E36796522A4B278008190FE /* Progress.swift in Sources */,
 				2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */,
@@ -779,7 +818,6 @@
 				2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */,
 				2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */,
 				2E5C5F58226B29E90007BCAF /* DebateAPI+Testing.swift in Sources */,
-				2ED2FD9E22908ED70093B6A7 /* AccessToken.swift in Sources */,
 				2E0D848A22A7057300E4B0E7 /* UIColor+Custom.swift in Sources */,
 				2E36796722A4B280008190FE /* Starred.swift in Sources */,
 				2E0D84C022A7954300E4B0E7 /* AccountViewModel.swift in Sources */,
@@ -787,7 +825,6 @@
 				2E0D84BA22A7952400E4B0E7 /* LoginViewController.swift in Sources */,
 				2E5C5F5C226B2D720007BCAF /* StubAccess.swift in Sources */,
 				2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */,
-				2E96743E226BE20600821A73 /* Data+Conversion.swift in Sources */,
 				2E0D848622A6FA9C00E4B0E7 /* DebatesListViewModel.swift in Sources */,
 				2E0D848822A7054A00E4B0E7 /* UIFont+Custom.swift in Sources */,
 				2EA3D1A4228D35C000019324 /* AuthAPI+Testing.swift in Sources */,
@@ -804,26 +841,45 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E23A703226ACE5600B2DCC3 /* Debate.swift in Sources */,
-				2E69094322A3AB2800DF486A /* AccessToken.swift in Sources */,
-				2E23A709226ADD7600B2DCC3 /* DebateAPI.swift in Sources */,
-				2E69093F22A3AABF00DF486A /* SessionManager.swift in Sources */,
-				2E69095122A4933400DF486A /* StarredAPI+Testing.swift in Sources */,
-				2E967443226BEA9700821A73 /* NetworkService.swift in Sources */,
-				2E36796822A4B422008190FE /* Progress.swift in Sources */,
-				2E69094122A3AAF300DF486A /* KeychainService.swift in Sources */,
-				2E5C5F47226B1E780007BCAF /* String+Date.swift in Sources */,
-				2E69094522A3AB4900DF486A /* Data+Conversion.swift in Sources */,
-				2E23A6DB226AC7B400B2DCC3 /* APITests.swift in Sources */,
-				2E69094022A3AAE600DF486A /* AuthAPI.swift in Sources */,
-				2E23A70B226ADD8100B2DCC3 /* DebateAPI+Testing.swift in Sources */,
-				2E69094822A4931100DF486A /* ProgressAPI.swift in Sources */,
-				2E69094222A3AB1700DF486A /* AuthAPI+Testing.swift in Sources */,
-				2E69094422A3AB2B00DF486A /* TokenPair.swift in Sources */,
-				2E36796922A4B424008190FE /* Starred.swift in Sources */,
-				2E69094E22A4932700DF486A /* StarredAPI.swift in Sources */,
-				2E69094B22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */,
-				2E5C5F48226B1E990007BCAF /* PlainDjangoEncoding.swift in Sources */,
+				2E30A91A22BF4BED007E386A /* String+Date.swift in Sources */,
+				2E30A90022BF4BED007E386A /* LoginViewController.swift in Sources */,
+				2E30A91B22BF4BED007E386A /* PlainDjangoEncoding.swift in Sources */,
+				2E30A91C22BF4BED007E386A /* UIFont+Custom.swift in Sources */,
+				2E30A92022BF4BED007E386A /* AppDelegate.swift in Sources */,
+				2E30A91922BF4BED007E386A /* Constants.swift in Sources */,
+				2E30A91F22BF4BED007E386A /* SafelyShowAlert.swift in Sources */,
+				2E30A8FE22BF4BED007E386A /* AccountViewModel.swift in Sources */,
+				2E23A6DB226AC7B400B2DCC3 /* NetworkAPITests.swift in Sources */,
+				2E30A91322BF4BED007E386A /* ProgressAPI+Testing.swift in Sources */,
+				2E30A90922BF4BED007E386A /* NetworkService.swift in Sources */,
+				2E30A90722BF4BED007E386A /* UserDataManager.swift in Sources */,
+				2E30A92522BFE33F007E386A /* CoreDataService.swift in Sources */,
+				2E30A90822BF4BED007E386A /* ThrottleHandler.swift in Sources */,
+				2E30A91422BF4BED007E386A /* StarredAPI.swift in Sources */,
+				2E30A8FD22BF4BED007E386A /* LoginViewModel.swift in Sources */,
+				2E30A91D22BF4BED007E386A /* UIColor+Custom.swift in Sources */,
+				2E30A91822BF4BED007E386A /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
+				2E30A90122BF4BED007E386A /* AccountViewController.swift in Sources */,
+				2E30A90322BF4BED007E386A /* TokenPair.swift in Sources */,
+				2E30A90622BF4BED007E386A /* SessionManager.swift in Sources */,
+				2E30A91222BF4BED007E386A /* ProgressAPI.swift in Sources */,
+				2E30A91122BF4BED007E386A /* AuthAPI+Testing.swift in Sources */,
+				2E30A91E22BF4BED007E386A /* DebugLog.swift in Sources */,
+				2E30A90422BF4BED007E386A /* Progress.swift in Sources */,
+				2E30A91722BF4BED007E386A /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
+				2E30A90D22BF4BED007E386A /* StarredCoreDataAPI.swift in Sources */,
+				2E30A91022BF4BED007E386A /* AuthAPI.swift in Sources */,
+				2E30A90522BF4BED007E386A /* Starred.swift in Sources */,
+				2E30A92222BFE168007E386A /* ProgressCoreDataAPI.swift in Sources */,
+				2E30A91622BF4BED007E386A /* NSLayoutConstraint+Priority.swift in Sources */,
+				2E30A90A22BF4BED007E386A /* KeychainService.swift in Sources */,
+				2E30A90F22BF4BED007E386A /* DebateAPI+Testing.swift in Sources */,
+				2E30A8FF22BF4BED007E386A /* DebatesListViewController.swift in Sources */,
+				2E30A91522BF4BED007E386A /* StarredAPI+Testing.swift in Sources */,
+				2E30A8FC22BF4BED007E386A /* DebatesListViewModel.swift in Sources */,
+				2E30A90E22BF4BED007E386A /* DebateAPI.swift in Sources */,
+				2E30A92422BFE25A007E386A /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
+				2E30A90222BF4BED007E386A /* Debate.swift in Sources */,
 				2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -914,7 +970,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -969,7 +1025,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1105,6 +1161,131 @@
 			};
 			name = Release;
 		};
+		2E7D187922BEE7DA00D570D8 /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"TEST=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = TEST;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Test;
+		};
+		2E7D187A22BEE7DA00D570D8 /* Test */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = ADB9BD0CDD1CBE12528061F6 /* Pods-PoliticalDebateApp_iOS.test.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Test;
+		};
+		2E7D187B22BEE7DA00D570D8 /* Test */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB4B5C9A06643441D9D82F7F /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PoliticalDebateApp_iOS.app/PoliticalDebateApp_iOS";
+			};
+			name = Test;
+		};
+		2E7D187C22BEE7DA00D570D8 /* Test */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0ABC1F301196AEFDF8D01AC /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOSUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOSUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PoliticalDebateApp_iOS;
+			};
+			name = Test;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1112,6 +1293,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2E23A6E8226AC7B400B2DCC3 /* Debug */,
+				2E7D187922BEE7DA00D570D8 /* Test */,
 				2E23A6E9226AC7B400B2DCC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1121,6 +1303,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2E23A6EB226AC7B400B2DCC3 /* Debug */,
+				2E7D187A22BEE7DA00D570D8 /* Test */,
 				2E23A6EC226AC7B400B2DCC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1130,6 +1313,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2E23A6EE226AC7B400B2DCC3 /* Debug */,
+				2E7D187B22BEE7DA00D570D8 /* Test */,
 				2E23A6EF226AC7B400B2DCC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1139,6 +1323,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2E23A6F1226AC7B400B2DCC3 /* Debug */,
+				2E7D187C22BEE7DA00D570D8 /* Test */,
 				2E23A6F2226AC7B400B2DCC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

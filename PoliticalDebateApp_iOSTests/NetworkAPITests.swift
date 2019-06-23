@@ -1,6 +1,6 @@
 //
-//  APITests.swift
-//  APITests
+//  NetworkAPITests.swift
+//  NetworkAPITests
 //
 //  Created by Samy on 4/19/19.
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
@@ -10,7 +10,7 @@ import XCTest
 import RxSwift
 @testable import PoliticalDebateApp_iOS
 
-class APITests: XCTestCase {
+class NetworkAPITests: XCTestCase {
 
     private let disposeBag = DisposeBag()
 
@@ -21,9 +21,14 @@ class APITests: XCTestCase {
     // There's no need to write tests for the Auth API only the token requests have responses
     // Can't even simulate session management in XCTest so no point, will be covered by UITests
 
+    // Cannot write core data API tests because for some reason the generated managed object
+    // classes do not work when you use them from a different target, e.g.
+    // Could not cast value of type 'PoliticalDebateApp_iOS.LocalStarred' (0x600002570910) to 'PoliticalDebateApp_iOSTests.LocalStarred' (0x11956e5d8).
+
+
     func testGetSingleDebate() {
         let testAPI = NetworkService<DebateAPI>()
-        testAPI.makeTestRequest(with: .debate(primaryKey: 2))
+        testAPI.makeRequest(with: .debate(primaryKey: 2))
             .map(Debate.self)
             .subscribe(onSuccess: { debate in
                 XCTAssert(debate.title == "test_debate")
@@ -34,7 +39,7 @@ class APITests: XCTestCase {
 
     func testGetAllDebates() {
         let testAPI = NetworkService<DebateAPI>()
-        testAPI.makeTestRequest(with: .debateSearch(searchString: ""))
+        testAPI.makeRequest(with: .debateSearch(searchString: ""))
             .map([Debate].self)
             .subscribe(onSuccess: { debates in
                 XCTAssert(debates[1].primaryKey == 2)
@@ -45,7 +50,7 @@ class APITests: XCTestCase {
 
     func testGetSingleDebateProgressPoints() {
         let testAPI = NetworkService<ProgressAPI>()
-        testAPI.makeTestRequest(with: .loadProgress(debatePrimaryKey: 1))
+        testAPI.makeRequest(with: .loadProgress(debatePrimaryKey: 1))
             .map(Progress.self)
             .subscribe(onSuccess: { progress in
                 XCTAssert(progress.debatePrimaryKey == 1)
@@ -56,7 +61,7 @@ class APITests: XCTestCase {
 
     func testGetAllDebateProgressPoints() {
         let testAPI = NetworkService<ProgressAPI>()
-        testAPI.makeTestRequest(with: .loadAllProgress)
+        testAPI.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
             .subscribe(onSuccess: { (progressPoints) in
                 XCTAssert(progressPoints[0].debatePrimaryKey == 1)
@@ -67,13 +72,24 @@ class APITests: XCTestCase {
 
     func testGetAllStarredDebates() {
         let testAPI = NetworkService<StarredAPI>()
-        testAPI.makeTestRequest(with: .loadAllStarred)
+        testAPI.makeRequest(with: .loadAllStarred)
             .map(Starred.self)
             .subscribe(onSuccess: { (starred) in
                 XCTAssert(starred.starredList[0] == 1)
             }, onError: { _ in
                 XCTAssert(false)
             }).disposed(by: disposeBag)
+    }
+
+    func testLogin() {
+        SessionManager.shared.login(email: "test1@mail.com", password: "testing")
+            .subscribe(onSuccess: { _ in
+                XCTAssert(SessionManager.shared.isActive)
+                SessionManager.shared.resumeSession() // load tokens from keychain
+                XCTAssert(SessionManager.shared.isActive)
+            }) { _ in
+                XCTAssert(false)
+        }.disposed(by: disposeBag)
     }
 
 }

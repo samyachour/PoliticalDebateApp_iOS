@@ -9,7 +9,7 @@
 import Moya
 
 enum DebateAPI {
-    case debate(primaryKey: Int)
+    case debate(primaryKey: PrimaryKey)
     case debateSearch(searchString: String)
 }
 

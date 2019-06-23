@@ -8,8 +8,10 @@
 
 import SwiftyJSON
 
-struct Debate {
-    let primaryKey: Int
+public typealias PrimaryKey = Int
+
+public struct Debate {
+    let primaryKey: PrimaryKey
     let title: String
     let shortTitle: String
     let lastUpdated: Date?
@@ -27,10 +29,10 @@ extension Debate: Decodable {
         case debateMap = "debate_map"
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: DebateCodingKeys.self)
 
-        primaryKey = try container.decode(Int.self, forKey: .primaryKey)
+        primaryKey = try container.decode(PrimaryKey.self, forKey: .primaryKey)
         shortTitle = try container.decode(String.self, forKey: .shortTitle)
         title = try container.decode(String.self, forKey: .title)
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()

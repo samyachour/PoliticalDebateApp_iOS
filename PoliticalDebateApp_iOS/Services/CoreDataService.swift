@@ -9,17 +9,57 @@
 import CoreData
 import UIKit
 
-// TODO: Set up for parallel use alongside saving to backend
+public enum CoreDataConstants {
+    static let progressEntity = "LocalProgress"
+    static let starredEntity = "LocalStarred"
+    static let debateEntity = "LocalDebate"
+    static let pointEntity = "LocalPoint"
+    static let primaryKeyAttribute = "primaryKey"
+    static let debateRelationshipAttribute = "debate"
+    static let progressRelationshipAttribute = "progress"
+    static let pointLabelAttribute = "label"
+    static let container = "PoliticalDebateApp_iOS"
+}
 
 public final class CoreDataService {
 
-    // MARK: - Core Data stack
+    // MARK: CRUD Operations
+
+    public static func fetchRecordsForEntity<T: NSManagedObject>(_ entity: String,
+                                                                 in managedObjectContext: NSManagedObjectContext,
+                                                                 with predicate: NSPredicate? = nil,
+                                                                 unique: Bool = false) -> [T]? {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
+
+        if let predicate = predicate {
+            fetchRequest.predicate = predicate
+        }
+
+        let results = try? managedObjectContext.fetch(fetchRequest) as? [T]
+
+        // If we should only receive 1 record w/ from the request but we get more than 1
+        if let count = results?.count,
+            unique,
+            count > 1 {
+            CoreDataService.showCoreDataCorruptedAlert()
+        }
+
+        return results
+    }
+
+    // MARK: Loading and saving context
+
+    public static let persistentContainer = NSPersistentContainer(name: CoreDataConstants.container)
+    private static var loadedStores = false
 
     public static func loadPersistentContainer(completionHandler: @escaping (Error?) -> Void) {
-        guard persistentContainer == nil else { return }
-        let container = NSPersistentContainer(name: "PoliticalDebateApp_iOS")
+        guard !loadedStores else {
+            debugLog("Core Data stack has already been intialized")
+            completionHandler(nil)
+            return
+        }
 
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+        CoreDataService.persistentContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate.
@@ -35,47 +75,54 @@ public final class CoreDataService {
                  */
                 completionHandler(error)
 
-                CoreDataService.showCoreDataAlert()
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                CoreDataService.showCoreDataLoadAlert()
             }
-            completionHandler(nil)
-            CoreDataService.persistentContainer = container
-
             debugLog("Core Data stack has been initialized with description: \(storeDescription)")
+
+            CoreDataService.loadedStores = true
+            completionHandler(nil) // success
         })
     }
 
-    public static var persistentContainer: NSPersistentContainer?
-
-    // MARK: Error handling
-
-    private static func showCoreDataAlert() {
-        let coreDataAlert = UIAlertController(title: "You are doing that too much",
-                                              message: "Try checking the app permissions. Otherwise your device might be out of space.",
-            preferredStyle: .alert)
-        coreDataAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
-
-        if let appDelegate = AppDelegate.shared,
-            let mainNavigationController = appDelegate.mainNavigationController,
-            mainNavigationController.presentedViewController == nil {
-            mainNavigationController.visibleViewController?.present(coreDataAlert, animated: true, completion: nil)
-        }
-    }
-
-    // MARK: - Core Data Saving support
-
     public static func saveContext () {
-        guard let context = CoreDataService.persistentContainer?.viewContext else { return }
+        let context = CoreDataService.persistentContainer.viewContext
+
         if context.hasChanges {
             do {
                 try context.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate.
-                // You should not use this function in a shipping application, although it may be useful during development.
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                CoreDataService.showCoreDataSaveAlert()
             }
         }
     }
+
+    // MARK: Helpers
+
+    public static func showCoreDataLoadAlert() {
+        let coreDataLoadAlert = UIAlertController(title: "Could not load local data",
+                                                  message: "Try checking the app permissions. Otherwise your device might be out of space.",
+                                                  preferredStyle: .alert)
+        coreDataLoadAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
+
+        safelyShowAlert(alert: coreDataLoadAlert)
+    }
+
+    public static func showCoreDataSaveAlert() {
+        let coreDataSaveAlert = UIAlertController(title: "Could not save local data",
+                                                  message: "Try checking the app permissions. Otherwise your device might be out of space.",
+                                                  preferredStyle: .alert)
+        coreDataSaveAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
+
+        safelyShowAlert(alert: coreDataSaveAlert)
+    }
+
+    public static func showCoreDataCorruptedAlert() {
+        let coreDataCorruptedAlert = UIAlertController(title: "Local data corrupted",
+                                                       message: "Please delete and reinstall this app.",
+                                                       preferredStyle: .alert)
+        coreDataCorruptedAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
+
+        safelyShowAlert(alert: coreDataCorruptedAlert)
+    }
+
 }

@@ -22,7 +22,7 @@ public class SessionManager {
         static let refreshTokenKey = "refreshToken"
     }
 
-    // MARK: Properties
+    // MARK: Token properties
     private var accessToken: String? {
         didSet {
             if let accessToken = accessToken {
@@ -49,17 +49,28 @@ public class SessionManager {
     }
 
     // MARK: Keychain
+    private let tokenEncoding: String.Encoding = .utf8
+
     public func resumeSession() {
-        accessToken = KeychainService.load(key: AuthConstants.accessTokenKey)?.to(type: type(of: accessToken))
-        refreshToken = KeychainService.load(key: AuthConstants.refreshTokenKey)?.to(type: type(of: refreshToken))
+        guard let accessTokenData = KeychainService.load(key: AuthConstants.accessTokenKey),
+            let refreshTokenData = KeychainService.load(key: AuthConstants.refreshTokenKey) else {
+                // TODO: Log user out
+                return
+        }
+        accessToken = String(data: accessTokenData, encoding: tokenEncoding)
+        refreshToken = String(data: refreshTokenData, encoding: tokenEncoding)
     }
 
     // If the user is authenticated, save the token to the user's keychain
     private func saveTokenToKeychain(_ token: String, withKey key: String) {
-        KeychainService.save(key: key, data: Data(from: token))
+        if let tokenData = token.data(using: tokenEncoding) {
+            KeychainService.save(key: key, data: tokenData)
+        }
     }
 
     // MARK: API interface
+    private let authAPI = NetworkService<AuthAPI>()
+
     public let refreshAccessTokenIfNeeded = { (error: Observable<Error>) -> Observable<Void> in
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
@@ -72,11 +83,11 @@ public class SessionManager {
                 // TODO: Log the user out
                 throw error // cancel source request
             }
-            return NetworkService<AuthAPI>().makeRequest(with: .tokenRefresh(refreshToken: refreshToken))
+            return SessionManager.shared.authAPI.makeRequest(with: .tokenRefresh(refreshToken: refreshToken))
                 .asObservable()
                 .flatMap({ (response) -> Observable<Void> in
                     guard response.statusCode == 200,
-                        let newAccessToken = try? JSONDecoder().decode(AccessToken.self, from: response.data) else {
+                        let newAccessToken = try? JSONDecoder().decode(TokenPair.self, from: response.data) else {
                             // TODO: Log the user out
                             throw error // cancel source request
                     }
@@ -87,7 +98,7 @@ public class SessionManager {
     }
 
     public func login(email: String, password: String) -> Single<Void> {
-        return NetworkService<AuthAPI>().makeRequest(with: .tokenObtain(email: email,
+        return authAPI.makeRequest(with: .tokenObtain(email: email,
                                                                         password: password))
             .flatMap({ (response) -> Single<Void> in
                 switch response.statusCode {

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.99" systemVersion="18F132" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="LocalDebate" representedClassName="LocalDebate" syncable="YES" codeGenerationType="class">
+        <attribute name="primaryKey" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="progress" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocalProgress" inverseName="debate" inverseEntity="LocalProgress" syncable="YES"/>
+        <relationship name="starred" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocalStarred" inverseName="starredList" inverseEntity="LocalStarred" syncable="YES"/>
+    </entity>
+    <entity name="LocalPoint" representedClassName="LocalPoint" syncable="YES" codeGenerationType="class">
+        <attribute name="label" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="progress" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocalProgress" inverseName="seenPoints" inverseEntity="LocalProgress" syncable="YES"/>
+    </entity>
+    <entity name="LocalProgress" representedClassName="LocalProgress" syncable="YES" codeGenerationType="class">
+        <attribute name="completedPercentage" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="debate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocalDebate" inverseName="progress" inverseEntity="LocalDebate" syncable="YES"/>
+        <relationship name="seenPoints" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="LocalPoint" inverseName="progress" inverseEntity="LocalPoint" syncable="YES"/>
+    </entity>
+    <entity name="LocalStarred" representedClassName="LocalStarred" syncable="YES" codeGenerationType="class">
+        <relationship name="starredList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocalDebate" inverseName="starred" inverseEntity="LocalDebate" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="LocalDebate" positionX="-347.5546875" positionY="145.984375" width="128" height="88"/>
+        <element name="LocalPoint" positionX="-148.61328125" positionY="133.66015625" width="128" height="73"/>
+        <element name="LocalProgress" positionX="-255.5859375" positionY="-49.49609375" width="128" height="28"/>
+        <element name="LocalStarred" positionX="-449.55078125" positionY="-60.55078125" width="128" height="30"/>
+    </elements>
+</model>

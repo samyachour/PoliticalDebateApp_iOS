@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
 
         if let window = window {
-            let rootVC = DebatesListViewController(viewModel: DebateListViewModel()) // TODO: Change VC
+            let rootVC = DebatesListViewController(viewModel: DebateListViewModel())
             mainNavigationController = UINavigationController(rootViewController: rootVC)
             window.rootViewController = mainNavigationController
             window.makeKeyAndVisible()

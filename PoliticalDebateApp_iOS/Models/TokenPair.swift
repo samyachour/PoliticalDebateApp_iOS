@@ -8,7 +8,7 @@
 
 public struct TokenPair {
     let accessTokenString: String
-    let refreshTokenString: String
+    let refreshTokenString: String?
 }
 
 extension TokenPair: Decodable {
@@ -21,6 +21,7 @@ extension TokenPair: Decodable {
         let container = try decoder.container(keyedBy: TokenPairCodingKeys.self)
 
         accessTokenString = try container.decode(String.self, forKey: .accessTokenString)
-        refreshTokenString = try container.decode(String.self, forKey: .refreshTokenString)
+        // On refresh requests we only get the access token back
+        refreshTokenString = try container.decodeIfPresent(String.self, forKey: .refreshTokenString)
     }
 }
