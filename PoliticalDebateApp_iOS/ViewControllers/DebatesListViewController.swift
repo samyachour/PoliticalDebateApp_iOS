@@ -40,9 +40,9 @@ public class DebatesListViewController: UIViewController {
 
     private func userAuthenticationStateChanged(_ isAuthenticated: Bool) {
         if isAuthenticated {
-            navigationItem.rightBarButtonItem = accountButton
+            navigationItem.rightBarButtonItem = accountButton.barButton
         } else {
-            navigationItem.rightBarButtonItem = loginButton
+            navigationItem.rightBarButtonItem = loginButton.barButton
         }
     }
 
@@ -86,18 +86,22 @@ public class DebatesListViewController: UIViewController {
     }
 
     // MARK: UI Elements
-    private let loginButton: UIBarButtonItem = {
-        let loginButton = UIBarButtonItem(title: "Log in", style: .plain, target: self, action: #selector(loginTapped))
-        loginButton.tintColor = DebatesListViewController.buttonColor
-        loginButton.setTitleTextAttributes([.font : DebatesListViewController.buttonFont as Any], for: .normal)
-        return loginButton
+
+    // Need to be able to add target to UIButton but use UIBarButtonItem in nav bar
+    private let loginButton: (button: UIButton, barButton: UIBarButtonItem) = {
+        let loginButton = UIButton(frame: .zero)
+        loginButton.setTitle("Log in", for: .normal)
+        loginButton.setTitleColor(DebatesListViewController.buttonColor, for: .normal)
+        loginButton.titleLabel?.font = UIFont.primaryRegular(14.0)
+        return (loginButton, UIBarButtonItem(customView: loginButton))
     }()
 
-    private let accountButton: UIBarButtonItem = {
-        let accountButton = UIBarButtonItem(title: "Account", style: .plain, target: self, action: #selector(accountTapped))
-        accountButton.tintColor = DebatesListViewController.buttonColor
-        accountButton.setTitleTextAttributes([.font : DebatesListViewController.buttonFont as Any], for: .normal)
-        return accountButton
+    private let accountButton: (button: UIButton, barButton: UIBarButtonItem) = {
+        let accountButton = UIButton(frame: .zero)
+        accountButton.setTitle("Account", for: .normal)
+        accountButton.setTitleColor(DebatesListViewController.buttonColor, for: .normal)
+        accountButton.titleLabel?.font = UIFont.primaryRegular(14.0)
+        return (accountButton, UIBarButtonItem(customView: accountButton))
     }()
 
     private let sortByButton: UIButton = {
@@ -196,6 +200,8 @@ extension DebatesListViewController {
         searchTextField.delegate = self
         searchTextField.inputAccessoryView = searchButtonBar
 
+        loginButton.button.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
+        accountButton.button.addTarget(self, action: #selector(accountTapped), for: .touchUpInside)
         sortByButton.addTarget(self, action: #selector(installPickerView), for: .touchUpInside)
 
         // Set up picker options
