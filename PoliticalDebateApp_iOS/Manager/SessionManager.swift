@@ -27,6 +27,12 @@ public class SessionManager {
         didSet {
             if let accessToken = accessToken {
                 saveTokenToKeychain(accessToken, withKey: AuthConstants.accessTokenKey)
+            } else {
+                deleteTokenFromKeychain(withKey: AuthConstants.accessTokenKey)
+            }
+            // If we set the accessToken to/from nil
+            if (oldValue == nil) != (accessToken == nil) {
+                isActiveRelay.accept(accessToken != nil)
             }
         }
     }
@@ -36,14 +42,14 @@ public class SessionManager {
         return accessToken ?? ""
     }
 
-    public var isActive: Bool {
-        return accessToken != nil
-    }
+    public let isActiveRelay = BehaviorRelay<Bool>(value: false)
 
     private var refreshToken: String? {
         didSet {
             if let refreshToken = refreshToken {
                 saveTokenToKeychain(refreshToken, withKey: AuthConstants.refreshTokenKey)
+            } else {
+                deleteTokenFromKeychain(withKey: AuthConstants.refreshTokenKey)
             }
         }
     }
@@ -54,7 +60,6 @@ public class SessionManager {
     public func resumeSession() {
         guard let accessTokenData = KeychainService.load(key: AuthConstants.accessTokenKey),
             let refreshTokenData = KeychainService.load(key: AuthConstants.refreshTokenKey) else {
-                // TODO: Log user out
                 return
         }
         accessToken = String(data: accessTokenData, encoding: tokenEncoding)
@@ -66,6 +71,10 @@ public class SessionManager {
         if let tokenData = token.data(using: tokenEncoding) {
             KeychainService.save(key: key, data: tokenData)
         }
+    }
+
+    private func deleteTokenFromKeychain(withKey key: String) {
+        KeychainService.delete(key: key)
     }
 
     // MARK: API interface
@@ -80,7 +89,7 @@ public class SessionManager {
                     return .error(error) // Pass the error along
             }
             guard let refreshToken = SessionManager.shared.refreshToken else { // Make sure we have a refresh token
-                // TODO: Log the user out
+                SessionManager.shared.logout()
                 throw error // cancel source request
             }
             return SessionManager.shared.authAPI.makeRequest(with: .tokenRefresh(refreshToken: refreshToken))
@@ -88,7 +97,7 @@ public class SessionManager {
                 .flatMap({ (response) -> Observable<Void> in
                     guard response.statusCode == 200,
                         let newAccessToken = try? JSONDecoder().decode(TokenPair.self, from: response.data) else {
-                            // TODO: Log the user out
+                            SessionManager.shared.logout()
                             throw error // cancel source request
                     }
                     SessionManager.shared.accessToken = newAccessToken.accessTokenString
@@ -114,6 +123,11 @@ public class SessionManager {
                     return .error(SessionError.couldNotLogin)
                 }
             })
+    }
+
+    public func logout() {
+        accessToken = nil
+        refreshToken = nil
     }
 }
 

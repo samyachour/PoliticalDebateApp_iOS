@@ -84,12 +84,25 @@ class NetworkAPITests: XCTestCase {
     func testLogin() {
         SessionManager.shared.login(email: "test1@mail.com", password: "testing")
             .subscribe(onSuccess: { _ in
-                XCTAssert(SessionManager.shared.isActive)
+                XCTAssert(SessionManager.shared.isActiveRelay.value)
                 SessionManager.shared.resumeSession() // load tokens from keychain
-                XCTAssert(SessionManager.shared.isActive)
+                XCTAssert(SessionManager.shared.isActiveRelay.value)
             }) { _ in
                 XCTAssert(false)
         }.disposed(by: disposeBag)
+    }
+
+    func testLogout() {
+        SessionManager.shared.login(email: "test1@mail.com", password: "testing")
+            .subscribe(onSuccess: { _ in
+                XCTAssert(SessionManager.shared.isActiveRelay.value)
+                SessionManager.shared.logout()
+                XCTAssert(!SessionManager.shared.isActiveRelay.value)
+                SessionManager.shared.resumeSession() // try to load tokens from keychain
+                XCTAssert(!SessionManager.shared.isActiveRelay.value)
+            }) { _ in
+                XCTAssert(false)
+            }.disposed(by: disposeBag)
     }
 
 }

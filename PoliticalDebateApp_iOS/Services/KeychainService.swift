@@ -22,6 +22,14 @@ public final class KeychainService {
         return SecItemAdd(query as CFDictionary, nil)
     }
 
+    @discardableResult public static func delete(key: String) -> OSStatus {
+        let query = [
+            kSecClass as String       : kSecClassGenericPassword as String,
+            kSecAttrAccount as String : key ] as [String : Any]
+
+        return SecItemDelete(query as CFDictionary)
+    }
+
     public static func load(key: String) -> Data? {
         let query = [
             kSecClass as String       : kSecClassGenericPassword,

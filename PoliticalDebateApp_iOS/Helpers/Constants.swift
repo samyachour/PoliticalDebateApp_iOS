@@ -6,5 +6,6 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
-public enum Constants {
-}
+import Foundation
+
+public enum Constants {}

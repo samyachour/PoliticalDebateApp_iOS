@@ -38,14 +38,6 @@ public class DebatesListViewController: UIViewController {
     private let viewModel: DebateListViewModel
     private let disposeBag = DisposeBag()
 
-    private func userAuthenticationStateChanged(_ isAuthenticated: Bool) {
-        if isAuthenticated {
-            navigationItem.rightBarButtonItem = accountButton.barButton
-        } else {
-            navigationItem.rightBarButtonItem = loginButton.barButton
-        }
-    }
-
     private let searchTriggeredSubject = PublishSubject<String>()
 
     // MARK: Action handlers
@@ -179,7 +171,7 @@ extension DebatesListViewController: UITextFieldDelegate {
                 self?.searchTextFieldWidth?.isActive = true
                 self?.searchTextFieldTrailing?.isActive = false
                 self?.view.layoutIfNeeded()
-                }, completion: nil)
+            }, completion: nil)
         }
     }
 
@@ -199,6 +191,15 @@ extension DebatesListViewController {
     private func installViewBinds() {
         searchTextField.delegate = self
         searchTextField.inputAccessoryView = searchButtonBar
+
+        SessionManager.shared.isActiveRelay.subscribe { [weak self] isActive in
+            guard let isActive = isActive.element else { return }
+            if isActive {
+                self?.navigationItem.rightBarButtonItem = self?.accountButton.barButton
+            } else {
+                self?.navigationItem.rightBarButtonItem = self?.loginButton.barButton
+            }
+        }.disposed(by: disposeBag)
 
         loginButton.button.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         accountButton.button.addTarget(self, action: #selector(accountTapped), for: .touchUpInside)
@@ -226,8 +227,6 @@ extension DebatesListViewController {
         navigationItem.title = "Debates"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black, .font: UIFont.primaryLight(24.0) as Any]
         navigationController?.navigationBar.barTintColor = DebatesListViewController.barTintColor
-
-        userAuthenticationStateChanged(sessionManager.isActive)
 
         view.addSubview(searchTextField)
         view.addSubview(sortByButton)
