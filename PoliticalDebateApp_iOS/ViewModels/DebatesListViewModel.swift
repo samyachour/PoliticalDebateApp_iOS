@@ -16,8 +16,6 @@ public class DebateListViewModel {
 
     // MARK: API calls
 
-    // TODO: If not authenticated call CoreDataService.loadPersistentContainer and use core data
-
     // TODO: Load all starred and all progress then manually filter
 
     public func subscribeToSearchAndSortQueries(searchInput: PublishSubject<String>, sortSelection: Driver<SortByOption>) {
@@ -48,8 +46,8 @@ public enum SortByOption: Int, CaseIterable {
 
     var selectionColor: UIColor {
         switch self {
-        case .sortBy: return DebatesListViewController.buttonColor
-        default: return DebatesListViewController.selectedColor
+        case .sortBy: return GeneralColors.softButton
+        default: return GeneralColors.hardButton
         }
     }
 }

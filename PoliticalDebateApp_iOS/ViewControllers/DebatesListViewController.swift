@@ -43,7 +43,7 @@ public class DebatesListViewController: UIViewController {
     // MARK: Action handlers
 
     @objc private func loginTapped() {
-        navigationController?.pushViewController(LoginViewController(viewModel: LoginViewModel()),
+        navigationController?.pushViewController(LoginOrRegisterViewController(viewModel: LoginOrRegisterViewModel()),
                                                  animated: true)
     }
 
@@ -65,17 +65,15 @@ public class DebatesListViewController: UIViewController {
 
     // MARK: UI Properties
 
-    public static let buttonColor = UIColor.customDarkGray1
-    public static let selectedColor = UIColor.customDarkGray2
-    private static let barTintColor = UIColor.customLightGreen1
     private static let cornerButtonYDistance: CGFloat = 12.0
     private static let cornerButtonXDistance: CGFloat = 16.0
-    private static let buttonFont = UIFont.primaryRegular()
     private static let sortByDefaultlabel = SortByOption.sortBy.stringValue
     private static let cornerRadius: CGFloat = 4.0
     private var pickerIsOnScreen: Bool {
         return sortByPickerView.superview == self.view
     }
+    private var searchTextFieldWidth: NSLayoutConstraint?
+    private var searchTextFieldTrailing: NSLayoutConstraint?
 
     // MARK: UI Elements
 
@@ -83,7 +81,7 @@ public class DebatesListViewController: UIViewController {
     private let loginButton: (button: UIButton, barButton: UIBarButtonItem) = {
         let loginButton = UIButton(frame: .zero)
         loginButton.setTitle("Log in", for: .normal)
-        loginButton.setTitleColor(DebatesListViewController.buttonColor, for: .normal)
+        loginButton.setTitleColor(GeneralColors.softButton, for: .normal)
         loginButton.titleLabel?.font = UIFont.primaryRegular(14.0)
         return (loginButton, UIBarButtonItem(customView: loginButton))
     }()
@@ -91,7 +89,7 @@ public class DebatesListViewController: UIViewController {
     private let accountButton: (button: UIButton, barButton: UIBarButtonItem) = {
         let accountButton = UIButton(frame: .zero)
         accountButton.setTitle("Account", for: .normal)
-        accountButton.setTitleColor(DebatesListViewController.buttonColor, for: .normal)
+        accountButton.setTitleColor(GeneralColors.softButton, for: .normal)
         accountButton.titleLabel?.font = UIFont.primaryRegular(14.0)
         return (accountButton, UIBarButtonItem(customView: accountButton))
     }()
@@ -99,8 +97,8 @@ public class DebatesListViewController: UIViewController {
     private let sortByButton: UIButton = {
         let sortByButton = UIButton(frame: .zero)
         sortByButton.setTitle(DebatesListViewController.sortByDefaultlabel, for: .normal)
-        sortByButton.setTitleColor(DebatesListViewController.buttonColor, for: .normal)
-        sortByButton.titleLabel?.font = UIFont.primaryRegular(16.0)
+        sortByButton.setTitleColor(GeneralColors.softButton, for: .normal)
+        sortByButton.titleLabel?.font = GeneralFonts.buttonFont
         return sortByButton
     }()
 
@@ -110,10 +108,10 @@ public class DebatesListViewController: UIViewController {
         let searchTextField = UITextField(frame: .zero)
         searchTextField.attributedPlaceholder = NSAttributedString(string: "Search...",
                                                                    attributes: [
-                                                                    .font : DebatesListViewController.buttonFont as Any,
-                                                                    .foregroundColor: DebatesListViewController.buttonColor as Any])
-        searchTextField.font = DebatesListViewController.buttonFont
-        searchTextField.textColor = DebatesListViewController.selectedColor
+                                                                    .font : GeneralFonts.buttonFont as Any,
+                                                                    .foregroundColor: GeneralColors.softButton as Any])
+        searchTextField.font = GeneralFonts.buttonFont
+        searchTextField.textColor = GeneralColors.hardButton
         searchTextField.borderStyle = .roundedRect
         return searchTextField
     }()
@@ -124,16 +122,17 @@ public class DebatesListViewController: UIViewController {
                                            style: .plain,
                                            target: self,
                                            action: #selector(didCompleteSearchInputOrPickerSelection))
-        searchButton.tintColor = DebatesListViewController.selectedColor
-        searchButton.setTitleTextAttributes([.font : DebatesListViewController.buttonFont as Any], for: .normal)
-        searchButtonBar.items = [searchButton]
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace,
+                                            target: self,
+                                            action: nil)
+
+        searchButton.tintColor = GeneralColors.hardButton
+        searchButton.setTitleTextAttributes([.font : GeneralFonts.buttonFont as Any], for: .normal)
+        searchButtonBar.items = [flexibleSpace, searchButton]
         searchButtonBar.sizeToFit()
-        searchButtonBar.barTintColor = DebatesListViewController.barTintColor
+        searchButtonBar.barTintColor = GeneralColors.navBarTint
         return searchButtonBar
     }()
-
-    private var searchTextFieldWidth: NSLayoutConstraint?
-    private var searchTextFieldTrailing: NSLayoutConstraint?
 
 }
 
@@ -157,7 +156,7 @@ extension DebatesListViewController: UITextFieldDelegate {
 
     // Expand the text field
     public func textFieldDidBeginEditing(_ textField: UITextField) {
-        UIView.animate(withDuration: 0.4, delay: 0.0, options: .curveEaseInOut, animations: { [weak self] in
+        UIView.animate(withDuration: Constants.standardAnimationDuration, delay: 0.0, options: .curveEaseInOut, animations: { [weak self] in
             self?.searchTextFieldWidth?.isActive = false
             self?.searchTextFieldTrailing?.isActive = true
             self?.view.layoutIfNeeded()
@@ -167,11 +166,14 @@ extension DebatesListViewController: UITextFieldDelegate {
     // Shrink the text field if it's empty
     public func textFieldDidEndEditing(_ textField: UITextField) {
         if textField.text?.isEmpty ?? true {
-            UIView.animate(withDuration: 0.4, delay: 0.0, options: .curveEaseInOut, animations: { [weak self] in
-                self?.searchTextFieldWidth?.isActive = true
-                self?.searchTextFieldTrailing?.isActive = false
-                self?.view.layoutIfNeeded()
-            }, completion: nil)
+            UIView.animate(withDuration: Constants.standardAnimationDuration,
+                           delay: 0.0,
+                           options: .curveEaseInOut,
+                           animations: { [weak self] in
+                            self?.searchTextFieldWidth?.isActive = true
+                            self?.searchTextFieldTrailing?.isActive = false
+                            self?.view.layoutIfNeeded()
+                }, completion: nil)
         }
     }
 
@@ -223,10 +225,11 @@ extension DebatesListViewController {
 
     private func installViewConstraints() {
 
-        view.backgroundColor = .customOffWhite1
+        view.backgroundColor = GeneralColors.background
         navigationItem.title = "Debates"
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black, .font: UIFont.primaryLight(24.0) as Any]
-        navigationController?.navigationBar.barTintColor = DebatesListViewController.barTintColor
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
+                                                                   .font: GeneralFonts.navBarTitle as Any]
+        navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
 
         view.addSubview(searchTextField)
         view.addSubview(sortByButton)
@@ -269,13 +272,13 @@ extension DebatesListViewController {
         sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
                                                   constant: DebatesListViewController.cornerButtonXDistance).isActive = true
 
-        UIView.animate(withDuration: 0.4) { [weak self] in
+        UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
             self?.sortByPickerView.alpha = 1.0
         }
     }
 
     private func removePickerView() {
-        UIView.animate(withDuration: 0.4, animations: { [weak self] in
+        UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
             self?.sortByPickerView.alpha = 0.0
             }, completion: { [weak self] _ in // flag not reliable
                 self?.sortByPickerView.removeFromSuperview()
