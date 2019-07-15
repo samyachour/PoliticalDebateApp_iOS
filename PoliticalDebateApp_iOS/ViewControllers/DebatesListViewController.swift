@@ -98,7 +98,7 @@ public class DebatesListViewController: UIViewController {
         let sortByButton = UIButton(frame: .zero)
         sortByButton.setTitle(DebatesListViewController.sortByDefaultlabel, for: .normal)
         sortByButton.setTitleColor(GeneralColors.softButton, for: .normal)
-        sortByButton.titleLabel?.font = GeneralFonts.buttonFont
+        sortByButton.titleLabel?.font = GeneralFonts.button
         return sortByButton
     }()
 
@@ -108,9 +108,9 @@ public class DebatesListViewController: UIViewController {
         let searchTextField = UITextField(frame: .zero)
         searchTextField.attributedPlaceholder = NSAttributedString(string: "Search...",
                                                                    attributes: [
-                                                                    .font : GeneralFonts.buttonFont as Any,
+                                                                    .font : GeneralFonts.button as Any,
                                                                     .foregroundColor: GeneralColors.softButton as Any])
-        searchTextField.font = GeneralFonts.buttonFont
+        searchTextField.font = GeneralFonts.button
         searchTextField.textColor = GeneralColors.hardButton
         searchTextField.borderStyle = .roundedRect
         return searchTextField
@@ -127,7 +127,7 @@ public class DebatesListViewController: UIViewController {
                                             action: nil)
 
         searchButton.tintColor = GeneralColors.hardButton
-        searchButton.setTitleTextAttributes([.font : GeneralFonts.buttonFont as Any], for: .normal)
+        searchButton.setTitleTextAttributes([.font : GeneralFonts.button as Any], for: .normal)
         searchButtonBar.items = [flexibleSpace, searchButton]
         searchButtonBar.sizeToFit()
         searchButtonBar.barTintColor = GeneralColors.navBarTint

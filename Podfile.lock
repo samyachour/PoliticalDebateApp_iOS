@@ -23,7 +23,6 @@ PODS:
   - RxTest (4.5.0):
     - RxSwift (>= 4.4.2, ~> 4.4)
   - SwiftLint (0.31.0)
-  - SwiftyJSON (5.0.0)
 
 DEPENDENCIES:
   - Moya/RxSwift (~> 13.0)
@@ -33,7 +32,6 @@ DEPENDENCIES:
   - RxSwiftExt (~> 3)
   - RxTest (~> 4)
   - SwiftLint
-  - SwiftyJSON
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -46,7 +44,6 @@ SPEC REPOS:
     - RxSwiftExt
     - RxTest
     - SwiftLint
-    - SwiftyJSON
 
 SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
@@ -58,8 +55,7 @@ SPEC CHECKSUMS:
   RxSwiftExt: 01f8ecbeeb355698e9c75365ebe908b00dacf45d
   RxTest: 3ccb66bfbace0bf7df1c43a7c75d046f8ce60372
   SwiftLint: 7a0227733d786395817373b2d0ca799fd0093ff3
-  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
 
-PODFILE CHECKSUM: 88e267204ed860799e642b411f43abfe08d20629
+PODFILE CHECKSUM: f2bba1913975bee106f6b34ab65f5fa7c2ed575e
 
 COCOAPODS: 1.6.1

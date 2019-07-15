@@ -24,7 +24,7 @@ public final class ProgressCoreDataAPI {
 
     // MARK: CRUD operations
 
-    public static func saveProgress(point: String, debatePrimaryKey: PrimaryKey, totalPoints: Int) {
+    public static func saveProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) {
         defer { saveContext() }
 
         let (localProgress, _) = ProgressCoreDataAPI.loadProgressAndAssociatedDebate(debatePrimaryKey)
@@ -32,13 +32,13 @@ public final class ProgressCoreDataAPI {
         let localPointRecords: [LocalPoint]? = CoreDataService
             .fetchRecordsForEntity(CoreDataConstants.pointEntity,
                                    in: ProgressCoreDataAPI.context,
-                                   with: ProgressCoreDataAPI.pointLabelPredicate(point, debatePrimaryKey),
+                                   with: ProgressCoreDataAPI.pointLabelPredicate(pointPrimaryKey, debatePrimaryKey),
                                    unique: true)
 
         // Never saved this point before
         if localPointRecords?.first == nil {
             let localPoint = LocalPoint(context: ProgressCoreDataAPI.context)
-            localPoint.label = point
+            localPoint.primaryKey = Int32(pointPrimaryKey)
             localPoint.progress = localProgress // to one
 
             localProgress.addToSeenPoints(localPoint) // to many
@@ -100,10 +100,10 @@ public final class ProgressCoreDataAPI {
                     CoreDataConstants.primaryKeyAttribute,
                     NSNumber(value: Int32(debatePrimaryKey)))
     }
-    private static let pointLabelPredicate = { (pointLabel: String, debatePrimaryKey: PrimaryKey) -> NSPredicate in
+    private static let pointLabelPredicate = { (pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey) -> NSPredicate in
         NSPredicate(format: "%K = %@ AND %K.%K.%K = %@",
                     CoreDataConstants.pointLabelAttribute,
-                    pointLabel,
+                    NSNumber(value: Int32(pointPrimaryKey)),
                     CoreDataConstants.progressRelationshipAttribute,
                     CoreDataConstants.debateRelationshipAttribute,
                     CoreDataConstants.primaryKeyAttribute,

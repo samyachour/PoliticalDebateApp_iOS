@@ -31,8 +31,12 @@ class NetworkAPITests: XCTestCase {
         testAPI.makeRequest(with: .debate(primaryKey: 2))
             .map(Debate.self)
             .subscribe(onSuccess: { debate in
-                XCTAssert(debate.title == "test_debate")
-            }, onError: { _ in
+                XCTAssert(debate.title == "Should we ban assault rifles?")
+                XCTAssert(debate.debateMap?[0].description == "The 2nd amendment protects these rights")
+                XCTAssert(debate.debateMap?[0].rebuttals?[0] == 2)
+                XCTAssert(debate.debateMap?[1].primaryKey == 2)
+                XCTAssert(debate.debateMap?[1].images[0].source == "images")
+            }, onError: { err in
                 XCTAssert(false)
             }).disposed(by: disposeBag)
     }

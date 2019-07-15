@@ -39,7 +39,7 @@
 		2E23A713226AE36600B2DCC3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A712226AE36600B2DCC3 /* Constants.swift */; };
 		2E25AE062290F56C00E75A02 /* Empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E25AE052290F56C00E75A02 /* Empty.json */; };
 		2E30A8E522BF4587007E386A /* StarredCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */; };
-		2E30A8E922BF4773007E386A /* SafelyShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */; };
+		2E30A8E922BF4773007E386A /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E822BF4773007E386A /* Alerts.swift */; };
 		2E30A8FC22BF4BED007E386A /* DebatesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848522A6FA9C00E4B0E7 /* DebatesListViewModel.swift */; };
 		2E30A8FD22BF4BED007E386A /* LoginOrRegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BB22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift */; };
 		2E30A8FE22BF4BED007E386A /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */; };
@@ -52,7 +52,6 @@
 		2E30A90522BF4BED007E386A /* Starred.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796622A4B280008190FE /* Starred.swift */; };
 		2E30A90622BF4BED007E386A /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967438226BD34E00821A73 /* SessionManager.swift */; };
 		2E30A90722BF4BED007E386A /* UserDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967441226BE91C00821A73 /* UserDataManager.swift */; };
-		2E30A90822BF4BED007E386A /* ThrottleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C322BB3FCA0087BC56 /* ThrottleHandler.swift */; };
 		2E30A90922BF4BED007E386A /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A707226ADA6200B2DCC3 /* NetworkService.swift */; };
 		2E30A90A22BF4BED007E386A /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743A226BDA8A00821A73 /* KeychainService.swift */; };
 		2E30A90D22BF4BED007E386A /* StarredCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */; };
@@ -73,7 +72,7 @@
 		2E30A91C22BF4BED007E386A /* UIFont+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */; };
 		2E30A91D22BF4BED007E386A /* UIColor+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */; };
 		2E30A91E22BF4BED007E386A /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C522BBD5180087BC56 /* DebugLog.swift */; };
-		2E30A91F22BF4BED007E386A /* SafelyShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */; };
+		2E30A91F22BF4BED007E386A /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E822BF4773007E386A /* Alerts.swift */; };
 		2E30A92022BF4BED007E386A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */; };
 		2E30A92222BFE168007E386A /* ProgressCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */; };
 		2E30A92422BFE25A007E386A /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */; };
@@ -83,6 +82,8 @@
 		2E36796322A4AC42008190FE /* Starred.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E36796222A4AC42008190FE /* Starred.json */; };
 		2E36796522A4B278008190FE /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796422A4B278008190FE /* Progress.swift */; };
 		2E36796722A4B280008190FE /* Starred.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796622A4B280008190FE /* Starred.swift */; };
+		2E3A0C8A22D707BC00087B2A /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3A0C8922D707BC00087B2A /* Point.swift */; };
+		2E3A0C8B22D7087D00087B2A /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3A0C8922D707BC00087B2A /* Point.swift */; };
 		2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* String+Date.swift */; };
 		2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
 		2E5C5F58226B29E90007BCAF /* DebateAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */; };
@@ -101,10 +102,10 @@
 		2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
 		2EA3D1A4228D35C000019324 /* AuthAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */; };
 		2EA3D1A6228D36C700019324 /* TokenRefresh.json in Resources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A5228D36C700019324 /* TokenRefresh.json */; };
-		2EBE46C422BB3FCA0087BC56 /* ThrottleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C322BB3FCA0087BC56 /* ThrottleHandler.swift */; };
 		2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C522BBD5180087BC56 /* DebugLog.swift */; };
 		2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
 		2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
+		2EC7890822D059FE009402F1 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7890722D059FE009402F1 /* ErrorHandler.swift */; };
 		2ED2FDA02290CAF80093B6A7 /* TokenObtain.json in Resources */ = {isa = PBXBuildFile; fileRef = 2ED2FD9F2290CAF80093B6A7 /* TokenObtain.json */; };
 		2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
 		2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */; };
@@ -173,12 +174,13 @@
 		2E23A712226AE36600B2DCC3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2E25AE052290F56C00E75A02 /* Empty.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Empty.json; sourceTree = "<group>"; };
 		2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredCoreDataAPI.swift; sourceTree = "<group>"; };
-		2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafelyShowAlert.swift; sourceTree = "<group>"; };
+		2E30A8E822BF4773007E386A /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 		2E36795E22A4ABA0008190FE /* Progress.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Progress.json; sourceTree = "<group>"; };
 		2E36796022A4ABAE008190FE /* ProgressAll.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ProgressAll.json; sourceTree = "<group>"; };
 		2E36796222A4AC42008190FE /* Starred.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Starred.json; sourceTree = "<group>"; };
 		2E36796422A4B278008190FE /* Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Progress.swift; sourceTree = "<group>"; };
 		2E36796622A4B280008190FE /* Starred.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Starred.swift; sourceTree = "<group>"; };
+		2E3A0C8922D707BC00087B2A /* Point.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
 		2E5C5F42226B08220007BCAF /* String+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Date.swift"; sourceTree = "<group>"; };
 		2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainDjangoEncoding.swift; sourceTree = "<group>"; };
 		2E5C5F56226B29A30007BCAF /* StubAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubAccess.swift; sourceTree = "<group>"; };
@@ -193,10 +195,10 @@
 		2EA3D1A1228D35AC00019324 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
 		2EA3D1A3228D35C000019324 /* AuthAPI+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthAPI+Testing.swift"; sourceTree = "<group>"; };
 		2EA3D1A5228D36C700019324 /* TokenRefresh.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TokenRefresh.json; sourceTree = "<group>"; };
-		2EBE46C322BB3FCA0087BC56 /* ThrottleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottleHandler.swift; sourceTree = "<group>"; };
 		2EBE46C522BBD5180087BC56 /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
 		2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
+		2EC7890722D059FE009402F1 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
 		2ED2FD9F2290CAF80093B6A7 /* TokenObtain.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TokenObtain.json; sourceTree = "<group>"; };
 		2ED2FDA12290CC210093B6A7 /* TokenPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPair.swift; sourceTree = "<group>"; };
 		2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressCoreDataAPI.swift; sourceTree = "<group>"; };
@@ -379,6 +381,7 @@
 				2ED2FDA12290CC210093B6A7 /* TokenPair.swift */,
 				2E36796422A4B278008190FE /* Progress.swift */,
 				2E36796622A4B280008190FE /* Starred.swift */,
+				2E3A0C8922D707BC00087B2A /* Point.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -395,7 +398,8 @@
 				2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */,
 				2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */,
 				2EBE46C522BBD5180087BC56 /* DebugLog.swift */,
-				2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */,
+				2E30A8E822BF4773007E386A /* Alerts.swift */,
+				2EC7890722D059FE009402F1 /* ErrorHandler.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -439,20 +443,11 @@
 		2E96743C226BDFEA00821A73 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				2EBE46C222BB3FBC0087BC56 /* Helpers */,
 				2E23A707226ADA6200B2DCC3 /* NetworkService.swift */,
 				2E96743A226BDA8A00821A73 /* KeychainService.swift */,
 				2E96743F226BE91000821A73 /* CoreDataService.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		2EBE46C222BB3FBC0087BC56 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				2EBE46C322BB3FCA0087BC56 /* ThrottleHandler.swift */,
-			);
-			path = Helpers;
 			sourceTree = "<group>";
 		};
 		2EEDE91322BEE985000A4F2B /* LocalData */ = {
@@ -747,7 +742,6 @@
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwiftExt/RxSwiftExt.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
@@ -759,7 +753,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwiftExt.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -801,7 +794,7 @@
 				2E23A708226ADA6200B2DCC3 /* NetworkService.swift in Sources */,
 				2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */,
 				2E23A702226ACE5600B2DCC3 /* Debate.swift in Sources */,
-				2E30A8E922BF4773007E386A /* SafelyShowAlert.swift in Sources */,
+				2E30A8E922BF4773007E386A /* Alerts.swift in Sources */,
 				2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */,
 				2E967439226BD34E00821A73 /* SessionManager.swift in Sources */,
 				2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
@@ -811,6 +804,7 @@
 				2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */,
 				2E0D84BC22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift in Sources */,
 				2E23A6C5226AC7B300B2DCC3 /* DebatesListViewController.swift in Sources */,
+				2E3A0C8A22D707BC00087B2A /* Point.swift in Sources */,
 				2E0D848422A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift in Sources */,
 				2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
 				2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */,
@@ -826,12 +820,12 @@
 				2E5C5F5C226B2D720007BCAF /* StubAccess.swift in Sources */,
 				2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */,
 				2E0D848622A6FA9C00E4B0E7 /* DebatesListViewModel.swift in Sources */,
+				2EC7890822D059FE009402F1 /* ErrorHandler.swift in Sources */,
 				2E0D848822A7054A00E4B0E7 /* UIFont+Custom.swift in Sources */,
 				2EA3D1A4228D35C000019324 /* AuthAPI+Testing.swift in Sources */,
 				2E69095022A4933400DF486A /* StarredAPI+Testing.swift in Sources */,
 				2E69094A22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */,
 				2E23A705226AD39200B2DCC3 /* DebateAPI.swift in Sources */,
-				2EBE46C422BB3FCA0087BC56 /* ThrottleHandler.swift in Sources */,
 				2E23A713226AE36600B2DCC3 /* Constants.swift in Sources */,
 				2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */,
 			);
@@ -847,17 +841,17 @@
 				2E30A91C22BF4BED007E386A /* UIFont+Custom.swift in Sources */,
 				2E30A92022BF4BED007E386A /* AppDelegate.swift in Sources */,
 				2E30A91922BF4BED007E386A /* Constants.swift in Sources */,
-				2E30A91F22BF4BED007E386A /* SafelyShowAlert.swift in Sources */,
+				2E30A91F22BF4BED007E386A /* Alerts.swift in Sources */,
 				2E30A8FE22BF4BED007E386A /* AccountViewModel.swift in Sources */,
 				2E23A6DB226AC7B400B2DCC3 /* NetworkAPITests.swift in Sources */,
 				2E30A91322BF4BED007E386A /* ProgressAPI+Testing.swift in Sources */,
 				2E30A90922BF4BED007E386A /* NetworkService.swift in Sources */,
 				2E30A90722BF4BED007E386A /* UserDataManager.swift in Sources */,
 				2E30A92522BFE33F007E386A /* CoreDataService.swift in Sources */,
-				2E30A90822BF4BED007E386A /* ThrottleHandler.swift in Sources */,
 				2E30A91422BF4BED007E386A /* StarredAPI.swift in Sources */,
 				2E30A8FD22BF4BED007E386A /* LoginOrRegisterViewModel.swift in Sources */,
 				2E30A91D22BF4BED007E386A /* UIColor+Custom.swift in Sources */,
+				2E3A0C8B22D7087D00087B2A /* Point.swift in Sources */,
 				2E30A91822BF4BED007E386A /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
 				2E30A90122BF4BED007E386A /* AccountViewController.swift in Sources */,
 				2E30A90322BF4BED007E386A /* TokenPair.swift in Sources */,

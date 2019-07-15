@@ -9,14 +9,15 @@
 import Moya
 
 enum ProgressAPI {
-    case saveProgress(debatePrimaryKey: PrimaryKey, debatePoint: String)
+    case saveProgress(debatePrimaryKey: PrimaryKey, pointPrimaryKey: PrimaryKey)
     case loadProgress(debatePrimaryKey: PrimaryKey)
     case loadAllProgress
     case saveBatchProgress(batchProgress: [Progress])
 }
 
 public enum ProgressConstants {
-    static let debatePointKey = "debate_point"
+    static let debatePrimaryKey = "debate_pk"
+    static let pointPrimaryKey = "point_pk"
     static let allDebatePointsKeys = "all_debate_points"
 }
 
@@ -51,9 +52,9 @@ extension ProgressAPI: TargetType {
 
     var task: Task {
         switch self {
-        case .saveProgress(let debatePrimaryKey, let debatePoint):
-            return .requestParameters(parameters: [DebateConstants.primaryKey: debatePrimaryKey,
-                                                   ProgressConstants.debatePointKey: debatePoint],
+        case .saveProgress(let debatePrimaryKey, let pointPrimaryKey):
+            return .requestParameters(parameters: [ProgressConstants.debatePrimaryKey: debatePrimaryKey,
+                                                   ProgressConstants.pointPrimaryKey: pointPrimaryKey],
                                       encoding: JSONEncoding.default)
         case .loadProgress(let debatePrimaryKey):
             return .requestParameters(parameters: [DebateConstants.primaryKey: debatePrimaryKey], encoding: PlainDjangoEncoding())

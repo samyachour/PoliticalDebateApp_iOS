@@ -90,7 +90,8 @@ public class SessionManager {
             }
             guard let refreshToken = SessionManager.shared.refreshToken else { // Make sure we have a refresh token
                 SessionManager.shared.logout()
-                throw error // cancel source request
+                showGeneralErrorAlert("You have been logged out.")
+                throw GeneralError.alreadyHandled // so consumer knows
             }
             return SessionManager.shared.authAPI.makeRequest(with: .tokenRefresh(refreshToken: refreshToken))
                 .asObservable()
@@ -98,7 +99,8 @@ public class SessionManager {
                     guard response.statusCode == 200,
                         let newAccessToken = try? JSONDecoder().decode(TokenPair.self, from: response.data) else {
                             SessionManager.shared.logout()
-                            throw error // cancel source request
+                            showGeneralErrorAlert("You have been logged out.")
+                            throw GeneralError.alreadyHandled // so consumer knows
                     }
                     SessionManager.shared.accessToken = newAccessToken.accessTokenString
                     return .just(()) // retry source request

@@ -26,7 +26,7 @@ public class AccountViewController: UIViewController {
         super.viewDidLoad()
 
         //        installViewConstraints()
-        //        installViewBinds()
+        //        installViewBinds() // TODO: subscribe to isActive session and dismiss self if not
     }
 
     // MARK: Dependencies

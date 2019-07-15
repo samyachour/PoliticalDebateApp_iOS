@@ -11,9 +11,9 @@ import CoreData
 public struct Progress {
     let debatePrimaryKey: PrimaryKey
     let completedPercentage: Int
-    var seenPoints: [String]?
+    var seenPoints: [PrimaryKey]?
 
-    public init(debatePrimaryKey: PrimaryKey, completedPercentage: Int, seenPoints: [String]? = nil) {
+    public init(debatePrimaryKey: PrimaryKey, completedPercentage: Int, seenPoints: [PrimaryKey]? = nil) {
         self.debatePrimaryKey = debatePrimaryKey
         self.completedPercentage = completedPercentage
         self.seenPoints = seenPoints
@@ -33,7 +33,7 @@ extension Progress: Codable {
         debatePrimaryKey = try container.decode(PrimaryKey.self, forKey: .debatePrimaryKey)
         completedPercentage = try container.decode(Int.self, forKey: .completedPercentage)
         // We don't get seen points w/ the load all call
-        seenPoints = try container.decodeIfPresent([String].self, forKey: .seenPoints)
+        seenPoints = try container.decodeIfPresent([PrimaryKey].self, forKey: .seenPoints)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -53,7 +53,7 @@ extension Progress {
         if withSeenPoints {
             self.init(debatePrimaryKey: Int(debatePrimaryKey32),
                       completedPercentage: Int(progress.completedPercentage),
-                      seenPoints: seenPoints.compactMap { $0.label })
+                      seenPoints: seenPoints.map { Int($0.primaryKey) })
         } else {
             self.init(debatePrimaryKey: Int(debatePrimaryKey32),
                       completedPercentage: Int(progress.completedPercentage))

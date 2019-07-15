@@ -34,7 +34,7 @@ public struct NetworkService<T>: Networkable where T: TargetType {
         AccessTokenPlugin { SessionManager.shared.publicAccessToken }
         ])
 
-    private let maxAttemptCount: UInt = 4
+    private let maxAttemptCount: UInt = 3
 
     public func makeRequest(with appAPI: T) -> Single<Response> {
         #if TEST
@@ -42,12 +42,11 @@ public struct NetworkService<T>: Networkable where T: TargetType {
         #else
         return provider.rx.request(appAPI)
             .filterSuccessfulStatusAndRedirectCodes()
-            .do(onError: ThrottleHandler.checkForThrottle)
+            .do(onError: ErrorHandler.checkForThrottleError)
+            .do(onError: ErrorHandler.checkForConnectivityError)
             .asObservable()
+            .retryWhen(ErrorHandler.shouldRetryRequest)
             .retryWhen(SessionManager.shared.refreshAccessTokenIfNeeded)
-            // in case of an error initial delay will be 1 second,
-            // every next delay will be doubled
-            .retry(.exponentialDelayed(maxCount: maxAttemptCount, initial: 1.0, multiplier: 1.0))
             .asSingle()
         #endif
     }

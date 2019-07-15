@@ -6,7 +6,7 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
-import SwiftyJSON
+import Foundation
 
 public typealias PrimaryKey = Int
 
@@ -16,7 +16,7 @@ public struct Debate {
     let shortTitle: String
     let lastUpdated: Date?
     let totalPoints: Int
-    let debateMap: JSON?
+    let debateMap: [Point]?
 }
 
 extension Debate: Decodable {
@@ -38,6 +38,6 @@ extension Debate: Decodable {
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()
         totalPoints = try container.decode(Int.self, forKey: .totalPoints)
         // We don't get the map with the search call
-        debateMap = try container.decodeIfPresent(JSON.self, forKey: .debateMap)
+        debateMap = try container.decodeIfPresent([Point].self, forKey: .debateMap)
     }
 }

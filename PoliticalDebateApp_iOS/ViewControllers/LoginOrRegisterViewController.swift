@@ -6,6 +6,7 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Moya
 import RxCocoa
 import RxSwift
 import UIKit
@@ -36,16 +37,29 @@ public class LoginOrRegisterViewController: UIViewController {
     // MARK: Observers & Observables
 
     private let viewModel: LoginOrRegisterViewModel
+    private let disposeBag = DisposeBag()
+
+    // We need to trigger this from 2 places, the button and an alert action
+    private let forgotPasswordRelay = PublishRelay<(String, Bool)>()
 
     // MARK: Action handlers
 
-    @objc private func loginOrRegisterButtonPressed() {
-        switch viewModel.loginOrRegisterState {
-        case .login:
-            showConfirmPasswordField()
-        case .register:
-            hideConfirmPasswordField()
-        }
+    // MARK: Helpers
+
+    private static func isValidEmail(_ email: String) -> Bool {
+        let firstPart = "[A-Z0-9a-z]([A-Z0-9a-z._%+-]{0,30}[A-Z0-9a-z])?"
+        let serverPart = "([A-Z0-9a-z]([A-Z0-9a-z-]{0,30}[A-Z0-9a-z])?\\.){1,5}"
+        let emailRegex = firstPart + "@" + serverPart + "[A-Za-z]{2,8}"
+        let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailRegex)
+        return emailPredicate.evaluate(with: email)
+    }
+
+    private static func isValidPassword(_ password: String) -> Bool {
+        return password.count >= Constants.minimumPasswordLength
+    }
+
+    private static let showInvalidEmailAlert = {
+        showGeneralErrorAlert("Please provide a proper email.")
     }
 
     // MARK: UI Properties
@@ -68,7 +82,7 @@ public class LoginOrRegisterViewController: UIViewController {
         let emailLabel = UILabel(frame: .zero)
         emailLabel.text = "Email"
         emailLabel.textColor = GeneralColors.text
-        emailLabel.font = GeneralFonts.buttonFont
+        emailLabel.font = GeneralFonts.button
         emailLabel.textAlignment = NSTextAlignment.center
         return emailLabel
     }()
@@ -77,9 +91,9 @@ public class LoginOrRegisterViewController: UIViewController {
         let emailTextField = UITextField(frame: .zero)
         emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...",
                                                                   attributes: [
-                                                                    .font : GeneralFonts.buttonFont as Any,
+                                                                    .font : GeneralFonts.button as Any,
                                                                     .foregroundColor: GeneralColors.softButton as Any])
-        emailTextField.font = GeneralFonts.buttonFont
+        emailTextField.font = GeneralFonts.button
         emailTextField.textColor = GeneralColors.hardButton
         emailTextField.borderStyle = .roundedRect
         return emailTextField
@@ -89,7 +103,7 @@ public class LoginOrRegisterViewController: UIViewController {
         let passwordLabel = UILabel(frame: .zero)
         passwordLabel.text = "Password"
         passwordLabel.textColor = GeneralColors.text
-        passwordLabel.font = GeneralFonts.buttonFont
+        passwordLabel.font = GeneralFonts.button
         passwordLabel.textAlignment = NSTextAlignment.center
         return passwordLabel
     }()
@@ -98,11 +112,12 @@ public class LoginOrRegisterViewController: UIViewController {
         let passwordTextField = UITextField(frame: .zero)
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...",
                                                                      attributes: [
-                                                                    .font : GeneralFonts.buttonFont as Any,
+                                                                    .font : GeneralFonts.button as Any,
                                                                     .foregroundColor: GeneralColors.softButton as Any])
-        passwordTextField.font = GeneralFonts.buttonFont
+        passwordTextField.font = GeneralFonts.button
         passwordTextField.textColor = GeneralColors.hardButton
         passwordTextField.borderStyle = .roundedRect
+        passwordTextField.isSecureTextEntry = true
         return passwordTextField
     }()
 
@@ -110,7 +125,7 @@ public class LoginOrRegisterViewController: UIViewController {
         let confirmPasswordLabel = UILabel(frame: .zero)
         confirmPasswordLabel.text = "Confirm password"
         confirmPasswordLabel.textColor = GeneralColors.text
-        confirmPasswordLabel.font = GeneralFonts.buttonFont
+        confirmPasswordLabel.font = GeneralFonts.button
         confirmPasswordLabel.textAlignment = NSTextAlignment.center
         return confirmPasswordLabel
     }()
@@ -119,11 +134,12 @@ public class LoginOrRegisterViewController: UIViewController {
         let confirmPasswordTextField = UITextField(frame: .zero)
         confirmPasswordTextField.attributedPlaceholder = NSAttributedString(string: "Confirm Password...",
                                                                             attributes: [
-                                                                    .font : GeneralFonts.buttonFont as Any,
+                                                                    .font : GeneralFonts.button as Any,
                                                                     .foregroundColor: GeneralColors.softButton as Any])
-        confirmPasswordTextField.font = GeneralFonts.buttonFont
+        confirmPasswordTextField.font = GeneralFonts.button
         confirmPasswordTextField.textColor = GeneralColors.hardButton
         confirmPasswordTextField.borderStyle = .roundedRect
+        confirmPasswordTextField.isSecureTextEntry = true
         return confirmPasswordTextField
     }()
 
@@ -131,7 +147,7 @@ public class LoginOrRegisterViewController: UIViewController {
         let submitButton = UIButton(frame: .zero)
         submitButton.setTitle("Submit", for: .normal)
         submitButton.setTitleColor(GeneralColors.hardButton, for: .normal)
-        submitButton.titleLabel?.font = GeneralFonts.buttonFont
+        submitButton.titleLabel?.font = GeneralFonts.button
         return submitButton
     }()
 
@@ -139,14 +155,14 @@ public class LoginOrRegisterViewController: UIViewController {
         let forgotPasswordButton = UIButton(frame: .zero)
         forgotPasswordButton.setTitle("Forgot password", for: .normal)
         forgotPasswordButton.setTitleColor(GeneralColors.hardButton, for: .normal)
-        forgotPasswordButton.titleLabel?.font = GeneralFonts.buttonFont
+        forgotPasswordButton.titleLabel?.font = GeneralFonts.button
         return forgotPasswordButton
     }()
 
     private let loginOrRegisterButton: UIButton = {
         let loginOrRegisterButton = UIButton(frame: .zero)
         loginOrRegisterButton.setTitleColor(GeneralColors.hardButton, for: .normal)
-        loginOrRegisterButton.titleLabel?.font = GeneralFonts.buttonFont
+        loginOrRegisterButton.titleLabel?.font = GeneralFonts.button
         return loginOrRegisterButton
     }()
 
@@ -157,7 +173,86 @@ extension LoginOrRegisterViewController {
 
     private func installViewBinds() {
 
-        loginOrRegisterButton.addTarget(self, action: #selector(loginOrRegisterButtonPressed), for: .touchUpInside)
+        loginOrRegisterButton.rx.tap
+            .subscribe { [weak self] (_) in
+                guard let self = self else { return }
+                switch self.viewModel.loginOrRegisterState {
+                case .login:
+                    self.showConfirmPasswordField()
+                case .register:
+                    self.hideConfirmPasswordField()
+                }
+        }.disposed(by: disposeBag)
+
+        installForgotPasswordBinds()
+    }
+
+    // swiftlint:disable function_body_length cyclomatic_complexity
+    private func installForgotPasswordBinds() {
+        forgotPasswordButton.rx.tap
+            .withLatestFrom(emailTextField.rx.text)
+            .subscribe {[weak self] (emailEvent) in
+                guard let emailElement = emailEvent.element,
+                    let emailText = emailElement,
+                    LoginOrRegisterViewController.isValidEmail(emailText) else {
+                        LoginOrRegisterViewController.showInvalidEmailAlert()
+                        return
+                }
+                self?.forgotPasswordRelay.accept((emailText, false))
+            }.disposed(by: disposeBag)
+
+        viewModel.getForgotPasswordRequestObservable(forgotPasswordRelay)
+            .subscribe { [weak self] (singleEvent) in
+                guard let self = self,
+                    let singleResponse = singleEvent.element else {
+                        return
+                }
+                singleResponse.subscribe(onSuccess: { (response) in
+                    switch response.statusCode {
+                    case 200:
+                        showGeneralSuccessAlert("Please check your email for a password reset link.")
+                    default:
+                        showGeneralErrorAlert(GeneralError.unknownSuccessCode.localizedDescription)
+                    }
+                }, onError: { [weak self] error in
+                    guard let self = self else { return }
+                    if let generalError = error as? GeneralError,
+                        generalError == .alreadyHandled {
+                        return
+                    }
+                    guard let moyaError = error as? MoyaError,
+                        let response = moyaError.response else {
+                            showGeneralErrorAlert()
+                            return
+                    }
+                    switch response.statusCode {
+                    case Constants.customBackendErrorMessageCode:
+                        let errorAlert = UIAlertController(title: GeneralCopies.errorAlertTitle,
+                                                           message: """
+                                                               Either your email is invalid or it was not verified.
+
+                                                               Tap 'Force' to try sending the reset link to an unverified email.
+                                                           """,
+                                                           preferredStyle: .alert)
+                        errorAlert.addAction(UIAlertAction(title: "Force", style: .default, handler: { (_) in
+                            // self already weakified
+                            guard let emailText = self.emailTextField.text,
+                                LoginOrRegisterViewController.isValidEmail(emailText) else {
+                                    LoginOrRegisterViewController.showInvalidEmailAlert()
+                                    return
+                            }
+                            self.forgotPasswordRelay.accept((emailText, true))
+                        }))
+                        errorAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
+                        safelyShowAlert(alert: errorAlert)
+                    case 404:
+                        showGeneralErrorAlert("Coulnd't find an account associated with that email.")
+                    default:
+                        showGeneralErrorAlert()
+                    }
+                })
+                    .disposed(by: self.disposeBag)
+            }.disposed(by: disposeBag)
     }
 
     // swiftlint:disable:next function_body_length

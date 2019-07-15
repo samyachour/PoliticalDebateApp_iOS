@@ -10,6 +10,11 @@ import UIKit
 
 public enum Constants {
     static let standardAnimationDuration = 0.4
+    static let minimumPasswordLength = 6 // dictated by backend
+    static let retryErrorCodes = [408, 502, 503, 504]
+    static let customBackendErrorMessageCode = 400
+    static let maxAttemptCount = 3
+    static let timeBetweenRetries = 1.0
 }
 
 public enum GeneralColors {
@@ -22,6 +27,38 @@ public enum GeneralColors {
 }
 
 public enum GeneralFonts {
-    static let buttonFont = UIFont.primaryRegular()
+    static let button = UIFont.primaryRegular()
     static let navBarTitle = UIFont.primaryLight(24.0)
+}
+
+public enum GeneralCopies {
+    static let errorAlertTitle = "There was a problem"
+    static let successAlertTitle = "Success"
+}
+
+public enum GeneralError: Error {
+    case basic
+    case unknownSuccessCode // not 200-399 but not the success code we expected
+    case unknownErrorCode // 400+ but not the error code we expected
+    case connectivity
+    case alreadyHandled // For consumers to know if producers have already handled the error
+
+    public var localizedDescription: String {
+        switch self {
+        case .basic:
+            return "Something weird happened. Please try again."
+        case .unknownSuccessCode:
+            return "Something weird happened. Your request completed successfully though. Please report this to the developer."
+        case .unknownErrorCode:
+            return "Something weird happened. Your request failed in an unexpected way. Please report this to the developer."
+        case .connectivity:
+            return "Having trouble connecting to the network."
+        case .alreadyHandled:
+            return "" // Never used in alerts
+        }
+    }
+}
+
+public enum GeneralKeys {
+    static let message = "message" // key from backend custom error message
 }

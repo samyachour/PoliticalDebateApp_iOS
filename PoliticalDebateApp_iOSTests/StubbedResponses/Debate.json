@@ -1,20 +1,36 @@
 {
-    "pk": 1,
-    "title": "test_debate",
-    "short_title": "test",
-    "last_updated": "2019-03-17",
-    "total_points": 5,
-    "debate_map": {
-    	"pro - point description": {
-    		"hyperlinks": { "source string": "url"},
-    		"images": { "image name": "url" },
-    		"con - point description": {
-    			"hyperlinks": {"":""},
-    			"images": {"":""},
-                "pro - point description": {"":""}
-    		},
-            "con - point description": {"":""}
-		},
-        "con - point description": {"":""}
-	}
+    "pk": 3,
+    "title": "Should we ban assault rifles?",
+    "short_title": "Assault rifle ban",
+    "last_updated": "2019-07-15",
+    "total_points": 2,
+    "debate_map": [
+        {
+            "pk": 3,
+            "description": "The 2nd amendment protects these rights",
+            "images": [],
+            "hyperlinks": [],
+            "rebuttals": [
+                2
+            ]
+        },
+        {
+            "pk": 2,
+            "description": "Civilians can't own assault rifles",
+            "images": [
+                {
+                    "url": "http://www.images.com",
+                    "source": "images",
+                    "name": ""
+                }
+            ],
+            "hyperlinks": [
+                {
+                    "substring": "amendment",
+                    "url": "http://www.wikipedia.org/2ndamendment"
+                }
+            ],
+            "rebuttals": []
+        }
+    ]
 }
