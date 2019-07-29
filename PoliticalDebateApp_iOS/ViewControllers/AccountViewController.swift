@@ -10,9 +10,9 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-public class AccountViewController: UIViewController {
+class AccountViewController: UIViewController {
 
-    public required init(viewModel: AccountViewModel) {
+    required init(viewModel: AccountViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil) // we don't use nibs
     }
@@ -21,18 +21,18 @@ public class AccountViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: VC Lifecycle
-    public override func viewDidLoad() {
+    // MARK: - VC Lifecycle
+    override func viewDidLoad() {
         super.viewDidLoad()
 
         //        installViewConstraints()
         //        installViewBinds() // TODO: subscribe to isActive session and dismiss self if not
     }
 
-    // MARK: Dependencies
+    // MARK: - Dependencies
     private let sessionManager = SessionManager.shared
 
-    // MARK: Observers & Observables
+    // MARK: - Observers & Observables
 
     private let viewModel: AccountViewModel
 

@@ -9,4 +9,4 @@
 import RxCocoa
 import RxSwift
 
-public class AccountViewModel {}
+class AccountViewModel {}

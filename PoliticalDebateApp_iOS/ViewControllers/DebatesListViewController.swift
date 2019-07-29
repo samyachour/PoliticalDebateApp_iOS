@@ -11,9 +11,9 @@ import RxSwift
 import UIKit
 
 // Acts as our home view as well
-public class DebatesListViewController: UIViewController {
+class DebatesListViewController: UIViewController {
 
-    public required init(viewModel: DebateListViewModel) {
+    required init(viewModel: DebateListViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil) // we don't use nibs
     }
@@ -22,25 +22,25 @@ public class DebatesListViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: VC Lifecycle
-    public override func viewDidLoad() {
+    // MARK: - VC Lifecycle
+    override func viewDidLoad() {
         super.viewDidLoad()
 
         installViewConstraints()
         installViewBinds()
     }
 
-    // MARK: Dependencies
+    // MARK: - Dependencies
     private let sessionManager = SessionManager.shared
 
-    // MARK: Observers & Observables
+    // MARK: - Observers & Observables
 
     private let viewModel: DebateListViewModel
     private let disposeBag = DisposeBag()
 
     private let searchTriggeredSubject = PublishSubject<String>()
 
-    // MARK: Action handlers
+    // MARK: - Action handlers
 
     @objc private func loginTapped() {
         navigationController?.pushViewController(LoginOrRegisterViewController(viewModel: LoginOrRegisterViewModel()),
@@ -63,7 +63,7 @@ public class DebatesListViewController: UIViewController {
         }
     }
 
-    // MARK: UI Properties
+    // MARK: - UI Properties
 
     private static let cornerButtonYDistance: CGFloat = 12.0
     private static let cornerButtonXDistance: CGFloat = 16.0
@@ -75,7 +75,7 @@ public class DebatesListViewController: UIViewController {
     private var searchTextFieldWidth: NSLayoutConstraint?
     private var searchTextFieldTrailing: NSLayoutConstraint?
 
-    // MARK: UI Elements
+    // MARK: - UI Elements
 
     // Need to be able to add target to UIButton but use UIBarButtonItem in nav bar
     private let loginButton: (button: UIButton, barButton: UIBarButtonItem) = {
@@ -141,7 +141,7 @@ extension DebatesListViewController {
 
     // Can't use TapGesture because I need to trigger the instant the user interacts w/ the screen
     // e.g. beginning of scroll, long press, etc.
-    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             // If it was outside our search text field while editing or picker view while open
             let shouldHandleTouch = (!searchTextField.frame.contains(touch.location(in: self.view)) && searchTextField.isFirstResponder) ||
@@ -155,7 +155,7 @@ extension DebatesListViewController {
 extension DebatesListViewController: UITextFieldDelegate {
 
     // Expand the text field
-    public func textFieldDidBeginEditing(_ textField: UITextField) {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         UIView.animate(withDuration: Constants.standardAnimationDuration, delay: 0.0, options: .curveEaseInOut, animations: { [weak self] in
             self?.searchTextFieldWidth?.isActive = false
             self?.searchTextFieldTrailing?.isActive = true
@@ -164,7 +164,7 @@ extension DebatesListViewController: UITextFieldDelegate {
     }
 
     // Shrink the text field if it's empty
-    public func textFieldDidEndEditing(_ textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         if textField.text?.isEmpty ?? true {
             UIView.animate(withDuration: Constants.standardAnimationDuration,
                            delay: 0.0,
@@ -177,7 +177,7 @@ extension DebatesListViewController: UITextFieldDelegate {
         }
     }
 
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if string == "\n" { // If user clicks enter perform search
             didCompleteSearchInputOrPickerSelection()
             return false
@@ -187,7 +187,7 @@ extension DebatesListViewController: UITextFieldDelegate {
 
 }
 
-// MARK: View constraints & binding
+// MARK: - View constraints & binding
 extension DebatesListViewController {
 
     private func installViewBinds() {
@@ -251,7 +251,7 @@ extension DebatesListViewController {
 
     }
 
-    // MARK: sortByPickerView UI handling
+    // MARK: - sortByPickerView UI handling
     private func updateSortBySelection(with pickerChoice: Int) {
         UIView.transition(with: sortByButton, duration: 0.3, options: .transitionCrossDissolve, animations: { [weak self] in
             let optionSelected = SortByOption(rawValue: pickerChoice)

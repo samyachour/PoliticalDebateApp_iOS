@@ -8,9 +8,9 @@
 
 import CoreData
 
-public final class ProgressCoreDataAPI {
+final class ProgressCoreDataAPI {
 
-    // MARK: Core data
+    // MARK: - Core data
 
     // So all our tasks run on the same private background queue when updating/retreiving records
     private static let context = CoreDataService.persistentContainer.newBackgroundContext()
@@ -22,9 +22,9 @@ public final class ProgressCoreDataAPI {
         }
     }
 
-    // MARK: CRUD operations
+    // MARK: - CRUD operations
 
-    public static func saveProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) {
+    static func saveProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) {
         defer { saveContext() }
 
         let (localProgress, _) = ProgressCoreDataAPI.loadProgressAndAssociatedDebate(debatePrimaryKey)
@@ -49,7 +49,7 @@ public final class ProgressCoreDataAPI {
         }
     }
 
-    public static func loadAllProgress() -> [Progress?]? {
+    static func loadAllProgress() -> [Progress?]? {
         defer { saveContext() }
 
         // Explicit type for generic method
@@ -63,7 +63,7 @@ public final class ProgressCoreDataAPI {
         })
     }
 
-    public static func loadProgress(_ debatePrimaryKey: PrimaryKey) -> Progress? {
+    static func loadProgress(_ debatePrimaryKey: PrimaryKey) -> Progress? {
         defer { saveContext() }
 
         let (localProgress, _) = ProgressCoreDataAPI.loadProgressAndAssociatedDebate(debatePrimaryKey)
@@ -71,7 +71,7 @@ public final class ProgressCoreDataAPI {
         return Progress(from: localProgress, withSeenPoints: true)
     }
 
-    // MARK: Helpers
+    // MARK: - Helpers
 
     // Handle the logic of loading data if it exists and creating+loading if it doesn't
     private static func loadProgressAndAssociatedDebate(_ debatePrimaryKey: PrimaryKey) -> (LocalProgress, LocalDebate) {
@@ -93,7 +93,7 @@ public final class ProgressCoreDataAPI {
         return (localProgress, localDebate)
     }
 
-    // MARK: Predicates
+    // MARK: - Predicates
 
     private static let debatePrimaryKeyPredicate = { (debatePrimaryKey: PrimaryKey) -> NSPredicate in
         NSPredicate(format: "%K = %@",

@@ -13,7 +13,7 @@ enum DebateAPI {
     case debateSearch(searchString: String)
 }
 
-public enum DebateConstants {
+enum DebateConstants {
     static let primaryKey = "pk"
     static let searchStringKey = "search_string"
 }

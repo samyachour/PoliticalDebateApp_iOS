@@ -8,11 +8,11 @@
 
 import CoreData
 
-public struct Starred {
+struct Starred {
     var starredList: [PrimaryKey]
     var unstarredList: [PrimaryKey]?
 
-    public init(starredList: [PrimaryKey], unstarredList: [PrimaryKey]? = nil) {
+    init(starredList: [PrimaryKey], unstarredList: [PrimaryKey]? = nil) {
         self.starredList = starredList
         self.unstarredList = unstarredList
     }
@@ -24,13 +24,13 @@ extension Starred: Codable {
         case unstarredList = "unstarred_list"
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         starredList = try container.decode([PrimaryKey].self, forKey: .starredList)
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(starredList, forKey: .starredList)
         try container.encode(unstarredList, forKey: .unstarredList)
@@ -39,7 +39,7 @@ extension Starred: Codable {
 
 // Initializing from CoreData model
 extension Starred {
-    public init?(from starred: LocalStarred) {
+    init?(from starred: LocalStarred) {
         guard let starredList = starred.starredList?.allObjects as? [LocalDebate] else {
             return nil
         }

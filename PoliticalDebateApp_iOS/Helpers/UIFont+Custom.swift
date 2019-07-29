@@ -8,7 +8,7 @@
 
 import UIKit
 
-public extension UIFont {
+extension UIFont {
     static let standardSize: CGFloat = 16.0
 
     static func primaryLight(_ size: CGFloat = UIFont.standardSize) -> UIFont? {

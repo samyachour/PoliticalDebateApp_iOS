@@ -8,9 +8,9 @@
 
 import CoreData
 
-public final class StarredCoreDataAPI {
+final class StarredCoreDataAPI {
 
-    // MARK: Core data
+    // MARK: - Core data
 
     // So all our tasks run on the same private background queue when updating/retreiving records
     private static let context = CoreDataService.persistentContainer.newBackgroundContext()
@@ -22,9 +22,9 @@ public final class StarredCoreDataAPI {
         }
     }
 
-    // MARK: CRUD operations
+    // MARK: - CRUD operations
 
-    public static func starOrUnstarDebate(_ debatePrimaryKey: PrimaryKey, unstar: Bool = false) {
+    static func starOrUnstarDebate(_ debatePrimaryKey: PrimaryKey, unstar: Bool = false) {
         defer { saveContext() }
 
         let localStarred = StarredCoreDataAPI.loadStarredDebates()
@@ -46,7 +46,7 @@ public final class StarredCoreDataAPI {
         }
     }
 
-    public static func loadAllStarred() -> Starred? {
+    static func loadAllStarred() -> Starred? {
         defer { saveContext() }
 
         let localStarred = StarredCoreDataAPI.loadStarredDebates()
@@ -54,7 +54,7 @@ public final class StarredCoreDataAPI {
         return Starred(from: localStarred)
     }
 
-    // MARK: Helpers
+    // MARK: - Helpers
 
     // Handle the logic of loading data if it exists and creating+loading if it doesn't
     private static func loadStarredDebates() -> LocalStarred {
@@ -68,7 +68,7 @@ public final class StarredCoreDataAPI {
         return localStarred
     }
 
-    // MARK: Predicates
+    // MARK: - Predicates
 
     private static let debatePrimaryKeyPredicate = { (debatePrimaryKey: PrimaryKey) -> NSPredicate in
         NSPredicate(format: "%K = %@",

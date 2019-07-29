@@ -16,7 +16,7 @@ extension ProgressAPI {
              .saveBatchProgress:
             return StubAccess.stubbedResponse("Empty")
         case .loadProgress:
-            return StubAccess.stubbedResponse("Progress")
+            return StubAccess.stubbedResponse("ProgressSingle")
         case .loadAllProgress:
             return StubAccess.stubbedResponse("ProgressAll")
         }

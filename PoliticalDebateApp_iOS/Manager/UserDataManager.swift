@@ -10,4 +10,4 @@
 // Save/load to/from backend if session is active i.e. user is logged in
 // Else save/load to/from core data
 
-public class UserDataManager {}
+class UserDataManager {}

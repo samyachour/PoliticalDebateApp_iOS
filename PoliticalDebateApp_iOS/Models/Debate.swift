@@ -8,9 +8,9 @@
 
 import Foundation
 
-public typealias PrimaryKey = Int
+typealias PrimaryKey = Int
 
-public struct Debate {
+struct Debate {
     let primaryKey: PrimaryKey
     let title: String
     let shortTitle: String
@@ -29,7 +29,7 @@ extension Debate: Decodable {
         case debateMap = "debate_map"
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: DebateCodingKeys.self)
 
         primaryKey = try container.decode(PrimaryKey.self, forKey: .primaryKey)

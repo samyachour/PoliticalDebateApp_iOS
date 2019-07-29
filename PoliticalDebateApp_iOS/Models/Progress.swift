@@ -8,12 +8,12 @@
 
 import CoreData
 
-public struct Progress {
+struct Progress {
     let debatePrimaryKey: PrimaryKey
     let completedPercentage: Int
     var seenPoints: [PrimaryKey]?
 
-    public init(debatePrimaryKey: PrimaryKey, completedPercentage: Int, seenPoints: [PrimaryKey]? = nil) {
+    init(debatePrimaryKey: PrimaryKey, completedPercentage: Int, seenPoints: [PrimaryKey]? = nil) {
         self.debatePrimaryKey = debatePrimaryKey
         self.completedPercentage = completedPercentage
         self.seenPoints = seenPoints
@@ -27,7 +27,7 @@ extension Progress: Codable {
         case seenPoints = "seen_points"
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         debatePrimaryKey = try container.decode(PrimaryKey.self, forKey: .debatePrimaryKey)
@@ -36,7 +36,7 @@ extension Progress: Codable {
         seenPoints = try container.decodeIfPresent([PrimaryKey].self, forKey: .seenPoints)
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(debatePrimaryKey, forKey: .debatePrimaryKey)
         try container.encode(seenPoints, forKey: .seenPoints)
@@ -45,7 +45,7 @@ extension Progress: Codable {
 
 // Initializing from CoreData model
 extension Progress {
-    public init?(from progress: LocalProgress, withSeenPoints: Bool = false) {
+    init?(from progress: LocalProgress, withSeenPoints: Bool = false) {
         guard let debatePrimaryKey32 = progress.debate?.primaryKey,
         let seenPoints = progress.seenPoints?.allObjects as? [LocalPoint] else {
                 return nil

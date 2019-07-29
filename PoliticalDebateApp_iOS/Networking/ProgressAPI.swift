@@ -15,7 +15,7 @@ enum ProgressAPI {
     case saveBatchProgress(batchProgress: [Progress])
 }
 
-public enum ProgressConstants {
+enum ProgressConstants {
     static let debatePrimaryKey = "debate_pk"
     static let pointPrimaryKey = "point_pk"
     static let allDebatePointsKeys = "all_debate_points"

@@ -9,16 +9,16 @@
 import RxCocoa
 import RxSwift
 
-public class DebateListViewModel {
+class DebateListViewModel {
 
-    // MARK: Observables
+    // MARK: - Observables
     private let disposeBag = DisposeBag()
 
-    // MARK: API calls
+    // MARK: - API calls
 
     // TODO: Load all starred and all progress then manually filter
 
-    public func subscribeToSearchAndSortQueries(searchInput: PublishSubject<String>, sortSelection: Driver<SortByOption>) {
+    func subscribeToSearchAndSortQueries(searchInput: PublishSubject<String>, sortSelection: Driver<SortByOption>) {
         // TODO: Hit search API endpoint which should then update collectionView
         // Show status message on error
 
@@ -27,7 +27,7 @@ public class DebateListViewModel {
     }
 }
 
-public enum SortByOption: Int, CaseIterable {
+enum SortByOption: Int, CaseIterable {
     case sortBy
     case lastUpdated
     case starred

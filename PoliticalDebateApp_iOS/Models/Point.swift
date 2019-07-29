@@ -8,12 +8,12 @@
 
 import Foundation
 
-public struct Point {
+struct Point {
     let primaryKey: PrimaryKey
     let description: String
     let hyperlinks: [PointHyperlink]
     let images: [PointImage]
-    let rebuttals: [Int]?
+    let rebuttals: [Point]?
 }
 
 extension Point: Decodable {
@@ -25,7 +25,7 @@ extension Point: Decodable {
         case rebuttals
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: PointCodingKeys.self)
 
         primaryKey = try container.decode(PrimaryKey.self, forKey: .primaryKey)
@@ -33,11 +33,11 @@ extension Point: Decodable {
         hyperlinks = try container.decode([PointHyperlink].self, forKey: .hyperlinks)
         images = try container.decode([PointImage].self, forKey: .images)
         // We don't always have rebuttals
-        rebuttals = try container.decodeIfPresent([Int].self, forKey: .rebuttals)
+        rebuttals = try container.decodeIfPresent([Point].self, forKey: .rebuttals)
     }
 }
 
-public struct PointImage {
+struct PointImage {
     let url: URL
     let source: String
     let name: String?
@@ -50,7 +50,7 @@ extension PointImage: Decodable {
         case name
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: PointImageCodingKeys.self)
 
         url = try container.decode(URL.self, forKey: .url)
@@ -59,7 +59,7 @@ extension PointImage: Decodable {
     }
 }
 
-public struct PointHyperlink {
+struct PointHyperlink {
     let substring: String
     let url: URL
 }
@@ -70,7 +70,7 @@ extension PointHyperlink: Decodable {
         case url
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: PointHyperlinkCodingKeys.self)
 
         substring = try container.decode(String.self, forKey: .substring)

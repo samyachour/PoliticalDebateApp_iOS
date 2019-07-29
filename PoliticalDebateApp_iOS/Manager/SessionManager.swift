@@ -11,18 +11,18 @@ import Moya
 import RxCocoa
 import RxSwift
 
-public class SessionManager {
+class SessionManager {
 
-    public static let shared = SessionManager()
+    static let shared = SessionManager()
     private init() {}
 
-    // MARK: Constants
+    // MARK: - Constants
     private enum SessionConstants {
         static let accessTokenKey = "accessToken"
         static let refreshTokenKey = "refreshToken"
     }
 
-    // MARK: Token properties
+    // MARK: - Token properties
     private var accessToken: String? {
         didSet {
             if let accessToken = accessToken {
@@ -37,12 +37,12 @@ public class SessionManager {
         }
     }
 
-    public var publicAccessToken: String {
+    var publicAccessToken: String {
         // If token is nil we send invalid empty token
         return accessToken ?? ""
     }
 
-    public let isActiveRelay = BehaviorRelay<Bool>(value: false)
+    let isActiveRelay = BehaviorRelay<Bool>(value: false)
 
     private var refreshToken: String? {
         didSet {
@@ -54,10 +54,10 @@ public class SessionManager {
         }
     }
 
-    // MARK: Keychain
+    // MARK: - Keychain
     private let tokenEncoding: String.Encoding = .utf8
 
-    public func resumeSession() {
+    func resumeSession() {
         guard let accessTokenData = KeychainService.load(key: AuthConstants.accessTokenKey),
             let refreshTokenData = KeychainService.load(key: AuthConstants.refreshTokenKey) else {
                 return
@@ -77,10 +77,10 @@ public class SessionManager {
         KeychainService.delete(key: key)
     }
 
-    // MARK: API interface
+    // MARK: - API interface
     private let authAPI = NetworkService<AuthAPI>()
 
-    public let refreshAccessTokenIfNeeded = { (error: Observable<Error>) -> Observable<Void> in
+    let refreshAccessTokenIfNeeded = { (error: Observable<Error>) -> Observable<Void> in
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
                 moyaError.response?.statusCode == 401,
@@ -90,7 +90,9 @@ public class SessionManager {
             }
             guard let refreshToken = SessionManager.shared.refreshToken else { // Make sure we have a refresh token
                 SessionManager.shared.logout()
-                showGeneralErrorAlert("You have been logged out.")
+                NotificationBannerQueue.shared
+                    .enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                      title: GeneralError.refreshTokenExpired.localizedDescription))
                 throw GeneralError.alreadyHandled // so consumer knows
             }
             return SessionManager.shared.authAPI.makeRequest(with: .tokenRefresh(refreshToken: refreshToken))
@@ -99,7 +101,8 @@ public class SessionManager {
                     guard response.statusCode == 200,
                         let newAccessToken = try? JSONDecoder().decode(TokenPair.self, from: response.data) else {
                             SessionManager.shared.logout()
-                            showGeneralErrorAlert("You have been logged out.")
+                            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                            title: GeneralError.refreshTokenExpired.localizedDescription))
                             throw GeneralError.alreadyHandled // so consumer knows
                     }
                     SessionManager.shared.accessToken = newAccessToken.accessTokenString
@@ -108,7 +111,7 @@ public class SessionManager {
         }
     }
 
-    public func login(email: String, password: String) -> Single<Void> {
+    func login(email: String, password: String) -> Single<Void> {
         return authAPI.makeRequest(with: .tokenObtain(email: email,
                                                                         password: password))
             .flatMap({ (response) -> Single<Void> in
@@ -127,19 +130,19 @@ public class SessionManager {
             })
     }
 
-    public func logout() {
+    func logout() {
         accessToken = nil
         refreshToken = nil
     }
 }
 
-// MARK: Custom error
-public enum SessionError {
+// MARK: - Custom error
+enum SessionError {
     case couldNotLogin
 }
 
 extension SessionError: LocalizedError {
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         case .couldNotLogin:
             return "Could not login"

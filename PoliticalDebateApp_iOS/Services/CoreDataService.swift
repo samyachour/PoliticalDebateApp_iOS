@@ -9,7 +9,7 @@
 import CoreData
 import UIKit
 
-public enum CoreDataConstants {
+enum CoreDataConstants {
     static let progressEntity = "LocalProgress"
     static let starredEntity = "LocalStarred"
     static let debateEntity = "LocalDebate"
@@ -21,14 +21,14 @@ public enum CoreDataConstants {
     static let container = "PoliticalDebateApp_iOS"
 }
 
-public final class CoreDataService {
+final class CoreDataService {
 
-    // MARK: CRUD Operations
+    // MARK: - CRUD Operations
 
-    public static func fetchRecordsForEntity<T: NSManagedObject>(_ entity: String,
-                                                                 in managedObjectContext: NSManagedObjectContext,
-                                                                 with predicate: NSPredicate? = nil,
-                                                                 unique: Bool = false) -> [T]? {
+    static func fetchRecordsForEntity<T: NSManagedObject>(_ entity: String,
+                                                          in managedObjectContext: NSManagedObjectContext,
+                                                          with predicate: NSPredicate? = nil,
+                                                          unique: Bool = false) -> [T]? {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
 
         if let predicate = predicate {
@@ -47,12 +47,12 @@ public final class CoreDataService {
         return results
     }
 
-    // MARK: Loading and saving context
+    // MARK: - Loading and saving context
 
-    public static let persistentContainer = NSPersistentContainer(name: CoreDataConstants.container)
+    static let persistentContainer = NSPersistentContainer(name: CoreDataConstants.container)
     private static var loadedStores = false
 
-    public static func loadPersistentContainer(completionHandler: @escaping (Error?) -> Void) {
+    static func loadPersistentContainer(completionHandler: @escaping (Error?) -> Void) {
         guard !loadedStores else {
             debugLog("Core Data stack has already been intialized")
             completionHandler(nil)
@@ -84,7 +84,7 @@ public final class CoreDataService {
         })
     }
 
-    public static func saveContext () {
+    static func saveContext () {
         let context = CoreDataService.persistentContainer.viewContext
 
         if context.hasChanges {
@@ -96,9 +96,9 @@ public final class CoreDataService {
         }
     }
 
-    // MARK: Helpers
+    // MARK: - Helpers
 
-    public static func showCoreDataLoadAlert() {
+    static func showCoreDataLoadAlert() {
         let coreDataLoadAlert = UIAlertController(title: "Could not load local data",
                                                   message: "Try checking the app permissions. Otherwise your device might be out of space.",
                                                   preferredStyle: .alert)
@@ -107,7 +107,7 @@ public final class CoreDataService {
         safelyShowAlert(alert: coreDataLoadAlert)
     }
 
-    public static func showCoreDataSaveAlert() {
+    static func showCoreDataSaveAlert() {
         let coreDataSaveAlert = UIAlertController(title: "Could not save local data",
                                                   message: "Try checking the app permissions. Otherwise your device might be out of space.",
                                                   preferredStyle: .alert)
@@ -116,7 +116,7 @@ public final class CoreDataService {
         safelyShowAlert(alert: coreDataSaveAlert)
     }
 
-    public static func showCoreDataCorruptedAlert() {
+    static func showCoreDataCorruptedAlert() {
         let coreDataCorruptedAlert = UIAlertController(title: "Local data corrupted",
                                                        message: "Please delete and reinstall this app.",
                                                        preferredStyle: .alert)

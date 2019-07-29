@@ -13,7 +13,7 @@ enum StarredAPI {
     case loadAllStarred
 }
 
-public enum StarredConstants {
+enum StarredConstants {
     static let starredListKey = "starred_list"
     static let unstarredListKey = "unstarred_list"
 }

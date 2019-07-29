@@ -10,19 +10,19 @@ import Moya
 import RxCocoa
 import RxSwift
 
-public enum LoginOrRegisterState: String { // raw value for labels
+enum LoginOrRegisterState: String { // raw value for labels
     case login = "Login"
     case register = "Register"
 }
 
-public class LoginOrRegisterViewModel {
+class LoginOrRegisterViewModel {
 
-    public var loginOrRegisterState = LoginOrRegisterState.login
+    var loginOrRegisterState = LoginOrRegisterState.login
     private let authNetworkService = NetworkService<AuthAPI>()
 
-    // MARK: Action handlers
+    // MARK: - Action handlers
 
-    public func getForgotPasswordRequestObservable(_ forgotPasswordRelay: PublishRelay<(String, Bool)>) -> Observable<Single<Response>> {
+    func getForgotPasswordRequestObservable(_ forgotPasswordRelay: PublishRelay<(String, Bool)>) -> Observable<Single<Response>> {
         return forgotPasswordRelay.map { [weak self] emailText, force -> Single<Response> in
             guard let self = self else {
                 return .error(GeneralError.basic)
@@ -33,12 +33,12 @@ public class LoginOrRegisterViewModel {
     }
 }
 
-public enum LoginOrRegisterErrors: Error {
+enum LoginOrRegisterErrors: Error {
     case emptyEmailField
     case emptyPasswordField
     case emptyConfirmPasswordField
 
-    public var localizedDescription: String {
+    var localizedDescription: String {
         switch self {
         case .emptyEmailField:
             return "Please fill in your email."

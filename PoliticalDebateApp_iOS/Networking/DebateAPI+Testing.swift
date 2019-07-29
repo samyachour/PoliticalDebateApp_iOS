@@ -13,7 +13,7 @@ extension DebateAPI {
     var sampleData: Data {
         switch self {
         case .debate:
-            return StubAccess.stubbedResponse("Debate")
+            return StubAccess.stubbedResponse("DebateSingle")
         case .debateSearch:
             return StubAccess.stubbedResponse("DebateSearch")
         }

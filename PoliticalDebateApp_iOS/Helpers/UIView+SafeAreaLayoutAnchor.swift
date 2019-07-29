@@ -10,12 +10,12 @@ import UIKit
 
 extension UIView {
 
-    public var topLayoutAnchor: NSLayoutYAxisAnchor {
+    var topLayoutAnchor: NSLayoutYAxisAnchor {
         if #available(iOS 11.0, *) { return safeAreaLayoutGuide.topAnchor }
         return topAnchor
     }
 
-    public var bottomLayoutAnchor: NSLayoutYAxisAnchor {
+    var bottomLayoutAnchor: NSLayoutYAxisAnchor {
         if #available(iOS 11.0, *) { return safeAreaLayoutGuide.bottomAnchor }
         return bottomAnchor
     }

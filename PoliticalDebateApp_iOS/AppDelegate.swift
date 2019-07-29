@@ -13,11 +13,11 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    public static var shared: AppDelegate? {
+    static var shared: AppDelegate? {
         return UIApplication.shared.delegate as? AppDelegate
     }
-    public var mainNavigationController: UINavigationController?
-    internal var window: UIWindow?
+    var mainNavigationController: UINavigationController?
+    var window: UIWindow?
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

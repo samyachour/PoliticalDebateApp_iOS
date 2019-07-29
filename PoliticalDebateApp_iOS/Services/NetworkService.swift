@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 import RxSwiftExt
 
-public var appBaseURL: String {
+var appBaseURL: String {
     // TODO: Change URLs
     #if DEBUG
     // In our build phases we have a script that runs after ProcessInfoPlistFile & allows ATS HTTP for the Debug environment
@@ -28,7 +28,7 @@ private protocol Networkable {
     func makeRequest(with appAPI: AppAPI) -> Single<Response>
 }
 
-public struct NetworkService<T>: Networkable where T: TargetType {
+struct NetworkService<T>: Networkable where T: TargetType {
     fileprivate let provider = MoyaProvider<T>(plugins: [
         NetworkLoggerPlugin(verbose: true),
         AccessTokenPlugin { SessionManager.shared.publicAccessToken }
@@ -36,7 +36,7 @@ public struct NetworkService<T>: Networkable where T: TargetType {
 
     private let maxAttemptCount: UInt = 3
 
-    public func makeRequest(with appAPI: T) -> Single<Response> {
+    func makeRequest(with appAPI: T) -> Single<Response> {
         #if TEST
         return makeTestRequest(with: appAPI)
         #else

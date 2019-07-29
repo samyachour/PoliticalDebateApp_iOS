@@ -8,7 +8,7 @@
 
 import UIKit
 
-public enum Constants {
+enum Constants {
     static let standardAnimationDuration = 0.4
     static let minimumPasswordLength = 6 // dictated by backend
     static let retryErrorCodes = [408, 502, 503, 504]
@@ -17,7 +17,7 @@ public enum Constants {
     static let timeBetweenRetries = 1.0
 }
 
-public enum GeneralColors {
+enum GeneralColors {
     static let navBarTint = UIColor.customLightGreen1
     static let softButton = UIColor.customDarkGray1
     static let hardButton = UIColor.customDarkGray2
@@ -26,24 +26,25 @@ public enum GeneralColors {
     static let text = UIColor.black
 }
 
-public enum GeneralFonts {
+enum GeneralFonts {
     static let button = UIFont.primaryRegular()
     static let navBarTitle = UIFont.primaryLight(24.0)
 }
 
-public enum GeneralCopies {
+enum GeneralCopies {
     static let errorAlertTitle = "There was a problem"
     static let successAlertTitle = "Success"
 }
 
-public enum GeneralError: Error {
+enum GeneralError: Error {
     case basic
     case unknownSuccessCode // not 200-399 but not the success code we expected
     case unknownErrorCode // 400+ but not the error code we expected
     case connectivity
     case alreadyHandled // For consumers to know if producers have already handled the error
+    case refreshTokenExpired
 
-    public var localizedDescription: String {
+    var localizedDescription: String {
         switch self {
         case .basic:
             return "Something weird happened. Please try again."
@@ -55,10 +56,12 @@ public enum GeneralError: Error {
             return "Having trouble connecting to the network."
         case .alreadyHandled:
             return "" // Never used in alerts
+        case .refreshTokenExpired:
+            return "You have been logged out."
         }
     }
 }
 
-public enum GeneralKeys {
+enum GeneralKeys {
     static let message = "message" // key from backend custom error message
 }

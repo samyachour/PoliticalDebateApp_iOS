@@ -9,7 +9,7 @@
 import UIKit
 
 extension UIViewController {
-    public var topLayoutAnchor: NSLayoutYAxisAnchor {
+    var topLayoutAnchor: NSLayoutYAxisAnchor {
         if #available(iOS 11.0, *) {
             return view.topLayoutAnchor
         } else {
@@ -17,7 +17,7 @@ extension UIViewController {
         }
     }
 
-    public var bottomLayoutAnchor: NSLayoutYAxisAnchor {
+    var bottomLayoutAnchor: NSLayoutYAxisAnchor {
         if #available(iOS 11.0, *) {
             return view.bottomLayoutAnchor
         } else {

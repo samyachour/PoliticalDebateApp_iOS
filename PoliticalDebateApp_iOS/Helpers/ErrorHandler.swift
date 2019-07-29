@@ -11,16 +11,17 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-public class ErrorHandler {
+class ErrorHandler {
 
-    // MARK: Basic errors
+    // MARK: - Basic errors
 
     // For observable onError closures
-    public static let handleErrorAlertClosure: (Error) -> Void = { error in
-        showGeneralErrorAlert( error.localizedDescription)
+    static let handleErrorAlertClosure: (Error) -> Void = { error in
+        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                        title: error.localizedDescription))
     }
 
-    public static func showBackendErrorMessage(_ response: Response) {
+    static func showBackendErrorMessage(_ response: Response) {
         guard response.statusCode == Constants.customBackendErrorMessageCode,
             let responseJSONData = try? response.mapJSON(failsOnEmptyData: true),
             let responseJSON = responseJSONData as? [String: AnyObject],
@@ -28,10 +29,11 @@ public class ErrorHandler {
                 return
         }
 
-        showGeneralErrorAlert(customBackendErrorMessage)
+        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                        title: customBackendErrorMessage))
     }
 
-    public static let shouldRetryRequest = { (error: Observable<Error>) -> Observable<Void> in
+    static let shouldRetryRequest = { (error: Observable<Error>) -> Observable<Void> in
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
                 let errorCode = moyaError.response?.statusCode,
@@ -45,14 +47,16 @@ public class ErrorHandler {
         }
     }
 
-    // MARK: Connectivity errors
+    // MARK: - Connectivity errors
 
-    public static let checkForConnectivityError = { (error: Error) -> Void in
+    static let checkForConnectivityError = { (error: Error) -> Void in
         if let error = error as? MoyaError {
             switch error {
             case .underlying(let error, _): // Access underlying swift error, see MoyaError.swift
                 if (error as NSError).domain == NSURLErrorDomain {
-                    showGeneralErrorAlert(GeneralError.connectivity.localizedDescription)
+                    NotificationBannerQueue.shared
+                        .enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                          title: GeneralError.connectivity.localizedDescription))
                     throw GeneralError.alreadyHandled // so consumer knows
                 }
             default:
@@ -61,9 +65,9 @@ public class ErrorHandler {
         }
     }
 
-    // MARK: Throttle errors
+    // MARK: - Throttle errors
 
-    public static let checkForThrottleError = { (error: Error) -> Void in
+    static let checkForThrottleError = { (error: Error) -> Void in
         if let moyaError = error as? MoyaError,
             let response = moyaError.response,
             response.statusCode == 429 {

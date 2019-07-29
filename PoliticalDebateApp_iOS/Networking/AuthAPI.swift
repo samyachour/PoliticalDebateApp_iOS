@@ -18,7 +18,7 @@ enum AuthAPI {
     case delete
 }
 
-public enum AuthConstants {
+enum AuthConstants {
     static let accessTokenKey = "access"
     static let refreshTokenKey = "refresh"
     static let emailKey = "email"

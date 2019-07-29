@@ -11,9 +11,9 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-public class LoginOrRegisterViewController: UIViewController {
+class LoginOrRegisterViewController: UIViewController {
 
-    public required init(viewModel: LoginOrRegisterViewModel) {
+    required init(viewModel: LoginOrRegisterViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil) // we don't use nibs
     }
@@ -22,8 +22,8 @@ public class LoginOrRegisterViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: VC Lifecycle
-    public override func viewDidLoad() {
+    // MARK: - VC Lifecycle
+    override func viewDidLoad() {
         super.viewDidLoad()
 
         installViewConstraints()
@@ -31,10 +31,10 @@ public class LoginOrRegisterViewController: UIViewController {
         hideConfirmPasswordField(immediately: true)
     }
 
-    // MARK: Dependencies
+    // MARK: - Dependencies
     private let sessionManager = SessionManager.shared
 
-    // MARK: Observers & Observables
+    // MARK: - Observers & Observables
 
     private let viewModel: LoginOrRegisterViewModel
     private let disposeBag = DisposeBag()
@@ -42,9 +42,9 @@ public class LoginOrRegisterViewController: UIViewController {
     // We need to trigger this from 2 places, the button and an alert action
     private let forgotPasswordRelay = PublishRelay<(String, Bool)>()
 
-    // MARK: Action handlers
+    // MARK: - Action handlers
 
-    // MARK: Helpers
+    // MARK: - Helpers
 
     private static func isValidEmail(_ email: String) -> Bool {
         let firstPart = "[A-Z0-9a-z]([A-Z0-9a-z._%+-]{0,30}[A-Z0-9a-z])?"
@@ -58,11 +58,12 @@ public class LoginOrRegisterViewController: UIViewController {
         return password.count >= Constants.minimumPasswordLength
     }
 
-    private static let showInvalidEmailAlert = {
-        showGeneralErrorAlert("Please provide a proper email.")
+    private static func showInvalidEmailError() {
+        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                        title: "Please provide a proper email"))
     }
 
-    // MARK: UI Properties
+    // MARK: - UI Properties
 
     private static let labelToTextFieldDistance: CGFloat = 16
     private static let fieldDistance: CGFloat = 32
@@ -76,7 +77,7 @@ public class LoginOrRegisterViewController: UIViewController {
         return fadeTextAnimation
     }()
 
-    // MARK: UI Elements
+    // MARK: - UI Elements
 
     private let emailLabel: UILabel = {
         let emailLabel = UILabel(frame: .zero)
@@ -168,7 +169,7 @@ public class LoginOrRegisterViewController: UIViewController {
 
 }
 
-// MARK: View constraints & binding
+// MARK: - View constraints & binding
 extension LoginOrRegisterViewController {
 
     private func installViewBinds() {
@@ -195,7 +196,7 @@ extension LoginOrRegisterViewController {
                 guard let emailElement = emailEvent.element,
                     let emailText = emailElement,
                     LoginOrRegisterViewController.isValidEmail(emailText) else {
-                        LoginOrRegisterViewController.showInvalidEmailAlert()
+                        LoginOrRegisterViewController.showInvalidEmailError()
                         return
                 }
                 self?.forgotPasswordRelay.accept((emailText, false))
@@ -210,9 +211,12 @@ extension LoginOrRegisterViewController {
                 singleResponse.subscribe(onSuccess: { (response) in
                     switch response.statusCode {
                     case 200:
-                        showGeneralSuccessAlert("Please check your email for a password reset link.")
+                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                                        title: "Please check your email for a password reset link.",
+                                                                                                        duration: .forever))
                     default:
-                        showGeneralErrorAlert(GeneralError.unknownSuccessCode.localizedDescription)
+                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                        title: GeneralError.unknownSuccessCode.localizedDescription))
                     }
                 }, onError: { [weak self] error in
                     guard let self = self else { return }
@@ -222,7 +226,8 @@ extension LoginOrRegisterViewController {
                     }
                     guard let moyaError = error as? MoyaError,
                         let response = moyaError.response else {
-                            showGeneralErrorAlert()
+                            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                            title: GeneralError.basic.localizedDescription))
                             return
                     }
                     switch response.statusCode {
@@ -238,7 +243,7 @@ extension LoginOrRegisterViewController {
                             // self already weakified
                             guard let emailText = self.emailTextField.text,
                                 LoginOrRegisterViewController.isValidEmail(emailText) else {
-                                    LoginOrRegisterViewController.showInvalidEmailAlert()
+                                    LoginOrRegisterViewController.showInvalidEmailError()
                                     return
                             }
                             self.forgotPasswordRelay.accept((emailText, true))
@@ -246,9 +251,11 @@ extension LoginOrRegisterViewController {
                         errorAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
                         safelyShowAlert(alert: errorAlert)
                     case 404:
-                        showGeneralErrorAlert("Coulnd't find an account associated with that email.")
+                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                        title: "Coulnd't find an account associated with that email."))
                     default:
-                        showGeneralErrorAlert()
+                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                        title: GeneralError.basic.localizedDescription))
                     }
                 })
                     .disposed(by: self.disposeBag)

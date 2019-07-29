@@ -9,9 +9,9 @@
 import Foundation
 import Security
 
-public final class KeychainService {
+final class KeychainService {
 
-    @discardableResult public static func save(key: String, data: Data) -> OSStatus {
+    @discardableResult static func save(key: String, data: Data) -> OSStatus {
         let query = [
             kSecClass as String       : kSecClassGenericPassword as String,
             kSecAttrAccount as String : key,
@@ -22,7 +22,7 @@ public final class KeychainService {
         return SecItemAdd(query as CFDictionary, nil)
     }
 
-    @discardableResult public static func delete(key: String) -> OSStatus {
+    @discardableResult static func delete(key: String) -> OSStatus {
         let query = [
             kSecClass as String       : kSecClassGenericPassword as String,
             kSecAttrAccount as String : key ] as [String : Any]
@@ -30,7 +30,7 @@ public final class KeychainService {
         return SecItemDelete(query as CFDictionary)
     }
 
-    public static func load(key: String) -> Data? {
+    static func load(key: String) -> Data? {
         let query = [
             kSecClass as String       : kSecClassGenericPassword,
             kSecAttrAccount as String : key,
@@ -48,7 +48,7 @@ public final class KeychainService {
         }
     }
 
-    public static func createUniqueID() -> String {
+    static func createUniqueID() -> String {
         let uuid: CFUUID = CFUUIDCreate(nil)
         let cfStr: CFString = CFUUIDCreateString(nil, uuid)
 

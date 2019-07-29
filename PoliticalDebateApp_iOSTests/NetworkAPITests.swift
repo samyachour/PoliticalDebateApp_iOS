@@ -32,10 +32,9 @@ class NetworkAPITests: XCTestCase {
             .map(Debate.self)
             .subscribe(onSuccess: { debate in
                 XCTAssert(debate.title == "Should we ban assault rifles?")
-                XCTAssert(debate.debateMap?[0].description == "The 2nd amendment protects these rights")
-                XCTAssert(debate.debateMap?[0].rebuttals?[0] == 2)
-                XCTAssert(debate.debateMap?[1].primaryKey == 2)
-                XCTAssert(debate.debateMap?[1].images[0].source == "images")
+                XCTAssert(debate.debateMap?[0].description == "No because of our 2nd amendment rights")
+                XCTAssert(debate.debateMap?[0].rebuttals?[0].primaryKey == 2)
+                XCTAssert(debate.debateMap?[0].rebuttals?[0].images[0].source == "Wikipedia")
             }, onError: { err in
                 XCTAssert(false)
             }).disposed(by: disposeBag)
@@ -46,7 +45,7 @@ class NetworkAPITests: XCTestCase {
         testAPI.makeRequest(with: .debateSearch(searchString: ""))
             .map([Debate].self)
             .subscribe(onSuccess: { debates in
-                XCTAssert(debates[1].primaryKey == 2)
+                XCTAssert(debates[0].primaryKey == 1)
             }, onError: { _ in
                 XCTAssert(false)
             }).disposed(by: disposeBag)
@@ -58,7 +57,7 @@ class NetworkAPITests: XCTestCase {
             .map(Progress.self)
             .subscribe(onSuccess: { progress in
                 XCTAssert(progress.debatePrimaryKey == 1)
-            }, onError: { _ in
+            }, onError: { err in
                 XCTAssert(false)
             }).disposed(by: disposeBag)
     }
