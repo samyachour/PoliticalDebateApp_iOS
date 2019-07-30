@@ -6,6 +6,7 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Foundation
 import Moya
 import RxCocoa
 import RxSwift
@@ -23,26 +24,22 @@ class LoginOrRegisterViewController: UIViewController {
     }
 
     // MARK: - VC Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         installViewConstraints()
         installViewBinds()
-        hideConfirmPasswordField(immediately: true)
     }
 
     // MARK: - Dependencies
+
     private let sessionManager = SessionManager.shared
 
     // MARK: - Observers & Observables
 
     private let viewModel: LoginOrRegisterViewModel
     private let disposeBag = DisposeBag()
-
-    // We need to trigger this from 2 places, the button and an alert action
-    private let forgotPasswordRelay = PublishRelay<(String, Bool)>()
-
-    // MARK: - Action handlers
 
     // MARK: - Helpers
 
@@ -65,11 +62,8 @@ class LoginOrRegisterViewController: UIViewController {
 
     // MARK: - UI Properties
 
-    private static let labelToTextFieldDistance: CGFloat = 16
-    private static let fieldDistance: CGFloat = 32
-    private static let textFieldToEdgeDistance: CGFloat = 56
-    private var submitButtonTopToPassword: NSLayoutConstraint?
-    private var submitButtonTopToConfirmPassword: NSLayoutConstraint?
+    private static let verticalEdgeInset: CGFloat = 48
+    private static let horizontalEdgeInset: CGFloat = 56
     private let fadeTextAnimation: CATransition = {
         let fadeTextAnimation = CATransition()
         fadeTextAnimation.duration = Constants.standardAnimationDuration
@@ -78,6 +72,27 @@ class LoginOrRegisterViewController: UIViewController {
     }()
 
     // MARK: - UI Elements
+
+    private lazy var stackViewContainer: UIStackView = {
+        let stackViewContainer = UIStackView(arrangedSubviews: [emailLabel,
+                                                                emailTextField,
+                                                                passwordLabel,
+                                                                passwordTextField,
+                                                                confirmPasswordLabel,
+                                                                confirmPasswordTextField,
+                                                                submitButton,
+                                                                forgotPasswordButton,
+                                                                loginOrRegisterButton])
+        stackViewContainer.alignment = .center
+        stackViewContainer.axis = .vertical
+        stackViewContainer.isLayoutMarginsRelativeArrangement = true
+        stackViewContainer.layoutMargins = UIEdgeInsets(top: LoginOrRegisterViewController.verticalEdgeInset,
+                                                        left: 0,
+                                                        bottom: LoginOrRegisterViewController.verticalEdgeInset * 2,
+                                                        right: 0)
+        stackViewContainer.distribution = .equalSpacing
+        return stackViewContainer
+    }()
 
     private let emailLabel: UILabel = {
         let emailLabel = UILabel(frame: .zero)
@@ -170,26 +185,77 @@ class LoginOrRegisterViewController: UIViewController {
 }
 
 // MARK: - View constraints & binding
+
 extension LoginOrRegisterViewController {
 
+    private func installViewConstraints() {
+        navigationController?.navigationBar.tintColor = GeneralColors.softButton
+        view.backgroundColor = GeneralColors.background
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
+                                                                   .font: GeneralFonts.navBarTitle as Any]
+
+        view.addSubview(stackViewContainer)
+
+        for subview in stackViewContainer.arrangedSubviews where subview as? UITextField != nil {
+            subview.translatesAutoresizingMaskIntoConstraints = false
+            subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
+                                              constant: -LoginOrRegisterViewController.horizontalEdgeInset).isActive = true
+            subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
+                                             constant: LoginOrRegisterViewController.horizontalEdgeInset).isActive = true
+        }
+
+        stackViewContainer.translatesAutoresizingMaskIntoConstraints = false
+
+        stackViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
+        stackViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        stackViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
+        stackViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+    }
+
     private func installViewBinds() {
+        installLoginOrRegisterButtonBinds()
+        installForgotPasswordButtonBinds()
+    }
+
+    private func installLoginOrRegisterButtonBinds() {
 
         loginOrRegisterButton.rx.tap
             .subscribe { [weak self] (_) in
                 guard let self = self else { return }
-                switch self.viewModel.loginOrRegisterState {
-                case .login:
-                    self.showConfirmPasswordField()
-                case .register:
-                    self.hideConfirmPasswordField()
-                }
+                self.viewModel.loginOrRegisterStateRelay.accept((self.viewModel.loginOrRegisterStateRelay.value.state.otherState, true))
         }.disposed(by: disposeBag)
 
-        installForgotPasswordBinds()
+        viewModel.loginOrRegisterStateRelay.subscribe { [weak self] (newStateEvent) in
+            guard let newLoginOrRegisterState = newStateEvent.element,
+                let self = self else {
+                return
+            }
+
+            let newState = newLoginOrRegisterState.state
+            let shouldShowConfirmPasswordFields = newState == .register
+            let shouldAnimate = newLoginOrRegisterState.animated
+
+            self.navigationController?.navigationBar.layer.add(self.fadeTextAnimation, forKey: "fadeText")
+
+            UIView.animate(withDuration: shouldAnimate ? Constants.standardAnimationDuration : 0.0, animations: {
+                self.confirmPasswordLabel.isHidden = !shouldShowConfirmPasswordFields
+                self.confirmPasswordTextField.isHidden = !shouldShowConfirmPasswordFields
+            }) { _ in // flag not reliable
+                self.navigationController?.navigationBar.layer.add(self.fadeTextAnimation, forKey: "fadeText")
+                self.navigationItem.title = newState.rawValue
+                UIView.transition(with: self.loginOrRegisterButton,
+                                  duration: shouldAnimate ? Constants.standardAnimationDuration : 0.0,
+                                  options: .transitionCrossDissolve,
+                                  animations: {
+                                    self.loginOrRegisterButton.setTitle(newState.otherState.rawValue, for: .normal)
+                    },
+                                  completion: nil)
+            }
+        }.disposed(by: disposeBag)
     }
 
     // swiftlint:disable function_body_length cyclomatic_complexity
-    private func installForgotPasswordBinds() {
+    private func installForgotPasswordButtonBinds() {
         forgotPasswordButton.rx.tap
             .withLatestFrom(emailTextField.rx.text)
             .subscribe {[weak self] (emailEvent) in
@@ -199,10 +265,10 @@ extension LoginOrRegisterViewController {
                         LoginOrRegisterViewController.showInvalidEmailError()
                         return
                 }
-                self?.forgotPasswordRelay.accept((emailText, false))
+                self?.viewModel.forgotPasswordRelay.accept((emailText, false))
             }.disposed(by: disposeBag)
 
-        viewModel.getForgotPasswordRequestObservable(forgotPasswordRelay)
+        viewModel.forgotPasswordObservable
             .subscribe { [weak self] (singleEvent) in
                 guard let self = self,
                     let singleResponse = singleEvent.element else {
@@ -226,8 +292,7 @@ extension LoginOrRegisterViewController {
                     }
                     guard let moyaError = error as? MoyaError,
                         let response = moyaError.response else {
-                            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                            title: GeneralError.basic.localizedDescription))
+                            ErrorHandler.showBasicErrorBanner()
                             return
                     }
                     switch response.statusCode {
@@ -246,151 +311,18 @@ extension LoginOrRegisterViewController {
                                     LoginOrRegisterViewController.showInvalidEmailError()
                                     return
                             }
-                            self.forgotPasswordRelay.accept((emailText, true))
+                            self.viewModel.forgotPasswordRelay.accept((emailText, true))
                         }))
                         errorAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
                         safelyShowAlert(alert: errorAlert)
                     case 404:
                         NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                        title: "Coulnd't find an account associated with that email."))
+                                                                                                        title: "Couldn't find an account associated with that email."))
                     default:
-                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                        title: GeneralError.basic.localizedDescription))
+                        ErrorHandler.showBasicErrorBanner()
                     }
-                })
-                    .disposed(by: self.disposeBag)
+                }).disposed(by: self.disposeBag)
             }.disposed(by: disposeBag)
     }
 
-    // swiftlint:disable:next function_body_length
-    private func installViewConstraints() {
-        navigationController?.navigationBar.tintColor = GeneralColors.softButton
-        view.backgroundColor = GeneralColors.background
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
-                                                                   .font: GeneralFonts.navBarTitle as Any]
-
-        view.addSubview(emailLabel)
-        view.addSubview(emailTextField)
-        view.addSubview(passwordLabel)
-        view.addSubview(passwordTextField)
-        view.addSubview(confirmPasswordLabel)
-        view.addSubview(confirmPasswordTextField)
-        view.addSubview(submitButton)
-        view.addSubview(forgotPasswordButton)
-        view.addSubview(loginOrRegisterButton)
-
-        emailLabel.translatesAutoresizingMaskIntoConstraints = false
-        emailTextField.translatesAutoresizingMaskIntoConstraints = false
-        passwordLabel.translatesAutoresizingMaskIntoConstraints = false
-        passwordTextField.translatesAutoresizingMaskIntoConstraints = false
-        confirmPasswordLabel.translatesAutoresizingMaskIntoConstraints = false
-        confirmPasswordTextField.translatesAutoresizingMaskIntoConstraints = false
-        submitButton.translatesAutoresizingMaskIntoConstraints = false
-        forgotPasswordButton.translatesAutoresizingMaskIntoConstraints = false
-        loginOrRegisterButton.translatesAutoresizingMaskIntoConstraints = false
-
-        emailLabel.topAnchor.constraint(equalTo: topLayoutAnchor, constant: 40).isActive = true
-        emailLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        emailLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-
-        emailTextField.topAnchor.constraint(equalTo: emailLabel.bottomAnchor,
-                                            constant: LoginOrRegisterViewController.labelToTextFieldDistance).isActive = true
-        emailTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                 constant: -LoginOrRegisterViewController.textFieldToEdgeDistance).isActive = true
-        emailTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                constant: LoginOrRegisterViewController.textFieldToEdgeDistance).isActive = true
-
-        passwordLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor,
-                                           constant: LoginOrRegisterViewController.fieldDistance).isActive = true
-        passwordLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        passwordLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-
-        passwordTextField.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor,
-                                               constant: LoginOrRegisterViewController.labelToTextFieldDistance).isActive = true
-        passwordTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                    constant: -LoginOrRegisterViewController.textFieldToEdgeDistance).isActive = true
-        passwordTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                   constant: LoginOrRegisterViewController.textFieldToEdgeDistance).isActive = true
-
-        confirmPasswordLabel.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor,
-                                                  constant: LoginOrRegisterViewController.fieldDistance).isActive = true
-        confirmPasswordLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        confirmPasswordLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-
-        confirmPasswordTextField.topAnchor.constraint(equalTo: confirmPasswordLabel.bottomAnchor,
-                                                      constant: LoginOrRegisterViewController.labelToTextFieldDistance).isActive = true
-        confirmPasswordTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                           constant: -LoginOrRegisterViewController.textFieldToEdgeDistance).isActive = true
-        confirmPasswordTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                          constant: LoginOrRegisterViewController.textFieldToEdgeDistance).isActive = true
-
-        submitButtonTopToPassword = submitButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor,
-                                                                      constant: LoginOrRegisterViewController.fieldDistance)
-        submitButtonTopToConfirmPassword = submitButton.topAnchor.constraint(equalTo: confirmPasswordTextField.bottomAnchor,
-                                                                             constant: LoginOrRegisterViewController.fieldDistance)
-        submitButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-
-        forgotPasswordButton.topAnchor.constraint(equalTo: submitButton.bottomAnchor,
-                                                  constant: LoginOrRegisterViewController.labelToTextFieldDistance).isActive = true
-        forgotPasswordButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-
-        loginOrRegisterButton.topAnchor.constraint(equalTo: forgotPasswordButton.bottomAnchor,
-                                                   constant: LoginOrRegisterViewController.labelToTextFieldDistance).isActive = true
-        loginOrRegisterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-
-    }
-
-    private func showConfirmPasswordField() {
-        viewModel.loginOrRegisterState = .register
-        confirmPasswordLabel.isHidden = false
-        confirmPasswordTextField.isHidden = false
-
-        UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
-            self?.confirmPasswordLabel.alpha = 1.0
-            self?.confirmPasswordTextField.alpha = 1.0
-            self?.submitButtonTopToPassword?.isActive = false
-            self?.submitButtonTopToConfirmPassword?.isActive = true
-            self?.view.layoutIfNeeded()
-        }) { [weak self] _ in // flag not reliable
-            guard let self = self else { return }
-
-            self.navigationController?.navigationBar.layer.add(self.fadeTextAnimation, forKey: "fadeText")
-            self.navigationItem.title = LoginOrRegisterState.register.rawValue
-            UIView.transition(with: self.loginOrRegisterButton,
-                              duration: Constants.standardAnimationDuration,
-                              options: .transitionCrossDissolve,
-                              animations: { [weak self] in
-                                self?.loginOrRegisterButton.setTitle(LoginOrRegisterState.login.rawValue, for: .normal)
-            },
-                              completion: nil)
-        }
-    }
-
-    private func hideConfirmPasswordField(immediately: Bool = false) {
-        viewModel.loginOrRegisterState = .login
-        navigationController?.navigationBar.layer.add(fadeTextAnimation, forKey: "fadeText")
-
-        UIView.animate(withDuration: immediately ? 0.0 : Constants.standardAnimationDuration, animations: { [weak self] in
-            self?.confirmPasswordLabel.alpha = 0.0
-            self?.confirmPasswordTextField.alpha = 0.0
-            self?.submitButtonTopToConfirmPassword?.isActive = false
-            self?.submitButtonTopToPassword?.isActive = true
-            self?.view.layoutIfNeeded()
-        }) { [weak self] _ in // flag not reliable
-            guard let self = self else { return }
-
-            self.confirmPasswordLabel.isHidden = true
-            self.confirmPasswordTextField.isHidden = true
-
-            self.navigationController?.navigationBar.layer.add(self.fadeTextAnimation, forKey: "fadeText")
-            self.navigationItem.title = LoginOrRegisterState.login.rawValue
-            UIView.transition(with: self.loginOrRegisterButton,
-                              duration: immediately ? 0.0 : Constants.standardAnimationDuration,
-                              options: .transitionCrossDissolve,
-                              animations: { [weak self] in
-                                self?.loginOrRegisterButton.setTitle(LoginOrRegisterState.register.rawValue, for: .normal)
-            },
-                              completion: nil)
-        }
-    }
 }

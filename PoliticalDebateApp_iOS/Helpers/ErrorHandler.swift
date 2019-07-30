@@ -21,6 +21,11 @@ class ErrorHandler {
                                                                                         title: error.localizedDescription))
     }
 
+    static func showBasicErrorBanner() {
+        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                        title: GeneralError.basic.localizedDescription))
+    }
+
     static func showBackendErrorMessage(_ response: Response) {
         guard response.statusCode == Constants.customBackendErrorMessageCode,
             let responseJSONData = try? response.mapJSON(failsOnEmptyData: true),

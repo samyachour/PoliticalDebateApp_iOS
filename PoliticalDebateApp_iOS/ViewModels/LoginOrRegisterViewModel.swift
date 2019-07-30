@@ -13,24 +13,37 @@ import RxSwift
 enum LoginOrRegisterState: String { // raw value for labels
     case login = "Login"
     case register = "Register"
+
+    var otherState: LoginOrRegisterState {
+        switch self {
+        case .login:
+            return .register
+        case .register:
+            return .login
+        }
+    }
 }
 
 class LoginOrRegisterViewModel {
 
-    var loginOrRegisterState = LoginOrRegisterState.login
+    // MARK: - Dependencies
     private let authNetworkService = NetworkService<AuthAPI>()
 
-    // MARK: - Action handlers
+    // MARK: - Observables
 
-    func getForgotPasswordRequestObservable(_ forgotPasswordRelay: PublishRelay<(String, Bool)>) -> Observable<Single<Response>> {
-        return forgotPasswordRelay.map { [weak self] emailText, force -> Single<Response> in
+    var loginOrRegisterStateRelay = BehaviorRelay<(state: LoginOrRegisterState, animated: Bool)>(value: (.login, false))
+
+    // We need to trigger this from 2 places, the button and an alert action
+    let forgotPasswordRelay = PublishRelay<(email: String, force: Bool)>()
+    lazy var forgotPasswordObservable: Observable<Single<Response>> = {
+        forgotPasswordRelay.map { [weak self] emailText, force -> Single<Response> in
             guard let self = self else {
                 return .error(GeneralError.basic)
             }
-             return self.authNetworkService.makeRequest(with: .requestPasswordReset(email: emailText,
-                                                                                    forceSend: force))
+            return self.authNetworkService.makeRequest(with: .requestPasswordReset(email: emailText,
+                                                                                   forceSend: force))
         }
-    }
+    }()
 }
 
 enum LoginOrRegisterErrors: Error {
