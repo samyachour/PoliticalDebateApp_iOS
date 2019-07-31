@@ -38,8 +38,6 @@ enum GeneralCopies {
 
 enum GeneralError: Error {
     case basic
-    case unknownSuccessCode // not 200-399 but not the success code we expected
-    case unknownErrorCode // 400+ but not the error code we expected
     case connectivity
     case alreadyHandled // For consumers to know if producers have already handled the error
     case refreshTokenExpired
@@ -48,10 +46,6 @@ enum GeneralError: Error {
         switch self {
         case .basic:
             return "Something weird happened. Please try again."
-        case .unknownSuccessCode:
-            return "Something weird happened. Your request completed successfully though. Please report this to the developer."
-        case .unknownErrorCode:
-            return "Something weird happened. Your request failed in an unexpected way. Please report this to the developer."
         case .connectivity:
             return "Having trouble connecting to the network."
         case .alreadyHandled:

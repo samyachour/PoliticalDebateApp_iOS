@@ -113,39 +113,18 @@ class SessionManager {
 
     func login(email: String, password: String) -> Single<Void> {
         return authAPI.makeRequest(with: .tokenObtain(email: email,
-                                                                        password: password))
-            .flatMap({ (response) -> Single<Void> in
-                switch response.statusCode {
-                case 200:
-                    guard let newTokenPair = try? JSONDecoder().decode(TokenPair.self, from: response.data) else {
-                        return .error(SessionError.couldNotLogin)
-                    }
-                    // Can capture self since it's a singleton, always in memory
-                    self.refreshToken = newTokenPair.refreshTokenString
-                    self.accessToken = newTokenPair.accessTokenString
-                    return .just(())
-                default:
-                    return .error(SessionError.couldNotLogin)
-                }
+                                                      password: password))
+            .map(TokenPair.self)
+            .do(onSuccess: { (tokenPair) in
+                // Can capture self since it's a singleton, always in memory
+                self.refreshToken = tokenPair.refreshTokenString
+                self.accessToken = tokenPair.accessTokenString
             })
+            .map({ _ in }) // consumer shouldn't see the tokenPair
     }
 
     func logout() {
         accessToken = nil
         refreshToken = nil
-    }
-}
-
-// MARK: - Custom error
-enum SessionError {
-    case couldNotLogin
-}
-
-extension SessionError: LocalizedError {
-    var errorDescription: String? {
-        switch self {
-        case .couldNotLogin:
-            return "Could not login"
-        }
     }
 }

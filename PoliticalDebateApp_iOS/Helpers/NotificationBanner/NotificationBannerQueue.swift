@@ -64,7 +64,7 @@ class NotificationBannerQueue {
                            delay: 0,
                            options: [.curveEaseInOut, .allowUserInteraction],
                            animations: {
-                            self.showBanner()
+                            self.showBanner(bannerOnScreen)
                             self.mainWindow?.layoutIfNeeded()
             }, completion: { (_) in
                 if let dispatchWork = bannerOnScreen.timerDismissWorkItem {
@@ -84,7 +84,7 @@ class NotificationBannerQueue {
                            delay: 0,
                            options: .curveEaseInOut,
                            animations: {
-                            self.hideBanner()
+                            self.hideBanner(bannerOnScreen)
                             self.mainWindow?.layoutIfNeeded()
             }) { (_) in
                 bannerOnScreen.view.removeFromSuperview()
@@ -104,20 +104,20 @@ class NotificationBannerQueue {
             bannerOnScreen.view.leadingAnchor.constraint(equalTo: mainWindow.leadingAnchor).isActive = true
             bannerOnScreen.view.trailingAnchor.constraint(equalTo: mainWindow.trailingAnchor).isActive = true
 
-            bannerTopAnchor = bannerOnScreen.view.topAnchor.constraint(equalTo: mainWindow.topAnchor)
-            bannerBottomAnchor = bannerOnScreen.view.bottomAnchor.constraint(equalTo: mainWindow.topAnchor)
-            hideBanner()
+            bannerOnScreen.topAnchor = bannerOnScreen.view.topAnchor.constraint(equalTo: mainWindow.topAnchor)
+            bannerOnScreen.bottomAnchor = bannerOnScreen.view.bottomAnchor.constraint(equalTo: mainWindow.topAnchor)
+            hideBanner(bannerOnScreen)
         }
     }
 
-    private func showBanner() {
-        bannerBottomAnchor?.isActive = false
-        bannerTopAnchor?.isActive = true
+    private func showBanner(_ bannerOnScreen: BannerOnScreen) {
+        bannerOnScreen.bottomAnchor?.isActive = false
+        bannerOnScreen.topAnchor?.isActive = true
     }
 
-    private func hideBanner() {
-        bannerTopAnchor?.isActive = false
-        bannerBottomAnchor?.isActive = true
+    private func hideBanner(_ bannerOnScreen: BannerOnScreen) {
+        bannerOnScreen.topAnchor?.isActive = false
+        bannerOnScreen.bottomAnchor?.isActive = true
     }
 
     private func addNextBannerIfNeeded() {
@@ -128,19 +128,15 @@ class NotificationBannerQueue {
             }
             let viewModel = self.bannersToShow.removeFirst()
 
-            var timerDismissWorkItem: DispatchWorkItem?
+            let nextBannerOnScreen = BannerOnScreen(viewModel: viewModel,
+                                                    view: self.getBannerView(viewModel))
 
             if viewModel.bannerCanBeDismissed {
-                timerDismissWorkItem = DispatchWorkItem(block: {
-                    if let currentBannerOnScreen = self.currentBannerOnScreen {
-                        self.dismiss(currentBannerOnScreen)
-                    }
+                nextBannerOnScreen.timerDismissWorkItem = DispatchWorkItem(block: {
+                    self.dismiss(nextBannerOnScreen)
                 })
             }
 
-            let nextBannerOnScreen = BannerOnScreen(viewModel: viewModel,
-                                                    view: self.getBannerView(viewModel),
-                                                    timerDismissWorkItem: timerDismissWorkItem)
             self.currentBannerOnScreen = nextBannerOnScreen
             self.show(nextBannerOnScreen)
         }
@@ -197,7 +193,7 @@ class NotificationBannerQueue {
     }
 
     private func dismissAction() {
-        if let currentBannerOnScreen = currentBannerOnScreen {
+        if let currentBannerOnScreen = currentBannerOnScreen { // only the dismiss button on the top-most banner is tappable
             removeBannerFromQueue(by: currentBannerOnScreen.viewModel.identifier)
         }
     }
@@ -218,9 +214,6 @@ class NotificationBannerQueue {
             }
         }
     }
-
-    private var bannerTopAnchor: NSLayoutConstraint?
-    private var bannerBottomAnchor: NSLayoutConstraint?
 
     private let bannerQueue = DispatchQueue(label: "NotificationBannerQueue", attributes: .concurrent)
     private var currentBannerOnScreen: BannerOnScreen?

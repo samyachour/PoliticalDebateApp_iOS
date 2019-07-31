@@ -84,12 +84,10 @@ struct NotificationBannerViewModel {
 
         var defaultIconConfig: NotificationBannerViewModel.IconConfiguration {
             switch self {
-            case .info:
+            case .info,
+                 .success,
+                 .error:
                 return .none
-            case .success:
-                return .customIcon(iconImage: UIImage(named: "notificationBanner_success")?.withRenderingMode(.alwaysTemplate))
-            case .error:
-                return .customIcon(iconImage: UIImage(named: "notificationBanner_error")?.withRenderingMode(.alwaysTemplate))
             }
         }
 

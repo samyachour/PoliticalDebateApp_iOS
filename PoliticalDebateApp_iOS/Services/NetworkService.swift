@@ -28,7 +28,7 @@ private protocol Networkable {
     func makeRequest(with appAPI: AppAPI) -> Single<Response>
 }
 
-struct NetworkService<T>: Networkable where T: TargetType {
+struct NetworkService<T>: Networkable where T: TargetType & AccessTokenAuthorizable {
     fileprivate let provider = MoyaProvider<T>(plugins: [
         NetworkLoggerPlugin(verbose: true),
         AccessTokenPlugin { SessionManager.shared.publicAccessToken }
@@ -40,14 +40,19 @@ struct NetworkService<T>: Networkable where T: TargetType {
         #if TEST
         return makeTestRequest(with: appAPI)
         #else
-        return provider.rx.request(appAPI)
+        let request = provider.rx.request(appAPI)
             .filterSuccessfulStatusAndRedirectCodes()
             .do(onError: ErrorHandler.checkForThrottleError)
             .do(onError: ErrorHandler.checkForConnectivityError)
-            .asObservable()
             .retryWhen(ErrorHandler.shouldRetryRequest)
-            .retryWhen(SessionManager.shared.refreshAccessTokenIfNeeded)
-            .asSingle()
+
+        switch appAPI.authorizationType {
+        case .none:
+            return request
+        default: // If API requires authorization, handle 401's by getting new access token
+            return request
+                .retryWhen(SessionManager.shared.refreshAccessTokenIfNeeded)
+        }
         #endif
     }
 

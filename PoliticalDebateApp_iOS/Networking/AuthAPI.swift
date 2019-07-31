@@ -75,11 +75,11 @@ extension AuthAPI: TargetType {
             return .requestParameters(parameters: [AuthConstants.refreshTokenKey : refreshToken], encoding: JSONEncoding.default)
         case .tokenObtain(let email, let password):
             // SimpleJWT requires 'username' parameter for obtaining tokens
-            return .requestParameters(parameters: [AuthConstants.usernameKey: email,
+            return .requestParameters(parameters: [AuthConstants.usernameKey: email.lowercased(), // all backend emails are saved as lowercase, just being safe
                                                    AuthConstants.passwordKey: password],
                                       encoding: JSONEncoding.default)
         case .registerUser(let email, let password):
-            return .requestParameters(parameters: [AuthConstants.emailKey: email,
+            return .requestParameters(parameters: [AuthConstants.emailKey: email.lowercased(),
                                                    AuthConstants.passwordKey: password],
                                       encoding: JSONEncoding.default)
         case .changePassword(let oldPassword, let newPassword):
@@ -87,11 +87,11 @@ extension AuthAPI: TargetType {
                                                    AuthConstants.newPasswordKey: newPassword],
                                       encoding: JSONEncoding.default)
         case .requestPasswordReset(let email, let forceSend):
-            var params: [String: Any] = [AuthConstants.emailKey: email]
+            var params: [String: Any] = [AuthConstants.emailKey: email.lowercased()]
             params[AuthConstants.forceSendKey] = forceSend
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         case .changeEmail(let newEmail):
-            return .requestParameters(parameters: [AuthConstants.newEmailKey: newEmail],
+            return .requestParameters(parameters: [AuthConstants.newEmailKey: newEmail.lowercased()],
                                       encoding: JSONEncoding.default)
         case .delete:
             return .requestPlain

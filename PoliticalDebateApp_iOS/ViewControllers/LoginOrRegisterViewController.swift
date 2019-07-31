@@ -213,22 +213,149 @@ extension LoginOrRegisterViewController {
     }
 
     private func installViewBinds() {
+        submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
+        forgotPasswordButton.addTarget(self, action: #selector(forgotPasswordTapped), for: .touchUpInside)
         installLoginOrRegisterButtonBinds()
-        installForgotPasswordButtonBinds()
+    }
+
+    @objc private func submitButtonTapped() {
+        guard let emailText = emailTextField.text,
+            LoginOrRegisterViewController.isValidEmail(emailText) else {
+                LoginOrRegisterViewController.showInvalidEmailError()
+                return
+        }
+        guard let passwordText = passwordTextField.text,
+            LoginOrRegisterViewController.isValidPassword(passwordText) else {
+                NotificationBannerQueue.shared
+                    .enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                      title: "Password must be at least \(Constants.minimumPasswordLength) characters."))
+                return
+        }
+        switch viewModel.loginOrRegisterStateRelay.value.state {
+        case .login:
+            loginTapped(email: emailText, password: passwordText)
+        case .register:
+            registerTapped(email: emailText, password: passwordText)
+        }
+    }
+
+    private func loginTapped(email: String, password: String) {
+        viewModel.login(email: email, password: password).subscribe(onSuccess: { [weak self] _ in
+            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                            title: "Successfully logged in"))
+            self?.navigationController?.popViewController(animated: true)
+        }) { error in
+            if let generalError = error as? GeneralError,
+                generalError == .alreadyHandled {
+                return
+            }
+            guard let moyaError = error as? MoyaError,
+                let response = moyaError.response else {
+                    ErrorHandler.showBasicErrorBanner()
+                    return
+            }
+
+            switch response.statusCode {
+            case 401,
+                 404:
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: "Couldn't find an account associated with those credentials."))
+            default:
+                ErrorHandler.showBasicErrorBanner()
+            }
+        }.disposed(by: disposeBag)
+    }
+
+    private func registerTapped(email: String, password: String) {
+        guard let confirmPasswordText = confirmPasswordTextField.text,
+            confirmPasswordText == password else {
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: "Passwords do not match."))
+                return
+        }
+        viewModel.register(email: email, password: password).subscribe(onSuccess: { [weak self] (_) in
+            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                            title: "Registration succeeded."))
+            self?.loginTapped(email: email, password: password) // log the user in after registering
+        }) { error in
+            if let generalError = error as? GeneralError,
+                generalError == .alreadyHandled {
+                return
+            }
+            guard let moyaError = error as? MoyaError,
+                let response = moyaError.response else {
+                    ErrorHandler.showBasicErrorBanner()
+                    return
+            }
+
+            switch response.statusCode {
+            case 400:
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: "Verification link couldn't be sent to the given email."))
+            default:
+                ErrorHandler.showBasicErrorBanner()
+            }
+        }.disposed(by: disposeBag)
+    }
+
+    @objc private func forgotPasswordTapped(forceSend: Bool = false) {
+        guard let emailText = emailTextField.text,
+            LoginOrRegisterViewController.isValidEmail(emailText) else {
+                LoginOrRegisterViewController.showInvalidEmailError()
+                return
+        }
+
+        viewModel.forgotPassword(email: emailText, forceSend: forceSend).subscribe(onSuccess: { (_) in
+            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                            title: "Please check your email for a password reset link.",
+                                                                                            duration: .forever))
+        }, onError: { [weak self] error in
+            if let generalError = error as? GeneralError,
+                generalError == .alreadyHandled {
+                return
+            }
+            guard let moyaError = error as? MoyaError,
+                let response = moyaError.response else {
+                    ErrorHandler.showBasicErrorBanner()
+                    return
+            }
+            switch response.statusCode {
+            case Constants.customBackendErrorMessageCode:
+                let errorAlert = UIAlertController(title: GeneralCopies.errorAlertTitle,
+                                                   message: """
+                                                               Either your email is invalid or it was not verified.
+
+                                                               Tap 'Force' to try sending the reset link to an unverified email.
+                                                           """,
+                                                   preferredStyle: .alert)
+                errorAlert.addAction(UIAlertAction(title: "Force", style: .default, handler: { (_) in
+                    // self already weakified
+                    guard let emailText = self?.emailTextField.text,
+                        LoginOrRegisterViewController.isValidEmail(emailText) else {
+                            LoginOrRegisterViewController.showInvalidEmailError()
+                            return
+                    }
+                    self?.forgotPasswordTapped(forceSend: true)
+                }))
+                errorAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
+                safelyShowAlert(alert: errorAlert)
+            case 404:
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: "Couldn't find an account associated with that email."))
+            default:
+                ErrorHandler.showBasicErrorBanner()
+            }
+        }).disposed(by: self.disposeBag)
     }
 
     private func installLoginOrRegisterButtonBinds() {
 
-        loginOrRegisterButton.rx.tap
-            .subscribe { [weak self] (_) in
-                guard let self = self else { return }
-                self.viewModel.loginOrRegisterStateRelay.accept((self.viewModel.loginOrRegisterStateRelay.value.state.otherState, true))
-        }.disposed(by: disposeBag)
+        loginOrRegisterButton.addTarget(self, action: #selector(loginOrRegisterButtonTapped), for: .touchUpInside)
 
         viewModel.loginOrRegisterStateRelay.subscribe { [weak self] (newStateEvent) in
             guard let newLoginOrRegisterState = newStateEvent.element,
                 let self = self else {
-                return
+                    return
             }
 
             let newState = newLoginOrRegisterState.state
@@ -248,81 +375,14 @@ extension LoginOrRegisterViewController {
                                   options: .transitionCrossDissolve,
                                   animations: {
                                     self.loginOrRegisterButton.setTitle(newState.otherState.rawValue, for: .normal)
-                    },
+                },
                                   completion: nil)
             }
-        }.disposed(by: disposeBag)
+            }.disposed(by: disposeBag)
     }
 
-    // swiftlint:disable function_body_length cyclomatic_complexity
-    private func installForgotPasswordButtonBinds() {
-        forgotPasswordButton.rx.tap
-            .withLatestFrom(emailTextField.rx.text)
-            .subscribe {[weak self] (emailEvent) in
-                guard let emailElement = emailEvent.element,
-                    let emailText = emailElement,
-                    LoginOrRegisterViewController.isValidEmail(emailText) else {
-                        LoginOrRegisterViewController.showInvalidEmailError()
-                        return
-                }
-                self?.viewModel.forgotPasswordRelay.accept((emailText, false))
-            }.disposed(by: disposeBag)
-
-        viewModel.forgotPasswordObservable
-            .subscribe { [weak self] (singleEvent) in
-                guard let self = self,
-                    let singleResponse = singleEvent.element else {
-                        return
-                }
-                singleResponse.subscribe(onSuccess: { (response) in
-                    switch response.statusCode {
-                    case 200:
-                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                                        title: "Please check your email for a password reset link.",
-                                                                                                        duration: .forever))
-                    default:
-                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                        title: GeneralError.unknownSuccessCode.localizedDescription))
-                    }
-                }, onError: { [weak self] error in
-                    guard let self = self else { return }
-                    if let generalError = error as? GeneralError,
-                        generalError == .alreadyHandled {
-                        return
-                    }
-                    guard let moyaError = error as? MoyaError,
-                        let response = moyaError.response else {
-                            ErrorHandler.showBasicErrorBanner()
-                            return
-                    }
-                    switch response.statusCode {
-                    case Constants.customBackendErrorMessageCode:
-                        let errorAlert = UIAlertController(title: GeneralCopies.errorAlertTitle,
-                                                           message: """
-                                                               Either your email is invalid or it was not verified.
-
-                                                               Tap 'Force' to try sending the reset link to an unverified email.
-                                                           """,
-                                                           preferredStyle: .alert)
-                        errorAlert.addAction(UIAlertAction(title: "Force", style: .default, handler: { (_) in
-                            // self already weakified
-                            guard let emailText = self.emailTextField.text,
-                                LoginOrRegisterViewController.isValidEmail(emailText) else {
-                                    LoginOrRegisterViewController.showInvalidEmailError()
-                                    return
-                            }
-                            self.viewModel.forgotPasswordRelay.accept((emailText, true))
-                        }))
-                        errorAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
-                        safelyShowAlert(alert: errorAlert)
-                    case 404:
-                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                        title: "Couldn't find an account associated with that email."))
-                    default:
-                        ErrorHandler.showBasicErrorBanner()
-                    }
-                }).disposed(by: self.disposeBag)
-            }.disposed(by: disposeBag)
+    @objc private func loginOrRegisterButtonTapped() {
+        viewModel.loginOrRegisterStateRelay.accept((self.viewModel.loginOrRegisterStateRelay.value.state.otherState, true))
     }
 
 }

@@ -7,18 +7,20 @@
 //
 
 import Foundation
+import UIKit
 
-struct BannerOnScreen {
+class BannerOnScreen {
 
     init(viewModel: NotificationBannerViewModel,
-         view: NotificationBannerView,
-         timerDismissWorkItem: DispatchWorkItem? = nil) {
+         view: NotificationBannerView) {
         self.viewModel = viewModel
         self.view = view
-        self.timerDismissWorkItem = timerDismissWorkItem
     }
 
     let viewModel: NotificationBannerViewModel
     let view: NotificationBannerView
-    let timerDismissWorkItem: DispatchWorkItem?
+    var timerDismissWorkItem: DispatchWorkItem?
+
+    var topAnchor: NSLayoutConstraint?
+    var bottomAnchor: NSLayoutConstraint?
 }

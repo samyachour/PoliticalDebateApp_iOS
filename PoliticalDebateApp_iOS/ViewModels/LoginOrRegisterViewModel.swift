@@ -27,38 +27,24 @@ enum LoginOrRegisterState: String { // raw value for labels
 class LoginOrRegisterViewModel {
 
     // MARK: - Dependencies
+
     private let authNetworkService = NetworkService<AuthAPI>()
 
     // MARK: - Observables
 
     var loginOrRegisterStateRelay = BehaviorRelay<(state: LoginOrRegisterState, animated: Bool)>(value: (.login, false))
 
-    // We need to trigger this from 2 places, the button and an alert action
-    let forgotPasswordRelay = PublishRelay<(email: String, force: Bool)>()
-    lazy var forgotPasswordObservable: Observable<Single<Response>> = {
-        forgotPasswordRelay.map { [weak self] emailText, force -> Single<Response> in
-            guard let self = self else {
-                return .error(GeneralError.basic)
-            }
-            return self.authNetworkService.makeRequest(with: .requestPasswordReset(email: emailText,
-                                                                                   forceSend: force))
-        }
-    }()
-}
+    // MARK: - API Requests
 
-enum LoginOrRegisterErrors: Error {
-    case emptyEmailField
-    case emptyPasswordField
-    case emptyConfirmPasswordField
+    func forgotPassword(email: String, forceSend: Bool) -> Single<Response> {
+        return authNetworkService.makeRequest(with: .requestPasswordReset(email: email, forceSend: forceSend))
+    }
 
-    var localizedDescription: String {
-        switch self {
-        case .emptyEmailField:
-            return "Please fill in your email."
-        case .emptyPasswordField:
-            return "Please fill in your password."
-        case .emptyConfirmPasswordField:
-            return "Please confirm your password."
-        }
+    func login(email: String, password: String) -> Single<Void> {
+        return SessionManager.shared.login(email: email, password: password) // need to pass through SessionManager so it can grab tokens
+    }
+
+    func register(email: String, password: String) -> Single<Response> {
+        return authNetworkService.makeRequest(with: .registerUser(email: email, password: password))
     }
 }
