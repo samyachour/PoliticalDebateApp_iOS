@@ -48,7 +48,6 @@ class DebatesListViewController: UIViewController {
     }
 
     @objc private func accountTapped() {
-        SessionManager.shared.logout() // TODO: Remove, only meant for testing
         navigationController?.pushViewController(AccountViewController(viewModel: AccountViewModel()),
                                                  animated: true)
     }

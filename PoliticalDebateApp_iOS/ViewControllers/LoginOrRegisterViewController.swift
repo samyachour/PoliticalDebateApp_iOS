@@ -12,7 +12,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class LoginOrRegisterViewController: UIViewController {
+class LoginOrRegisterViewController: UIViewController, ShiftScrollViewWithKeyboardProtocol {
 
     required init(viewModel: LoginOrRegisterViewModel) {
         self.viewModel = viewModel
@@ -35,26 +35,7 @@ class LoginOrRegisterViewController: UIViewController {
     // MARK: - Observers & Observables
 
     private let viewModel: LoginOrRegisterViewModel
-    private let disposeBag = DisposeBag()
-
-    // MARK: - Helpers
-
-    private static func isValidEmail(_ email: String) -> Bool {
-        let firstPart = "[A-Z0-9a-z]([A-Z0-9a-z._%+-]{0,30}[A-Z0-9a-z])?"
-        let serverPart = "([A-Z0-9a-z]([A-Z0-9a-z-]{0,30}[A-Z0-9a-z])?\\.){1,5}"
-        let emailRegex = firstPart + "@" + serverPart + "[A-Za-z]{2,8}"
-        let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailRegex)
-        return emailPredicate.evaluate(with: email)
-    }
-
-    private static func isValidPassword(_ password: String) -> Bool {
-        return password.count >= Constants.minimumPasswordLength
-    }
-
-    private static func showInvalidEmailError() {
-        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                        title: "Please provide a proper email"))
-    }
+    let disposeBag = DisposeBag() // can't be private to satisfy protocol
 
     // MARK: - UI Properties
 
@@ -66,10 +47,16 @@ class LoginOrRegisterViewController: UIViewController {
         fadeTextAnimation.type = CATransitionType.fade
         return fadeTextAnimation
     }()
+    var activeTextField: UITextField? { // can't be private to satisfy protocol
+        for textField in [emailTextField, passwordTextField, confirmPasswordTextField] where textField.isFirstResponder {
+            return textField
+        }
+        return nil
+    }
 
     // MARK: - UI Elements
 
-    private let scrollViewContainer: UIScrollView = {
+    let scrollViewContainer: UIScrollView = { // can't be private to satisfy protocol
         let scrollViewContainer = UIScrollView(frame: .zero)
         return scrollViewContainer
     }()
@@ -150,7 +137,7 @@ class LoginOrRegisterViewController: UIViewController {
 
     private let confirmPasswordTextField: UITextField = {
         let confirmPasswordTextField = UITextField(frame: .zero)
-        confirmPasswordTextField.attributedPlaceholder = NSAttributedString(string: "Confirm Password...",
+        confirmPasswordTextField.attributedPlaceholder = NSAttributedString(string: "Confirm password...",
                                                                             attributes: [
                                                                     .font : GeneralFonts.button as Any,
                                                                     .foregroundColor: GeneralColors.softButton as Any])
@@ -227,16 +214,17 @@ extension LoginOrRegisterViewController {
         submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
         forgotPasswordButton.addTarget(self, action: #selector(forgotPasswordTapped), for: .touchUpInside)
         installLoginOrRegisterButtonBinds()
+        installKeyboardShiftingObserver() // from ShiftScrollViewWithKeyboardProtocol
     }
 
     @objc private func submitButtonTapped() {
         guard let emailText = emailTextField.text,
-            LoginOrRegisterViewController.isValidEmail(emailText) else {
-                LoginOrRegisterViewController.showInvalidEmailError()
+            EmailAndPasswordValidator.isValidEmail(emailText) else {
+                EmailAndPasswordValidator.showInvalidEmailError()
                 return
         }
         guard let passwordText = passwordTextField.text,
-            LoginOrRegisterViewController.isValidPassword(passwordText) else {
+            EmailAndPasswordValidator.isValidPassword(passwordText) else {
                 NotificationBannerQueue.shared
                     .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                       title: "Password must be at least \(Constants.minimumPasswordLength) characters."))
@@ -314,8 +302,8 @@ extension LoginOrRegisterViewController {
 
     @objc private func forgotPasswordTapped(forceSend: Bool = false) {
         guard let emailText = emailTextField.text,
-            LoginOrRegisterViewController.isValidEmail(emailText) else {
-                LoginOrRegisterViewController.showInvalidEmailError()
+            EmailAndPasswordValidator.isValidEmail(emailText) else {
+                EmailAndPasswordValidator.showInvalidEmailError()
                 return
         }
 
@@ -345,8 +333,8 @@ extension LoginOrRegisterViewController {
                 errorAlert.addAction(UIAlertAction(title: "Force", style: .default, handler: { (_) in
                     // self already weakified
                     guard let emailText = self?.emailTextField.text,
-                        LoginOrRegisterViewController.isValidEmail(emailText) else {
-                            LoginOrRegisterViewController.showInvalidEmailError()
+                        EmailAndPasswordValidator.isValidEmail(emailText) else {
+                            EmailAndPasswordValidator.showInvalidEmailError()
                             return
                     }
                     self?.forgotPasswordTapped(forceSend: true)
@@ -400,5 +388,4 @@ extension LoginOrRegisterViewController {
     @objc private func loginOrRegisterButtonTapped() {
         viewModel.loginOrRegisterStateRelay.accept((self.viewModel.loginOrRegisterStateRelay.value.state.otherState, true))
     }
-
 }
