@@ -73,7 +73,6 @@ class DebatesListViewController: UIViewController {
     private var pickerIsOnScreen: Bool {
         return sortByPickerView.superview == self.view
     }
-    private var searchTextFieldWidth: NSLayoutConstraint?
     private var searchTextFieldTrailing: NSLayoutConstraint?
 
     // MARK: - UI Elements
@@ -158,7 +157,6 @@ extension DebatesListViewController: UITextFieldDelegate {
     // Expand the text field
     func textFieldDidBeginEditing(_ textField: UITextField) {
         UIView.animate(withDuration: Constants.standardAnimationDuration, delay: 0.0, options: .curveEaseInOut, animations: { [weak self] in
-            self?.searchTextFieldWidth?.isActive = false
             self?.searchTextFieldTrailing?.isActive = true
             self?.view.layoutIfNeeded()
         }, completion: nil)
@@ -171,7 +169,6 @@ extension DebatesListViewController: UITextFieldDelegate {
                            delay: 0.0,
                            options: .curveEaseInOut,
                            animations: { [weak self] in
-                            self?.searchTextFieldWidth?.isActive = true
                             self?.searchTextFieldTrailing?.isActive = false
                             self?.view.layoutIfNeeded()
                 }, completion: nil)
@@ -238,8 +235,6 @@ extension DebatesListViewController {
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
         searchTextField.topAnchor.constraint(equalTo: topLayoutAnchor,
                                              constant: DebatesListViewController.cornerButtonYDistance).isActive = true
-        searchTextFieldWidth = searchTextField.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.25)
-        searchTextFieldWidth?.isActive = true
         searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor,
                                                  constant: DebatesListViewController.cornerButtonXDistance).isActive = true
         searchTextFieldTrailing = searchTextField.trailingAnchor.constraint(equalTo: sortByButton.leadingAnchor, constant: -8)

@@ -32,10 +32,6 @@ class LoginOrRegisterViewController: UIViewController {
         installViewBinds()
     }
 
-    // MARK: - Dependencies
-
-    private let sessionManager = SessionManager.shared
-
     // MARK: - Observers & Observables
 
     private let viewModel: LoginOrRegisterViewModel
@@ -209,7 +205,6 @@ extension LoginOrRegisterViewController {
                                               constant: -LoginOrRegisterViewController.horizontalEdgeInset).isActive = true
             subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
                                              constant: LoginOrRegisterViewController.horizontalEdgeInset).isActive = true
-            subview.heightAnchor.constraint(equalToConstant: 32).isActive = true // give them intrisic content size
         }
 
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false
