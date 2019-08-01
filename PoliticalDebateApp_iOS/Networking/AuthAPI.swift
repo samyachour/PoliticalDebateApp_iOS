@@ -61,11 +61,12 @@ extension AuthAPI: TargetType {
         case .tokenRefresh,
              .tokenObtain,
              .registerUser,
-             .changePassword,
              .requestPasswordReset,
-             .changeEmail,
              .delete:
             return .post
+        case .changeEmail,
+             .changePassword:
+            return .put
         }
     }
 

@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class AccountViewController: UIViewController, ShiftScrollViewWithKeyboardProtocol {
+class AccountViewController: UIViewController, ReactiveKeyboardProtocol {
 
     required init(viewModel: AccountViewModel) {
         self.viewModel = viewModel
@@ -66,7 +66,11 @@ class AccountViewController: UIViewController, ShiftScrollViewWithKeyboardProtoc
 
     private let changeEmailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change email")
 
-    private let newEmailTextField = BasicUIElementFactory.generateTextField(placeholder: "New email...")
+    private let newEmailTextField: UITextField = {
+        let newEmailTextField = BasicUIElementFactory.generateTextField(placeholder: "New email...")
+        newEmailTextField.keyboardType = .emailAddress
+        return newEmailTextField
+    }()
 
     private let changePasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change password")
 
@@ -126,24 +130,47 @@ extension AccountViewController {
         submitChangesButton.addTarget(self, action: #selector(submitChangesButtonTapped), for: .touchUpInside)
         logOutButton.addTarget(self, action: #selector(logOutButtonTapped), for: .touchUpInside)
         deleteAccountButton.addTarget(self, action: #selector(deleteAccountButtonTapped), for: .touchUpInside)
-        installKeyboardShiftingObserver() // from ShiftScrollViewWithKeyboardProtocol
+        installKeyboardShiftingObserver() // from ReactiveKeyboardProtocol
+        installHideKeyboardTapGesture() // from ReactiveKeyboardProtocol
     }
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     @objc private func submitChangesButtonTapped() {
+        var allFieldsEmpty = true
+
         if let newEmail = newEmailTextField.text,
             newEmail != "" {
+            allFieldsEmpty = false
+
             guard EmailAndPasswordValidator.isValidEmail(newEmail) else {
                 EmailAndPasswordValidator.showInvalidEmailError()
                 return
             }
 
-            // API call
+            viewModel.changeEmail(to: newEmail).subscribe(onSuccess: { [weak self] (_) in
+                NotificationBannerQueue.shared
+                    .enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                      title: "Email change succeeded. Please check your email for a verification link."))
+                self?.newEmailTextField.text = nil
+            }) { error in
+                if let generalError = error as? GeneralError,
+                    generalError == .alreadyHandled {
+                    return
+                }
+                guard let moyaError = error as? MoyaError,
+                    let response = moyaError.response else {
+                        ErrorHandler.showBasicErrorBanner()
+                        return
+                }
 
-            return
+                ErrorHandler.emailUpdateError(response)
+            }.disposed(by: disposeBag)
         }
         if (currentPasswordTextField.text != nil && currentPasswordTextField.text != "") ||
             (newPasswordTextField.text != nil && newPasswordTextField.text != "") ||
             (confirmNewPasswordTextField.text != nil && confirmNewPasswordTextField.text != "") {
+            allFieldsEmpty = false
+
             guard let currentPassword = currentPasswordTextField.text, currentPassword != "",
                 let newPassword = newPasswordTextField.text, newPassword != "",
                 let confirmNewPassword = confirmNewPasswordTextField.text, confirmNewPassword != "" else {
@@ -161,13 +188,37 @@ extension AccountViewController {
                 return
             }
 
-            // API call
+            viewModel.changePassword(from: currentPassword, to: newPassword).subscribe(onSuccess: { [weak self] (_) in
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                                title: "Password change succeeded."))
+                self?.currentPasswordTextField.text = nil
+                self?.newPasswordTextField.text = nil
+                self?.confirmNewPasswordTextField.text = nil
+            }) { error in
+                if let generalError = error as? GeneralError,
+                    generalError == .alreadyHandled {
+                    return
+                }
+                guard let moyaError = error as? MoyaError,
+                    let response = moyaError.response else {
+                        ErrorHandler.showBasicErrorBanner()
+                        return
+                }
 
-            return
+                switch response.statusCode {
+                case BackendErrorMessage.customErrorCode:
+                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                    title: "Your current password is incorrect."))
+                default:
+                    ErrorHandler.showBasicErrorBanner()
+                }
+            }.disposed(by: disposeBag)
         }
 
-        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                        title: "Please fill in either a new email or new password."))
+        if allFieldsEmpty {
+            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                            title: "Please fill in either a new email or new password."))
+        }
     }
 
     @objc private func logOutButtonTapped() {

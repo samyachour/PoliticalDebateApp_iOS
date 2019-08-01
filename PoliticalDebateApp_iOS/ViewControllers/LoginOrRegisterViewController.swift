@@ -12,7 +12,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class LoginOrRegisterViewController: UIViewController, ShiftScrollViewWithKeyboardProtocol {
+class LoginOrRegisterViewController: UIViewController, ReactiveKeyboardProtocol {
 
     required init(viewModel: LoginOrRegisterViewModel) {
         self.viewModel = viewModel
@@ -61,15 +61,18 @@ class LoginOrRegisterViewController: UIViewController, ShiftScrollViewWithKeyboa
                                                                                                               emailTextField,
                                                                                                               passwordLabel,
                                                                                                               passwordTextField,
-                                                                                                              confirmPasswordLabel,
                                                                                                               confirmPasswordTextField,
                                                                                                               submitButton,
                                                                                                               forgotPasswordButton,
                                                                                                               loginOrRegisterButton])
 
-    private let emailLabel: UILabel = BasicUIElementFactory.generateHeadingLabel(text: "Email")
+    private let emailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Email")
 
-    private let emailTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Email...")
+    private let emailTextField: UITextField = {
+        let emailTextField = BasicUIElementFactory.generateTextField(placeholder: "Email...")
+        emailTextField.keyboardType = .emailAddress
+        return emailTextField
+    }()
 
     private let passwordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Password")
 
@@ -78,8 +81,6 @@ class LoginOrRegisterViewController: UIViewController, ShiftScrollViewWithKeyboa
         passwordTextField.isSecureTextEntry = true
         return passwordTextField
     }()
-
-    private let confirmPasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Confirm password")
 
     private let confirmPasswordTextField: UITextField = {
         let confirmPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm password...")
@@ -136,7 +137,8 @@ extension LoginOrRegisterViewController {
         submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
         forgotPasswordButton.addTarget(self, action: #selector(forgotPasswordTapped), for: .touchUpInside)
         installLoginOrRegisterButtonBinds()
-        installKeyboardShiftingObserver() // from ShiftScrollViewWithKeyboardProtocol
+        installKeyboardShiftingObserver() // from ReactiveKeyboardProtocol
+        installHideKeyboardTapGesture() // from ReactiveKeyboardProtocol
     }
 
     @objc private func submitButtonTapped() {
@@ -193,7 +195,7 @@ extension LoginOrRegisterViewController {
         }
         viewModel.register(email: email, password: password).subscribe(onSuccess: { [weak self] (_) in
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                            title: "Registration succeeded."))
+                                                                                            title: "Registration succeeded. Please check your email for a verification link."))
             self?.loginTapped(email: email, password: password) // log the user in after registering
         }) { error in
             if let generalError = error as? GeneralError,
@@ -206,19 +208,11 @@ extension LoginOrRegisterViewController {
                     return
             }
 
-            switch response.statusCode {
-            case 400:
-                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: "Verification link couldn't be sent to the given email."))
-            case 500:
-                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: "An account associated with that email already exists."))
-            default:
-                ErrorHandler.showBasicErrorBanner()
-            }
+            ErrorHandler.emailUpdateError(response)
         }.disposed(by: disposeBag)
     }
 
+    // swiftlint:disable:next function_body_length
     @objc private func forgotPasswordTapped(forceSend: Bool = false) {
         guard let emailText = emailTextField.text,
             EmailAndPasswordValidator.isValidEmail(emailText) else {
@@ -241,25 +235,35 @@ extension LoginOrRegisterViewController {
                     return
             }
             switch response.statusCode {
-            case Constants.customBackendErrorMessageCode:
-                let errorAlert = UIAlertController(title: GeneralCopies.errorAlertTitle,
-                                                   message: """
-                                                               Either your email is invalid or it was not verified.
+            case BackendErrorMessage.customErrorCode:
+                if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
+                    if backendErrorMessage.messageString.contains(BackendErrorMessage.unverifiedEmailKeyword) {
+                        let errorAlert = UIAlertController(title: GeneralCopies.errorAlertTitle,
+                                                           message: """
+                                                               Your email was never verified.
 
-                                                               Tap 'Force' to try sending the reset link to an unverified email.
+                                                               Tap 'Force' to try sending the reset link to your unverified email.
                                                            """,
-                                                   preferredStyle: .alert)
-                errorAlert.addAction(UIAlertAction(title: "Force", style: .default, handler: { (_) in
-                    // self already weakified
-                    guard let emailText = self?.emailTextField.text,
-                        EmailAndPasswordValidator.isValidEmail(emailText) else {
-                            EmailAndPasswordValidator.showInvalidEmailError()
-                            return
+                                                           preferredStyle: .alert)
+                        errorAlert.addAction(UIAlertAction(title: "Force", style: .default, handler: { (_) in
+                            // self already weakified
+                            guard let emailText = self?.emailTextField.text,
+                                EmailAndPasswordValidator.isValidEmail(emailText) else {
+                                    EmailAndPasswordValidator.showInvalidEmailError()
+                                    return
+                            }
+                            self?.forgotPasswordTapped(forceSend: true)
+                        }))
+                        errorAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
+                        safelyShowAlert(alert: errorAlert)
+                        return
+                    } else if backendErrorMessage.messageString.contains(BackendErrorMessage.invalidEmailKeyword) {
+                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                        title: "Verification link couldn't be sent to the given email."))
+                        return
                     }
-                    self?.forgotPasswordTapped(forceSend: true)
-                }))
-                errorAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
-                safelyShowAlert(alert: errorAlert)
+                }
+                ErrorHandler.showBasicErrorBanner()
             case 404:
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't find an account associated with that email."))
@@ -280,16 +284,14 @@ extension LoginOrRegisterViewController {
             }
 
             let newState = newLoginOrRegisterState.state
-            let shouldShowConfirmPasswordFields = newState == .register
+            let shouldShowConfirmPasswordField = newState == .register
             let shouldAnimate = newLoginOrRegisterState.animated
 
             self.navigationController?.navigationBar.layer.add(self.fadeTextAnimation, forKey: "fadeText")
 
             UIView.animate(withDuration: shouldAnimate ? Constants.standardAnimationDuration : 0.0, animations: {
-                self.confirmPasswordLabel.isHidden = !shouldShowConfirmPasswordFields
-                self.confirmPasswordTextField.isHidden = !shouldShowConfirmPasswordFields
-                self.confirmPasswordLabel.alpha = shouldShowConfirmPasswordFields ? 1.0 : 0.0
-                self.confirmPasswordTextField.alpha = shouldShowConfirmPasswordFields ? 1.0 : 0.0
+                self.confirmPasswordTextField.isHidden = !shouldShowConfirmPasswordField
+                self.confirmPasswordTextField.alpha = shouldShowConfirmPasswordField ? 1.0 : 0.0
             }) { _ in // flag not reliable
                 self.navigationController?.navigationBar.layer.add(self.fadeTextAnimation, forKey: "fadeText")
                 self.navigationItem.title = newState.rawValue

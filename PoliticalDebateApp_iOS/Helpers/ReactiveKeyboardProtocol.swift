@@ -1,5 +1,5 @@
 //
-//  ShiftScrollViewWithKeyboardProtocol.swift
+//  ReactiveKeyboardProtocol.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 7/31/19.
@@ -10,13 +10,13 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-protocol ShiftScrollViewWithKeyboardProtocol {
+protocol ReactiveKeyboardProtocol {
     var activeTextField: UITextField? { get }
     var scrollViewContainer: UIScrollView { get }
     var disposeBag: DisposeBag { get } // for NotificationCenter subscription
 }
 
-extension ShiftScrollViewWithKeyboardProtocol where Self: UIViewController {
+extension ReactiveKeyboardProtocol where Self: UIViewController {
     func installKeyboardShiftingObserver() {
         let keyboardWillShowProducer = NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
         let keyboardWillHideProducer = NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)
@@ -50,5 +50,13 @@ extension ShiftScrollViewWithKeyboardProtocol where Self: UIViewController {
                     latestYOffsetRelay.accept(0.0)
                 }
             }).disposed(by: disposeBag)
+    }
+
+    func installHideKeyboardTapGesture() {
+        let tapGesture = UITapGestureRecognizer()
+        view.addGestureRecognizer(tapGesture)
+        tapGesture.rx.event.subscribe { [weak self] (_) in
+            self?.activeTextField?.resignFirstResponder()
+        }.disposed(by: disposeBag)
     }
 }

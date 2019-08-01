@@ -123,7 +123,8 @@ class NotificationBannerQueue {
     private func addNextBannerIfNeeded() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self,
-            !self.bannersToShow.isEmpty else {
+            !self.bannersToShow.isEmpty,
+            self.currentBannerOnScreen == nil else {
                 return
             }
             let viewModel = self.bannersToShow.removeFirst()
