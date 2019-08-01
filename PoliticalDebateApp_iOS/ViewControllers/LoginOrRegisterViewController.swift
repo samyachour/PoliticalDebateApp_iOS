@@ -62,7 +62,7 @@ class LoginOrRegisterViewController: UIViewController {
 
     // MARK: - UI Properties
 
-    private static let verticalEdgeInset: CGFloat = 48
+    private static let stackViewSpacing: CGFloat = 32
     private static let horizontalEdgeInset: CGFloat = 56
     private let fadeTextAnimation: CATransition = {
         let fadeTextAnimation = CATransition()
@@ -72,6 +72,11 @@ class LoginOrRegisterViewController: UIViewController {
     }()
 
     // MARK: - UI Elements
+
+    private let scrollViewContainer: UIScrollView = {
+        let scrollViewContainer = UIScrollView(frame: .zero)
+        return scrollViewContainer
+    }()
 
     private lazy var stackViewContainer: UIStackView = {
         let stackViewContainer = UIStackView(arrangedSubviews: [emailLabel,
@@ -84,13 +89,14 @@ class LoginOrRegisterViewController: UIViewController {
                                                                 forgotPasswordButton,
                                                                 loginOrRegisterButton])
         stackViewContainer.alignment = .center
+        stackViewContainer.distribution = .fill
         stackViewContainer.axis = .vertical
+        stackViewContainer.spacing = LoginOrRegisterViewController.stackViewSpacing
         stackViewContainer.isLayoutMarginsRelativeArrangement = true
-        stackViewContainer.layoutMargins = UIEdgeInsets(top: LoginOrRegisterViewController.verticalEdgeInset,
+        stackViewContainer.layoutMargins = UIEdgeInsets(top: LoginOrRegisterViewController.stackViewSpacing,
                                                         left: 0,
-                                                        bottom: LoginOrRegisterViewController.verticalEdgeInset * 2,
+                                                        bottom: LoginOrRegisterViewController.stackViewSpacing,
                                                         right: 0)
-        stackViewContainer.distribution = .equalSpacing
         return stackViewContainer
     }()
 
@@ -194,7 +200,8 @@ extension LoginOrRegisterViewController {
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
                                                                    .font: GeneralFonts.navBarTitle as Any]
 
-        view.addSubview(stackViewContainer)
+        view.addSubview(scrollViewContainer)
+        scrollViewContainer.addSubview(stackViewContainer)
 
         for subview in stackViewContainer.arrangedSubviews where subview as? UITextField != nil {
             subview.translatesAutoresizingMaskIntoConstraints = false
@@ -202,14 +209,23 @@ extension LoginOrRegisterViewController {
                                               constant: -LoginOrRegisterViewController.horizontalEdgeInset).isActive = true
             subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
                                              constant: LoginOrRegisterViewController.horizontalEdgeInset).isActive = true
+            subview.heightAnchor.constraint(equalToConstant: 32).isActive = true // give them intrisic content size
         }
 
+        scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false
         stackViewContainer.translatesAutoresizingMaskIntoConstraints = false
 
-        stackViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
-        stackViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        stackViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
-        stackViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        scrollViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
+        scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        scrollViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
+        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+
+        stackViewContainer.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor).isActive = true
+        stackViewContainer.trailingAnchor.constraint(equalTo: scrollViewContainer.trailingAnchor).isActive = true
+        stackViewContainer.bottomAnchor.constraint(equalTo: scrollViewContainer.bottomAnchor).isActive = true
+        stackViewContainer.leadingAnchor.constraint(equalTo: scrollViewContainer.leadingAnchor).isActive = true
+
+        stackViewContainer.widthAnchor.constraint(equalTo: scrollViewContainer.widthAnchor).isActive = true
     }
 
     private func installViewBinds() {
@@ -292,6 +308,9 @@ extension LoginOrRegisterViewController {
             case 400:
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Verification link couldn't be sent to the given email."))
+            case 500:
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: "An account associated with that email already exists."))
             default:
                 ErrorHandler.showBasicErrorBanner()
             }
@@ -367,6 +386,8 @@ extension LoginOrRegisterViewController {
             UIView.animate(withDuration: shouldAnimate ? Constants.standardAnimationDuration : 0.0, animations: {
                 self.confirmPasswordLabel.isHidden = !shouldShowConfirmPasswordFields
                 self.confirmPasswordTextField.isHidden = !shouldShowConfirmPasswordFields
+                self.confirmPasswordLabel.alpha = shouldShowConfirmPasswordFields ? 1.0 : 0.0
+                self.confirmPasswordTextField.alpha = shouldShowConfirmPasswordFields ? 1.0 : 0.0
             }) { _ in // flag not reliable
                 self.navigationController?.navigationBar.layer.add(self.fadeTextAnimation, forKey: "fadeText")
                 self.navigationItem.title = newState.rawValue
