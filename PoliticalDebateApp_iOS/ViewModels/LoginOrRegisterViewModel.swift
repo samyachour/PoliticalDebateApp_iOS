@@ -40,7 +40,7 @@ class LoginOrRegisterViewModel {
         return authNetworkService.makeRequest(with: .requestPasswordReset(email: email, forceSend: forceSend))
     }
 
-    func login(email: String, password: String) -> Single<Void> {
+    func login(with email: String, password: String) -> Single<Void> {
         return SessionManager.shared.login(email: email, password: password) // need to pass through SessionManager so it can grab tokens
     }
 

@@ -77,43 +77,15 @@ class DebatesListViewController: UIViewController {
     // MARK: - UI Elements
 
     // Need to be able to add target to UIButton but use UIBarButtonItem in nav bar
-    private let loginButton: (button: UIButton, barButton: UIBarButtonItem) = {
-        let loginButton = UIButton(frame: .zero)
-        loginButton.setTitle("Log in", for: .normal)
-        loginButton.setTitleColor(GeneralColors.softButton, for: .normal)
-        loginButton.titleLabel?.font = UIFont.primaryRegular(14.0)
-        return (loginButton, UIBarButtonItem(customView: loginButton))
-    }()
+    private let loginButton = BasicUIElementFactory.generateBarButton(title: "Log in")
 
-    private let accountButton: (button: UIButton, barButton: UIBarButtonItem) = {
-        let accountButton = UIButton(frame: .zero)
-        accountButton.setTitle("Account", for: .normal)
-        accountButton.setTitleColor(GeneralColors.softButton, for: .normal)
-        accountButton.titleLabel?.font = UIFont.primaryRegular(14.0)
-        return (accountButton, UIBarButtonItem(customView: accountButton))
-    }()
+    private let accountButton = BasicUIElementFactory.generateBarButton(title: "Account")
 
-    private let sortByButton: UIButton = {
-        let sortByButton = UIButton(frame: .zero)
-        sortByButton.setTitle(DebatesListViewController.sortByDefaultlabel, for: .normal)
-        sortByButton.setTitleColor(GeneralColors.softButton, for: .normal)
-        sortByButton.titleLabel?.font = GeneralFonts.button
-        return sortByButton
-    }()
+    private let sortByButton = BasicUIElementFactory.generateButton(title: DebatesListViewController.sortByDefaultlabel, titleColor: GeneralColors.softButton)
 
     private let sortByPickerView = UIPickerView()
 
-    private let searchTextField: UITextField = {
-        let searchTextField = UITextField(frame: .zero)
-        searchTextField.attributedPlaceholder = NSAttributedString(string: "Search...",
-                                                                   attributes: [
-                                                                    .font : GeneralFonts.button as Any,
-                                                                    .foregroundColor: GeneralColors.softButton as Any])
-        searchTextField.font = GeneralFonts.button
-        searchTextField.textColor = GeneralColors.hardButton
-        searchTextField.borderStyle = .roundedRect
-        return searchTextField
-    }()
+    private let searchTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Search...")
 
     private let searchButtonBar: UIToolbar = {
         let searchButtonBar = UIToolbar()

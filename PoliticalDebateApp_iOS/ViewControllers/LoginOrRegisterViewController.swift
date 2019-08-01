@@ -39,7 +39,6 @@ class LoginOrRegisterViewController: UIViewController, ShiftScrollViewWithKeyboa
 
     // MARK: - UI Properties
 
-    private static let stackViewSpacing: CGFloat = 32
     private static let horizontalEdgeInset: CGFloat = 56
     private let fadeTextAnimation: CATransition = {
         let fadeTextAnimation = CATransition()
@@ -56,120 +55,43 @@ class LoginOrRegisterViewController: UIViewController, ShiftScrollViewWithKeyboa
 
     // MARK: - UI Elements
 
-    let scrollViewContainer: UIScrollView = { // can't be private to satisfy protocol
-        let scrollViewContainer = UIScrollView(frame: .zero)
-        return scrollViewContainer
-    }()
+    let scrollViewContainer = UIScrollView(frame: .zero) // can't be private to satisfy protocol
 
-    private lazy var stackViewContainer: UIStackView = {
-        let stackViewContainer = UIStackView(arrangedSubviews: [emailLabel,
-                                                                emailTextField,
-                                                                passwordLabel,
-                                                                passwordTextField,
-                                                                confirmPasswordLabel,
-                                                                confirmPasswordTextField,
-                                                                submitButton,
-                                                                forgotPasswordButton,
-                                                                loginOrRegisterButton])
-        stackViewContainer.alignment = .center
-        stackViewContainer.distribution = .fill
-        stackViewContainer.axis = .vertical
-        stackViewContainer.spacing = LoginOrRegisterViewController.stackViewSpacing
-        stackViewContainer.isLayoutMarginsRelativeArrangement = true
-        stackViewContainer.layoutMargins = UIEdgeInsets(top: LoginOrRegisterViewController.stackViewSpacing,
-                                                        left: 0,
-                                                        bottom: LoginOrRegisterViewController.stackViewSpacing,
-                                                        right: 0)
-        return stackViewContainer
-    }()
+    private lazy var stackViewContainer = BasicUIElementFactory.generateStackViewContainer(arrangedSubviews: [emailLabel,
+                                                                                                              emailTextField,
+                                                                                                              passwordLabel,
+                                                                                                              passwordTextField,
+                                                                                                              confirmPasswordLabel,
+                                                                                                              confirmPasswordTextField,
+                                                                                                              submitButton,
+                                                                                                              forgotPasswordButton,
+                                                                                                              loginOrRegisterButton])
 
-    private let emailLabel: UILabel = {
-        let emailLabel = UILabel(frame: .zero)
-        emailLabel.text = "Email"
-        emailLabel.textColor = GeneralColors.text
-        emailLabel.font = GeneralFonts.button
-        emailLabel.textAlignment = NSTextAlignment.center
-        return emailLabel
-    }()
+    private let emailLabel: UILabel = BasicUIElementFactory.generateHeadingLabel(text: "Email")
 
-    private let emailTextField: UITextField = {
-        let emailTextField = UITextField(frame: .zero)
-        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...",
-                                                                  attributes: [
-                                                                    .font : GeneralFonts.button as Any,
-                                                                    .foregroundColor: GeneralColors.softButton as Any])
-        emailTextField.font = GeneralFonts.button
-        emailTextField.textColor = GeneralColors.hardButton
-        emailTextField.borderStyle = .roundedRect
-        return emailTextField
-    }()
+    private let emailTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Email...")
 
-    private let passwordLabel: UILabel = {
-        let passwordLabel = UILabel(frame: .zero)
-        passwordLabel.text = "Password"
-        passwordLabel.textColor = GeneralColors.text
-        passwordLabel.font = GeneralFonts.button
-        passwordLabel.textAlignment = NSTextAlignment.center
-        return passwordLabel
-    }()
+    private let passwordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Password")
 
     private let passwordTextField: UITextField = {
-        let passwordTextField = UITextField(frame: .zero)
-        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...",
-                                                                     attributes: [
-                                                                    .font : GeneralFonts.button as Any,
-                                                                    .foregroundColor: GeneralColors.softButton as Any])
-        passwordTextField.font = GeneralFonts.button
-        passwordTextField.textColor = GeneralColors.hardButton
-        passwordTextField.borderStyle = .roundedRect
+        let passwordTextField = BasicUIElementFactory.generateTextField(placeholder: "Password...")
         passwordTextField.isSecureTextEntry = true
         return passwordTextField
     }()
 
-    private let confirmPasswordLabel: UILabel = {
-        let confirmPasswordLabel = UILabel(frame: .zero)
-        confirmPasswordLabel.text = "Confirm password"
-        confirmPasswordLabel.textColor = GeneralColors.text
-        confirmPasswordLabel.font = GeneralFonts.button
-        confirmPasswordLabel.textAlignment = NSTextAlignment.center
-        return confirmPasswordLabel
-    }()
+    private let confirmPasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Confirm password")
 
     private let confirmPasswordTextField: UITextField = {
-        let confirmPasswordTextField = UITextField(frame: .zero)
-        confirmPasswordTextField.attributedPlaceholder = NSAttributedString(string: "Confirm password...",
-                                                                            attributes: [
-                                                                    .font : GeneralFonts.button as Any,
-                                                                    .foregroundColor: GeneralColors.softButton as Any])
-        confirmPasswordTextField.font = GeneralFonts.button
-        confirmPasswordTextField.textColor = GeneralColors.hardButton
-        confirmPasswordTextField.borderStyle = .roundedRect
+        let confirmPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm password...")
         confirmPasswordTextField.isSecureTextEntry = true
         return confirmPasswordTextField
     }()
 
-    private let submitButton: UIButton = {
-        let submitButton = UIButton(frame: .zero)
-        submitButton.setTitle("Submit", for: .normal)
-        submitButton.setTitleColor(GeneralColors.hardButton, for: .normal)
-        submitButton.titleLabel?.font = GeneralFonts.button
-        return submitButton
-    }()
+    private let submitButton = BasicUIElementFactory.generateButton(title: "Submit")
 
-    private let forgotPasswordButton: UIButton = {
-        let forgotPasswordButton = UIButton(frame: .zero)
-        forgotPasswordButton.setTitle("Forgot password", for: .normal)
-        forgotPasswordButton.setTitleColor(GeneralColors.hardButton, for: .normal)
-        forgotPasswordButton.titleLabel?.font = GeneralFonts.button
-        return forgotPasswordButton
-    }()
+    private let forgotPasswordButton = BasicUIElementFactory.generateButton(title: "Forgot password")
 
-    private let loginOrRegisterButton: UIButton = {
-        let loginOrRegisterButton = UIButton(frame: .zero)
-        loginOrRegisterButton.setTitleColor(GeneralColors.hardButton, for: .normal)
-        loginOrRegisterButton.titleLabel?.font = GeneralFonts.button
-        return loginOrRegisterButton
-    }()
+    private let loginOrRegisterButton = BasicUIElementFactory.generateButton()
 
 }
 
@@ -225,9 +147,7 @@ extension LoginOrRegisterViewController {
         }
         guard let passwordText = passwordTextField.text,
             EmailAndPasswordValidator.isValidPassword(passwordText) else {
-                NotificationBannerQueue.shared
-                    .enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                      title: "Password must be at least \(Constants.minimumPasswordLength) characters."))
+                EmailAndPasswordValidator.showInvalidPasswordError()
                 return
         }
         switch viewModel.loginOrRegisterStateRelay.value.state {
@@ -239,7 +159,7 @@ extension LoginOrRegisterViewController {
     }
 
     private func loginTapped(email: String, password: String) {
-        viewModel.login(email: email, password: password).subscribe(onSuccess: { [weak self] _ in
+        viewModel.login(with: email, password: password).subscribe(onSuccess: { [weak self] _ in
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                             title: "Successfully logged in"))
             self?.navigationController?.popViewController(animated: true)
@@ -268,8 +188,7 @@ extension LoginOrRegisterViewController {
     private func registerTapped(email: String, password: String) {
         guard let confirmPasswordText = confirmPasswordTextField.text,
             confirmPasswordText == password else {
-                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: "Passwords do not match."))
+                EmailAndPasswordValidator.showInvalidPasswordMatchError()
                 return
         }
         viewModel.register(email: email, password: password).subscribe(onSuccess: { [weak self] (_) in

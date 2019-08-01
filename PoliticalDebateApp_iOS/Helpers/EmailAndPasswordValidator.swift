@@ -27,4 +27,15 @@ class EmailAndPasswordValidator {
                                                                                         title: "Please provide a proper email"))
     }
 
+    static func showInvalidPasswordError() {
+        NotificationBannerQueue.shared
+            .enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                              title: "Password must be at least \(Constants.minimumPasswordLength) characters."))
+    }
+
+    static func showInvalidPasswordMatchError() {
+        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                        title: "Passwords do not match."))
+    }
+
 }

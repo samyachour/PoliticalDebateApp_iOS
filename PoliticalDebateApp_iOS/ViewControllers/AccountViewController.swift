@@ -42,10 +42,9 @@ class AccountViewController: UIViewController, ShiftScrollViewWithKeyboardProtoc
 
     // MARK: - UI Properties
 
-    private static let stackViewSpacing: CGFloat = 32
     private static let horizontalEdgeInset: CGFloat = 56
     var activeTextField: UITextField? { // can't be private to satisfy protocol
-        for textField in [newEmailTextField, newPasswordTextField, confirmNewPasswordTextField] where textField.isFirstResponder {
+        for textField in [newEmailTextField, currentPasswordTextField, newPasswordTextField, confirmNewPasswordTextField] where textField.isFirstResponder {
             return textField
         }
         return nil
@@ -53,111 +52,35 @@ class AccountViewController: UIViewController, ShiftScrollViewWithKeyboardProtoc
 
     // MARK: - UI Elements
 
-    let scrollViewContainer: UIScrollView = { // can't be private to satisfy protocol
-        let scrollViewContainer = UIScrollView(frame: .zero)
-        return scrollViewContainer
-    }()
+    let scrollViewContainer = UIScrollView(frame: .zero) // can't be private to satisfy protocol
 
-    private lazy var stackViewContainer: UIStackView = {
-        let stackViewContainer = UIStackView(arrangedSubviews: [changeEmailLabel,
-                                                                newEmailTextField,
-                                                                changePasswordLabel,
-                                                                newPasswordTextField,
-                                                                confirmNewPasswordTextField,
-                                                                submitChangesButton,
-                                                                logOutButton,
-                                                                deleteAccountButton])
-        stackViewContainer.alignment = .center
-        stackViewContainer.distribution = .fill
-        stackViewContainer.axis = .vertical
-        stackViewContainer.spacing = AccountViewController.stackViewSpacing
-        stackViewContainer.isLayoutMarginsRelativeArrangement = true
-        stackViewContainer.layoutMargins = UIEdgeInsets(top: AccountViewController.stackViewSpacing,
-                                                        left: 0,
-                                                        bottom: AccountViewController.stackViewSpacing,
-                                                        right: 0)
-        return stackViewContainer
-    }()
+    private lazy var stackViewContainer = BasicUIElementFactory.generateStackViewContainer(arrangedSubviews: [changeEmailLabel,
+                                                                                                              newEmailTextField,
+                                                                                                              changePasswordLabel,
+                                                                                                              currentPasswordTextField,
+                                                                                                              newPasswordTextField,
+                                                                                                              confirmNewPasswordTextField,
+                                                                                                              submitChangesButton,
+                                                                                                              logOutButton,
+                                                                                                              deleteAccountButton])
 
-    private let changeEmailLabel: UILabel = {
-        let changeEmailLabel = UILabel(frame: .zero)
-        changeEmailLabel.text = "Change email"
-        changeEmailLabel.textColor = GeneralColors.text
-        changeEmailLabel.font = GeneralFonts.button
-        changeEmailLabel.textAlignment = NSTextAlignment.center
-        return changeEmailLabel
-    }()
+    private let changeEmailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change email")
 
-    private let newEmailTextField: UITextField = {
-        let emailTextField = UITextField(frame: .zero)
-        emailTextField.attributedPlaceholder = NSAttributedString(string: "New email...",
-                                                                  attributes: [
-                                                                    .font : GeneralFonts.button as Any,
-                                                                    .foregroundColor: GeneralColors.softButton as Any])
-        emailTextField.font = GeneralFonts.button
-        emailTextField.textColor = GeneralColors.hardButton
-        emailTextField.borderStyle = .roundedRect
-        return emailTextField
-    }()
+    private let newEmailTextField = BasicUIElementFactory.generateTextField(placeholder: "New email...")
 
-    private let changePasswordLabel: UILabel = {
-        let passwordLabel = UILabel(frame: .zero)
-        passwordLabel.text = "Change password"
-        passwordLabel.textColor = GeneralColors.text
-        passwordLabel.font = GeneralFonts.button
-        passwordLabel.textAlignment = NSTextAlignment.center
-        return passwordLabel
-    }()
+    private let changePasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change password")
 
-    private let newPasswordTextField: UITextField = {
-        let newPasswordTextField = UITextField(frame: .zero)
-        newPasswordTextField.attributedPlaceholder = NSAttributedString(string: "New password...",
-                                                                        attributes: [
-                                                                        .font : GeneralFonts.button as Any,
-                                                                        .foregroundColor: GeneralColors.softButton as Any])
-        newPasswordTextField.font = GeneralFonts.button
-        newPasswordTextField.textColor = GeneralColors.hardButton
-        newPasswordTextField.borderStyle = .roundedRect
-        newPasswordTextField.isSecureTextEntry = true
-        return newPasswordTextField
-    }()
+    private let currentPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Current password...")
 
-    private let confirmNewPasswordTextField: UITextField = {
-        let confirmNewPasswordTextField = UITextField(frame: .zero)
-        confirmNewPasswordTextField.attributedPlaceholder = NSAttributedString(string: "Confirm new password...",
-                                                                               attributes: [
-                                                                                .font : GeneralFonts.button as Any,
-                                                                                .foregroundColor: GeneralColors.softButton as Any])
-        confirmNewPasswordTextField.font = GeneralFonts.button
-        confirmNewPasswordTextField.textColor = GeneralColors.hardButton
-        confirmNewPasswordTextField.borderStyle = .roundedRect
-        confirmNewPasswordTextField.isSecureTextEntry = true
-        return confirmNewPasswordTextField
-    }()
+    private let newPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "New password...")
 
-    private let submitChangesButton: UIButton = {
-        let submitChangesButton = UIButton(frame: .zero)
-        submitChangesButton.setTitle("Submit changes", for: .normal)
-        submitChangesButton.setTitleColor(GeneralColors.hardButton, for: .normal)
-        submitChangesButton.titleLabel?.font = GeneralFonts.button
-        return submitChangesButton
-    }()
+    private let confirmNewPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm new password...")
 
-    private let logOutButton: UIButton = {
-        let logOutButton = UIButton(frame: .zero)
-        logOutButton.setTitle("Log out", for: .normal)
-        logOutButton.setTitleColor(GeneralColors.hardButton, for: .normal)
-        logOutButton.titleLabel?.font = GeneralFonts.button
-        return logOutButton
-    }()
+    private let submitChangesButton = BasicUIElementFactory.generateButton(title: "Submit changes")
 
-    private let deleteAccountButton: UIButton = {
-        let deleteAccountButton = UIButton(frame: .zero)
-        deleteAccountButton.setTitle("Delete account", for: .normal)
-        deleteAccountButton.setTitleColor(GeneralColors.hardButton, for: .normal)
-        deleteAccountButton.titleLabel?.font = GeneralFonts.button
-        return deleteAccountButton
-    }()
+    private let logOutButton = BasicUIElementFactory.generateButton(title: "Log out")
+
+    private let deleteAccountButton = BasicUIElementFactory.generateButton(title: "Delete account")
 
 }
 
@@ -200,9 +123,51 @@ extension AccountViewController {
     }
 
     private func installViewBinds() {
+        submitChangesButton.addTarget(self, action: #selector(submitChangesButtonTapped), for: .touchUpInside)
         logOutButton.addTarget(self, action: #selector(logOutButtonTapped), for: .touchUpInside)
         deleteAccountButton.addTarget(self, action: #selector(deleteAccountButtonTapped), for: .touchUpInside)
         installKeyboardShiftingObserver() // from ShiftScrollViewWithKeyboardProtocol
+    }
+
+    @objc private func submitChangesButtonTapped() {
+        if let newEmail = newEmailTextField.text,
+            newEmail != "" {
+            guard EmailAndPasswordValidator.isValidEmail(newEmail) else {
+                EmailAndPasswordValidator.showInvalidEmailError()
+                return
+            }
+
+            // API call
+
+            return
+        }
+        if (currentPasswordTextField.text != nil && currentPasswordTextField.text != "") ||
+            (newPasswordTextField.text != nil && newPasswordTextField.text != "") ||
+            (confirmNewPasswordTextField.text != nil && confirmNewPasswordTextField.text != "") {
+            guard let currentPassword = currentPasswordTextField.text, currentPassword != "",
+                let newPassword = newPasswordTextField.text, newPassword != "",
+                let confirmNewPassword = confirmNewPasswordTextField.text, confirmNewPassword != "" else {
+                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                    title: "Please fill in either all of or none of the password fields."))
+                    return
+            }
+            guard EmailAndPasswordValidator.isValidPassword(currentPassword) &&
+            EmailAndPasswordValidator.isValidPassword(newPassword) else {
+                EmailAndPasswordValidator.showInvalidPasswordError()
+                return
+            }
+            guard newPassword == confirmNewPassword else {
+                EmailAndPasswordValidator.showInvalidPasswordMatchError()
+                return
+            }
+
+            // API call
+
+            return
+        }
+
+        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                        title: "Please fill in either a new email or new password."))
     }
 
     @objc private func logOutButtonTapped() {
@@ -221,7 +186,7 @@ extension AccountViewController {
 
             self.viewModel.deleteAccount().subscribe(onSuccess: { (_) in
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                                title: "Successfully deleted account"))
+                                                                                                title: "Successfully deleted account."))
                 self.sessionManager.logout()
                 self.navigationController?.popViewController(animated: true)
             }) { error in
