@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 
 enum LoginOrRegisterState: String { // raw value for labels
-    case login = "Login"
+    case login = "Log in"
     case register = "Register"
 
     var otherState: LoginOrRegisterState {

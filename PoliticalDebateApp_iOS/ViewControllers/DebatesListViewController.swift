@@ -110,7 +110,7 @@ class DebatesListViewController: UIViewController {
 // Gesture recognizer
 extension DebatesListViewController {
 
-    // Can't use TapGesture because I need to trigger the instant the user interacts w/ the screen
+    // Can't use TapGesture because I need to trigger the instant the user first interacts w/ the screen
     // e.g. beginning of scroll, long press, etc.
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {

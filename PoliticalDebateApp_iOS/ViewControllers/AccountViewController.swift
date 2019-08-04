@@ -74,11 +74,11 @@ class AccountViewController: UIViewController, ReactiveKeyboardProtocol {
 
     private let changePasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change password")
 
-    private let currentPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Current password...")
+    private let currentPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Current password...", secureTextEntry: true)
 
-    private let newPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "New password...")
+    private let newPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "New password...", secureTextEntry: true)
 
-    private let confirmNewPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm new password...")
+    private let confirmNewPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm new password...", secureTextEntry: true)
 
     private let submitChangesButton = BasicUIElementFactory.generateButton(title: "Submit changes")
 

@@ -40,7 +40,7 @@ class LoginOrRegisterViewController: UIViewController, ReactiveKeyboardProtocol 
     // MARK: - UI Properties
 
     private static let horizontalEdgeInset: CGFloat = 56
-    private let fadeTextAnimation: CATransition = {
+    private let fadeTextAnimation: CATransition = { // for cross-dissolving nav bar title
         let fadeTextAnimation = CATransition()
         fadeTextAnimation.duration = Constants.standardAnimationDuration
         fadeTextAnimation.type = CATransitionType.fade
@@ -76,17 +76,9 @@ class LoginOrRegisterViewController: UIViewController, ReactiveKeyboardProtocol 
 
     private let passwordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Password")
 
-    private let passwordTextField: UITextField = {
-        let passwordTextField = BasicUIElementFactory.generateTextField(placeholder: "Password...")
-        passwordTextField.isSecureTextEntry = true
-        return passwordTextField
-    }()
+    private let passwordTextField = BasicUIElementFactory.generateTextField(placeholder: "Password...", secureTextEntry: true)
 
-    private let confirmPasswordTextField: UITextField = {
-        let confirmPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm password...")
-        confirmPasswordTextField.isSecureTextEntry = true
-        return confirmPasswordTextField
-    }()
+    private let confirmPasswordTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm password...", secureTextEntry: true)
 
     private let submitButton = BasicUIElementFactory.generateButton(title: "Submit")
 
@@ -286,8 +278,6 @@ extension LoginOrRegisterViewController {
             let newState = newLoginOrRegisterState.state
             let shouldShowConfirmPasswordField = newState == .register
             let shouldAnimate = newLoginOrRegisterState.animated
-
-            self.navigationController?.navigationBar.layer.add(self.fadeTextAnimation, forKey: "fadeText")
 
             UIView.animate(withDuration: shouldAnimate ? Constants.standardAnimationDuration : 0.0, animations: {
                 self.confirmPasswordTextField.isHidden = !shouldShowConfirmPasswordField
