@@ -1,5 +1,5 @@
 //
-//  User.swift
+//  Debate.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 4/19/19.

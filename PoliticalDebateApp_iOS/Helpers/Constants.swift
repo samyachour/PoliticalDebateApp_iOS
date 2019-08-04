@@ -54,7 +54,3 @@ enum GeneralError: Error {
         }
     }
 }
-
-enum GeneralKeys {
-    static let message = "message" // key from backend custom error message
-}

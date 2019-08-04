@@ -16,12 +16,6 @@ class SessionManager {
     static let shared = SessionManager()
     private init() {}
 
-    // MARK: - Constants
-    private enum SessionConstants {
-        static let accessTokenKey = "accessToken"
-        static let refreshTokenKey = "refreshToken"
-    }
-
     // MARK: - Token properties
     private var accessToken: String? {
         didSet {

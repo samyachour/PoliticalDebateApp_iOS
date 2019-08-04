@@ -247,7 +247,7 @@ extension LoginOrRegisterViewController {
                             self?.forgotPasswordTapped(forceSend: true)
                         }))
                         errorAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
-                        safelyShowAlert(alert: errorAlert)
+                        self?.present(errorAlert, animated: true)
                         return
                     } else if backendErrorMessage.messageString.contains(BackendErrorMessage.invalidEmailKeyword) {
                         NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,

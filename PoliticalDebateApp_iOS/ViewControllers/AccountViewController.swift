@@ -251,7 +251,7 @@ extension AccountViewController {
         }))
         confirmationPopUp.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
 
-        safelyShowAlert(alert: confirmationPopUp)
+        self.present(confirmationPopUp, animated: true)
     }
 
 }

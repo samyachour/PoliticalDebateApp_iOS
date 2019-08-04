@@ -26,6 +26,9 @@ class ErrorHandler {
                                                                                         title: GeneralError.basic.localizedDescription))
     }
 
+    // MARK: - Server errors
+
+    // Retry w/ constant backoff closure
     static let shouldRetryRequest = { (error: Observable<Error>) -> Observable<Void> in
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
