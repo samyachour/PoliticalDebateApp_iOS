@@ -186,6 +186,7 @@
 		2E5C5F42226B08220007BCAF /* String+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Date.swift"; sourceTree = "<group>"; };
 		2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainDjangoEncoding.swift; sourceTree = "<group>"; };
 		2E5C5F56226B29A30007BCAF /* StubAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubAccess.swift; sourceTree = "<group>"; };
+		2E5EC04422F8141E00B41D54 /* Setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Setup.sh; sourceTree = "<group>"; };
 		2E69094622A4931100DF486A /* ProgressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAPI.swift; sourceTree = "<group>"; };
 		2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProgressAPI+Testing.swift"; sourceTree = "<group>"; };
 		2E69094C22A4932700DF486A /* StarredAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredAPI.swift; sourceTree = "<group>"; };
@@ -292,6 +293,7 @@
 		2E23A6B6226AC7B300B2DCC3 = {
 			isa = PBXGroup;
 			children = (
+				2E5EC04422F8141E00B41D54 /* Setup.sh */,
 				2E23A6F4226AC7D400B2DCC3 /* .gitignore */,
 				2E23A6F3226AC7D400B2DCC3 /* .swiftlint.yml */,
 				2E23A6F5226AC7D400B2DCC3 /* README.md */,
