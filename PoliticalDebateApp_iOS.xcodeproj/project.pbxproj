@@ -106,7 +106,6 @@
 		2EC7890822D059FE009402F1 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7890722D059FE009402F1 /* ErrorHandler.swift */; };
 		2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
 		2ED614DE22E0382300BB19FF /* StubAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F56226B29A30007BCAF /* StubAccess.swift */; };
-		2ED6150622E03AC400BB19FF /* PoliticalDebateApp_BackendStubs in Resources */ = {isa = PBXBuildFile; fileRef = 2ED6150522E03AC400BB19FF /* PoliticalDebateApp_BackendStubs */; };
 		2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */; };
 		2EF1E59B22DC688200C93DFB /* ButtonWithActionClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */; };
 		B5307AE15A1C031FA189B26E /* Pods_PoliticalDebateApp_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */; };
@@ -186,7 +185,6 @@
 		2E5C5F42226B08220007BCAF /* String+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Date.swift"; sourceTree = "<group>"; };
 		2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainDjangoEncoding.swift; sourceTree = "<group>"; };
 		2E5C5F56226B29A30007BCAF /* StubAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubAccess.swift; sourceTree = "<group>"; };
-		2E5EC04422F8141E00B41D54 /* Setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = Setup.sh; sourceTree = "<group>"; };
 		2E69094622A4931100DF486A /* ProgressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAPI.swift; sourceTree = "<group>"; };
 		2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProgressAPI+Testing.swift"; sourceTree = "<group>"; };
 		2E69094C22A4932700DF486A /* StarredAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredAPI.swift; sourceTree = "<group>"; };
@@ -202,7 +200,6 @@
 		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2EC7890722D059FE009402F1 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
 		2ED2FDA12290CC210093B6A7 /* TokenPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPair.swift; sourceTree = "<group>"; };
-		2ED6150522E03AC400BB19FF /* PoliticalDebateApp_BackendStubs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PoliticalDebateApp_BackendStubs; sourceTree = "<group>"; };
 		2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressCoreDataAPI.swift; sourceTree = "<group>"; };
 		2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonWithActionClosure.swift; sourceTree = "<group>"; };
 		7A7E42EE5FCED9A963BBF6E4 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -293,7 +290,6 @@
 		2E23A6B6226AC7B300B2DCC3 = {
 			isa = PBXGroup;
 			children = (
-				2E5EC04422F8141E00B41D54 /* Setup.sh */,
 				2E23A6F4226AC7D400B2DCC3 /* .gitignore */,
 				2E23A6F3226AC7D400B2DCC3 /* .swiftlint.yml */,
 				2E23A6F5226AC7D400B2DCC3 /* README.md */,
@@ -338,7 +334,6 @@
 		2E23A6D9226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests */ = {
 			isa = PBXGroup;
 			children = (
-				2ED6150522E03AC400BB19FF /* PoliticalDebateApp_BackendStubs */,
 				2E5C5F56226B29A30007BCAF /* StubAccess.swift */,
 				2E23A6DA226AC7B400B2DCC3 /* NetworkAPITests.swift */,
 				2E23A6DC226AC7B400B2DCC3 /* Info.plist */,
@@ -605,7 +600,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2ED6150622E03AC400BB19FF /* PoliticalDebateApp_BackendStubs in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
