@@ -91,6 +91,18 @@
 		2E5C5F58226B29E90007BCAF /* DebateAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A70A226ADD8100B2DCC3 /* DebateAPI+Testing.swift */; };
 		2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F56226B29A30007BCAF /* StubAccess.swift */; };
 		2E5EC04722FA71B900B41D54 /* StubbedResponses in Resources */ = {isa = PBXBuildFile; fileRef = 2E5EC04622FA71B800B41D54 /* StubbedResponses */; };
+		2E5EC04822FA732900B41D54 /* BasicUIElementFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */; };
+		2E5EC04922FA734100B41D54 /* ReactiveKeyboardProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06322F2C05C00ED02C0 /* ReactiveKeyboardProtocol.swift */; };
+		2E5EC04A22FA734D00B41D54 /* EmailAndPasswordValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */; };
+		2E5EC04B22FA735200B41D54 /* NotificationBannerQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CBC22DC4A7B000A4CF2 /* NotificationBannerQueue.swift */; };
+		2E5EC04C22FA735700B41D54 /* NotificationBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CBB22DC4A7B000A4CF2 /* NotificationBannerViewModel.swift */; };
+		2E5EC04D22FA735D00B41D54 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7890722D059FE009402F1 /* ErrorHandler.swift */; };
+		2E5EC04E22FA736E00B41D54 /* BannerOnScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CB922DC4A7A000A4CF2 /* BannerOnScreen.swift */; };
+		2E5EC04F22FA737600B41D54 /* ButtonWithActionClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */; };
+		2E5EC05022FA737A00B41D54 /* BackendErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06722F2D66800ED02C0 /* BackendErrorMessage.swift */; };
+		2E5EC05122FA738E00B41D54 /* NotificationBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CBA22DC4A7B000A4CF2 /* NotificationBannerView.swift */; };
+		2E5EC05322FA783600B41D54 /* DebateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5EC05222FA783600B41D54 /* DebateCell.swift */; };
+		2E5EC05722FA7BF600B41D54 /* DebateCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5EC05622FA7BF600B41D54 /* DebateCellViewModel.swift */; };
 		2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094622A4931100DF486A /* ProgressAPI.swift */; };
 		2E69094A22A4931E00DF486A /* ProgressAPI+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */; };
 		2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
@@ -187,6 +199,8 @@
 		2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainDjangoEncoding.swift; sourceTree = "<group>"; };
 		2E5C5F56226B29A30007BCAF /* StubAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubAccess.swift; sourceTree = "<group>"; };
 		2E5EC04622FA71B800B41D54 /* StubbedResponses */ = {isa = PBXFileReference; lastKnownFileType = folder; path = StubbedResponses; sourceTree = "<group>"; };
+		2E5EC05222FA783600B41D54 /* DebateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateCell.swift; sourceTree = "<group>"; };
+		2E5EC05622FA7BF600B41D54 /* DebateCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateCellViewModel.swift; sourceTree = "<group>"; };
 		2E69094622A4931100DF486A /* ProgressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAPI.swift; sourceTree = "<group>"; };
 		2E69094922A4931E00DF486A /* ProgressAPI+Testing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProgressAPI+Testing.swift"; sourceTree = "<group>"; };
 		2E69094C22A4932700DF486A /* StarredAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredAPI.swift; sourceTree = "<group>"; };
@@ -418,6 +432,7 @@
 				2E23A6C4226AC7B300B2DCC3 /* DebatesListViewController.swift */,
 				2E0D84B922A7952400E4B0E7 /* LoginOrRegisterViewController.swift */,
 				2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */,
+				2E5EC05222FA783600B41D54 /* DebateCell.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -428,6 +443,7 @@
 				2E0D848522A6FA9C00E4B0E7 /* DebatesListViewModel.swift */,
 				2E0D84BB22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift */,
 				2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */,
+				2E5EC05622FA7BF600B41D54 /* DebateCellViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -811,6 +827,7 @@
 				2E2BB06822F2D66800ED02C0 /* BackendErrorMessage.swift in Sources */,
 				2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */,
 				2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */,
+				2E5EC05722FA7BF600B41D54 /* DebateCellViewModel.swift in Sources */,
 				2E5C5F58226B29E90007BCAF /* DebateAPI+Testing.swift in Sources */,
 				2E0D848A22A7057300E4B0E7 /* UIColor+Custom.swift in Sources */,
 				2E36796722A4B280008190FE /* Starred.swift in Sources */,
@@ -818,6 +835,7 @@
 				2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */,
 				2E0D84BA22A7952400E4B0E7 /* LoginOrRegisterViewController.swift in Sources */,
 				2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */,
+				2E5EC05322FA783600B41D54 /* DebateCell.swift in Sources */,
 				2E0D848622A6FA9C00E4B0E7 /* DebatesListViewModel.swift in Sources */,
 				2EC7890822D059FE009402F1 /* ErrorHandler.swift in Sources */,
 				2E0D848822A7054A00E4B0E7 /* UIFont+Custom.swift in Sources */,
@@ -840,6 +858,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E30A91A22BF4BED007E386A /* String+Date.swift in Sources */,
+				2E5EC04822FA732900B41D54 /* BasicUIElementFactory.swift in Sources */,
+				2E5EC04A22FA734D00B41D54 /* EmailAndPasswordValidator.swift in Sources */,
 				2E30A90022BF4BED007E386A /* LoginOrRegisterViewController.swift in Sources */,
 				2E30A91B22BF4BED007E386A /* PlainDjangoEncoding.swift in Sources */,
 				2E30A91C22BF4BED007E386A /* UIFont+Custom.swift in Sources */,
@@ -848,6 +868,7 @@
 				2E30A91F22BF4BED007E386A /* SafelyShowAlert.swift in Sources */,
 				2E30A8FE22BF4BED007E386A /* AccountViewModel.swift in Sources */,
 				2E23A6DB226AC7B400B2DCC3 /* NetworkAPITests.swift in Sources */,
+				2E5EC04F22FA737600B41D54 /* ButtonWithActionClosure.swift in Sources */,
 				2E30A91322BF4BED007E386A /* ProgressAPI+Testing.swift in Sources */,
 				2E30A90922BF4BED007E386A /* NetworkService.swift in Sources */,
 				2E30A90722BF4BED007E386A /* UserDataManager.swift in Sources */,
@@ -857,9 +878,12 @@
 				2E30A91D22BF4BED007E386A /* UIColor+Custom.swift in Sources */,
 				2E3A0C8B22D7087D00087B2A /* Point.swift in Sources */,
 				2E30A91822BF4BED007E386A /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
+				2E5EC04922FA734100B41D54 /* ReactiveKeyboardProtocol.swift in Sources */,
 				2E30A90122BF4BED007E386A /* AccountViewController.swift in Sources */,
 				2E30A90322BF4BED007E386A /* TokenPair.swift in Sources */,
 				2E30A90622BF4BED007E386A /* SessionManager.swift in Sources */,
+				2E5EC05022FA737A00B41D54 /* BackendErrorMessage.swift in Sources */,
+				2E5EC04E22FA736E00B41D54 /* BannerOnScreen.swift in Sources */,
 				2E30A91222BF4BED007E386A /* ProgressAPI.swift in Sources */,
 				2E30A91122BF4BED007E386A /* AuthAPI+Testing.swift in Sources */,
 				2E30A91E22BF4BED007E386A /* DebugLog.swift in Sources */,
@@ -869,6 +893,7 @@
 				2E30A91022BF4BED007E386A /* AuthAPI.swift in Sources */,
 				2E30A90522BF4BED007E386A /* Starred.swift in Sources */,
 				2E30A92222BFE168007E386A /* ProgressCoreDataAPI.swift in Sources */,
+				2E5EC04D22FA735D00B41D54 /* ErrorHandler.swift in Sources */,
 				2E30A91622BF4BED007E386A /* NSLayoutConstraint+Priority.swift in Sources */,
 				2E30A90A22BF4BED007E386A /* KeychainService.swift in Sources */,
 				2E30A90F22BF4BED007E386A /* DebateAPI+Testing.swift in Sources */,
@@ -876,9 +901,12 @@
 				2E30A91522BF4BED007E386A /* StarredAPI+Testing.swift in Sources */,
 				2E30A8FC22BF4BED007E386A /* DebatesListViewModel.swift in Sources */,
 				2E30A90E22BF4BED007E386A /* DebateAPI.swift in Sources */,
+				2E5EC04C22FA735700B41D54 /* NotificationBannerViewModel.swift in Sources */,
 				2E30A92422BFE25A007E386A /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
 				2E30A90222BF4BED007E386A /* Debate.swift in Sources */,
+				2E5EC04B22FA735200B41D54 /* NotificationBannerQueue.swift in Sources */,
 				2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */,
+				2E5EC05122FA738E00B41D54 /* NotificationBannerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

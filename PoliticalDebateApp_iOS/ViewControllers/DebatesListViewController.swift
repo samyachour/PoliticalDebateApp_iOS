@@ -52,7 +52,12 @@ class DebatesListViewController: UIViewController {
                                                  animated: true)
     }
 
-    @objc private func didCompleteSearchInputOrPickerSelection() {
+    @objc private func didCompleteSearchInputOrPickerSelection(gesture: UILongPressGestureRecognizer? = nil) {
+        if let gesture = gesture, // can't use guard because we're only checking the gesture state if one was passed in
+            gesture.state != .began {
+            return
+        }
+
         if searchTextField.isFirstResponder {
             // No matter the sender that dismisses the keyboard, run a search query w/ the given text
             searchTriggeredSubject.onNext(searchTextField.text ?? "")
@@ -69,6 +74,7 @@ class DebatesListViewController: UIViewController {
     private static let cornerButtonXDistance: CGFloat = 16.0
     private static let sortByDefaultlabel = SortByOption.sortBy.stringValue
     private static let cornerRadius: CGFloat = 4.0
+    private static let cellSpacing: CGFloat = 24.0
     private var pickerIsOnScreen: Bool {
         return sortByPickerView.superview == self.view
     }
@@ -105,22 +111,21 @@ class DebatesListViewController: UIViewController {
         return searchButtonBar
     }()
 
-}
+    private let debatesCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        // Not using flow layout delegate
+        layout.minimumLineSpacing = DebatesListViewController.cellSpacing
+        layout.minimumInteritemSpacing = DebatesListViewController.cellSpacing
+        let screenWidth = UIScreen.main.bounds.width
+        let cellWidthAndHeight = (screenWidth - DebatesListViewController.cellSpacing - (2 * cornerButtonXDistance))/2
+        layout.itemSize = CGSize(width: cellWidthAndHeight, height: cellWidthAndHeight)
 
-// Gesture recognizer
-extension DebatesListViewController {
+        let debatesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        debatesCollectionView.backgroundColor = .clear
+        return debatesCollectionView
+    }()
 
-    // Can't use TapGesture because I need to trigger the instant the user first interacts w/ the screen
-    // e.g. beginning of scroll, long press, etc.
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            // If it was outside our search text field while editing or picker view while open
-            let shouldHandleTouch = (!searchTextField.frame.contains(touch.location(in: self.view)) && searchTextField.isFirstResponder) ||
-                (!sortByPickerView.frame.contains(touch.location(in: self.view)) && pickerIsOnScreen)
-            if shouldHandleTouch { didCompleteSearchInputOrPickerSelection() }
-        }
-        super.touchesBegan(touches, with: event)
-    }
 }
 
 extension DebatesListViewController: UITextFieldDelegate {
@@ -190,6 +195,11 @@ extension DebatesListViewController {
         }
 
         viewModel.subscribeToSearchAndSortQueries(searchInput: searchTriggeredSubject, sortSelection: sortSelectionObservable)
+
+        let collectionViewTapBegan = UILongPressGestureRecognizer(target: self, action: #selector(didCompleteSearchInputOrPickerSelection))
+        collectionViewTapBegan.minimumPressDuration = 0
+        collectionViewTapBegan.cancelsTouchesInView = false
+        debatesCollectionView.addGestureRecognizer(collectionViewTapBegan)
     }
 
     private func installViewConstraints() {
@@ -202,8 +212,12 @@ extension DebatesListViewController {
 
         view.addSubview(searchTextField)
         view.addSubview(sortByButton)
+        view.addSubview(debatesCollectionView)
 
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
+        sortByButton.translatesAutoresizingMaskIntoConstraints = false
+        debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
+
         searchTextField.topAnchor.constraint(equalTo: topLayoutAnchor,
                                              constant: DebatesListViewController.cornerButtonYDistance).isActive = true
         searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor,
@@ -211,11 +225,17 @@ extension DebatesListViewController {
         searchTextFieldTrailing = searchTextField.trailingAnchor.constraint(equalTo: sortByButton.leadingAnchor, constant: -8)
         searchTextFieldTrailing?.isActive = false
 
-        sortByButton.translatesAutoresizingMaskIntoConstraints = false
         sortByButton.topAnchor.constraint(equalTo: searchTextField.topAnchor, constant: -2).isActive = true
         sortByButton.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
 
+        debatesCollectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor,
+                                                   constant: DebatesListViewController.cornerButtonXDistance).isActive = true
+        debatesCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                        constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
+        debatesCollectionView.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
+        debatesCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                       constant: DebatesListViewController.cornerButtonXDistance).isActive = true
     }
 
     // MARK: - sortByPickerView UI handling
