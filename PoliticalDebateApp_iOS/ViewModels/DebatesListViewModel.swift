@@ -25,6 +25,23 @@ class DebateListViewModel {
         // Just until I set it up fully
         sortSelection.drive(onNext: nil, onCompleted: nil).disposed(by: disposeBag)
     }
+
+    let debatesRelay = BehaviorRelay<[DebateCellViewModel]>(value: DebateListViewModel.generateTestDebates(20))
+
+    private static func generateTestDebates(_ count: Int) -> [DebateCellViewModel] { // TODO: To remove
+        var returnArr = [DebateCellViewModel]()
+        for _ in 0...count {
+            returnArr.append(DebateCellViewModel(debate: Debate(primaryKey: 1,
+                                                                title: "Test title words words words words words words words",
+                                                                shortTitle: "Titl",
+                                                                lastUpdated: nil,
+                                                                totalPoints: 2,
+                                                                debateMap: nil),
+                                                 completedPercentage: Float.random(in: 0...1.0),
+                                                 isStarred: Bool.random()))
+        }
+        return returnArr
+    }
 }
 
 enum SortByOption: Int, CaseIterable {

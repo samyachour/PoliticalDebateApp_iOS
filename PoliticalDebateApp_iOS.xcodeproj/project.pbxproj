@@ -43,6 +43,8 @@
 		2E2BB06422F2C05C00ED02C0 /* ReactiveKeyboardProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06322F2C05C00ED02C0 /* ReactiveKeyboardProtocol.swift */; };
 		2E2BB06622F2C95D00ED02C0 /* BasicUIElementFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */; };
 		2E2BB06822F2D66800ED02C0 /* BackendErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06722F2D66800ED02C0 /* BackendErrorMessage.swift */; };
+		2E2E6DC222FC07880048B769 /* UIView+Fade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E6DC122FC07880048B769 /* UIView+Fade.swift */; };
+		2E2E6DC422FC0B710048B769 /* CAGradientLayer+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */; };
 		2E30A8E522BF4587007E386A /* StarredCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */; };
 		2E30A8E922BF4773007E386A /* SafelyShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */; };
 		2E30A8FC22BF4BED007E386A /* DebatesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848522A6FA9C00E4B0E7 /* DebatesListViewModel.swift */; };
@@ -190,6 +192,8 @@
 		2E2BB06322F2C05C00ED02C0 /* ReactiveKeyboardProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveKeyboardProtocol.swift; sourceTree = "<group>"; };
 		2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicUIElementFactory.swift; sourceTree = "<group>"; };
 		2E2BB06722F2D66800ED02C0 /* BackendErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendErrorMessage.swift; sourceTree = "<group>"; };
+		2E2E6DC122FC07880048B769 /* UIView+Fade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Fade.swift"; sourceTree = "<group>"; };
+		2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAGradientLayer+Init.swift"; sourceTree = "<group>"; };
 		2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredCoreDataAPI.swift; sourceTree = "<group>"; };
 		2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafelyShowAlert.swift; sourceTree = "<group>"; };
 		2E36796422A4B278008190FE /* Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Progress.swift; sourceTree = "<group>"; };
@@ -422,6 +426,8 @@
 				2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */,
 				2E2BB06322F2C05C00ED02C0 /* ReactiveKeyboardProtocol.swift */,
 				2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */,
+				2E2E6DC122FC07880048B769 /* UIView+Fade.swift */,
+				2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -804,6 +810,7 @@
 				2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */,
 				2E96743B226BDA8A00821A73 /* KeychainService.swift in Sources */,
 				2E23A708226ADA6200B2DCC3 /* NetworkService.swift in Sources */,
+				2E2E6DC422FC0B710048B769 /* CAGradientLayer+Init.swift in Sources */,
 				2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */,
 				2E23A702226ACE5600B2DCC3 /* Debate.swift in Sources */,
 				2E30A8E922BF4773007E386A /* SafelyShowAlert.swift in Sources */,
@@ -811,6 +818,7 @@
 				2ED614DE22E0382300BB19FF /* StubAccess.swift in Sources */,
 				2E967439226BD34E00821A73 /* SessionManager.swift in Sources */,
 				2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
+				2E2E6DC222FC07880048B769 /* UIView+Fade.swift in Sources */,
 				2E30A8E522BF4587007E386A /* StarredCoreDataAPI.swift in Sources */,
 				2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
 				2E36796522A4B278008190FE /* Progress.swift in Sources */,

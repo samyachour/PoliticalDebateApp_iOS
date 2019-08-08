@@ -40,24 +40,7 @@ class DebatesListViewController: UIViewController {
 
     private let searchTriggeredSubject = PublishSubject<String>()
 
-    // MARK: - Action handlers
-
-    @objc private func loginTapped() {
-        navigationController?.pushViewController(LoginOrRegisterViewController(viewModel: LoginOrRegisterViewModel()),
-                                                 animated: true)
-    }
-
-    @objc private func accountTapped() {
-        navigationController?.pushViewController(AccountViewController(viewModel: AccountViewModel()),
-                                                 animated: true)
-    }
-
-    @objc private func didCompleteSearchInputOrPickerSelection(gesture: UILongPressGestureRecognizer? = nil) {
-        if let gesture = gesture, // can't use guard because we're only checking the gesture state if one was passed in
-            gesture.state != .began {
-            return
-        }
-
+    @objc private func didCompleteSearchInputOrPickerSelection() {
         if searchTextField.isFirstResponder {
             // No matter the sender that dismisses the keyboard, run a search query w/ the given text
             searchTriggeredSubject.onNext(searchTextField.text ?? "")
@@ -73,7 +56,6 @@ class DebatesListViewController: UIViewController {
     private static let cornerButtonYDistance: CGFloat = 12.0
     private static let cornerButtonXDistance: CGFloat = 16.0
     private static let sortByDefaultlabel = SortByOption.sortBy.stringValue
-    private static let cornerRadius: CGFloat = 4.0
     private static let cellSpacing: CGFloat = 24.0
     private var pickerIsOnScreen: Bool {
         return sortByPickerView.superview == self.view
@@ -89,7 +71,11 @@ class DebatesListViewController: UIViewController {
 
     private let sortByButton = BasicUIElementFactory.generateButton(title: DebatesListViewController.sortByDefaultlabel, titleColor: GeneralColors.softButton)
 
-    private let sortByPickerView = UIPickerView()
+    private let sortByPickerView: UIPickerView = {
+        let sortByPickerView = UIPickerView()
+        sortByPickerView.backgroundColor = GeneralColors.background
+        return sortByPickerView
+    }()
 
     private let searchTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Search...")
 
@@ -111,6 +97,8 @@ class DebatesListViewController: UIViewController {
         return searchButtonBar
     }()
 
+    private let collectionViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
+
     private let debatesCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -118,11 +106,12 @@ class DebatesListViewController: UIViewController {
         layout.minimumLineSpacing = DebatesListViewController.cellSpacing
         layout.minimumInteritemSpacing = DebatesListViewController.cellSpacing
         let screenWidth = UIScreen.main.bounds.width
-        let cellWidthAndHeight = (screenWidth - DebatesListViewController.cellSpacing - (2 * cornerButtonXDistance))/2
+        let cellWidthAndHeight = (screenWidth - (3 * DebatesListViewController.cellSpacing))/2
         layout.itemSize = CGSize(width: cellWidthAndHeight, height: cellWidthAndHeight)
 
         let debatesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         debatesCollectionView.backgroundColor = .clear
+        debatesCollectionView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0)
         return debatesCollectionView
     }()
 
@@ -162,7 +151,56 @@ extension DebatesListViewController: UITextFieldDelegate {
 }
 
 // MARK: - View constraints & binding
-extension DebatesListViewController {
+extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDelegate {
+
+    private func installViewConstraints() {
+
+        view.backgroundColor = GeneralColors.background
+        navigationItem.title = "Debates"
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
+                                                                   .font: GeneralFonts.navBarTitle as Any]
+        navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
+
+        view.addSubview(searchTextField)
+        view.addSubview(sortByButton)
+        view.addSubview(collectionViewContainer)
+        collectionViewContainer.addSubview(debatesCollectionView)
+
+        searchTextField.translatesAutoresizingMaskIntoConstraints = false
+        sortByButton.translatesAutoresizingMaskIntoConstraints = false
+        collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
+
+        searchTextField.topAnchor.constraint(equalTo: topLayoutAnchor,
+                                             constant: DebatesListViewController.cornerButtonYDistance).isActive = true
+        searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                 constant: DebatesListViewController.cornerButtonXDistance).isActive = true
+        searchTextFieldTrailing = searchTextField.trailingAnchor.constraint(equalTo: sortByButton.leadingAnchor, constant: -8)
+        searchTextFieldTrailing?.isActive = false
+
+        sortByButton.topAnchor.constraint(equalTo: searchTextField.topAnchor, constant: -2).isActive = true
+        sortByButton.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                               constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
+
+        collectionViewContainer.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 2).isActive = true
+        collectionViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                          constant: -DebatesListViewController.cellSpacing).isActive = true
+        collectionViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
+        collectionViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                         constant: DebatesListViewController.cellSpacing).isActive = true
+
+        debatesCollectionView.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
+        debatesCollectionView.trailingAnchor.constraint(equalTo: collectionViewContainer.trailingAnchor).isActive = true
+        debatesCollectionView.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
+        debatesCollectionView.leadingAnchor.constraint(equalTo: collectionViewContainer.leadingAnchor).isActive = true
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        collectionViewContainer.fadeView(style: .vertical, percentage: 0.04)
+        sortByPickerView.fadeView(style: .bottom, percentage: 0.1)
+    }
 
     private func installViewBinds() {
         searchTextField.delegate = self
@@ -196,49 +234,48 @@ extension DebatesListViewController {
 
         viewModel.subscribeToSearchAndSortQueries(searchInput: searchTriggeredSubject, sortSelection: sortSelectionObservable)
 
-        let collectionViewTapBegan = UILongPressGestureRecognizer(target: self, action: #selector(didCompleteSearchInputOrPickerSelection))
-        collectionViewTapBegan.minimumPressDuration = 0
-        collectionViewTapBegan.cancelsTouchesInView = false
-        debatesCollectionView.addGestureRecognizer(collectionViewTapBegan)
+        let navBarTitleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navBarTitleTapped))
+        navBarTitleTapGestureRecognizer.cancelsTouchesInView = false
+        navigationController?.navigationBar.addGestureRecognizer(navBarTitleTapGestureRecognizer)
+
+        installCollectionViewDelegate()
+        installCollectionViewDataSource()
     }
 
-    private func installViewConstraints() {
+    @objc private func loginTapped() {
+        navigationController?.pushViewController(LoginOrRegisterViewController(viewModel: LoginOrRegisterViewModel()),
+                                                 animated: true)
+    }
 
-        view.backgroundColor = GeneralColors.background
-        navigationItem.title = "Debates"
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
-                                                                   .font: GeneralFonts.navBarTitle as Any]
-        navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
+    @objc private func accountTapped() {
+        navigationController?.pushViewController(AccountViewController(viewModel: AccountViewModel()),
+                                                 animated: true)
+    }
 
-        view.addSubview(searchTextField)
-        view.addSubview(sortByButton)
-        view.addSubview(debatesCollectionView)
+    private func installCollectionViewDelegate() {
+        debatesCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
+        debatesCollectionView.rx.itemSelected.subscribe { [weak self] (_) in
+            self?.didCompleteSearchInputOrPickerSelection()
+        }.disposed(by: disposeBag)
+    }
 
-        searchTextField.translatesAutoresizingMaskIntoConstraints = false
-        sortByButton.translatesAutoresizingMaskIntoConstraints = false
-        debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        didCompleteSearchInputOrPickerSelection()
+    }
 
-        searchTextField.topAnchor.constraint(equalTo: topLayoutAnchor,
-                                             constant: DebatesListViewController.cornerButtonYDistance).isActive = true
-        searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                 constant: DebatesListViewController.cornerButtonXDistance).isActive = true
-        searchTextFieldTrailing = searchTextField.trailingAnchor.constraint(equalTo: sortByButton.leadingAnchor, constant: -8)
-        searchTextFieldTrailing?.isActive = false
+    @objc private func navBarTitleTapped() {
+        debatesCollectionView.setContentOffset(.zero, animated: true)
+    }
 
-        sortByButton.topAnchor.constraint(equalTo: searchTextField.topAnchor, constant: -2).isActive = true
-        sortByButton.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                               constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
-
-        debatesCollectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor,
-                                                   constant: DebatesListViewController.cornerButtonXDistance).isActive = true
-        debatesCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                        constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
-        debatesCollectionView.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
-        debatesCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                       constant: DebatesListViewController.cornerButtonXDistance).isActive = true
+    private func installCollectionViewDataSource() {
+        debatesCollectionView.register(DebateCell.self, forCellWithReuseIdentifier: DebateCell.reuseIdentifier)
+        viewModel.debatesRelay.bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCell.reuseIdentifier, cellType: DebateCell.self)) { _, viewModel, cell in
+            cell.viewModel = viewModel
+        }.disposed(by: disposeBag)
     }
 
     // MARK: - sortByPickerView UI handling
+
     private func updateSortBySelection(with pickerChoice: Int) {
         UIView.transition(with: sortByButton, duration: 0.3, options: .transitionCrossDissolve, animations: { [weak self] in
             let optionSelected = SortByOption(rawValue: pickerChoice)
@@ -249,11 +286,16 @@ extension DebatesListViewController {
     }
 
     @objc private func installPickerView() {
+        guard !pickerIsOnScreen else {
+            didCompleteSearchInputOrPickerSelection()
+            return
+        }
+
         sortByPickerView.alpha = 0.0
         view.addSubview(sortByPickerView)
 
         sortByPickerView.translatesAutoresizingMaskIntoConstraints = false
-        sortByPickerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8).isActive = true
+        sortByPickerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor).isActive = true
         sortByPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                    constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
         sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
