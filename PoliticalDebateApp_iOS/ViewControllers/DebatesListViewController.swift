@@ -64,7 +64,6 @@ class DebatesListViewController: UIViewController {
 
     // MARK: - UI Elements
 
-    // Need to be able to add target to UIButton but use UIBarButtonItem in nav bar
     private let loginButton = BasicUIElementFactory.generateBarButton(title: "Log in")
 
     private let accountButton = BasicUIElementFactory.generateBarButton(title: "Account")
@@ -234,10 +233,6 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
 
         viewModel.subscribeToSearchAndSortQueries(searchInput: searchTriggeredSubject, sortSelection: sortSelectionObservable)
 
-        let navBarTitleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navBarTitleTapped))
-        navBarTitleTapGestureRecognizer.cancelsTouchesInView = false
-        navigationController?.navigationBar.addGestureRecognizer(navBarTitleTapGestureRecognizer)
-
         installCollectionViewDelegate()
         installCollectionViewDataSource()
     }
@@ -261,10 +256,6 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         didCompleteSearchInputOrPickerSelection()
-    }
-
-    @objc private func navBarTitleTapped() {
-        debatesCollectionView.setContentOffset(.zero, animated: true)
     }
 
     private func installCollectionViewDataSource() {

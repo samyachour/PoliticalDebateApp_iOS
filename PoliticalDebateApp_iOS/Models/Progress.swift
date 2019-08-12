@@ -43,6 +43,12 @@ extension Progress: Codable {
     }
 }
 
+extension Progress: Comparable {
+    static func < (lhs: Progress, rhs: Progress) -> Bool {
+        return lhs.completedPercentage < rhs.completedPercentage
+    }
+}
+
 // Initializing from CoreData model
 extension Progress {
     init?(from progress: LocalProgress, withSeenPoints: Bool = false) {

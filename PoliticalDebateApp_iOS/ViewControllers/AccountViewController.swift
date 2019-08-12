@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class AccountViewController: UIViewController, ReactiveKeyboardProtocol {
+class AccountViewController: UIViewController, KeyboardReactable {
 
     required init(viewModel: AccountViewModel) {
         self.viewModel = viewModel
@@ -130,8 +130,8 @@ extension AccountViewController {
         submitChangesButton.addTarget(self, action: #selector(submitChangesButtonTapped), for: .touchUpInside)
         logOutButton.addTarget(self, action: #selector(logOutButtonTapped), for: .touchUpInside)
         deleteAccountButton.addTarget(self, action: #selector(deleteAccountButtonTapped), for: .touchUpInside)
-        installKeyboardShiftingObserver() // from ReactiveKeyboardProtocol
-        installHideKeyboardTapGesture() // from ReactiveKeyboardProtocol
+        installKeyboardShiftingObserver() // from KeyboardReactable
+        installHideKeyboardTapGesture() // from KeyboardReactable
     }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length

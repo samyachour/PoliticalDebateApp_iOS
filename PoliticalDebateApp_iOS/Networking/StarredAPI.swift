@@ -69,3 +69,16 @@ extension StarredAPI: AccessTokenAuthorizable {
         }
     }
 }
+
+// For unit testing
+extension StarredAPI {
+
+    var sampleData: Data {
+        switch self {
+        case .starOrUnstarDebates:
+            return StubAccess.stubbedResponse("Empty")
+        case .loadAllStarred:
+            return StubAccess.stubbedResponse("Starred")
+        }
+    }
+}

@@ -11,6 +11,7 @@ import UIKit
 // Several of our screens (e.g. Login/Register & Account ViewControllers) use the same boilerplate UI elements
 class BasicUIElementFactory {
 
+    // Need to be able to add target to UIButton but use UIBarButtonItem in nav bar
     static func generateBarButton(title: String) -> (button: UIButton, barButton: UIBarButtonItem) {
         let basicBarButton = UIButton(frame: .zero)
         basicBarButton.setTitle(title, for: .normal)

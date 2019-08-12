@@ -121,3 +121,22 @@ extension AuthAPI: AccessTokenAuthorizable {
         }
     }
 }
+
+// For unit testing
+extension AuthAPI {
+
+    var sampleData: Data {
+        switch self {
+        case .tokenRefresh:
+            return StubAccess.stubbedResponse("TokenRefresh")
+        case .tokenObtain:
+            return StubAccess.stubbedResponse("TokenObtain")
+        case .registerUser,
+             .changePassword,
+             .requestPasswordReset,
+             .changeEmail,
+             .delete:
+            return StubAccess.stubbedResponse("Empty")
+        }
+    }
+}

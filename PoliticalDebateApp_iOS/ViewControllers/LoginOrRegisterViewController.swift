@@ -12,7 +12,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class LoginOrRegisterViewController: UIViewController, ReactiveKeyboardProtocol {
+class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
 
     required init(viewModel: LoginOrRegisterViewModel) {
         self.viewModel = viewModel
@@ -54,6 +54,11 @@ class LoginOrRegisterViewController: UIViewController, ReactiveKeyboardProtocol 
     }
 
     // MARK: - UI Elements
+
+    private let infoButton: (button: UIButton, barButton: UIBarButtonItem) = {
+        let infoButton = UIButton(type: .infoLight)
+        return (infoButton, UIBarButtonItem(customView: infoButton))
+    }()
 
     let scrollViewContainer = UIScrollView(frame: .zero) // can't be private to satisfy protocol
 
@@ -97,6 +102,7 @@ extension LoginOrRegisterViewController {
         view.backgroundColor = GeneralColors.background
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
                                                                    .font: GeneralFonts.navBarTitle as Any]
+        navigationItem.rightBarButtonItem = infoButton.barButton
 
         view.addSubview(scrollViewContainer)
         scrollViewContainer.addSubview(stackViewContainer)
@@ -126,11 +132,24 @@ extension LoginOrRegisterViewController {
     }
 
     private func installViewBinds() {
+        infoButton.button.addTarget(self, action: #selector(infoButtonTapped), for: .touchUpInside)
         submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
         forgotPasswordButton.addTarget(self, action: #selector(forgotPasswordTapped), for: .touchUpInside)
         installLoginOrRegisterButtonBinds()
-        installKeyboardShiftingObserver() // from ReactiveKeyboardProtocol
-        installHideKeyboardTapGesture() // from ReactiveKeyboardProtocol
+        installKeyboardShiftingObserver() // from KeyboardReactable
+        installHideKeyboardTapGesture() // from KeyboardReactable
+    }
+
+    @objc private func infoButtonTapped() {
+        let infoAlert = UIAlertController(title: "Signing up",
+                                           message: """
+                                                               The only reason to have an account is to sync your data to other platforms.
+
+                                                               We only use your email to reset your password. You will never receive any other mailing from us.
+                                                           """,
+                                           preferredStyle: .alert)
+        infoAlert.addAction(UIAlertAction(title: "Got it", style: .cancel, handler: nil))
+        present(infoAlert, animated: true)
     }
 
     @objc private func submitButtonTapped() {
@@ -280,11 +299,15 @@ extension LoginOrRegisterViewController {
             let shouldAnimate = newLoginOrRegisterState.animated
 
             UIView.animate(withDuration: shouldAnimate ? Constants.standardAnimationDuration : 0.0, animations: {
+                if shouldShowConfirmPasswordField { self.infoButton.button.isHidden = !shouldShowConfirmPasswordField }
+                self.infoButton.button.alpha = shouldShowConfirmPasswordField ? 1.0 : 0.0
                 self.confirmPasswordTextField.isHidden = !shouldShowConfirmPasswordField
                 self.confirmPasswordTextField.alpha = shouldShowConfirmPasswordField ? 1.0 : 0.0
-            }) { _ in // flag not reliable
+
                 self.navigationController?.navigationBar.layer.add(self.fadeTextAnimation, forKey: "fadeText")
                 self.navigationItem.title = newState.rawValue
+
+            }) { _ in // flag not reliable
                 UIView.transition(with: self.loginOrRegisterButton,
                                   duration: shouldAnimate ? Constants.standardAnimationDuration : 0.0,
                                   options: .transitionCrossDissolve,
@@ -292,6 +315,9 @@ extension LoginOrRegisterViewController {
                                     self.loginOrRegisterButton.setTitle(newState.otherState.rawValue, for: .normal)
                 },
                                   completion: nil)
+
+                // In case we just animated the alpha to 0
+                self.infoButton.button.isHidden = !shouldShowConfirmPasswordField
             }
             }.disposed(by: disposeBag)
     }

@@ -45,19 +45,23 @@ class DebateListViewModel {
 }
 
 enum SortByOption: Int, CaseIterable {
-    case sortBy
+    case sortBy // backend returns last updated by default
     case lastUpdated
     case starred
-    case progress
+    case progressAscending
+    case progressDescending
     case noProgress
+    case random
 
     var stringValue: String {
         switch self {
         case .sortBy: return "Sort by"
         case .lastUpdated: return "Last updated"
         case .starred: return "Starred"
-        case .progress: return "Progress"
+        case .progressAscending: return "Progress: Low to High"
+        case .progressDescending: return "Progress: High to Low"
         case .noProgress: return "No progress"
+        case .random: return "Random"
         }
     }
 
