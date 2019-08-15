@@ -69,8 +69,9 @@ final class CoreDataService {
                  * The store could not be migrated to the current model version.
                  Check the error message to determine what the actual problem was.
                  */
-                completionHandler(error)
+                completionHandler(GeneralError.alreadyHandled)
 
+                debugLog(error.localizedDescription)
                 CoreDataService.showCoreDataLoadAlert()
             }
             debugLog("Core Data stack has been initialized with description: \(storeDescription)")

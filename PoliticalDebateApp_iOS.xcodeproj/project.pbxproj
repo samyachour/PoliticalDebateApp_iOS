@@ -330,7 +330,7 @@
 				2E23A700226ACE0300B2DCC3 /* ViewModels */,
 				2E23A6FF226ACDFD00B2DCC3 /* ViewControllers */,
 				2E23A6FD226ACDED00B2DCC3 /* Models */,
-				2E23A6FC226ACDE200B2DCC3 /* Manager */,
+				2E23A6FC226ACDE200B2DCC3 /* Managers */,
 				2E96743C226BDFEA00821A73 /* Services */,
 				2EEDE91322BEE985000A4F2B /* LocalData */,
 				2E23A6FB226ACDDD00B2DCC3 /* Networking */,
@@ -374,13 +374,13 @@
 			path = Networking;
 			sourceTree = "<group>";
 		};
-		2E23A6FC226ACDE200B2DCC3 /* Manager */ = {
+		2E23A6FC226ACDE200B2DCC3 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
 				2E967438226BD34E00821A73 /* SessionManager.swift */,
 				2E967441226BE91C00821A73 /* UserDataManager.swift */,
 			);
-			path = Manager;
+			path = Managers;
 			sourceTree = "<group>";
 		};
 		2E23A6FD226ACDED00B2DCC3 /* Models */ = {

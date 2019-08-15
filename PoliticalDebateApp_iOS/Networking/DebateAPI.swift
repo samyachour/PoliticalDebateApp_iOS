@@ -113,11 +113,11 @@ extension SortByOption {
     var primaryKeysArray: [PrimaryKey]? {
         switch self {
         case .starred:
-            return [1] // TODO: Use current starred array
+            return UserDataManager.shared.starredRelayValue
         case .progressAscending,
              .progressDescending,
              .noProgress:
-            return [1] // TODO: Use current progress objects array mapped to just keys
+            return UserDataManager.shared.progressRelayValue.map { $0.debatePrimaryKey }
         default:
             return nil
         }

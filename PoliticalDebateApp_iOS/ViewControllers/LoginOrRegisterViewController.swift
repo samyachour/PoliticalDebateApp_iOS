@@ -142,12 +142,12 @@ extension LoginOrRegisterViewController {
 
     @objc private func infoButtonTapped() {
         let infoAlert = UIAlertController(title: "Signing up",
-                                           message: """
+                                          message: """
                                                                The only reason to have an account is to sync your data to other platforms.
 
                                                                We only use your email to reset your password. You will never receive any other mailing from us.
                                                            """,
-                                           preferredStyle: .alert)
+                                          preferredStyle: .alert)
         infoAlert.addAction(UIAlertAction(title: "Got it", style: .cancel, handler: nil))
         present(infoAlert, animated: true)
     }
@@ -176,6 +176,8 @@ extension LoginOrRegisterViewController {
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                             title: "Successfully logged in"))
             self?.navigationController?.popViewController(animated: true)
+
+            UserDataManager.shared.syncUserDataToBackend()
         }) { error in
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {

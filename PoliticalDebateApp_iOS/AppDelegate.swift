@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         SessionManager.shared.resumeSession()
+        UserDataManager.shared.loadUserData()
 
         window = UIWindow(frame: UIScreen.main.bounds)
 
