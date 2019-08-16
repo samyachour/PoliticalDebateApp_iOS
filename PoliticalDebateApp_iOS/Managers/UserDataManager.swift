@@ -48,29 +48,21 @@ class UserDataManager {
 
     // MARK: - Setters
 
-    func starDebate(_ primaryKey: PrimaryKey) -> Single<Response>? {
+    func starOrUnstarDebate(_ primaryKey: PrimaryKey, unstar: Bool) -> Single<Response?> {
         if SessionManager.shared.isActiveRelay.value {
-            return starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: [primaryKey], unstarred: [])).do(onSuccess: { (_) in
+            let starred = unstar ? [] : [primaryKey]
+            let unstarred = unstar ? [primaryKey] : []
+            return starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starred, unstarred: unstarred)).do(onSuccess: { (_) in
                 // Can capture self since it's a singleton, always in memory
                 self.updateStarRelay(primaryKey)
-            })
+            }).map { $0 as Response? }
         } else {
-            StarredCoreDataAPI.starOrUnstarDebate(primaryKey)
-            updateStarRelay(primaryKey)
-            return nil
-        }
-    }
-
-    func unstarDebate(_ primaryKey: PrimaryKey) -> Single<Response>? {
-        if SessionManager.shared.isActiveRelay.value {
-            return starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: [], unstarred: [primaryKey])).do(onSuccess: { (_) in
-                // Can capture self since it's a singleton, always in memory
-                self.updateStarRelay(primaryKey, unstar: true)
-            })
-        } else {
-            StarredCoreDataAPI.starOrUnstarDebate(primaryKey, unstar: true)
-            updateStarRelay(primaryKey, unstar: true)
-            return nil
+            StarredCoreDataAPI.starOrUnstarDebate(primaryKey, unstar: unstar)
+            updateStarRelay(primaryKey, unstar: unstar)
+            return Single.create {
+                $0(.success(nil))
+                return Disposables.create()
+            }
         }
     }
 
@@ -84,17 +76,20 @@ class UserDataManager {
         starredRelay.accept(currentStarred)
     }
 
-    func markProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) -> Single<Response>? {
+    func markProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) -> Single<Response?> {
         if SessionManager.shared.isActiveRelay.value {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in
                     // Can capture self since it's a singleton, always in memory
                     self.updateProgressRelay(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-                })
+                }).map { $0 as Response? }
         } else {
             ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
             updateProgressRelay(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-            return nil
+            return Single.create {
+                $0(.success(nil))
+                return Disposables.create()
+            }
         }
     }
 

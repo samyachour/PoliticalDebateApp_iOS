@@ -6,16 +6,31 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Moya
+import RxCocoa
+import RxSwift
 import UIKit
 
-struct DebateCellViewModel {
+class DebateCellViewModel {
     let debate: Debate
-    let completedPercentage: Float
-    let starTintColor: UIColor
+    let completedPercentage: Int
+    var isStarred: Bool
+    var starTintColor: UIColor {
+        return isStarred ? .blue : .gray // TODO: Fix
+    }
 
-    init(debate: Debate, completedPercentage: Float, isStarred: Bool) {
+    init(debate: Debate, completedPercentage: Int, isStarred: Bool) {
         self.debate = debate
         self.completedPercentage = completedPercentage
-        self.starTintColor = isStarred ? .blue : .gray // TODO: Fix
+        self.isStarred = isStarred
+    }
+
+    func starOrUnstarDebate() -> Single<Response?> {
+        return UserDataManager.shared.starOrUnstarDebate(debate.primaryKey, unstar: isStarred) // if the current state is starred and the user taps it, then we're unstarring
+            .do(onSuccess: { [weak self] _ in
+                if let isStarred = self?.isStarred {
+                    self?.isStarred = !isStarred
+                }
+        })
     }
 }

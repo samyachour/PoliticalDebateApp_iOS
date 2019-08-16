@@ -18,7 +18,7 @@ class DebateListViewModel {
 
     // TODO: Load all starred and all progress then manually filter
 
-    func subscribeToSearchAndSortQueries(searchInput: PublishSubject<String>, sortSelection: Driver<SortByOption>) {
+    func subscribeToSearchAndSortQueries(searchInput: PublishRelay<String>, sortSelection: Driver<SortByOption>) {
         // TODO: Hit search API endpoint which should then update collectionView
         // Show status message on error
 
@@ -37,7 +37,7 @@ class DebateListViewModel {
                                                                 lastUpdated: nil,
                                                                 totalPoints: 2,
                                                                 debateMap: nil),
-                                                 completedPercentage: Float.random(in: 0...1.0),
+                                                 completedPercentage: Int.random(in: 0...100),
                                                  isStarred: Bool.random()))
         }
         return returnArr
