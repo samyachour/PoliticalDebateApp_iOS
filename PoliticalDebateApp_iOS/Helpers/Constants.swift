@@ -37,6 +37,7 @@ enum GeneralCopies {
 
 enum GeneralError: Error {
     case basic
+    case report
     case connectivity
     case alreadyHandled // For consumers to know if producers have already handled the error
     case refreshTokenExpired
@@ -45,6 +46,8 @@ enum GeneralError: Error {
         switch self {
         case .basic:
             return "Something weird happened. Please try again."
+        case .report:
+            return "Something weird happened. Please report this to the developer."
         case .connectivity:
             return "Having trouble connecting to the network."
         case .alreadyHandled:

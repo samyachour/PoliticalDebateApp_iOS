@@ -16,7 +16,7 @@ class DebateCellViewModel {
     let completedPercentage: Int
     var isStarred: Bool
     var starTintColor: UIColor {
-        return isStarred ? .blue : .gray // TODO: Fix
+        return isStarred ? .customLightGreen2 : .customLightGray1
     }
 
     init(debate: Debate, completedPercentage: Int, isStarred: Bool) {

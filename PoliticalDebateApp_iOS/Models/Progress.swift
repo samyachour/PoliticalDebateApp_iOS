@@ -43,9 +43,9 @@ extension Progress: Codable {
     }
 }
 
-extension Progress: Comparable {
-    static func < (lhs: Progress, rhs: Progress) -> Bool {
-        return lhs.completedPercentage < rhs.completedPercentage
+extension Progress: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(debatePrimaryKey)
     }
 }
 

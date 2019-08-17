@@ -139,7 +139,7 @@ extension AccountViewController {
         var allFieldsEmpty = true
 
         if let newEmail = newEmailTextField.text,
-            newEmail != "" {
+            !newEmail.isEmpty {
             allFieldsEmpty = false
 
             guard EmailAndPasswordValidator.isValidEmail(newEmail) else {
@@ -166,14 +166,14 @@ extension AccountViewController {
                 ErrorHandler.emailUpdateError(response)
             }.disposed(by: disposeBag)
         }
-        if (currentPasswordTextField.text != nil && currentPasswordTextField.text != "") ||
-            (newPasswordTextField.text != nil && newPasswordTextField.text != "") ||
-            (confirmNewPasswordTextField.text != nil && confirmNewPasswordTextField.text != "") {
+        if (!(currentPasswordTextField.text?.isEmpty ?? true) ||
+            !(newPasswordTextField.text?.isEmpty ?? true) ||
+            !(confirmNewPasswordTextField.text?.isEmpty ?? true)) {
             allFieldsEmpty = false
 
-            guard let currentPassword = currentPasswordTextField.text, currentPassword != "",
-                let newPassword = newPasswordTextField.text, newPassword != "",
-                let confirmNewPassword = confirmNewPasswordTextField.text, confirmNewPassword != "" else {
+            guard let currentPassword = currentPasswordTextField.text, !currentPassword.isEmpty,
+                let newPassword = newPasswordTextField.text, !newPassword.isEmpty,
+                let confirmNewPassword = confirmNewPasswordTextField.text, !confirmNewPassword.isEmpty else {
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Please fill in either all of or none of the password fields."))
                     return

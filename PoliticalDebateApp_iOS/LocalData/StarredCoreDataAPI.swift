@@ -14,7 +14,7 @@ final class StarredCoreDataAPI {
 
     // So all our tasks run on the same private background queue when updating/retreiving records
     private static let context = CoreDataService.persistentContainer.newBackgroundContext()
-    private static let saveContext = {
+    private static func saveContext() {
         do {
             try StarredCoreDataAPI.context.save()
         } catch {

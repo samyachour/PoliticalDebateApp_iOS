@@ -176,8 +176,6 @@ extension LoginOrRegisterViewController {
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                             title: "Successfully logged in"))
             self?.navigationController?.popViewController(animated: true)
-
-            UserDataManager.shared.syncUserDataToBackend()
         }) { error in
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {

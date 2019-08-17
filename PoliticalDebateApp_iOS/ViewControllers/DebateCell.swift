@@ -17,9 +17,12 @@ class DebateCell: UICollectionViewCell {
     var viewModel: DebateCellViewModel? {
         didSet {
             guard let viewModel = viewModel else { return }
-            starredButton.tintColor = viewModel.starTintColor
-            debateTitleButton.setTitle(viewModel.debate.title, for: .normal)
-            debateProgressView.setProgress(Float(viewModel.completedPercentage) / 100, animated: false)
+            UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
+                self?.starredButton.tintColor = viewModel.starTintColor
+                self?.debateTitleButton.setTitle(self?.viewModel?.debate.title ?? "",
+                                                 for: .normal)
+                self?.debateProgressView.setProgress(Float(self?.viewModel?.completedPercentage ?? 0) / 100, animated: false)
+            })
         }
     }
 
@@ -60,7 +63,7 @@ class DebateCell: UICollectionViewCell {
 
     private lazy var debateTitleButton: UIButton = {
         let debateTitleButton = ButtonWithHighlightedBackgroundColor(frame: .zero)
-        debateTitleButton.setTitleColor(GeneralColors.text, for: .normal) // TODO: Fix
+        debateTitleButton.setTitleColor(GeneralColors.text, for: .normal)
         debateTitleButton.setBackgroundColorHighlightState(highlighted: GeneralColors.background, unhighlighted: .clear)
         debateTitleButton.contentEdgeInsets = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 0.0, right: 0.0)
         debateTitleButton.titleLabel?.font = GeneralFonts.button
@@ -72,7 +75,7 @@ class DebateCell: UICollectionViewCell {
 
     private lazy var debateProgressView: UIProgressView = {
         let debateProgressView = UIProgressView()
-        debateProgressView.progressTintColor = .black // TODO: Fix
+        debateProgressView.progressTintColor = UIColor.customLightGreen2
         debateProgressView.trackTintColor = .clear
         return debateProgressView
     }()
@@ -119,7 +122,9 @@ class DebateCell: UICollectionViewCell {
 
     private func installViewBinds() {
         starredButton.addTarget(self, action: #selector(starredButtonTapped), for: .touchUpInside)
-        debateTitleButton.addTarget(self, action: #selector(debateTitleButtonTapped), for: .touchUpInside)
+        debateTitleButton.addTarget(self, action: #selector(tappedToOpenDebate), for: .touchUpInside)
+        let tappedProgress = UITapGestureRecognizer(target: self, action: #selector(tappedToOpenDebate))
+        debateProgressView.addGestureRecognizer(tappedProgress)
     }
 
     @objc private func starredButtonTapped() {
@@ -142,7 +147,7 @@ class DebateCell: UICollectionViewCell {
         }).disposed(by: disposeBag)
     }
 
-    @objc private func debateTitleButtonTapped() {
+    @objc private func tappedToOpenDebate() {
         // TODO: Push debate VC
     }
 }

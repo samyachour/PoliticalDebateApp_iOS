@@ -6,42 +6,71 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Moya
 import RxCocoa
 import RxSwift
 
 class DebateListViewModel {
 
     // MARK: - Observables
+
     private let disposeBag = DisposeBag()
+
+    let debatesViewModelRelay = BehaviorRelay<[DebateCellViewModel]>(value: [])
+    let debatesRetrievalErrorRelay = PublishRelay<Error>()
+
+    // Used to filter the latest debates array through our starred & progress user data
+    // and do local sorting if it applies
+    func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
+
+        let latestStarred = UserDataManager.shared.starred
+        let latestProgress = UserDataManager.shared.progress
+
+        var newDebateViewModels = debates.map { debate -> DebateCellViewModel in
+            let completedPercentage = latestProgress.first(where: {$0.debatePrimaryKey == debate.primaryKey})?.completedPercentage ?? 0
+            let isStarred = latestStarred.contains(debate.primaryKey)
+            return DebateCellViewModel(debate: debate,
+                                       completedPercentage: completedPercentage,
+                                       isStarred: isStarred)
+        }
+        switch sortSelection {
+        case .progressAscending:
+            newDebateViewModels.sort { $0.completedPercentage > $1.completedPercentage }
+        case .progressDescending:
+            newDebateViewModels.sort { $0.completedPercentage < $1.completedPercentage }
+        default:
+            break
+        }
+        debatesViewModelRelay.accept(newDebateViewModels)
+    }
+
+    // MARK: - Input handling
+
+    func subscribeToSearchAndFilterUpdates(_ updateDebatesDriver: Driver<(String, SortByOption)>) {
+        updateDebatesDriver
+            .distinctUntilChanged({ (lhs, rhs) -> Bool in
+                lhs.0 == rhs.0 && lhs.1 == rhs.1
+            })
+            .drive(onNext: { [weak self] (searchString, sortSelection) in
+                self?.retrieveDebates(searchString: searchString, sortSelection: sortSelection)
+            })
+            .disposed(by: disposeBag)
+    }
 
     // MARK: - API calls
 
-    // TODO: Load all starred and all progress then manually filter
+    private let debateNetworkService = NetworkService<DebateAPI>()
 
-    func subscribeToSearchAndSortQueries(searchInput: PublishRelay<String>, sortSelection: Driver<SortByOption>) {
-        // TODO: Hit search API endpoint which should then update collectionView
-        // Show status message on error
-
-        // Just until I set it up fully
-        sortSelection.drive(onNext: nil, onCompleted: nil).disposed(by: disposeBag)
+    func retrieveDebates(searchString: String, sortSelection: SortByOption) {
+        debateNetworkService.makeRequest(with: .debateFilter(searchString: searchString, filter: sortSelection))
+            .map([Debate].self)
+            .subscribe(onSuccess: { [weak self] debates in
+                self?.acceptNewDebates(debates, sortSelection: sortSelection)
+            }) { [weak self] error in
+                self?.debatesRetrievalErrorRelay.accept(error)
+        }.disposed(by: disposeBag)
     }
 
-    let debatesRelay = BehaviorRelay<[DebateCellViewModel]>(value: DebateListViewModel.generateTestDebates(20))
-
-    private static func generateTestDebates(_ count: Int) -> [DebateCellViewModel] { // TODO: To remove
-        var returnArr = [DebateCellViewModel]()
-        for _ in 0...count {
-            returnArr.append(DebateCellViewModel(debate: Debate(primaryKey: 1,
-                                                                title: "Test title words words words words words words words",
-                                                                shortTitle: "Titl",
-                                                                lastUpdated: nil,
-                                                                totalPoints: 2,
-                                                                debateMap: nil),
-                                                 completedPercentage: Int.random(in: 0...100),
-                                                 isStarred: Bool.random()))
-        }
-        return returnArr
-    }
 }
 
 enum SortByOption: Int, CaseIterable {
@@ -71,4 +100,6 @@ enum SortByOption: Int, CaseIterable {
         default: return GeneralColors.hardButton
         }
     }
+
+    static let defaultValue: SortByOption = .sortBy
 }

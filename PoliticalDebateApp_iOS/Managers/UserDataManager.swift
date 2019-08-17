@@ -22,31 +22,28 @@ class UserDataManager {
     private let starredNetworkService = NetworkService<StarredAPI>()
     private let progressNetworkService = NetworkService<ProgressAPI>()
 
-    // MARK: - Global (private) state
+    // MARK: - Global state
 
-    private let starredRelay = BehaviorRelay<[PrimaryKey]>(value: [])
+    var starred = Set<PrimaryKey>()
+    var starredArray: [PrimaryKey] { return Array(starred) }
 
-    private let progressRelay = BehaviorRelay<[Progress]>(value: [])
-
-    // MARK: - Getters
-
-    var starredRelayValue: [PrimaryKey] {
-        return starredRelay.value
-    }
-
-    var progressRelayValue: [Progress] {
-        return progressRelay.value
-    }
-
-    lazy var starredRelayProducer: Driver<[PrimaryKey]> = {
-        return starredRelay.asDriver()
-    }()
-
-    lazy var progressRelayProducer: Driver<[Progress]> = {
-        return progressRelay.asDriver()
-    }()
+    var progress = Set<Progress>()
+    var progressArray: [Progress] { return Array(progress) }
 
     // MARK: - Setters
+
+    func clearUserData() {
+        clearStarred()
+        clearProgress()
+    }
+
+    private func clearStarred() {
+        starred.removeAll()
+    }
+
+    private func clearProgress() {
+        progress.removeAll()
+    }
 
     func starOrUnstarDebate(_ primaryKey: PrimaryKey, unstar: Bool) -> Single<Response?> {
         if SessionManager.shared.isActiveRelay.value {
@@ -54,11 +51,11 @@ class UserDataManager {
             let unstarred = unstar ? [primaryKey] : []
             return starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starred, unstarred: unstarred)).do(onSuccess: { (_) in
                 // Can capture self since it's a singleton, always in memory
-                self.updateStarRelay(primaryKey)
+                self.updateStarred(primaryKey, unstar: unstar)
             }).map { $0 as Response? }
         } else {
             StarredCoreDataAPI.starOrUnstarDebate(primaryKey, unstar: unstar)
-            updateStarRelay(primaryKey, unstar: unstar)
+            updateStarred(primaryKey, unstar: unstar)
             return Single.create {
                 $0(.success(nil))
                 return Disposables.create()
@@ -66,14 +63,12 @@ class UserDataManager {
         }
     }
 
-    private func updateStarRelay(_ primaryKey: PrimaryKey, unstar: Bool = false) {
-        var currentStarred = starredRelay.value
+    private func updateStarred(_ primaryKey: PrimaryKey, unstar: Bool = false) {
         if unstar {
-            currentStarred.removeAll { $0 == primaryKey }
+            starred.remove(primaryKey)
         } else {
-            currentStarred.append(primaryKey)
+            starred.insert(primaryKey)
         }
-        starredRelay.accept(currentStarred)
     }
 
     func markProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) -> Single<Response?> {
@@ -81,11 +76,11 @@ class UserDataManager {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in
                     // Can capture self since it's a singleton, always in memory
-                    self.updateProgressRelay(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
                 }).map { $0 as Response? }
         } else {
             ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-            updateProgressRelay(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+            updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
             return Single.create {
                 $0(.success(nil))
                 return Disposables.create()
@@ -93,31 +88,31 @@ class UserDataManager {
         }
     }
 
-    private func updateProgressRelay(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) {
-        var currentProgress = progressRelay.value
-        if let debateProgressIndex = currentProgress.firstIndex(where: {$0.debatePrimaryKey == debatePrimaryKey}) {
-            var seenPoints = currentProgress[debateProgressIndex].seenPoints ?? []
+    // TODO: Pass in progress object to this so I can utilize remove instead of firstIndex
+    private func updateProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) {
+        if let debateProgressIndex = progress.firstIndex(where: {$0.debatePrimaryKey == debatePrimaryKey}) {
+            var seenPoints = progress[debateProgressIndex].seenPoints ?? []
             seenPoints.append(pointPrimaryKey)
             let completedPercentage = Float(seenPoints.count) / Float(totalPoints)
-            currentProgress[debateProgressIndex] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
+            progress.remove(at: debateProgressIndex)
+            progress.insert(Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints))
         } else {
             let seenPoints = [pointPrimaryKey]
             let completedPercentage = Float(seenPoints.count) / Float(totalPoints)
-            currentProgress.append(Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints))
+            progress.insert(Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints))
         }
-        progressRelay.accept(currentProgress)
     }
 
     // MARK: - Loading user data
 
-    func loadUserData() {
+    func loadUserData(_ completion: (() -> Void)? = nil) {
 
         let loadUserData = {
             // Can capture self since it's a singleton, always in memory
             self.loadStarred {
                 // Called after completion in case loadStarred refreshes the access token
                 self.loadProgress {
-                    debugLog("Loaded user data.")
+                    completion?()
                 }
             }
         }
@@ -140,7 +135,7 @@ class UserDataManager {
                 .map(Starred.self)
                 .subscribe(onSuccess: { starred in
                     // Can capture self since it's a singleton, always in memory
-                    self.starredRelay.accept(starred.starredList)
+                    self.starred = Set(starred.starredList)
                     completion()
                 }) { error in
                     if let generalError = error as? GeneralError,
@@ -153,7 +148,7 @@ class UserDataManager {
             }.disposed(by: disposeBag)
         } else {
             if let localStarred = StarredCoreDataAPI.loadAllStarred() {
-                starredRelay.accept(localStarred.starredList)
+                self.starred = Set(localStarred.starredList)
             } else {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't load your starred debates from local data."))
@@ -167,7 +162,7 @@ class UserDataManager {
             progressNetworkService.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
                 .subscribe(onSuccess: { (allProgress) in
-                    self.progressRelay.accept(allProgress)
+                    self.progress = Set(allProgress)
                     completion()
                 }) { (error) in
                     if let generalError = error as? GeneralError,
@@ -187,7 +182,7 @@ class UserDataManager {
                     }
                     return progress
                 }
-                progressRelay.accept(localProgressFiltered)
+                progress = Set(localProgressFiltered)
             } else {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't load your debates' progress from local data."))
@@ -209,12 +204,12 @@ class UserDataManager {
     }
 
     private func syncLocalStarredDataToBackend(_ completion: @escaping () -> Void) {
-        guard !starredRelay.value.isEmpty else {
+        guard !starred.isEmpty else {
             completion()
             return
         }
 
-        starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starredRelay.value, unstarred: [])).subscribe(onSuccess: { (_) in
+        starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starredArray, unstarred: [])).subscribe(onSuccess: { (_) in
             // We've successfully sync'd the local data to the backend, now we can clear it
             StarredCoreDataAPI.clearAllStarred()
             completion()
@@ -236,12 +231,12 @@ class UserDataManager {
     }
 
     private func syncLocalProgressDataToBackend(_ completion: @escaping () -> Void) {
-        guard !progressRelay.value.isEmpty else {
+        guard !progress.isEmpty else {
             completion()
             return
         }
 
-        progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: progressRelay.value))
+        progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: progressArray))
             .subscribe(onSuccess: { (_) in
                 // We've successfully sync'd the local data to the backend, now we can clear it
                 ProgressCoreDataAPI.clearAllProgress()

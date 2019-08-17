@@ -113,6 +113,8 @@ class SessionManager {
                 // Can capture self since it's a singleton, always in memory
                 self.refreshToken = tokenPair.refreshTokenString
                 self.accessToken = tokenPair.accessTokenString
+
+                UserDataManager.shared.syncUserDataToBackend()
             })
             .map({ _ in }) // consumer shouldn't see the tokenPair
     }
@@ -120,5 +122,7 @@ class SessionManager {
     func logout() {
         accessToken = nil
         refreshToken = nil
+
+        UserDataManager.shared.clearUserData()
     }
 }

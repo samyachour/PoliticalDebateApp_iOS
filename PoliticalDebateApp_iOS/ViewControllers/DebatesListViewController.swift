@@ -6,6 +6,7 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Moya
 import RxCocoa
 import RxSwift
 import UIKit
@@ -27,8 +28,10 @@ class DebatesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        installViewConstraints()
-        installViewBinds()
+        UserDataManager.shared.loadUserData { [weak self] in
+            self?.installViewConstraints()
+            self?.installViewBinds()
+        }
     }
 
     // MARK: - Dependencies
@@ -40,7 +43,8 @@ class DebatesListViewController: UIViewController {
     private let viewModel: DebateListViewModel
     private let disposeBag = DisposeBag()
 
-    private let searchTriggeredSubject = PublishRelay<String>()
+    private let searchTriggeredRelay = BehaviorRelay<String>(value: DebatesListViewController.defaultSearchString)
+    private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
 
     // MARK: - Synchronizing animations
 
@@ -50,39 +54,12 @@ class DebatesListViewController: UIViewController {
     // To prevent this we enforce synchronization with a relay
     private var animationBlocksRelay = PublishRelay<() -> Void>()
 
-    @objc private func didCompleteSearchInputOrPickerSelection() {
-        hidePickerView() // If user taps away to dismiss picker, they have not changed selection
-        resignSearchTextField()
-    }
-
-    private func resignSearchTextField() {
-        if searchTextField.isFirstResponder {
-            // No matter the sender that dismisses the keyboard, run a search query w/ the given text
-            searchTriggeredSubject.accept(searchTextField.text ?? "")
-            searchTextField.resignFirstResponder()
-            if searchTextField.text?.isEmpty ?? true { // Shrink the text field if it's empty
-                animationBlocksRelay.accept { [weak self] in
-                    UIView.animate(withDuration: Constants.standardAnimationDuration,
-                                   delay: 0.0,
-                                   options: .curveEaseInOut,
-                                   animations: {
-                                    self?.searchTextFieldTrailingAnchor?.isActive = false
-                                    self?.view.layoutIfNeeded()
-                    }, completion: nil)
-                }
-            }
-        }
-    }
-
-    private func hidePickerView() {
-        if pickerIsOnScreen { togglePickerViewOnScreen() }
-    }
-
     // MARK: - UI Properties
 
     private static let headerElementsYDistance: CGFloat = 12.0
     private static let headerElementsXDistance: CGFloat = 16.0
-    private static let sortByDefaultlabel = SortByOption.sortBy.stringValue
+    private static let sortByDefaultlabel = SortByOption.defaultValue.stringValue
+    private static let defaultSearchString = ""
     private static let cellSpacing: CGFloat = 24.0
     private var pickerIsOnScreen: Bool {
         return sortByPickerViewTopAnchor?.isActive ?? false &&
@@ -116,7 +93,7 @@ class DebatesListViewController: UIViewController {
         let searchButton = UIBarButtonItem(title: "Search",
                                            style: .plain,
                                            target: self,
-                                           action: #selector(didCompleteSearchInputOrPickerSelection))
+                                           action: #selector(activateSearch))
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace,
                                             target: self,
                                             action: nil)
@@ -150,6 +127,16 @@ class DebatesListViewController: UIViewController {
 
     private let debatesRefreshControl = UIRefreshControl()
 
+    private let emptyStateLabel: UILabel = {
+        let emptyStateLabel = UILabel(frame: .zero)
+        emptyStateLabel.text = "No debates to show."
+        emptyStateLabel.textColor = UIColor.customDarkGray1
+        emptyStateLabel.font = UIFont.primaryRegular(24.0)
+        emptyStateLabel.textAlignment = NSTextAlignment.center
+        emptyStateLabel.alpha = 0.0
+        return emptyStateLabel
+    }()
+
 }
 
 extension DebatesListViewController: UITextFieldDelegate {
@@ -166,7 +153,7 @@ extension DebatesListViewController: UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if string == "\n" { // If user clicks enter perform search
-            didCompleteSearchInputOrPickerSelection()
+            activateSearch()
             return false
         }
         return true
@@ -177,6 +164,7 @@ extension DebatesListViewController: UITextFieldDelegate {
 // MARK: - View constraints & binding
 extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDelegate {
 
+    // MARK: View constraints
     // swiftlint:disable:next function_body_length
     private func installViewConstraints() {
         view.backgroundColor = DebatesListViewController.backgroundColor
@@ -185,12 +173,13 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
                                                                    .font: GeneralFonts.navBarTitle as Any]
         navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
 
-        view.addSubview(headerElementsContainer)
         headerElementsContainer.addSubview(searchTextField)
         headerElementsContainer.addSubview(sortByButton)
-        view.addSubview(sortByPickerView)
         view.addSubview(collectionViewContainer)
+        view.addSubview(sortByPickerView)
+        collectionViewContainer.addSubview(emptyStateLabel)
         collectionViewContainer.addSubview(debatesCollectionView)
+        view.addSubview(headerElementsContainer)
 
         headerElementsContainer.translatesAutoresizingMaskIntoConstraints = false
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -198,6 +187,7 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
         sortByPickerView.translatesAutoresizingMaskIntoConstraints = false
         collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
         debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
 
         headerElementsContainer.backgroundColor = DebatesListViewController.backgroundColor
         headerElementsContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
@@ -240,9 +230,8 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
         debatesCollectionView.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
         debatesCollectionView.leadingAnchor.constraint(equalTo: collectionViewContainer.leadingAnchor).isActive = true
 
-        view.sendSubviewToBack(sortByPickerView)
-        view.sendSubviewToBack(collectionViewContainer)
-        view.bringSubviewToFront(headerElementsContainer)
+        emptyStateLabel.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
+        emptyStateLabel.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
     }
 
     override func viewDidLayoutSubviews() {
@@ -251,6 +240,8 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
         collectionViewContainer.fadeView(style: .vertical, percentage: 0.04)
         sortByPickerView.fadeView(style: .bottom, percentage: 0.1)
     }
+
+    // MARK: View binding
 
     private func installViewBinds() {
         searchTextField.delegate = self
@@ -275,14 +266,21 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
                 optionLabel
             }.disposed(by: disposeBag)
 
-        let sortSelectionObservable = sortByPickerView.rx.itemSelected.asDriver().do(onNext: { [weak self] item in
-            self?.didCompleteSearchInputOrPickerSelection()
-            self?.updateSortBySelection(with: item.row)
-        }).map { item -> SortByOption in
-            SortByOption(rawValue: item.row) ?? .sortBy
-        }
+        sortByPickerView.rx.itemSelected.subscribe({ [weak self] itemEvent in
+            guard let item = itemEvent.element else { return }
 
-        viewModel.subscribeToSearchAndSortQueries(searchInput: searchTriggeredSubject, sortSelection: sortSelectionObservable)
+            self?.hideActiveUIElements()
+            self?.updateSortBySelection(with: item.row)
+            self?.sortSelectionRelay.accept(SortByOption(rawValue: item.row) ?? SortByOption.defaultValue)
+        }).disposed(by: disposeBag)
+
+        let updateDebatesDriver = Driver.combineLatest(searchTriggeredRelay.asDriver(),
+                                                       sortSelectionRelay.asDriver(),
+                                                       resultSelector: { (searchInput, sortSelection) -> (String, SortByOption) in
+                                                        return (searchInput, sortSelection)
+        })
+
+        viewModel.subscribeToSearchAndFilterUpdates(updateDebatesDriver)
 
         animationBlocksRelay.subscribe { animationEvent in
             guard let animationBlock = animationEvent.element else { return }
@@ -292,7 +290,6 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
         debatesRefreshControl.addTarget(self, action: #selector(userPulledToRefresh), for: .valueChanged)
         debatesCollectionView.refreshControl = debatesRefreshControl
 
-        installCollectionViewDelegate()
         installCollectionViewDataSource()
     }
 
@@ -306,29 +303,80 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
                                                  animated: true)
     }
 
-    private func installCollectionViewDelegate() {
-        debatesCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
-        debatesCollectionView.rx.itemSelected.subscribe { [weak self] (_) in
-            self?.didCompleteSearchInputOrPickerSelection()
-        }.disposed(by: disposeBag)
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { hideActiveUIElements() }
+
+    @objc private func userPulledToRefresh() {
+        viewModel.retrieveDebates(searchString: searchTriggeredRelay.value,
+                                  sortSelection: sortSelectionRelay.value)
+        hideActiveUIElements()
     }
 
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        didCompleteSearchInputOrPickerSelection()
+    @objc private func activateSearch() {
+        searchTriggeredRelay.accept(searchTextField.text ?? DebatesListViewController.defaultSearchString)
+        hideActiveUIElements()
     }
 
     private func installCollectionViewDataSource() {
         debatesCollectionView.register(DebateCell.self, forCellWithReuseIdentifier: DebateCell.reuseIdentifier)
-        viewModel.debatesRelay.bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCell.reuseIdentifier, cellType: DebateCell.self)) { _, viewModel, cell in
+        viewModel.debatesViewModelRelay
+            .skip(1) // empty array emission initialized w/ relay
+            .do(onNext: { [weak self] debateViewModels in
+                self?.debatesRefreshControl.endRefreshing()
+                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
+                    self?.emptyStateLabel.alpha = debateViewModels.isEmpty ? 1.0 : 0.0
+                })
+            })
+            .bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCell.reuseIdentifier, cellType: DebateCell.self)) { _, viewModel, cell in
             cell.viewModel = viewModel
         }.disposed(by: disposeBag)
     }
 
-    @objc private func userPulledToRefresh() {
-        debatesRefreshControl.endRefreshing()
+    private func installDebatesRetrievalErrorObserver() {
+        viewModel.debatesRetrievalErrorRelay.subscribe { errorEvent in
+            if let generalError = errorEvent.element as? GeneralError,
+                generalError == .alreadyHandled {
+                return
+            }
+            guard let moyaError = errorEvent.element as? MoyaError,
+                let response = moyaError.response else {
+                    ErrorHandler.showBasicErrorBanner()
+                    return
+            }
+
+            switch response.statusCode {
+            case 400:
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: GeneralError.report.localizedDescription))
+            default:
+                ErrorHandler.showBasicErrorBanner()
+            }
+            return
+        }.disposed(by: disposeBag)
     }
 
-    // MARK: - sortByPickerView UI handling
+    // MARK: - UI Animation handling
+
+    @objc private func hideActiveUIElements() {
+        hidePickerView() // If user taps away to dismiss picker, they have not changed selection
+        resignSearchTextField()
+    }
+
+    private func resignSearchTextField() {
+        if searchTextField.isFirstResponder {
+            searchTextField.resignFirstResponder()
+            if searchTextField.text?.isEmpty ?? true { // Shrink the text field if it's empty
+                animationBlocksRelay.accept { [weak self] in
+                    UIView.animate(withDuration: Constants.standardAnimationDuration,
+                                   delay: 0.0,
+                                   options: .curveEaseInOut,
+                                   animations: {
+                                    self?.searchTextFieldTrailingAnchor?.isActive = false
+                                    self?.view.layoutIfNeeded()
+                    }, completion: nil)
+                }
+            }
+        }
+    }
 
     private func updateSortBySelection(with pickerChoice: Int) {
         animationBlocksRelay.accept { [weak self] in
@@ -340,6 +388,10 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
                 self?.sortByButton.setTitleColor(optionSelected?.selectionColor, for: .normal)
             }, completion: nil)
         }
+    }
+
+    private func hidePickerView() {
+        if pickerIsOnScreen { togglePickerViewOnScreen() }
     }
 
     @objc private func togglePickerViewOnScreen() {

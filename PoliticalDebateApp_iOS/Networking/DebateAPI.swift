@@ -57,7 +57,8 @@ extension DebateAPI: TargetType {
             return .requestParameters(parameters: [DebateConstants.primaryKeyKey : primaryKey], encoding: PlainDjangoEncoding())
         case .debateFilter(let searchString, let filter):
             var params = [String: Any]()
-            if let searchString = searchString {
+            if let searchString = searchString,
+                !searchString.isEmpty {
                 params[DebateConstants.searchStringKey] = searchString
             }
             if let filter = filter {
@@ -79,11 +80,10 @@ extension DebateAPI: TargetType {
 
 extension SortByOption {
 
-    var backendFilterName: String? {
+    var backendFilterName: String {
         switch self {
-        case .sortBy:
-            return nil
-        case .lastUpdated:
+        case .sortBy, // backend sorting defaults to last updated
+             .lastUpdated:
             return DebateConstants.lastUpdatedFilterValue
         case .starred:
             return DebateConstants.starredFilterValue
@@ -113,11 +113,11 @@ extension SortByOption {
     var primaryKeysArray: [PrimaryKey]? {
         switch self {
         case .starred:
-            return UserDataManager.shared.starredRelayValue
+            return UserDataManager.shared.starredArray
         case .progressAscending,
              .progressDescending,
              .noProgress:
-            return UserDataManager.shared.progressRelayValue.map { $0.debatePrimaryKey }
+            return UserDataManager.shared.progressArray.map { $0.debatePrimaryKey }
         default:
             return nil
         }
