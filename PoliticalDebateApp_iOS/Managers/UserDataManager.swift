@@ -24,10 +24,11 @@ class UserDataManager {
 
     // MARK: - Global state
 
+    // Using sets for fast lookup and enforcing unique values
     var starred = Set<PrimaryKey>()
-    var starredArray: [PrimaryKey] { return Array(starred) }
-
     var progress = Set<Progress>()
+
+    var starredArray: [PrimaryKey] { return Array(starred) }
     var progressArray: [Progress] { return Array(progress) }
 
     // MARK: - Setters

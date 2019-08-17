@@ -12,23 +12,20 @@ import RxSwift
 
 class DebateListViewModel {
 
-    // MARK: - Observables
-
-    private let disposeBag = DisposeBag()
+    // MARK: - Datasource
 
     let debatesViewModelRelay = BehaviorRelay<[DebateCellViewModel]>(value: [])
+    // When we want to propogate errors, we can't do it through the viewModelRelay
+    // or else it will complete and the value will be invalidated
     let debatesRetrievalErrorRelay = PublishRelay<Error>()
 
     // Used to filter the latest debates array through our starred & progress user data
-    // and do local sorting if it applies
+    // and do local sorting if applicable
     func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
 
-        let latestStarred = UserDataManager.shared.starred
-        let latestProgress = UserDataManager.shared.progress
-
         var newDebateViewModels = debates.map { debate -> DebateCellViewModel in
-            let completedPercentage = latestProgress.first(where: {$0.debatePrimaryKey == debate.primaryKey})?.completedPercentage ?? 0
-            let isStarred = latestStarred.contains(debate.primaryKey)
+            let completedPercentage = UserDataManager.shared.progress.first(where: {$0.debatePrimaryKey == debate.primaryKey})?.completedPercentage ?? 0
+            let isStarred = UserDataManager.shared.starred.contains(debate.primaryKey)
             return DebateCellViewModel(debate: debate,
                                        completedPercentage: completedPercentage,
                                        isStarred: isStarred)
@@ -46,12 +43,24 @@ class DebateListViewModel {
 
     // MARK: - Input handling
 
-    func subscribeToSearchAndFilterUpdates(_ updateDebatesDriver: Driver<(String, SortByOption)>) {
-        updateDebatesDriver
+    private let disposeBag = DisposeBag()
+
+    func subscribeToManualDebateUpdates(_ searchTriggeredDriver: Driver<String>,
+                                        _ sortSelectionDriver: Driver<SortByOption>,
+                                        _ userActionDriver: Driver<Void>) {
+        let searchAndSortDriver = Driver
+            .combineLatest(searchTriggeredDriver,
+                           sortSelectionDriver) { return ($0, $1) }
             .distinctUntilChanged({ (lhs, rhs) -> Bool in
                 lhs.0 == rhs.0 && lhs.1 == rhs.1
             })
-            .drive(onNext: { [weak self] (searchString, sortSelection) in
+
+        Driver
+            .combineLatest(searchAndSortDriver,
+                           userActionDriver) { (searchAndSortValue, _) -> (String, SortByOption) in
+                                // User action can be ignored since it just uses the latest search and sort values
+                                return searchAndSortValue
+            }.drive(onNext: { [weak self] (searchString, sortSelection) in
                 self?.retrieveDebates(searchString: searchString, sortSelection: sortSelection)
             })
             .disposed(by: disposeBag)
@@ -61,7 +70,7 @@ class DebateListViewModel {
 
     private let debateNetworkService = NetworkService<DebateAPI>()
 
-    func retrieveDebates(searchString: String, sortSelection: SortByOption) {
+    private func retrieveDebates(searchString: String, sortSelection: SortByOption) {
         debateNetworkService.makeRequest(with: .debateFilter(searchString: searchString, filter: sortSelection))
             .map([Debate].self)
             .subscribe(onSuccess: { [weak self] debates in

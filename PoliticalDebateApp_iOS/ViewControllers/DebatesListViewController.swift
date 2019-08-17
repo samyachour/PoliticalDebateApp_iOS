@@ -45,6 +45,7 @@ class DebatesListViewController: UIViewController {
 
     private let searchTriggeredRelay = BehaviorRelay<String>(value: DebatesListViewController.defaultSearchString)
     private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
+    private let userActionRelay = BehaviorRelay<Void>(value: ())
 
     // MARK: - Synchronizing animations
 
@@ -247,7 +248,7 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
         searchTextField.delegate = self
         searchTextField.inputAccessoryView = searchButtonBar
 
-        SessionManager.shared.isActiveRelay.subscribe { [weak self] isActive in
+        sessionManager.isActiveRelay.subscribe { [weak self] isActive in
             guard let isActive = isActive.element else { return }
             if isActive {
                 self?.navigationItem.rightBarButtonItem = self?.accountButton.barButton
@@ -274,13 +275,9 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
             self?.sortSelectionRelay.accept(SortByOption(rawValue: item.row) ?? SortByOption.defaultValue)
         }).disposed(by: disposeBag)
 
-        let updateDebatesDriver = Driver.combineLatest(searchTriggeredRelay.asDriver(),
-                                                       sortSelectionRelay.asDriver(),
-                                                       resultSelector: { (searchInput, sortSelection) -> (String, SortByOption) in
-                                                        return (searchInput, sortSelection)
-        })
-
-        viewModel.subscribeToSearchAndFilterUpdates(updateDebatesDriver)
+        viewModel.subscribeToManualDebateUpdates(searchTriggeredRelay.asDriver(),
+                                                 sortSelectionRelay.asDriver(),
+                                                 userActionRelay.asDriver())
 
         animationBlocksRelay.subscribe { animationEvent in
             guard let animationBlock = animationEvent.element else { return }
@@ -306,8 +303,7 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { hideActiveUIElements() }
 
     @objc private func userPulledToRefresh() {
-        viewModel.retrieveDebates(searchString: searchTriggeredRelay.value,
-                                  sortSelection: sortSelectionRelay.value)
+        userActionRelay.accept(())
         hideActiveUIElements()
     }
 
@@ -329,9 +325,7 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
             .bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCell.reuseIdentifier, cellType: DebateCell.self)) { _, viewModel, cell in
             cell.viewModel = viewModel
         }.disposed(by: disposeBag)
-    }
 
-    private func installDebatesRetrievalErrorObserver() {
         viewModel.debatesRetrievalErrorRelay.subscribe { errorEvent in
             if let generalError = errorEvent.element as? GeneralError,
                 generalError == .alreadyHandled {
@@ -350,8 +344,7 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
             default:
                 ErrorHandler.showBasicErrorBanner()
             }
-            return
-        }.disposed(by: disposeBag)
+            }.disposed(by: disposeBag)
     }
 
     // MARK: - UI Animation handling
