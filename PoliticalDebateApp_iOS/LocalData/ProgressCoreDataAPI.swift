@@ -71,6 +71,20 @@ final class ProgressCoreDataAPI {
         return Progress(from: localProgress, withSeenPoints: true)
     }
 
+    static func clearAllProgress() {
+        defer { saveContext() }
+
+        // Explicit type for generic method
+        guard let localProgressRecords: [LocalProgress] = CoreDataService
+            .fetchRecordsForEntity(CoreDataConstants.progressEntity, in: ProgressCoreDataAPI.context) else {
+                return
+        }
+
+        localProgressRecords.forEach { (localProgress) in
+            context.delete(localProgress)
+        }
+    }
+
     // MARK: - Helpers
 
     // Handle the logic of loading data if it exists and creating+loading if it doesn't

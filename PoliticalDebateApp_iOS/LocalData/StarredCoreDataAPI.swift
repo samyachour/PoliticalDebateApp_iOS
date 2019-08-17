@@ -54,6 +54,13 @@ final class StarredCoreDataAPI {
         return Starred(from: localStarred)
     }
 
+    static func clearAllStarred() {
+        defer { saveContext() }
+
+        let localStarred = StarredCoreDataAPI.loadStarredDebates()
+        context.delete(localStarred)
+    }
+
     // MARK: - Helpers
 
     // Handle the logic of loading data if it exists and creating+loading if it doesn't

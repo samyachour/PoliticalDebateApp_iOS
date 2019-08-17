@@ -30,8 +30,9 @@ final class CoreDataService {
                                                           with predicate: NSPredicate? = nil,
                                                           unique: Bool = false) -> [T]? {
         guard CoreDataService.loadedStores else {
-            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                            title: "Couldn't load local data. Check device space, app permissions, or try restarting."))
+            NotificationBannerQueue.shared
+                .enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                  title: "Couldn't load local data. Check device space, app permissions, or try restarting."))
             return nil
         }
 

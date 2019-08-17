@@ -114,8 +114,12 @@ class UserDataManager {
 
         let loadUserData = {
             // Can capture self since it's a singleton, always in memory
-            self.loadStarred()
-            self.loadProgress()
+            self.loadStarred {
+                // Called after completion in case loadStarred refreshes the access token
+                self.loadProgress {
+                    debugLog("Loaded user data.")
+                }
+            }
         }
 
         if !SessionManager.shared.isActiveRelay.value {
@@ -130,13 +134,14 @@ class UserDataManager {
 
     }
 
-    private func loadStarred() {
+    private func loadStarred(_ completion: @escaping () -> Void) {
         if SessionManager.shared.isActiveRelay.value {
             starredNetworkService.makeRequest(with: .loadAllStarred)
                 .map(Starred.self)
                 .subscribe(onSuccess: { starred in
                     // Can capture self since it's a singleton, always in memory
                     self.starredRelay.accept(starred.starredList)
+                    completion()
                 }) { error in
                     if let generalError = error as? GeneralError,
                         generalError == .alreadyHandled {
@@ -144,6 +149,7 @@ class UserDataManager {
                     }
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Couldn't load your starred debates from the server."))
+                    completion()
             }.disposed(by: disposeBag)
         } else {
             if let localStarred = StarredCoreDataAPI.loadAllStarred() {
@@ -152,15 +158,17 @@ class UserDataManager {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't load your starred debates from local data."))
             }
+            completion()
         }
     }
 
-    private func loadProgress() {
+    private func loadProgress(_ completion: @escaping () -> Void) {
         if SessionManager.shared.isActiveRelay.value {
             progressNetworkService.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
                 .subscribe(onSuccess: { (allProgress) in
                     self.progressRelay.accept(allProgress)
+                    completion()
                 }) { (error) in
                     if let generalError = error as? GeneralError,
                         generalError == .alreadyHandled {
@@ -168,6 +176,7 @@ class UserDataManager {
                     }
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Couldn't load your debates' progress from the server."))
+                    completion()
             }.disposed(by: disposeBag)
         } else {
             if let localProgress = ProgressCoreDataAPI.loadAllProgress() {
@@ -183,6 +192,7 @@ class UserDataManager {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't load your debates' progress from local data."))
             }
+            completion()
         }
     }
 
@@ -205,6 +215,8 @@ class UserDataManager {
         }
 
         starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starredRelay.value, unstarred: [])).subscribe(onSuccess: { (_) in
+            // We've successfully sync'd the local data to the backend, now we can clear it
+            StarredCoreDataAPI.clearAllStarred()
             completion()
         }) { (error) in
             if let generalError = error as? GeneralError,
@@ -231,6 +243,8 @@ class UserDataManager {
 
         progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: progressRelay.value))
             .subscribe(onSuccess: { (_) in
+                // We've successfully sync'd the local data to the backend, now we can clear it
+                ProgressCoreDataAPI.clearAllProgress()
                 completion()
             }) { (error) in
                 if let generalError = error as? GeneralError,

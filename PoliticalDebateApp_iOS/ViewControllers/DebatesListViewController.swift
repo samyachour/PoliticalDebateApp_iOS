@@ -51,7 +51,7 @@ class DebatesListViewController: UIViewController {
     private var animationBlocksRelay = PublishRelay<() -> Void>()
 
     @objc private func didCompleteSearchInputOrPickerSelection() {
-        hidePickerViewIfOnScreen() // If user taps away to dismiss picker, they have not changed selection
+        hidePickerView() // If user taps away to dismiss picker, they have not changed selection
         resignSearchTextField()
     }
 
@@ -74,7 +74,7 @@ class DebatesListViewController: UIViewController {
         }
     }
 
-    private func hidePickerViewIfOnScreen() {
+    private func hidePickerView() {
         if pickerIsOnScreen { togglePickerViewOnScreen() }
     }
 
@@ -85,11 +85,8 @@ class DebatesListViewController: UIViewController {
     private static let sortByDefaultlabel = SortByOption.sortBy.stringValue
     private static let cellSpacing: CGFloat = 24.0
     private var pickerIsOnScreen: Bool {
-        guard let sortByPickerViewTopAnchor = sortByPickerViewTopAnchor,
-            let sortByPickerViewBottomAnchor = sortByPickerViewBottomAnchor else {
-                return false
-        }
-        return sortByPickerViewTopAnchor.isActive && !sortByPickerViewBottomAnchor.isActive
+        return sortByPickerViewTopAnchor?.isActive ?? false &&
+            !(sortByPickerViewBottomAnchor?.isActive ?? false)
     }
     private var searchTextFieldTrailingAnchor: NSLayoutConstraint?
     private var sortByPickerViewTopAnchor: NSLayoutConstraint?
@@ -147,8 +144,11 @@ class DebatesListViewController: UIViewController {
         let debatesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         debatesCollectionView.backgroundColor = .clear
         debatesCollectionView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0)
+        debatesCollectionView.alwaysBounceVertical = true
         return debatesCollectionView
     }()
+
+    private let debatesRefreshControl = UIRefreshControl()
 
 }
 
@@ -289,6 +289,9 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
             animationBlock()
         }.disposed(by: disposeBag)
 
+        debatesRefreshControl.addTarget(self, action: #selector(userPulledToRefresh), for: .valueChanged)
+        debatesCollectionView.refreshControl = debatesRefreshControl
+
         installCollectionViewDelegate()
         installCollectionViewDataSource()
     }
@@ -319,6 +322,10 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
         viewModel.debatesRelay.bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCell.reuseIdentifier, cellType: DebateCell.self)) { _, viewModel, cell in
             cell.viewModel = viewModel
         }.disposed(by: disposeBag)
+    }
+
+    @objc private func userPulledToRefresh() {
+        debatesRefreshControl.endRefreshing()
     }
 
     // MARK: - sortByPickerView UI handling
