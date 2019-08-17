@@ -42,7 +42,7 @@ class NetworkAPITests: XCTestCase {
 
     func testGetAllDebates() {
         let testAPI = NetworkService<DebateAPI>()
-        testAPI.makeRequest(with: .debateSearch(searchString: ""))
+        testAPI.makeRequest(with: .debateFilter(searchString: nil, filter: nil))
             .map([Debate].self)
             .subscribe(onSuccess: { debates in
                 XCTAssert(debates[0].primaryKey == 1)

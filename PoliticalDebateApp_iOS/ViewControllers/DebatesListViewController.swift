@@ -6,6 +6,7 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Moya
 import RxCocoa
 import RxSwift
 import UIKit
@@ -23,14 +24,18 @@ class DebatesListViewController: UIViewController {
     }
 
     // MARK: - VC Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        installViewConstraints()
-        installViewBinds()
+        UserDataManager.shared.loadUserData { [weak self] in
+            self?.installViewConstraints()
+            self?.installViewBinds()
+        }
     }
 
     // MARK: - Dependencies
+
     private let sessionManager = SessionManager.shared
 
     // MARK: - Observers & Observables
@@ -38,52 +43,48 @@ class DebatesListViewController: UIViewController {
     private let viewModel: DebateListViewModel
     private let disposeBag = DisposeBag()
 
-    private let searchTriggeredSubject = PublishSubject<String>()
+    private let searchTriggeredRelay = BehaviorRelay<String>(value: DebatesListViewController.defaultSearchString)
+    private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
 
-    // MARK: - Action handlers
+    // MARK: - Synchronizing animations
 
-    @objc private func loginTapped() {
-        navigationController?.pushViewController(LoginOrRegisterViewController(viewModel: LoginOrRegisterViewModel()),
-                                                 animated: true)
-    }
-
-    @objc private func accountTapped() {
-        navigationController?.pushViewController(AccountViewController(viewModel: AccountViewModel()),
-                                                 animated: true)
-    }
-
-    @objc private func didCompleteSearchInputOrPickerSelection() {
-        if searchTextField.isFirstResponder {
-            // No matter the sender that dismisses the keyboard, run a search query w/ the given text
-            searchTriggeredSubject.onNext(searchTextField.text ?? "")
-            searchTextField.resignFirstResponder()
-        }
-        if pickerIsOnScreen { // If user taps away to dismiss picker, they have not changed selection
-            removePickerView()
-        }
-    }
+    // On this screen we are constantly running multiple animations at once
+    // There is a problem when animation blocks are not called serially
+    // They start to overlap and the parameters (duration, options, etc.) bleed into each other
+    // To prevent this we enforce synchronization with a relay
+    private var animationBlocksRelay = PublishRelay<() -> Void>()
 
     // MARK: - UI Properties
 
-    private static let cornerButtonYDistance: CGFloat = 12.0
-    private static let cornerButtonXDistance: CGFloat = 16.0
-    private static let sortByDefaultlabel = SortByOption.sortBy.stringValue
-    private static let cornerRadius: CGFloat = 4.0
+    private static let headerElementsYDistance: CGFloat = 12.0
+    private static let headerElementsXDistance: CGFloat = 16.0
+    private static let sortByDefaultlabel = SortByOption.defaultValue.stringValue
+    private static let defaultSearchString = ""
+    private static let cellSpacing: CGFloat = 24.0
     private var pickerIsOnScreen: Bool {
-        return sortByPickerView.superview == self.view
+        return sortByPickerViewTopAnchor?.isActive ?? false &&
+            !(sortByPickerViewBottomAnchor?.isActive ?? false)
     }
-    private var searchTextFieldTrailing: NSLayoutConstraint?
+    private var searchTextFieldTrailingAnchor: NSLayoutConstraint?
+    private var sortByPickerViewTopAnchor: NSLayoutConstraint?
+    private var sortByPickerViewBottomAnchor: NSLayoutConstraint?
+    private static let backgroundColor = GeneralColors.background
 
     // MARK: - UI Elements
 
-    // Need to be able to add target to UIButton but use UIBarButtonItem in nav bar
     private let loginButton = BasicUIElementFactory.generateBarButton(title: "Log in")
 
     private let accountButton = BasicUIElementFactory.generateBarButton(title: "Account")
 
+    private let headerElementsContainer = UIView(frame: .zero)
+
     private let sortByButton = BasicUIElementFactory.generateButton(title: DebatesListViewController.sortByDefaultlabel, titleColor: GeneralColors.softButton)
 
-    private let sortByPickerView = UIPickerView()
+    private let sortByPickerView: UIPickerView = {
+        let sortByPickerView = UIPickerView()
+        sortByPickerView.backgroundColor = GeneralColors.background
+        return sortByPickerView
+    }()
 
     private let searchTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Search...")
 
@@ -92,7 +93,7 @@ class DebatesListViewController: UIViewController {
         let searchButton = UIBarButtonItem(title: "Search",
                                            style: .plain,
                                            target: self,
-                                           action: #selector(didCompleteSearchInputOrPickerSelection))
+                                           action: #selector(activateSearch))
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace,
                                             target: self,
                                             action: nil)
@@ -105,50 +106,54 @@ class DebatesListViewController: UIViewController {
         return searchButtonBar
     }()
 
-}
+    private let collectionViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
 
-// Gesture recognizer
-extension DebatesListViewController {
+    private let debatesCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        // Not using flow layout delegate
+        layout.minimumLineSpacing = DebatesListViewController.cellSpacing
+        layout.minimumInteritemSpacing = DebatesListViewController.cellSpacing
+        let screenWidth = UIScreen.main.bounds.width
+        let cellWidthAndHeight = (screenWidth - (3 * DebatesListViewController.cellSpacing))/2
+        layout.itemSize = CGSize(width: cellWidthAndHeight, height: cellWidthAndHeight)
 
-    // Can't use TapGesture because I need to trigger the instant the user first interacts w/ the screen
-    // e.g. beginning of scroll, long press, etc.
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            // If it was outside our search text field while editing or picker view while open
-            let shouldHandleTouch = (!searchTextField.frame.contains(touch.location(in: self.view)) && searchTextField.isFirstResponder) ||
-                (!sortByPickerView.frame.contains(touch.location(in: self.view)) && pickerIsOnScreen)
-            if shouldHandleTouch { didCompleteSearchInputOrPickerSelection() }
-        }
-        super.touchesBegan(touches, with: event)
-    }
+        let debatesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        debatesCollectionView.backgroundColor = .clear
+        debatesCollectionView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0)
+        debatesCollectionView.alwaysBounceVertical = true
+        return debatesCollectionView
+    }()
+
+    private let debatesRefreshControl = UIRefreshControl()
+
+    private let emptyStateLabel: UILabel = {
+        let emptyStateLabel = UILabel(frame: .zero)
+        emptyStateLabel.text = "No debates to show."
+        emptyStateLabel.textColor = UIColor.customDarkGray1
+        emptyStateLabel.font = UIFont.primaryRegular(24.0)
+        emptyStateLabel.textAlignment = NSTextAlignment.center
+        emptyStateLabel.alpha = 0.0
+        return emptyStateLabel
+    }()
+
 }
 
 extension DebatesListViewController: UITextFieldDelegate {
 
     // Expand the text field
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        UIView.animate(withDuration: Constants.standardAnimationDuration, delay: 0.0, options: .curveEaseInOut, animations: { [weak self] in
-            self?.searchTextFieldTrailing?.isActive = true
-            self?.view.layoutIfNeeded()
-        }, completion: nil)
-    }
-
-    // Shrink the text field if it's empty
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if textField.text?.isEmpty ?? true {
-            UIView.animate(withDuration: Constants.standardAnimationDuration,
-                           delay: 0.0,
-                           options: .curveEaseInOut,
-                           animations: { [weak self] in
-                            self?.searchTextFieldTrailing?.isActive = false
-                            self?.view.layoutIfNeeded()
-                }, completion: nil)
+        animationBlocksRelay.accept { [weak self] in
+            UIView.animate(withDuration: Constants.standardAnimationDuration, delay: 0.0, options: .curveEaseInOut, animations: {
+                self?.searchTextFieldTrailingAnchor?.isActive = true
+                self?.view.layoutIfNeeded()
+            }, completion: nil)
         }
     }
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if string == "\n" { // If user clicks enter perform search
-            didCompleteSearchInputOrPickerSelection()
+            activateSearch()
             return false
         }
         return true
@@ -157,7 +162,86 @@ extension DebatesListViewController: UITextFieldDelegate {
 }
 
 // MARK: - View constraints & binding
-extension DebatesListViewController {
+extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDelegate {
+
+    // MARK: View constraints
+    // swiftlint:disable:next function_body_length
+    private func installViewConstraints() {
+        view.backgroundColor = DebatesListViewController.backgroundColor
+        navigationItem.title = "Debates"
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
+                                                                   .font: GeneralFonts.navBarTitle as Any]
+        navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
+
+        headerElementsContainer.addSubview(searchTextField)
+        headerElementsContainer.addSubview(sortByButton)
+        view.addSubview(collectionViewContainer)
+        view.addSubview(sortByPickerView)
+        collectionViewContainer.addSubview(emptyStateLabel)
+        collectionViewContainer.addSubview(debatesCollectionView)
+        view.addSubview(headerElementsContainer)
+
+        headerElementsContainer.translatesAutoresizingMaskIntoConstraints = false
+        searchTextField.translatesAutoresizingMaskIntoConstraints = false
+        sortByButton.translatesAutoresizingMaskIntoConstraints = false
+        sortByPickerView.translatesAutoresizingMaskIntoConstraints = false
+        collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        headerElementsContainer.backgroundColor = DebatesListViewController.backgroundColor
+        headerElementsContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
+        headerElementsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                         constant: DebatesListViewController.headerElementsXDistance).isActive = true
+        headerElementsContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                          constant: -DebatesListViewController.headerElementsXDistance).isActive = true
+
+        searchTextField.topAnchor.constraint(equalTo: headerElementsContainer.topAnchor,
+                                             constant: DebatesListViewController.headerElementsYDistance).isActive = true
+        searchTextFieldTrailingAnchor = searchTextField.trailingAnchor.constraint(equalTo: sortByButton.leadingAnchor, constant: -8)
+        searchTextFieldTrailingAnchor?.isActive = false
+        searchTextField.bottomAnchor.constraint(equalTo: headerElementsContainer.bottomAnchor).isActive = true
+        searchTextField.leadingAnchor.constraint(equalTo: headerElementsContainer.leadingAnchor).isActive = true
+
+        sortByButton.topAnchor.constraint(equalTo: searchTextField.topAnchor, constant: -2).isActive = true
+        sortByButton.bottomAnchor.constraint(equalTo: headerElementsContainer.bottomAnchor).isActive = true
+        sortByButton.trailingAnchor.constraint(equalTo: headerElementsContainer.trailingAnchor).isActive = true
+        sortByButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        sortByButton.setContentHuggingPriority(.required, for: .horizontal)
+
+        sortByPickerViewTopAnchor = sortByPickerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8)
+        sortByPickerViewTopAnchor?.isActive = false
+        sortByPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                   constant: -DebatesListViewController.headerElementsXDistance).isActive = true
+        sortByPickerViewBottomAnchor = sortByPickerView.bottomAnchor.constraint(equalTo: view.topAnchor)
+        sortByPickerViewBottomAnchor?.isActive = true
+        sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                  constant: DebatesListViewController.headerElementsXDistance).isActive = true
+
+        collectionViewContainer.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 2).isActive = true
+        collectionViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                          constant: -DebatesListViewController.cellSpacing).isActive = true
+        collectionViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
+        collectionViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                         constant: DebatesListViewController.cellSpacing).isActive = true
+
+        debatesCollectionView.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
+        debatesCollectionView.trailingAnchor.constraint(equalTo: collectionViewContainer.trailingAnchor).isActive = true
+        debatesCollectionView.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
+        debatesCollectionView.leadingAnchor.constraint(equalTo: collectionViewContainer.leadingAnchor).isActive = true
+
+        emptyStateLabel.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
+        emptyStateLabel.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        collectionViewContainer.fadeView(style: .vertical, percentage: 0.04)
+        sortByPickerView.fadeView(style: .bottom, percentage: 0.1)
+    }
+
+    // MARK: View binding
 
     private func installViewBinds() {
         searchTextField.delegate = self
@@ -174,7 +258,7 @@ extension DebatesListViewController {
 
         loginButton.button.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         accountButton.button.addTarget(self, action: #selector(accountTapped), for: .touchUpInside)
-        sortByButton.addTarget(self, action: #selector(installPickerView), for: .touchUpInside)
+        sortByButton.addTarget(self, action: #selector(togglePickerViewOnScreen), for: .touchUpInside)
 
         // Set up picker options
         Observable.just(SortByOption.allCases.map { $0.stringValue })
@@ -182,74 +266,149 @@ extension DebatesListViewController {
                 optionLabel
             }.disposed(by: disposeBag)
 
-        let sortSelectionObservable = sortByPickerView.rx.itemSelected.asDriver().do(onNext: { [weak self] item in
+        sortByPickerView.rx.itemSelected.subscribe({ [weak self] itemEvent in
+            guard let item = itemEvent.element else { return }
+
+            self?.hideActiveUIElements()
             self?.updateSortBySelection(with: item.row)
-            self?.didCompleteSearchInputOrPickerSelection()
-        }).map { item -> SortByOption in
-            SortByOption(rawValue: item.row) ?? .sortBy
+            self?.sortSelectionRelay.accept(SortByOption(rawValue: item.row) ?? SortByOption.defaultValue)
+        }).disposed(by: disposeBag)
+
+        let updateDebatesDriver = Driver.combineLatest(searchTriggeredRelay.asDriver(),
+                                                       sortSelectionRelay.asDriver(),
+                                                       resultSelector: { (searchInput, sortSelection) -> (String, SortByOption) in
+                                                        return (searchInput, sortSelection)
+        })
+
+        viewModel.subscribeToSearchAndFilterUpdates(updateDebatesDriver)
+
+        animationBlocksRelay.subscribe { animationEvent in
+            guard let animationBlock = animationEvent.element else { return }
+            animationBlock()
+        }.disposed(by: disposeBag)
+
+        debatesRefreshControl.addTarget(self, action: #selector(userPulledToRefresh), for: .valueChanged)
+        debatesCollectionView.refreshControl = debatesRefreshControl
+
+        installCollectionViewDataSource()
+    }
+
+    @objc private func loginTapped() {
+        navigationController?.pushViewController(LoginOrRegisterViewController(viewModel: LoginOrRegisterViewModel()),
+                                                 animated: true)
+    }
+
+    @objc private func accountTapped() {
+        navigationController?.pushViewController(AccountViewController(viewModel: AccountViewModel()),
+                                                 animated: true)
+    }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { hideActiveUIElements() }
+
+    @objc private func userPulledToRefresh() {
+        viewModel.retrieveDebates(searchString: searchTriggeredRelay.value,
+                                  sortSelection: sortSelectionRelay.value)
+        hideActiveUIElements()
+    }
+
+    @objc private func activateSearch() {
+        searchTriggeredRelay.accept(searchTextField.text ?? DebatesListViewController.defaultSearchString)
+        hideActiveUIElements()
+    }
+
+    private func installCollectionViewDataSource() {
+        debatesCollectionView.register(DebateCell.self, forCellWithReuseIdentifier: DebateCell.reuseIdentifier)
+        viewModel.debatesViewModelRelay
+            .skip(1) // empty array emission initialized w/ relay
+            .do(onNext: { [weak self] debateViewModels in
+                self?.debatesRefreshControl.endRefreshing()
+                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
+                    self?.emptyStateLabel.alpha = debateViewModels.isEmpty ? 1.0 : 0.0
+                })
+            })
+            .bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCell.reuseIdentifier, cellType: DebateCell.self)) { _, viewModel, cell in
+            cell.viewModel = viewModel
+        }.disposed(by: disposeBag)
+    }
+
+    private func installDebatesRetrievalErrorObserver() {
+        viewModel.debatesRetrievalErrorRelay.subscribe { errorEvent in
+            if let generalError = errorEvent.element as? GeneralError,
+                generalError == .alreadyHandled {
+                return
+            }
+            guard let moyaError = errorEvent.element as? MoyaError,
+                let response = moyaError.response else {
+                    ErrorHandler.showBasicErrorBanner()
+                    return
+            }
+
+            switch response.statusCode {
+            case 400:
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: GeneralError.report.localizedDescription))
+            default:
+                ErrorHandler.showBasicErrorBanner()
+            }
+            return
+        }.disposed(by: disposeBag)
+    }
+
+    // MARK: - UI Animation handling
+
+    @objc private func hideActiveUIElements() {
+        hidePickerView() // If user taps away to dismiss picker, they have not changed selection
+        resignSearchTextField()
+    }
+
+    private func resignSearchTextField() {
+        if searchTextField.isFirstResponder {
+            searchTextField.resignFirstResponder()
+            if searchTextField.text?.isEmpty ?? true { // Shrink the text field if it's empty
+                animationBlocksRelay.accept { [weak self] in
+                    UIView.animate(withDuration: Constants.standardAnimationDuration,
+                                   delay: 0.0,
+                                   options: .curveEaseInOut,
+                                   animations: {
+                                    self?.searchTextFieldTrailingAnchor?.isActive = false
+                                    self?.view.layoutIfNeeded()
+                    }, completion: nil)
+                }
+            }
         }
-
-        viewModel.subscribeToSearchAndSortQueries(searchInput: searchTriggeredSubject, sortSelection: sortSelectionObservable)
     }
 
-    private func installViewConstraints() {
-
-        view.backgroundColor = GeneralColors.background
-        navigationItem.title = "Debates"
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
-                                                                   .font: GeneralFonts.navBarTitle as Any]
-        navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
-
-        view.addSubview(searchTextField)
-        view.addSubview(sortByButton)
-
-        searchTextField.translatesAutoresizingMaskIntoConstraints = false
-        searchTextField.topAnchor.constraint(equalTo: topLayoutAnchor,
-                                             constant: DebatesListViewController.cornerButtonYDistance).isActive = true
-        searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                 constant: DebatesListViewController.cornerButtonXDistance).isActive = true
-        searchTextFieldTrailing = searchTextField.trailingAnchor.constraint(equalTo: sortByButton.leadingAnchor, constant: -8)
-        searchTextFieldTrailing?.isActive = false
-
-        sortByButton.translatesAutoresizingMaskIntoConstraints = false
-        sortByButton.topAnchor.constraint(equalTo: searchTextField.topAnchor, constant: -2).isActive = true
-        sortByButton.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                               constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
-
-    }
-
-    // MARK: - sortByPickerView UI handling
     private func updateSortBySelection(with pickerChoice: Int) {
-        UIView.transition(with: sortByButton, duration: 0.3, options: .transitionCrossDissolve, animations: { [weak self] in
-            let optionSelected = SortByOption(rawValue: pickerChoice)
-            self?.sortByButton.setTitle(optionSelected?.stringValue ?? DebatesListViewController.sortByDefaultlabel,
-                                        for: .normal)
-            self?.sortByButton.setTitleColor(optionSelected?.selectionColor, for: .normal)
-        })
-    }
-
-    @objc private func installPickerView() {
-        sortByPickerView.alpha = 0.0
-        view.addSubview(sortByPickerView)
-
-        sortByPickerView.translatesAutoresizingMaskIntoConstraints = false
-        sortByPickerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8).isActive = true
-        sortByPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                   constant: -DebatesListViewController.cornerButtonXDistance).isActive = true
-        sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                  constant: DebatesListViewController.cornerButtonXDistance).isActive = true
-
-        UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
-            self?.sortByPickerView.alpha = 1.0
+        animationBlocksRelay.accept { [weak self] in
+            guard let sortByButton = self?.sortByButton else { return }
+            UIView.transition(with: sortByButton, duration: Constants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
+                let optionSelected = SortByOption(rawValue: pickerChoice)
+                self?.sortByButton.setTitle(optionSelected?.stringValue ?? DebatesListViewController.sortByDefaultlabel,
+                                            for: .normal)
+                self?.sortByButton.setTitleColor(optionSelected?.selectionColor, for: .normal)
+            }, completion: nil)
         }
     }
 
-    private func removePickerView() {
-        UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
-            self?.sortByPickerView.alpha = 0.0
-            }, completion: { [weak self] _ in // flag not reliable
-                self?.sortByPickerView.removeFromSuperview()
-        })
+    private func hidePickerView() {
+        if pickerIsOnScreen { togglePickerViewOnScreen() }
+    }
 
+    @objc private func togglePickerViewOnScreen() {
+        let toggle = !pickerIsOnScreen
+
+        animationBlocksRelay.accept { [weak self] in
+            UIView.animate(withDuration: 0.7, delay: 0.0, options: .curveEaseInOut, animations: {
+                // Need to disable and enable constraints in the correct order to prevent errors
+                if self?.sortByPickerViewTopAnchor?.isActive ?? false {
+                    self?.sortByPickerViewTopAnchor?.isActive = toggle
+                    self?.sortByPickerViewBottomAnchor?.isActive = !toggle
+                } else if self?.sortByPickerViewBottomAnchor?.isActive ?? false {
+                    self?.sortByPickerViewBottomAnchor?.isActive = !toggle
+                    self?.sortByPickerViewTopAnchor?.isActive = toggle
+                }
+                self?.view.layoutIfNeeded()
+            })
+        }
     }
 }

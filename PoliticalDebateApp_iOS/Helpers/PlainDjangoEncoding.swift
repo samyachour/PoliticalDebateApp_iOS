@@ -50,10 +50,8 @@ struct PlainDjangoEncoding: ParameterEncoding {
 enum PlainDjangoEncodingError: Error {
     case invalidParameterNumber
     case invalidParameterType
-}
 
-extension PlainDjangoEncodingError: LocalizedError {
-    var errorDescription: String? {
+    var localizedDescription: String {
         switch self {
         case .invalidParameterNumber:
             return NSLocalizedString("Must pass in 1 parameter in a GET request method", comment: "Invalid parameters")

@@ -43,6 +43,12 @@ extension Progress: Codable {
     }
 }
 
+extension Progress: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(debatePrimaryKey)
+    }
+}
+
 // Initializing from CoreData model
 extension Progress {
     init?(from progress: LocalProgress, withSeenPoints: Bool = false) {

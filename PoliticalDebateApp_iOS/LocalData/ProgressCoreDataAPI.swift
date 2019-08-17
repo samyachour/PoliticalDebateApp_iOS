@@ -14,7 +14,7 @@ final class ProgressCoreDataAPI {
 
     // So all our tasks run on the same private background queue when updating/retreiving records
     private static let context = CoreDataService.persistentContainer.newBackgroundContext()
-    private static let saveContext = {
+    private static func saveContext() {
         do {
             try ProgressCoreDataAPI.context.save()
         } catch {
@@ -69,6 +69,20 @@ final class ProgressCoreDataAPI {
         let (localProgress, _) = ProgressCoreDataAPI.loadProgressAndAssociatedDebate(debatePrimaryKey)
 
         return Progress(from: localProgress, withSeenPoints: true)
+    }
+
+    static func clearAllProgress() {
+        defer { saveContext() }
+
+        // Explicit type for generic method
+        guard let localProgressRecords: [LocalProgress] = CoreDataService
+            .fetchRecordsForEntity(CoreDataConstants.progressEntity, in: ProgressCoreDataAPI.context) else {
+                return
+        }
+
+        localProgressRecords.forEach { (localProgress) in
+            context.delete(localProgress)
+        }
     }
 
     // MARK: - Helpers

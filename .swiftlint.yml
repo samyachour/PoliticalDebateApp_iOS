@@ -9,7 +9,6 @@ opt_in_rules: # some rules are only opt-in
   - yoda_condition
   - vertical_parameter_alignment_on_call
   - fatal_error_message
-  - implicit_return
   - prohibited_super_call
   - overridden_super_call
   - override_in_extension

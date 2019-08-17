@@ -57,7 +57,7 @@ extension ProgressAPI: TargetType {
                                                    ProgressConstants.pointPrimaryKey: pointPrimaryKey],
                                       encoding: JSONEncoding.default)
         case .loadProgress(let debatePrimaryKey):
-            return .requestParameters(parameters: [DebateConstants.primaryKey: debatePrimaryKey], encoding: PlainDjangoEncoding())
+            return .requestParameters(parameters: [DebateConstants.primaryKeyKey: debatePrimaryKey], encoding: PlainDjangoEncoding())
         case .loadAllProgress:
             return .requestPlain
         case .saveBatchProgress(let batchProgress):
@@ -80,6 +80,22 @@ extension ProgressAPI: AccessTokenAuthorizable {
              .loadAllProgress,
              .saveBatchProgress:
             return .bearer
+        }
+    }
+}
+
+// For unit testing
+extension ProgressAPI {
+
+    var sampleData: Data {
+        switch self {
+        case .saveProgress,
+             .saveBatchProgress:
+            return StubAccess.stubbedResponse("Empty")
+        case .loadProgress:
+            return StubAccess.stubbedResponse("ProgressSingle")
+        case .loadAllProgress:
+            return StubAccess.stubbedResponse("ProgressAll")
         }
     }
 }

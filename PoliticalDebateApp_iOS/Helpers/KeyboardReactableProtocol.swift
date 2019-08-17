@@ -1,5 +1,5 @@
 //
-//  ReactiveKeyboardProtocol.swift
+//  KeyboardReactableProtocol.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 7/31/19.
@@ -10,13 +10,13 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-protocol ReactiveKeyboardProtocol {
+protocol KeyboardReactable {
     var activeTextField: UITextField? { get }
     var scrollViewContainer: UIScrollView { get }
     var disposeBag: DisposeBag { get } // for NotificationCenter subscription
 }
 
-extension ReactiveKeyboardProtocol where Self: UIViewController {
+extension KeyboardReactable where Self: UIViewController {
     func installKeyboardShiftingObserver() {
         let keyboardWillShowProducer = NotificationCenter.default.rx.notification(UIResponder.keyboardWillShowNotification)
         let keyboardWillHideProducer = NotificationCenter.default.rx.notification(UIResponder.keyboardWillHideNotification)

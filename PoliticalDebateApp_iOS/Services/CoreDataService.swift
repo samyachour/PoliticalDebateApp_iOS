@@ -29,6 +29,13 @@ final class CoreDataService {
                                                           in managedObjectContext: NSManagedObjectContext,
                                                           with predicate: NSPredicate? = nil,
                                                           unique: Bool = false) -> [T]? {
+        guard CoreDataService.loadedStores else {
+            NotificationBannerQueue.shared
+                .enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                  title: "Couldn't load local data. Check device space, app permissions, or try restarting."))
+            return nil
+        }
+
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
 
         if let predicate = predicate {
@@ -69,9 +76,10 @@ final class CoreDataService {
                  * The store could not be migrated to the current model version.
                  Check the error message to determine what the actual problem was.
                  */
-                completionHandler(error)
 
+                debugLog(error.localizedDescription)
                 CoreDataService.showCoreDataLoadAlert()
+                completionHandler(GeneralError.alreadyHandled)
             }
             debugLog("Core Data stack has been initialized with description: \(storeDescription)")
 
@@ -96,7 +104,7 @@ final class CoreDataService {
 
     static func showCoreDataLoadAlert() {
         let coreDataLoadAlert = UIAlertController(title: "Could not load local data",
-                                                  message: "Try checking the app permissions. Otherwise your device might be out of space.",
+                                                  message: "Try checking the app permissions. Otherwise your device might be out of space. Try restarting your app.",
                                                   preferredStyle: .alert)
         coreDataLoadAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
 
@@ -105,7 +113,7 @@ final class CoreDataService {
 
     static func showCoreDataSaveAlert() {
         let coreDataSaveAlert = UIAlertController(title: "Could not save local data",
-                                                  message: "Try checking the app permissions. Otherwise your device might be out of space.",
+                                                  message: "Try checking the app permissions. Otherwise your device might be out of space. Try restarting your app.",
                                                   preferredStyle: .alert)
         coreDataSaveAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
 
