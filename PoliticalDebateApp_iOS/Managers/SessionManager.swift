@@ -114,7 +114,9 @@ class SessionManager {
                 self.refreshToken = tokenPair.refreshTokenString
                 self.accessToken = tokenPair.accessTokenString
 
+                #if !TEST
                 UserDataManager.shared.syncUserDataToBackend()
+                #endif
             })
             .map({ _ in }) // consumer shouldn't see the tokenPair
     }

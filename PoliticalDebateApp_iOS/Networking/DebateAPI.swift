@@ -76,6 +76,14 @@ extension DebateAPI: TargetType {
         return nil
     }
 
+    var validationType: ValidationType {
+        switch self {
+        case .debate,
+             .debateFilter:
+            return .customCodes([200])
+        }
+    }
+
 }
 
 extension SortByOption {

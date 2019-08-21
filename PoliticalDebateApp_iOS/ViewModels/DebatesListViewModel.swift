@@ -32,9 +32,9 @@ class DebateListViewModel {
         }
         switch sortSelection {
         case .progressAscending:
-            newDebateViewModels.sort { $0.completedPercentage > $1.completedPercentage }
-        case .progressDescending:
             newDebateViewModels.sort { $0.completedPercentage < $1.completedPercentage }
+        case .progressDescending:
+            newDebateViewModels.sort { $0.completedPercentage > $1.completedPercentage }
         default:
             break
         }

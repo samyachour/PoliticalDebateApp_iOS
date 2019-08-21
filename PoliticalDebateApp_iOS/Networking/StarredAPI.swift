@@ -57,6 +57,15 @@ extension StarredAPI: TargetType {
         return nil
     }
 
+    var validationType: ValidationType {
+        switch self {
+        case .starOrUnstarDebates:
+            return .customCodes([201])
+        case .loadAllStarred:
+            return .customCodes([200])
+        }
+    }
+
 }
 
 extension StarredAPI: AccessTokenAuthorizable {

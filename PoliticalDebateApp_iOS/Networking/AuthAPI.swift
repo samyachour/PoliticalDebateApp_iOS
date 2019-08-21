@@ -103,6 +103,20 @@ extension AuthAPI: TargetType {
         return nil
     }
 
+    var validationType: ValidationType {
+        switch self {
+        case .tokenRefresh,
+             .tokenObtain,
+             .requestPasswordReset,
+             .delete,
+             .changeEmail,
+             .changePassword:
+            return .customCodes([200])
+        case .registerUser:
+            return .customCodes([201])
+        }
+    }
+
 }
 
 extension AuthAPI: AccessTokenAuthorizable {

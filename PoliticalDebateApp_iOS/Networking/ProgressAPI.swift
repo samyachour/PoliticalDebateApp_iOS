@@ -69,6 +69,17 @@ extension ProgressAPI: TargetType {
         return nil
     }
 
+    var validationType: ValidationType {
+        switch self {
+        case .saveProgress,
+             .saveBatchProgress:
+            return .customCodes([201])
+        case .loadProgress,
+             .loadAllProgress:
+            return .customCodes([200])
+        }
+    }
+
 }
 
 extension ProgressAPI: AccessTokenAuthorizable {
