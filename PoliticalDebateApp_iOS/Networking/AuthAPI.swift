@@ -15,6 +15,8 @@ enum AuthAPI {
     case changePassword(oldPassword: String, newPassword: String)
     case requestPasswordReset(email: String, forceSend: Bool?)
     case changeEmail(newEmail: String)
+    case getCurrentEmail
+    case requestVerificationLink
     case delete
 }
 
@@ -51,6 +53,10 @@ extension AuthAPI: TargetType {
             return "request-password-reset/"
         case .changeEmail:
             return "change-email/"
+        case .getCurrentEmail:
+            return "get-current-email/"
+        case .requestVerificationLink:
+            return "request-verification-link/"
         case .delete:
             return "delete/"
         }
@@ -65,8 +71,11 @@ extension AuthAPI: TargetType {
              .delete:
             return .post
         case .changeEmail,
-             .changePassword:
+             .changePassword,
+             .requestVerificationLink:
             return .put
+        case .getCurrentEmail:
+            return .get
         }
     }
 
@@ -94,7 +103,9 @@ extension AuthAPI: TargetType {
         case .changeEmail(let newEmail):
             return .requestParameters(parameters: [AuthConstants.newEmailKey: newEmail.lowercased()],
                                       encoding: JSONEncoding.default)
-        case .delete:
+        case .delete,
+             .getCurrentEmail,
+             .requestVerificationLink:
             return .requestPlain
         }
     }
@@ -110,7 +121,9 @@ extension AuthAPI: TargetType {
              .requestPasswordReset,
              .delete,
              .changeEmail,
-             .changePassword:
+             .changePassword,
+             .getCurrentEmail,
+             .requestVerificationLink:
             return .customCodes([200])
         case .registerUser:
             return .customCodes([201])
@@ -130,7 +143,9 @@ extension AuthAPI: AccessTokenAuthorizable {
             return .none
         case .changePassword,
              .changeEmail,
-             .delete:
+             .delete,
+             .getCurrentEmail,
+             .requestVerificationLink:
             return .bearer
         }
     }
@@ -145,11 +160,14 @@ extension AuthAPI {
             return StubAccess.stubbedResponse("TokenRefresh")
         case .tokenObtain:
             return StubAccess.stubbedResponse("TokenObtain")
+        case .getCurrentEmail:
+            return StubAccess.stubbedResponse("GetCurrentEmail")
         case .registerUser,
              .changePassword,
              .requestPasswordReset,
              .changeEmail,
-             .delete:
+             .delete,
+             .requestVerificationLink:
             return StubAccess.stubbedResponse("Empty")
         }
     }

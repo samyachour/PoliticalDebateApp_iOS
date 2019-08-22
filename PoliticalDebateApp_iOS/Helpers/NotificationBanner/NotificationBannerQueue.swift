@@ -183,7 +183,10 @@ class NotificationBannerQueue {
         switch viewModel.buttonConfig {
         case .customTitle(_, let action),
              .customImage(_, let action):
-            button = ButtonWithActionClosure(action: action ?? dismissAction)
+            button = ButtonWithActionClosure(action: { [weak self] in
+                action?()
+                self?.dismissAction()
+            })
         }
 
         button?.titleLabel?.font = .primarySemibold(16)

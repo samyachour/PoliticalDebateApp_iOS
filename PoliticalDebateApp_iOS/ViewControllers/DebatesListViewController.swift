@@ -287,6 +287,8 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
         debatesRefreshControl.addTarget(self, action: #selector(userPulledToRefresh), for: .valueChanged)
         debatesCollectionView.refreshControl = debatesRefreshControl
 
+        debatesCollectionView.delegate = self
+
         installCollectionViewDataSource()
     }
 

@@ -84,6 +84,18 @@ class NetworkAPITests: XCTestCase {
             }).disposed(by: disposeBag)
     }
 
+    func testGetCurrentEmail() {
+        let testAPI = NetworkService<AuthAPI>()
+        testAPI.makeRequest(with: .getCurrentEmail)
+            .map(CurrentEmail.self)
+            .subscribe(onSuccess: { currentEmail in
+                XCTAssert(currentEmail.email == "reservedstubgenerationacct@mail.com")
+                XCTAssertTrue(currentEmail.isVerified)
+            }, onError: { err in
+                XCTAssert(false)
+            }).disposed(by: disposeBag)
+    }
+
     func testLogin() {
         SessionManager.shared.login(email: "test1@mail.com", password: "testing")
             .subscribe(onSuccess: { _ in

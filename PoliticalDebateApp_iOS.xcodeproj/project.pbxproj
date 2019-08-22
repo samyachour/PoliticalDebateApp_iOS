@@ -11,7 +11,6 @@
 		2E0A9D53230D1F4900D10CC8 /* TokenObtain.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4B230D1F4600D10CC8 /* TokenObtain.json */; };
 		2E0A9D54230D1F4900D10CC8 /* ProgressSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4C230D1F4600D10CC8 /* ProgressSingle.json */; };
 		2E0A9D55230D1F4900D10CC8 /* ProgressSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4C230D1F4600D10CC8 /* ProgressSingle.json */; };
-		2E0A9D56230D1F4900D10CC8 /* DebateSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4D230D1F4600D10CC8 /* DebateSingle.json */; };
 		2E0A9D57230D1F4900D10CC8 /* DebateSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4D230D1F4600D10CC8 /* DebateSingle.json */; };
 		2E0A9D58230D1F4900D10CC8 /* DebateFilter.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4E230D1F4700D10CC8 /* DebateFilter.json */; };
 		2E0A9D59230D1F4900D10CC8 /* DebateFilter.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4E230D1F4700D10CC8 /* DebateFilter.json */; };
@@ -128,6 +127,11 @@
 		2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
 		2E7694792305292900AEDD55 /* UIButton+HighlightedBackgroundColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7694782305292900AEDD55 /* UIButton+HighlightedBackgroundColor.swift */; };
 		2E76947A2305335800AEDD55 /* UIButton+HighlightedBackgroundColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7694782305292900AEDD55 /* UIButton+HighlightedBackgroundColor.swift */; };
+		2E892109230E6ABF00DD9556 /* CurrentEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E892108230E6ABF00DD9556 /* CurrentEmail.swift */; };
+		2E89210A230E6B2900DD9556 /* CurrentEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E892108230E6ABF00DD9556 /* CurrentEmail.swift */; };
+		2E89210C230E6BBB00DD9556 /* GetCurrentEmail.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */; };
+		2E89210D230E6BFF00DD9556 /* DebateSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4D230D1F4600D10CC8 /* DebateSingle.json */; };
+		2E89210E230E6C0200DD9556 /* GetCurrentEmail.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */; };
 		2E967439226BD34E00821A73 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967438226BD34E00821A73 /* SessionManager.swift */; };
 		2E96743B226BDA8A00821A73 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743A226BDA8A00821A73 /* KeychainService.swift */; };
 		2E967440226BE91000821A73 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743F226BE91000821A73 /* CoreDataService.swift */; };
@@ -233,6 +237,8 @@
 		2E69094622A4931100DF486A /* ProgressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAPI.swift; sourceTree = "<group>"; };
 		2E69094C22A4932700DF486A /* StarredAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredAPI.swift; sourceTree = "<group>"; };
 		2E7694782305292900AEDD55 /* UIButton+HighlightedBackgroundColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+HighlightedBackgroundColor.swift"; sourceTree = "<group>"; };
+		2E892108230E6ABF00DD9556 /* CurrentEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentEmail.swift; sourceTree = "<group>"; };
+		2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GetCurrentEmail.json; sourceTree = "<group>"; };
 		2E967438226BD34E00821A73 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		2E96743A226BDA8A00821A73 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		2E96743F226BE91000821A73 /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
@@ -303,6 +309,7 @@
 		2E0A9D4A230D1F3600D10CC8 /* StubbedResponses */ = {
 			isa = PBXGroup;
 			children = (
+				2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */,
 				2E0A9D61230D211400D10CC8 /* Empty.json */,
 				2E0A9D4E230D1F4700D10CC8 /* DebateFilter.json */,
 				2E0A9D4D230D1F4600D10CC8 /* DebateSingle.json */,
@@ -438,6 +445,7 @@
 				2E36796622A4B280008190FE /* Starred.swift */,
 				2E3A0C8922D707BC00087B2A /* Point.swift */,
 				2E2BB06722F2D66800ED02C0 /* BackendErrorMessage.swift */,
+				2E892108230E6ABF00DD9556 /* CurrentEmail.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -644,12 +652,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E89210D230E6BFF00DD9556 /* DebateSingle.json in Resources */,
 				2E0D84B422A70F2600E4B0E7 /* Manrope-Medium.otf in Resources */,
 				2E0D84B222A70F2600E4B0E7 /* Manrope-Bold.otf in Resources */,
 				2E0D84AE22A70F2600E4B0E7 /* Manrope-Thin.otf in Resources */,
 				2E23A6F8226AC7D400B2DCC3 /* README.md in Resources */,
 				2E0A9D62230D211400D10CC8 /* Empty.json in Resources */,
 				2E23A6F7226AC7D400B2DCC3 /* .gitignore in Resources */,
+				2E89210E230E6C0200DD9556 /* GetCurrentEmail.json in Resources */,
 				2E0A9D5C230D1F4900D10CC8 /* TokenRefresh.json in Resources */,
 				2E0D84A722A70F2600E4B0E7 /* Manrope-Semibold.otf in Resources */,
 				2E0A9D5A230D1F4900D10CC8 /* ProgressAll.json in Resources */,
@@ -661,7 +671,6 @@
 				2E0D84A822A70F2600E4B0E7 /* Manrope-Light.otf in Resources */,
 				2E23A6D0226AC7B300B2DCC3 /* LaunchScreen.storyboard in Resources */,
 				2E0A9D54230D1F4900D10CC8 /* ProgressSingle.json in Resources */,
-				2E0A9D56230D1F4900D10CC8 /* DebateSingle.json in Resources */,
 				2E23A6CD226AC7B300B2DCC3 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -670,6 +679,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E89210C230E6BBB00DD9556 /* GetCurrentEmail.json in Resources */,
 				2E0A9D5B230D1F4900D10CC8 /* ProgressAll.json in Resources */,
 				2E0A9D63230D211400D10CC8 /* Empty.json in Resources */,
 				2E0A9D5F230D1F4900D10CC8 /* Starred.json in Resources */,
@@ -869,6 +879,7 @@
 				2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */,
 				2E967439226BD34E00821A73 /* SessionManager.swift in Sources */,
 				2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
+				2E892109230E6ABF00DD9556 /* CurrentEmail.swift in Sources */,
 				2E2E6DC222FC07880048B769 /* UIView+Fade.swift in Sources */,
 				2E30A8E522BF4587007E386A /* StarredCoreDataAPI.swift in Sources */,
 				2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
@@ -954,6 +965,7 @@
 				2E30A90522BF4BED007E386A /* Starred.swift in Sources */,
 				2E30A92222BFE168007E386A /* ProgressCoreDataAPI.swift in Sources */,
 				2E5EC04D22FA735D00B41D54 /* ErrorHandler.swift in Sources */,
+				2E89210A230E6B2900DD9556 /* CurrentEmail.swift in Sources */,
 				2E30A91622BF4BED007E386A /* NSLayoutConstraint+Priority.swift in Sources */,
 				2E2E6DC62300D1140048B769 /* DebateCellViewModel.swift in Sources */,
 				2E76947A2305335800AEDD55 /* UIButton+HighlightedBackgroundColor.swift in Sources */,

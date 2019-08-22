@@ -32,7 +32,8 @@ final class CoreDataService {
         guard CoreDataService.loadedStores else {
             NotificationBannerQueue.shared
                 .enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                  title: "Couldn't load local data. Check device space, app permissions, or try restarting."))
+                                                                  title: "Couldn't load local data.",
+                                                                  subtitle: "Check device space, app permissions, or try restarting."))
             return nil
         }
 
