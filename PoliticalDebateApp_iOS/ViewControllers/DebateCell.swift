@@ -99,19 +99,19 @@ class DebateCell: UICollectionViewCell {
         debateProgressView.translatesAutoresizingMaskIntoConstraints = false
 
         // Button takes up entire contentView but is beneath rest of UI elements
+        debateTitleButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2).isActive = true
         debateTitleButton.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         debateTitleButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -2).isActive = true
-        debateTitleButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2).isActive = true
         debateTitleButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
 
-        starredButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8).isActive = true
         starredButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8).isActive = true
+        starredButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8).isActive = true
         starredButton.setContentHuggingPriority(.required, for: .vertical)
 
         debateProgressView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.15).isActive = true
-        debateProgressView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-        debateProgressView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         debateProgressView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        debateProgressView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        debateProgressView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
     }
 
     override func layoutSubviews() {

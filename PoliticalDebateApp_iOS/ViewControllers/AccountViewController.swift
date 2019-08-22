@@ -104,24 +104,24 @@ extension AccountViewController {
 
         for subview in stackViewContainer.arrangedSubviews where subview as? UITextField != nil {
             subview.translatesAutoresizingMaskIntoConstraints = false
-            subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
-                                              constant: -AccountViewController.horizontalEdgeInset).isActive = true
             subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
                                              constant: AccountViewController.horizontalEdgeInset).isActive = true
+            subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
+                                              constant: -AccountViewController.horizontalEdgeInset).isActive = true
         }
 
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false
         stackViewContainer.translatesAutoresizingMaskIntoConstraints = false
 
+        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
         scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         scrollViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
-        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
 
+        stackViewContainer.leadingAnchor.constraint(equalTo: scrollViewContainer.leadingAnchor).isActive = true
         stackViewContainer.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor).isActive = true
         stackViewContainer.trailingAnchor.constraint(equalTo: scrollViewContainer.trailingAnchor).isActive = true
         stackViewContainer.bottomAnchor.constraint(equalTo: scrollViewContainer.bottomAnchor).isActive = true
-        stackViewContainer.leadingAnchor.constraint(equalTo: scrollViewContainer.leadingAnchor).isActive = true
 
         stackViewContainer.widthAnchor.constraint(equalTo: scrollViewContainer.widthAnchor).isActive = true
     }

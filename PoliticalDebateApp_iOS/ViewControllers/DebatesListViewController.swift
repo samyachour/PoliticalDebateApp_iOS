@@ -191,45 +191,45 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
 
         headerElementsContainer.backgroundColor = DebatesListViewController.backgroundColor
-        headerElementsContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
         headerElementsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
                                                          constant: DebatesListViewController.headerElementsXDistance).isActive = true
+        headerElementsContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
         headerElementsContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                           constant: -DebatesListViewController.headerElementsXDistance).isActive = true
 
+        searchTextField.leadingAnchor.constraint(equalTo: headerElementsContainer.leadingAnchor).isActive = true
         searchTextField.topAnchor.constraint(equalTo: headerElementsContainer.topAnchor,
                                              constant: DebatesListViewController.headerElementsYDistance).isActive = true
         searchTextFieldTrailingAnchor = searchTextField.trailingAnchor.constraint(equalTo: sortByButton.leadingAnchor, constant: -8)
         searchTextFieldTrailingAnchor?.isActive = false
         searchTextField.bottomAnchor.constraint(equalTo: headerElementsContainer.bottomAnchor).isActive = true
-        searchTextField.leadingAnchor.constraint(equalTo: headerElementsContainer.leadingAnchor).isActive = true
 
         sortByButton.topAnchor.constraint(equalTo: searchTextField.topAnchor, constant: -2).isActive = true
-        sortByButton.bottomAnchor.constraint(equalTo: headerElementsContainer.bottomAnchor).isActive = true
         sortByButton.trailingAnchor.constraint(equalTo: headerElementsContainer.trailingAnchor).isActive = true
+        sortByButton.bottomAnchor.constraint(equalTo: headerElementsContainer.bottomAnchor).isActive = true
         sortByButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         sortByButton.setContentHuggingPriority(.required, for: .horizontal)
 
+        sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                  constant: DebatesListViewController.headerElementsXDistance).isActive = true
         sortByPickerViewTopAnchor = sortByPickerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8)
         sortByPickerViewTopAnchor?.isActive = false
         sortByPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                    constant: -DebatesListViewController.headerElementsXDistance).isActive = true
         sortByPickerViewBottomAnchor = sortByPickerView.bottomAnchor.constraint(equalTo: view.topAnchor)
         sortByPickerViewBottomAnchor?.isActive = true
-        sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                  constant: DebatesListViewController.headerElementsXDistance).isActive = true
 
+        collectionViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                         constant: DebatesListViewController.cellSpacing).isActive = true
         collectionViewContainer.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 2).isActive = true
         collectionViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                           constant: -DebatesListViewController.cellSpacing).isActive = true
         collectionViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
-        collectionViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                         constant: DebatesListViewController.cellSpacing).isActive = true
 
+        debatesCollectionView.leadingAnchor.constraint(equalTo: collectionViewContainer.leadingAnchor).isActive = true
         debatesCollectionView.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
         debatesCollectionView.trailingAnchor.constraint(equalTo: collectionViewContainer.trailingAnchor).isActive = true
         debatesCollectionView.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
-        debatesCollectionView.leadingAnchor.constraint(equalTo: collectionViewContainer.leadingAnchor).isActive = true
 
         emptyStateLabel.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
         emptyStateLabel.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true

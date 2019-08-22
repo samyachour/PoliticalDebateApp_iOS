@@ -44,27 +44,27 @@ class NotificationBannerView: UIView {
         titleSubtitleContainerView.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
+        titleSubtitleContainerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16)
+            .injectPriority(.required - 1).isActive = true
         titleSubtitleContainerView.topAnchor.constraint(equalTo: topLayoutAnchor, constant: 16).isActive = true
         titleSubtitleContainerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
             .injectPriority(.required - 1).isActive = true
         titleSubtitleContainerView.bottomAnchor.constraint(equalTo: bottomLayoutAnchor, constant: -16).isActive = true
-        titleSubtitleContainerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16)
-            .injectPriority(.required - 1).isActive = true
 
-        titleLabel.topAnchor.constraint(equalTo: titleSubtitleContainerView.topAnchor).isActive = true
         titleLabel.leadingAnchor.constraint(equalTo: titleSubtitleContainerView.leadingAnchor).isActive = true
-        titleLabel.bottomAnchor.constraint(equalTo: titleSubtitleContainerView.bottomAnchor).injectPriority(.required - 1).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: titleSubtitleContainerView.topAnchor).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: titleSubtitleContainerView.trailingAnchor).isActive = true
+        titleLabel.bottomAnchor.constraint(equalTo: titleSubtitleContainerView.bottomAnchor).injectPriority(.required - 1).isActive = true
 
         if subtitleLabel.text != nil {
             titleSubtitleContainerView.addSubview(subtitleLabel)
 
             subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
 
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4).isActive = true
             subtitleLabel.leadingAnchor.constraint(equalTo: titleSubtitleContainerView.leadingAnchor).isActive = true
-            subtitleLabel.bottomAnchor.constraint(equalTo: titleSubtitleContainerView.bottomAnchor).isActive = true
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4).isActive = true
             subtitleLabel.trailingAnchor.constraint(equalTo: titleSubtitleContainerView.trailingAnchor).isActive = true
+            subtitleLabel.bottomAnchor.constraint(equalTo: titleSubtitleContainerView.bottomAnchor).isActive = true
 
             subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         }
@@ -74,10 +74,10 @@ class NotificationBannerView: UIView {
 
             leftImageView.translatesAutoresizingMaskIntoConstraints = false
 
-            leftImageView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 16).isActive = true
             leftImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
-            leftImageView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -16).isActive = true
+            leftImageView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 16).isActive = true
             leftImageView.trailingAnchor.constraint(equalTo: titleSubtitleContainerView.leadingAnchor, constant: -8).isActive = true
+            leftImageView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -16).isActive = true
 
             leftImageView.centerYAnchor.constraint(equalTo: titleSubtitleContainerView.centerYAnchor).isActive = true
 
@@ -93,10 +93,10 @@ class NotificationBannerView: UIView {
 
             button.translatesAutoresizingMaskIntoConstraints = false
 
-            button.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 8).isActive = true
             button.leadingAnchor.constraint(equalTo: titleSubtitleContainerView.trailingAnchor, constant: 16).isActive = true
-            button.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -8).isActive = true
+            button.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 8).isActive = true
             button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
+            button.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -8).isActive = true
 
             button.centerYAnchor.constraint(equalTo: titleSubtitleContainerView.centerYAnchor).isActive = true
 
