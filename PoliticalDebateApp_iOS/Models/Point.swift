@@ -8,9 +8,15 @@
 
 import Foundation
 
+enum Side: String {
+    case pro
+    case con
+}
+
 struct Point {
     let primaryKey: PrimaryKey
     let description: String
+    let side: Side?
     let hyperlinks: [PointHyperlink]
     let images: [PointImage]
     let rebuttals: [Point]?
@@ -20,6 +26,7 @@ extension Point: Decodable {
     enum PointCodingKeys: String, CodingKey {
         case primaryKey = "pk"
         case description
+        case side
         case hyperlinks
         case images
         case rebuttals
@@ -30,6 +37,7 @@ extension Point: Decodable {
 
         primaryKey = try container.decode(PrimaryKey.self, forKey: .primaryKey)
         description = try container.decode(String.self, forKey: .description)
+        side = Side(rawValue: try container.decode(String.self, forKey: .side))
         hyperlinks = try container.decode([PointHyperlink].self, forKey: .hyperlinks)
         images = try container.decode([PointImage].self, forKey: .images)
         // We don't always have rebuttals

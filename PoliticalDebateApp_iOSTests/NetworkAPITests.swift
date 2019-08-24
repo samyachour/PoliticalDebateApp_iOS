@@ -33,6 +33,7 @@ class NetworkAPITests: XCTestCase {
             .subscribe(onSuccess: { debate in
                 XCTAssert(debate.title == "Test debate number #0")
                 XCTAssert(debate.debateMap?[0].description == "Test point 1")
+                XCTAssert(debate.debateMap?[0].side == .pro)
                 XCTAssert(debate.debateMap?[0].images[0].source == "Test source")
                 XCTAssert(debate.debateMap?[0].rebuttals?[0].primaryKey == 1)
             }, onError: { err in
