@@ -43,7 +43,7 @@ struct NetworkService<T>: Networkable where T: TargetType & AccessTokenAuthoriza
         let request = provider.rx.request(appAPI)
             .filterSuccessfulStatusAndRedirectCodes()
             .do(onError: ErrorHandler.checkForThrottleError)
-            .do(onError: ErrorHandler.checkForConnectivityError)
+            .retryWhen(ErrorHandler.checkForConnectivityError)
             .retryWhen(ErrorHandler.shouldRetryRequest)
 
         switch appAPI.authorizationType {

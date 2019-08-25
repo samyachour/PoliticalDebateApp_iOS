@@ -31,6 +31,11 @@ class UserDataManager {
     var starredArray: [PrimaryKey] { return Array(starred) }
     var progressArray: [Progress] { return Array(progress) }
 
+    // While a user is actively navigating a debate map,
+    // it's too excessive keep loading seen points from the backend
+    // so we keep a local state
+    var currentSeenPoints = [PrimaryKey]()
+
     // MARK: - Setters
 
     func clearUserData() {
@@ -73,6 +78,8 @@ class UserDataManager {
     }
 
     func markProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) -> Single<Response?> {
+        currentSeenPoints.append(pointPrimaryKey)
+
         if SessionManager.shared.isActiveRelay.value {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in
@@ -84,6 +91,26 @@ class UserDataManager {
             updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
             return Single.create {
                 $0(.success(nil))
+                return Disposables.create()
+            }
+        }
+    }
+
+    func getProgress(for debatePrimaryKey: PrimaryKey) -> Single<Progress> {
+        if SessionManager.shared.isActiveRelay.value {
+            return progressNetworkService.makeRequest(with: .loadProgress(debatePrimaryKey: debatePrimaryKey))
+                .map(Progress.self)
+                .do(onSuccess: { progress in
+                    if let seenPoints = progress.seenPoints { self.currentSeenPoints = seenPoints } // Can capture self since it's a singleton, always in memory
+                })
+        } else {
+            return Single.create {
+                if let debateProgress = ProgressCoreDataAPI.loadProgress(debatePrimaryKey) {
+                    if let seenPoints = debateProgress.seenPoints { self.currentSeenPoints = seenPoints } // Can capture self since it's a singleton, always in memory
+                    $0(.success(debateProgress))
+                } else {
+                    $0(.error(UserDataError.loadLocalProgress))
+                }
                 return Disposables.create()
             }
         }
@@ -223,7 +250,7 @@ class UserDataManager {
                 .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                   title: "Could not sync your local starred data to the server.",
                                                                   buttonConfig: NotificationBannerViewModel
-                                                                    .ButtonConfiguration.customTitle(title: "Retry",
+                                                                    .ButtonConfiguration.customTitle(title: GeneralCopies.retryTitle,
                                                                                                      action: {
                                                                                                         self.syncLocalStarredDataToBackend(completion)
                                                                     })))
@@ -251,11 +278,22 @@ class UserDataManager {
                     .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                       title: "Could not sync your local progress data to the server.",
                                                                       buttonConfig: NotificationBannerViewModel
-                                                                        .ButtonConfiguration.customTitle(title: "Retry",
+                                                                        .ButtonConfiguration.customTitle(title: GeneralCopies.retryTitle,
                                                                                                          action: {
                                                                                                             self.syncLocalProgressDataToBackend(completion)
                                                                         })))
                 completion()
         }.disposed(by: disposeBag)
+    }
+}
+
+enum UserDataError: Error {
+    case loadLocalProgress
+
+    var localizedDescription: String {
+        switch self {
+        case .loadLocalProgress:
+            return "Could not load local progress."
+        }
     }
 }

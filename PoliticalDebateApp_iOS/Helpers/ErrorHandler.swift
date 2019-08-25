@@ -45,18 +45,32 @@ class ErrorHandler {
 
     // MARK: - Connectivity errors
 
-    static let checkForConnectivityError = { (error: Error) -> Void in
-        if let error = error as? MoyaError {
-            switch error {
+    static let checkForConnectivityError = { (error: Observable<Error>) -> Observable<Void> in
+        error.enumerated().flatMap { (_, error) -> Observable<Void> in
+            guard let moyaError = error as? MoyaError else {
+                    return .error(error) // Pass the error along
+            }
+
+            switch moyaError {
             case .underlying(let error, _): // Access underlying swift error, see MoyaError.swift
                 if (error as NSError).domain == NSURLErrorDomain {
-                    NotificationBannerQueue.shared
-                        .enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                          title: GeneralError.connectivity.localizedDescription))
-                    throw GeneralError.alreadyHandled // so consumer knows
+                    return Observable<Void>.create({ observer in
+                        NotificationBannerQueue.shared
+                            .enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                              title: GeneralError.connectivity.localizedDescription,
+                                                                              buttonConfig: NotificationBannerViewModel.ButtonConfiguration
+                                                                                .customTitle(title: GeneralCopies.retryTitle, action: {
+                                                                                    observer.onNext(())
+                                                                                }),
+                                                                              bannerWasDismissedAutomatically: {
+                                                                                observer.onError(GeneralError.alreadyHandled)
+                            }))
+                        return Disposables.create()
+                    })
                 }
+                return .error(error)
             default:
-                break
+                return .error(error)
             }
         }
     }

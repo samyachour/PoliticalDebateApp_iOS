@@ -47,8 +47,6 @@ class DebatesCollectionViewController: UIViewController {
     private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
     private let userActionRelay = BehaviorRelay<Void>(value: ())
 
-    // MARK: - Synchronizing animations
-
     // On this screen we are constantly running multiple animations at once
     // There is a problem when animation blocks are not called serially
     // They start to overlap and the parameters (duration, options, etc.) bleed into each other
@@ -128,15 +126,7 @@ class DebatesCollectionViewController: UIViewController {
 
     private let debatesRefreshControl = UIRefreshControl()
 
-    private let emptyStateLabel: UILabel = {
-        let emptyStateLabel = UILabel(frame: .zero)
-        emptyStateLabel.text = "No debates to show."
-        emptyStateLabel.textColor = UIColor.customDarkGray1
-        emptyStateLabel.font = UIFont.primaryRegular(24.0)
-        emptyStateLabel.textAlignment = NSTextAlignment.center
-        emptyStateLabel.alpha = 0.0
-        return emptyStateLabel
-    }()
+    private let emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No debates to show.")
 
 }
 
@@ -316,20 +306,27 @@ extension DebatesCollectionViewController: UICollectionViewDelegate, UIScrollVie
 
     private func installCollectionViewDataSource() {
         debatesCollectionView.register(DebateCollectionViewCell.self, forCellWithReuseIdentifier: DebateCollectionViewCell.reuseIdentifier)
-        viewModel.debatesViewModelRelay
-            .skip(1) // empty array emission initialized w/ relay
-            .do(onNext: { [weak self] debateViewModels in
+        viewModel.sharedDebatesDataSourceRelay
+            .subscribe({ [weak self] (debatesDataSourceEvent) in
+                guard let debateCollectionViewCellViewModels = debatesDataSourceEvent.element else {
+                    return
+                }
+
                 self?.debatesRefreshControl.endRefreshing()
                 UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
-                    self?.emptyStateLabel.alpha = debateViewModels.isEmpty ? 1.0 : 0.0
+                    self?.emptyStateLabel.alpha = debateCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
                 })
-            })
+            }).disposed(by: disposeBag)
+
+        viewModel.sharedDebatesDataSourceRelay
             .bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCollectionViewCell.reuseIdentifier,
                                                      cellType: DebateCollectionViewCell.self)) { _, viewModel, cell in
             cell.viewModel = viewModel
         }.disposed(by: disposeBag)
 
-        viewModel.debatesRetrievalErrorRelay.subscribe { errorEvent in
+        viewModel.debatesRetrievalErrorRelay.subscribe { [weak self] errorEvent in
+            self?.debatesRefreshControl.endRefreshing()
+
             if let generalError = errorEvent.element as? GeneralError,
                 generalError == .alreadyHandled {
                 return
@@ -347,7 +344,7 @@ extension DebatesCollectionViewController: UICollectionViewDelegate, UIScrollVie
             default:
                 ErrorHandler.showBasicErrorBanner()
             }
-            }.disposed(by: disposeBag)
+        }.disposed(by: disposeBag)
     }
 
     // MARK: - UI Animation handling

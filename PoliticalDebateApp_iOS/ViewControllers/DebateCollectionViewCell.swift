@@ -148,6 +148,10 @@ class DebateCollectionViewCell: UICollectionViewCell {
     }
 
     @objc private func tappedToOpenDebate() {
-        // TODO: Push debate VC
+        guard let debate = viewModel?.debate else { return }
+
+        AppDelegate.shared?.mainNavigationController?
+            .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debate)),
+                                animated: true)
     }
 }

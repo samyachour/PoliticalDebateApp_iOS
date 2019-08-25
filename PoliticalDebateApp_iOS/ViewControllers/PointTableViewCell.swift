@@ -18,13 +18,9 @@ class PointTableViewCell: UITableViewCell {
         didSet {
             guard let viewModel = viewModel else { return }
 
-            pointButton.setTitle(viewModel.point.description, for: .normal)
-            contentView.backgroundColor = viewModel.point.side == .pro ? .blue : .red // TODO: Change
-            gradientLayer = CAGradientLayer(start: .topCenter,
-                                            end: .bottomCenter,
-                                            colors: [UIColor.white, contentView.backgroundColor ?? .clear],
-                                            type: .axial)
-            checkImageView.isHidden = !viewModel.hasCompletedPaths
+            containerView.backgroundColor = viewModel.point.side == .pro ? .customLightBlue : .customLightRed
+            pointLabel.text = viewModel.point.description
+            checkImageView.image = viewModel.hasCompletedPaths ? UIImage.check : nil
         }
     }
 
@@ -44,72 +40,69 @@ class PointTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        pointButton.setTitle(nil, for: .normal)
-        contentView.backgroundColor = nil
-        gradientLayer = nil
-        checkImageView.isHidden = true
+        containerView.backgroundColor = nil
+        pointLabel.text = nil
+        checkImageView.image = nil
         disposeBag = DisposeBag()
     }
 
     // MARK: - UI Properties
 
-    private static let cornerRadius: CGFloat = 12.0
+    private static let cornerRadius: CGFloat = 26.0
+    private static let inset: CGFloat = 16.0
 
     // MARK: - UI Elements
 
-    private lazy var pointButton: UIButton = {
-        let debateTitleButton = ButtonWithHighlightedBackgroundColor(frame: .zero)
-        debateTitleButton.setTitleColor(GeneralColors.text, for: .normal)
-        debateTitleButton.setBackgroundColorHighlightState(highlighted: GeneralColors.background, unhighlighted: .clear)
-        debateTitleButton.contentEdgeInsets = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 0.0, right: 0.0)
-        debateTitleButton.titleLabel?.font = GeneralFonts.button
-        debateTitleButton.titleLabel?.textAlignment = .left
-        debateTitleButton.titleLabel?.numberOfLines = 0 // multiline
-        debateTitleButton.titleLabel?.lineBreakMode = .byWordWrapping
-        return debateTitleButton
+    private lazy var containerView: UIView = {
+        let containerView = UIView(frame: .zero)
+        containerView.layer.cornerRadius = PointTableViewCell.cornerRadius
+        return containerView
+    }()
+
+    private lazy var pointLabel: UILabel = {
+        let pointLabel = UILabel(frame: .zero)
+        pointLabel.textColor = GeneralColors.text
+        pointLabel.font = GeneralFonts.text
+        pointLabel.numberOfLines = 0
+        return pointLabel
     }()
 
     private lazy var checkImageView: UIImageView = {
         let checkImageView = UIImageView(frame: .zero)
-        checkImageView.image = UIImage.check
+        checkImageView.contentMode = .center
         return checkImageView
     }()
-
-    private var gradientLayer: CAGradientLayer?
 
     // MARK: - View constraints & Binding
 
     private func installConstraints() {
-        contentView.layer.masksToBounds = true
-        contentView.layer.cornerRadius = PointTableViewCell.cornerRadius
-        if let gradientLayer = gradientLayer { contentView.layer.addSublayer(gradientLayer) }
+        contentView.backgroundColor = GeneralColors.background
+        selectionStyle = .none
 
-        contentView.addSubview(pointButton)
-        contentView.addSubview(checkImageView)
+        contentView.addSubview(containerView)
+        containerView.addSubview(pointLabel)
+        containerView.addSubview(checkImageView)
 
-        pointButton.translatesAutoresizingMaskIntoConstraints = false
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        pointLabel.translatesAutoresizingMaskIntoConstraints = false
         checkImageView.translatesAutoresizingMaskIntoConstraints = false
 
-        // Button takes up entire contentView but is beneath rest of UI elements
-        pointButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-        pointButton.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        pointButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-        pointButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
+        containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: PointTableViewCell.inset).isActive = true
+        containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PointTableViewCell.inset).isActive = true
+        // Need to set priority below required so as to not conflict with the built-in height anchor UIView-Encapsulated-Layout-Height
+        containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -PointTableViewCell.inset).injectPriority(.required - 1).isActive = true
 
-        checkImageView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        checkImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-        checkImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        pointLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
+        pointLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PointTableViewCell.inset).isActive = true
+        pointLabel.trailingAnchor.constraint(equalTo: checkImageView.leadingAnchor).isActive = true
+        pointLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PointTableViewCell.inset).isActive = true
+
+        checkImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+        checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PointTableViewCell.inset).isActive = true
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        gradientLayer?.frame = contentView.bounds
-    }
-
-    private func installViewBinds() {
-        pointButton.addTarget(self, action: #selector(tappedToOpenPoint), for: .touchUpInside)
-    }
+    private func installViewBinds() {}
 
     @objc private func tappedToOpenPoint() {
         // TODO: Push point VC

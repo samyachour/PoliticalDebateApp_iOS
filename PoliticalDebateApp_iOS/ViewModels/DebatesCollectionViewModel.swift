@@ -14,7 +14,10 @@ class DebatesCollectionViewModel {
 
     // MARK: - Datasource
 
-    let debatesViewModelRelay = BehaviorRelay<[DebateCollectionViewCellViewModel]>(value: [])
+    private let debatesDataSourceRelay = BehaviorRelay<[DebateCollectionViewCellViewModel]>(value: [])
+    lazy var sharedDebatesDataSourceRelay = debatesDataSourceRelay
+        .skip(1) // empty array emission initialized w/ relay
+        .share()
     // When we want to propogate errors, we can't do it through the viewModelRelay
     // or else it will complete and the value will be invalidated
     let debatesRetrievalErrorRelay = PublishRelay<Error>()
@@ -23,7 +26,7 @@ class DebatesCollectionViewModel {
     // and do local sorting if applicable
     func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
 
-        var newDebateViewModels = debates.map { debate -> DebateCollectionViewCellViewModel in
+        var newDebateCollectionViewCellViewModels = debates.map { debate -> DebateCollectionViewCellViewModel in
             let completedPercentage = UserDataManager.shared.progress.first(where: {$0.debatePrimaryKey == debate.primaryKey})?.completedPercentage ?? 0
             let isStarred = UserDataManager.shared.starred.contains(debate.primaryKey)
             return DebateCollectionViewCellViewModel(debate: debate,
@@ -32,13 +35,13 @@ class DebatesCollectionViewModel {
         }
         switch sortSelection {
         case .progressAscending:
-            newDebateViewModels.sort { $0.completedPercentage < $1.completedPercentage }
+            newDebateCollectionViewCellViewModels.sort { $0.completedPercentage < $1.completedPercentage }
         case .progressDescending:
-            newDebateViewModels.sort { $0.completedPercentage > $1.completedPercentage }
+            newDebateCollectionViewCellViewModels.sort { $0.completedPercentage > $1.completedPercentage }
         default:
             break
         }
-        debatesViewModelRelay.accept(newDebateViewModels)
+        debatesDataSourceRelay.accept(newDebateCollectionViewCellViewModels)
     }
 
     // MARK: - Input handling
