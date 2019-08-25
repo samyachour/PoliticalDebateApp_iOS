@@ -126,5 +126,7 @@ class SessionManager {
         refreshToken = nil
 
         UserDataManager.shared.clearUserData()
+        // Prepares our core data persistent container for reading/writing data
+        UserDataManager.shared.loadUserData()
     }
 }

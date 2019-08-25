@@ -69,7 +69,8 @@ class PointTableViewCell: UITableViewCell {
 
     private lazy var checkImageView: UIImageView = {
         let checkImageView = UIImageView(frame: .zero)
-        checkImageView.contentMode = .center
+        checkImageView.contentMode = .right
+        checkImageView.tintColor = .customLightGreen2
         return checkImageView
     }()
 

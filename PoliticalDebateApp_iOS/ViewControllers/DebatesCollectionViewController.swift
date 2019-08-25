@@ -279,6 +279,16 @@ extension DebatesCollectionViewController: UICollectionViewDelegate, UIScrollVie
 
         debatesCollectionView.delegate = self
 
+        debatesCollectionView.rx
+            .modelSelected(DebateCollectionViewCellViewModel.self)
+            .subscribe { [weak self] (debateCollectionViewCellViewModelEvent) in
+                guard let debateCollectionViewCellViewModel = debateCollectionViewCellViewModelEvent.element else { return }
+
+                self?.navigationController?
+                    .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debateCollectionViewCellViewModel.debate)),
+                                        animated: true)
+        }.disposed(by: disposeBag)
+
         installCollectionViewDataSource()
     }
 

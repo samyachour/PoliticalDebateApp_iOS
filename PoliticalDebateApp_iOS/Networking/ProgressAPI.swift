@@ -43,7 +43,7 @@ extension ProgressAPI: TargetType {
         switch self {
         case .saveProgress,
              .saveBatchProgress:
-            return .post
+            return .put
         case .loadProgress,
              .loadAllProgress:
             return .get
@@ -61,7 +61,7 @@ extension ProgressAPI: TargetType {
         case .loadAllProgress:
             return .requestPlain
         case .saveBatchProgress(let batchProgress):
-            return .requestParameters(parameters: [ProgressConstants.allDebatePointsKeys : batchProgress], encoding: JSONEncoding.default)
+            return .requestJSONEncodable(batchProgress)
         }
     }
 

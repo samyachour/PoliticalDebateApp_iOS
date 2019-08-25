@@ -259,12 +259,13 @@ class UserDataManager {
     }
 
     private func syncLocalProgressDataToBackend(_ completion: @escaping () -> Void) {
-        guard !progress.isEmpty else {
+        let legitimateProgress = progressArray.filter({ !($0.seenPoints ?? []).isEmpty})
+        guard !legitimateProgress.isEmpty else {
             completion()
             return
         }
 
-        progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: progressArray))
+        progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: legitimateProgress))
             .subscribe(onSuccess: { (_) in
                 // We've successfully sync'd the local data to the backend, now we can clear it
                 ProgressCoreDataAPI.clearAllProgress()

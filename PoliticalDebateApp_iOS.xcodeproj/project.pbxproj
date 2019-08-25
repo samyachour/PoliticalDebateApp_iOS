@@ -125,8 +125,6 @@
 		2E5EC05722FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5EC05622FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift */; };
 		2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094622A4931100DF486A /* ProgressAPI.swift */; };
 		2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
-		2E7694792305292900AEDD55 /* UIButton+HighlightedBackgroundColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7694782305292900AEDD55 /* UIButton+HighlightedBackgroundColor.swift */; };
-		2E76947A2305335800AEDD55 /* UIButton+HighlightedBackgroundColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E7694782305292900AEDD55 /* UIButton+HighlightedBackgroundColor.swift */; };
 		2E892109230E6ABF00DD9556 /* CurrentEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E892108230E6ABF00DD9556 /* CurrentEmail.swift */; };
 		2E89210A230E6B2900DD9556 /* CurrentEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E892108230E6ABF00DD9556 /* CurrentEmail.swift */; };
 		2E89210C230E6BBB00DD9556 /* GetCurrentEmail.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */; };
@@ -239,7 +237,6 @@
 		2E5EC05622FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		2E69094622A4931100DF486A /* ProgressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAPI.swift; sourceTree = "<group>"; };
 		2E69094C22A4932700DF486A /* StarredAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredAPI.swift; sourceTree = "<group>"; };
-		2E7694782305292900AEDD55 /* UIButton+HighlightedBackgroundColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+HighlightedBackgroundColor.swift"; sourceTree = "<group>"; };
 		2E892108230E6ABF00DD9556 /* CurrentEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentEmail.swift; sourceTree = "<group>"; };
 		2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GetCurrentEmail.json; sourceTree = "<group>"; };
 		2E967438226BD34E00821A73 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
@@ -476,7 +473,6 @@
 				2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */,
 				2E2E6DC122FC07880048B769 /* UIView+Fade.swift */,
 				2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */,
-				2E7694782305292900AEDD55 /* UIButton+HighlightedBackgroundColor.swift */,
 				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
 			);
 			path = Helpers;
@@ -925,7 +921,6 @@
 				2E2BB06622F2C95D00ED02C0 /* BasicUIElementFactory.swift in Sources */,
 				2E0A9D60230D1FC900D10CC8 /* StubAccess.swift in Sources */,
 				2E23A705226AD39200B2DCC3 /* DebateAPI.swift in Sources */,
-				2E7694792305292900AEDD55 /* UIButton+HighlightedBackgroundColor.swift in Sources */,
 				2E23A713226AE36600B2DCC3 /* Constants.swift in Sources */,
 				2E287CBD22DC4A7B000A4CF2 /* BannerOnScreen.swift in Sources */,
 				2EF1E59B22DC688200C93DFB /* ButtonWithActionClosure.swift in Sources */,
@@ -980,7 +975,6 @@
 				2E89210A230E6B2900DD9556 /* CurrentEmail.swift in Sources */,
 				2E30A91622BF4BED007E386A /* NSLayoutConstraint+Priority.swift in Sources */,
 				2E2E6DC62300D1140048B769 /* DebateCollectionViewCellViewModel.swift in Sources */,
-				2E76947A2305335800AEDD55 /* UIButton+HighlightedBackgroundColor.swift in Sources */,
 				2E30A90A22BF4BED007E386A /* KeychainService.swift in Sources */,
 				2E30A8FF22BF4BED007E386A /* DebatesCollectionViewController.swift in Sources */,
 				2E30A8FC22BF4BED007E386A /* DebatesCollectionViewModel.swift in Sources */,

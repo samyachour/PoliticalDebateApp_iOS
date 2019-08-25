@@ -116,6 +116,14 @@ extension PointsTableViewController: UICollectionViewDelegate, UIScrollViewDeleg
             self?.navigationItem.title = shortTitle
         }.disposed(by: disposeBag)
 
+        pointsTableView.rx
+            .modelSelected(PointTableViewCellViewModel.self)
+            .subscribe { pointTableViewCellViewModelEvent in
+                guard let pointTableViewCellViewModel = pointTableViewCellViewModelEvent.element else { return }
+
+                print(pointTableViewCellViewModel.point.description)
+        }.disposed(by: disposeBag)
+
         installCollectionViewDataSource()
     }
 
