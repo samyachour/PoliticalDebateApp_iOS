@@ -1,5 +1,5 @@
 //
-//  DebatesListViewController.swift
+//  DebatesCollectionViewController.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 4/19/19.
@@ -12,9 +12,9 @@ import RxSwift
 import UIKit
 
 // Acts as our home view as well
-class DebatesListViewController: UIViewController {
+class DebatesCollectionViewController: UIViewController {
 
-    required init(viewModel: DebateListViewModel) {
+    required init(viewModel: DebatesCollectionViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil) // we don't use nibs
     }
@@ -40,10 +40,10 @@ class DebatesListViewController: UIViewController {
 
     // MARK: - Observers & Observables
 
-    private let viewModel: DebateListViewModel
+    private let viewModel: DebatesCollectionViewModel
     private let disposeBag = DisposeBag()
 
-    private let searchTriggeredRelay = BehaviorRelay<String>(value: DebatesListViewController.defaultSearchString)
+    private let searchTriggeredRelay = BehaviorRelay<String>(value: DebatesCollectionViewController.defaultSearchString)
     private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
     private let userActionRelay = BehaviorRelay<Void>(value: ())
 
@@ -79,7 +79,7 @@ class DebatesListViewController: UIViewController {
 
     private let headerElementsContainer = UIView(frame: .zero)
 
-    private let sortByButton = BasicUIElementFactory.generateButton(title: DebatesListViewController.sortByDefaultlabel, titleColor: GeneralColors.softButton)
+    private let sortByButton = BasicUIElementFactory.generateButton(title: DebatesCollectionViewController.sortByDefaultlabel, titleColor: GeneralColors.softButton)
 
     private let sortByPickerView: UIPickerView = {
         let sortByPickerView = UIPickerView()
@@ -113,10 +113,10 @@ class DebatesListViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         // Not using flow layout delegate
-        layout.minimumLineSpacing = DebatesListViewController.cellSpacing
-        layout.minimumInteritemSpacing = DebatesListViewController.cellSpacing
+        layout.minimumLineSpacing = DebatesCollectionViewController.cellSpacing
+        layout.minimumInteritemSpacing = DebatesCollectionViewController.cellSpacing
         let screenWidth = UIScreen.main.bounds.width
-        let cellWidthAndHeight = (screenWidth - (3 * DebatesListViewController.cellSpacing))/2
+        let cellWidthAndHeight = (screenWidth - (3 * DebatesCollectionViewController.cellSpacing))/2
         layout.itemSize = CGSize(width: cellWidthAndHeight, height: cellWidthAndHeight)
 
         let debatesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -140,7 +140,7 @@ class DebatesListViewController: UIViewController {
 
 }
 
-extension DebatesListViewController: UITextFieldDelegate {
+extension DebatesCollectionViewController: UITextFieldDelegate {
 
     // Expand the text field
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -163,12 +163,12 @@ extension DebatesListViewController: UITextFieldDelegate {
 }
 
 // MARK: - View constraints & binding
-extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDelegate {
+extension DebatesCollectionViewController: UICollectionViewDelegate, UIScrollViewDelegate {
 
     // MARK: View constraints
     // swiftlint:disable:next function_body_length
     private func installViewConstraints() {
-        view.backgroundColor = DebatesListViewController.backgroundColor
+        view.backgroundColor = DebatesCollectionViewController.backgroundColor
         navigationItem.title = "Debates"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
                                                                    .font: GeneralFonts.navBarTitle as Any]
@@ -190,16 +190,16 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
         debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        headerElementsContainer.backgroundColor = DebatesListViewController.backgroundColor
+        headerElementsContainer.backgroundColor = DebatesCollectionViewController.backgroundColor
         headerElementsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                         constant: DebatesListViewController.headerElementsXDistance).isActive = true
+                                                         constant: DebatesCollectionViewController.headerElementsXDistance).isActive = true
         headerElementsContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
         headerElementsContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                          constant: -DebatesListViewController.headerElementsXDistance).isActive = true
+                                                          constant: -DebatesCollectionViewController.headerElementsXDistance).isActive = true
 
         searchTextField.leadingAnchor.constraint(equalTo: headerElementsContainer.leadingAnchor).isActive = true
         searchTextField.topAnchor.constraint(equalTo: headerElementsContainer.topAnchor,
-                                             constant: DebatesListViewController.headerElementsYDistance).isActive = true
+                                             constant: DebatesCollectionViewController.headerElementsYDistance).isActive = true
         searchTextFieldTrailingAnchor = searchTextField.trailingAnchor.constraint(equalTo: sortByButton.leadingAnchor, constant: -8)
         searchTextFieldTrailingAnchor?.isActive = false
         searchTextField.bottomAnchor.constraint(equalTo: headerElementsContainer.bottomAnchor).isActive = true
@@ -211,19 +211,19 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
         sortByButton.setContentHuggingPriority(.required, for: .horizontal)
 
         sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                  constant: DebatesListViewController.headerElementsXDistance).isActive = true
+                                                  constant: DebatesCollectionViewController.headerElementsXDistance).isActive = true
         sortByPickerViewTopAnchor = sortByPickerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8)
         sortByPickerViewTopAnchor?.isActive = false
         sortByPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                   constant: -DebatesListViewController.headerElementsXDistance).isActive = true
+                                                   constant: -DebatesCollectionViewController.headerElementsXDistance).isActive = true
         sortByPickerViewBottomAnchor = sortByPickerView.bottomAnchor.constraint(equalTo: view.topAnchor)
         sortByPickerViewBottomAnchor?.isActive = true
 
         collectionViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                         constant: DebatesListViewController.cellSpacing).isActive = true
+                                                         constant: DebatesCollectionViewController.cellSpacing).isActive = true
         collectionViewContainer.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 2).isActive = true
         collectionViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                          constant: -DebatesListViewController.cellSpacing).isActive = true
+                                                          constant: -DebatesCollectionViewController.cellSpacing).isActive = true
         collectionViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
 
         debatesCollectionView.leadingAnchor.constraint(equalTo: collectionViewContainer.leadingAnchor).isActive = true
@@ -310,12 +310,12 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
     }
 
     @objc private func activateSearch() {
-        searchTriggeredRelay.accept(searchTextField.text ?? DebatesListViewController.defaultSearchString)
+        searchTriggeredRelay.accept(searchTextField.text ?? DebatesCollectionViewController.defaultSearchString)
         hideActiveUIElements()
     }
 
     private func installCollectionViewDataSource() {
-        debatesCollectionView.register(DebateCell.self, forCellWithReuseIdentifier: DebateCell.reuseIdentifier)
+        debatesCollectionView.register(DebateCollectionViewCell.self, forCellWithReuseIdentifier: DebateCollectionViewCell.reuseIdentifier)
         viewModel.debatesViewModelRelay
             .skip(1) // empty array emission initialized w/ relay
             .do(onNext: { [weak self] debateViewModels in
@@ -324,7 +324,8 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
                     self?.emptyStateLabel.alpha = debateViewModels.isEmpty ? 1.0 : 0.0
                 })
             })
-            .bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCell.reuseIdentifier, cellType: DebateCell.self)) { _, viewModel, cell in
+            .bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCollectionViewCell.reuseIdentifier,
+                                                     cellType: DebateCollectionViewCell.self)) { _, viewModel, cell in
             cell.viewModel = viewModel
         }.disposed(by: disposeBag)
 
@@ -378,7 +379,7 @@ extension DebatesListViewController: UICollectionViewDelegate, UIScrollViewDeleg
             guard let sortByButton = self?.sortByButton else { return }
             UIView.transition(with: sortByButton, duration: Constants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
                 let optionSelected = SortByOption(rawValue: pickerChoice)
-                self?.sortByButton.setTitle(optionSelected?.stringValue ?? DebatesListViewController.sortByDefaultlabel,
+                self?.sortByButton.setTitle(optionSelected?.stringValue ?? DebatesCollectionViewController.sortByDefaultlabel,
                                             for: .normal)
                 self?.sortByButton.setTitleColor(optionSelected?.selectionColor, for: .normal)
             }, completion: nil)

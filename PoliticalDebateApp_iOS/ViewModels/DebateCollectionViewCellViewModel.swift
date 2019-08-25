@@ -1,5 +1,5 @@
 //
-//  DebateCellViewModel.swift
+//  DebateCollectionViewCellViewModel.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 8/6/19.
@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class DebateCellViewModel {
+class DebateCollectionViewCellViewModel {
     let debate: Debate
     let completedPercentage: Int
     var isStarred: Bool

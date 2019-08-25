@@ -1,5 +1,5 @@
 //
-//  DebatesListViewModel.swift
+//  DebatesCollectionViewModel.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 6/4/19.
@@ -10,11 +10,11 @@ import Moya
 import RxCocoa
 import RxSwift
 
-class DebateListViewModel {
+class DebatesCollectionViewModel {
 
     // MARK: - Datasource
 
-    let debatesViewModelRelay = BehaviorRelay<[DebateCellViewModel]>(value: [])
+    let debatesViewModelRelay = BehaviorRelay<[DebateCollectionViewCellViewModel]>(value: [])
     // When we want to propogate errors, we can't do it through the viewModelRelay
     // or else it will complete and the value will be invalidated
     let debatesRetrievalErrorRelay = PublishRelay<Error>()
@@ -23,12 +23,12 @@ class DebateListViewModel {
     // and do local sorting if applicable
     func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
 
-        var newDebateViewModels = debates.map { debate -> DebateCellViewModel in
+        var newDebateViewModels = debates.map { debate -> DebateCollectionViewCellViewModel in
             let completedPercentage = UserDataManager.shared.progress.first(where: {$0.debatePrimaryKey == debate.primaryKey})?.completedPercentage ?? 0
             let isStarred = UserDataManager.shared.starred.contains(debate.primaryKey)
-            return DebateCellViewModel(debate: debate,
-                                       completedPercentage: completedPercentage,
-                                       isStarred: isStarred)
+            return DebateCollectionViewCellViewModel(debate: debate,
+                                                     completedPercentage: completedPercentage,
+                                                     isStarred: isStarred)
         }
         switch sortSelection {
         case .progressAscending:

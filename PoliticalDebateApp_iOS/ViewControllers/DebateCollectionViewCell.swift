@@ -1,5 +1,5 @@
 //
-//  DebateCell.swift
+//  DebateCollectionViewCell.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 8/6/19.
@@ -11,10 +11,10 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class DebateCell: UICollectionViewCell {
+class DebateCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifier = "DebateCollectionViewCell"
 
-    var viewModel: DebateCellViewModel? {
+    var viewModel: DebateCollectionViewCellViewModel? {
         didSet {
             guard let viewModel = viewModel else { return }
             UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
@@ -57,7 +57,7 @@ class DebateCell: UICollectionViewCell {
 
     private lazy var starredButton: UIButton = {
         let starredButton = UIButton(frame: .zero)
-        starredButton.setImage(UIImage(named: "Star"), for: .normal)
+        starredButton.setImage(UIImage.star, for: .normal)
         return starredButton
     }()
 
@@ -67,7 +67,7 @@ class DebateCell: UICollectionViewCell {
         debateTitleButton.setBackgroundColorHighlightState(highlighted: GeneralColors.background, unhighlighted: .clear)
         debateTitleButton.contentEdgeInsets = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 0.0, right: 0.0)
         debateTitleButton.titleLabel?.font = GeneralFonts.button
-        debateTitleButton.titleLabel?.textAlignment = NSTextAlignment.center
+        debateTitleButton.titleLabel?.textAlignment = .center
         debateTitleButton.titleLabel?.numberOfLines = 0 // multiline
         debateTitleButton.titleLabel?.lineBreakMode = .byWordWrapping
         return debateTitleButton
@@ -80,14 +80,14 @@ class DebateCell: UICollectionViewCell {
         return debateProgressView
     }()
 
-    private let gradientLayer = CAGradientLayer(start: .topLeft, end: .bottomRight, colors: [UIColor.white, DebateCell.cellColor], type: .axial)
+    private let gradientLayer = CAGradientLayer(start: .topLeft, end: .bottomRight, colors: [.white, DebateCollectionViewCell.cellColor], type: .axial)
 
     // MARK: - View constraints & Binding
 
     private func installConstraints() {
         contentView.layer.masksToBounds = true
-        contentView.layer.cornerRadius = DebateCell.cornerRadius
-        contentView.backgroundColor = DebateCell.cellColor
+        contentView.layer.cornerRadius = DebateCollectionViewCell.cornerRadius
+        contentView.backgroundColor = DebateCollectionViewCell.cellColor
         contentView.layer.addSublayer(gradientLayer)
 
         contentView.addSubview(debateTitleButton)
