@@ -13,7 +13,7 @@ import UIKit
 
 class DebateCollectionViewCellViewModel {
     let debate: Debate
-    let completedPercentage: Int
+    var completedPercentage: Int
     var isStarred: Bool
     var starTintColor: UIColor {
         return isStarred ? .customLightGreen2 : .customLightGray1

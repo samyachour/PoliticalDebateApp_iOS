@@ -95,9 +95,9 @@ extension AccountViewController {
     private func installViewConstraints() {
         navigationItem.title = "Account"
         navigationController?.navigationBar.tintColor = GeneralColors.softButton
-        view.backgroundColor = GeneralColors.background
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
-                                                                   .font: GeneralFonts.navBarTitle as Any]
+                                                                   .font: GeneralFonts.navBarTitle]
+        view.backgroundColor = GeneralColors.background
 
         view.addSubview(scrollViewContainer)
         scrollViewContainer.addSubview(stackViewContainer)

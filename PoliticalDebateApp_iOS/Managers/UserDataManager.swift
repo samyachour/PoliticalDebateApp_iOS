@@ -24,17 +24,12 @@ class UserDataManager {
 
     // MARK: - Global state
 
-    // Using sets for fast lookup and enforcing unique values
-    var starred = Set<PrimaryKey>()
-    var progress = Set<Progress>()
+    // Using set/dict for fast lookup
+    private var starred = Set<PrimaryKey>()
+    private var allProgress = [AnyHashable: Progress]()
 
     var starredArray: [PrimaryKey] { return Array(starred) }
-    var progressArray: [Progress] { return Array(progress) }
-
-    // While a user is actively navigating a debate map,
-    // it's too excessive keep loading seen points from the backend
-    // so we keep a local state
-    var currentSeenPoints = [PrimaryKey]()
+    var allProgressArray: [Progress] { return allProgress.map { $0.value } }
 
     // MARK: - Setters
 
@@ -48,7 +43,11 @@ class UserDataManager {
     }
 
     private func clearProgress() {
-        progress.removeAll()
+        allProgress.removeAll()
+    }
+
+    func isStarred(_ debatePrimaryKey: PrimaryKey) -> Bool {
+        return starred.contains(debatePrimaryKey)
     }
 
     func starOrUnstarDebate(_ primaryKey: PrimaryKey, unstar: Bool) -> Single<Response?> {
@@ -77,18 +76,29 @@ class UserDataManager {
         }
     }
 
-    func markProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) -> Single<Response?> {
-        currentSeenPoints.append(pointPrimaryKey)
+    func getProgress(for debatePrimaryKey: PrimaryKey) -> Progress {
+        if let debateProgress = allProgress[debatePrimaryKey] {
+            return debateProgress
+        } else {
+            let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: 0, seenPoints: [])
+            allProgress[debatePrimaryKey] = debateProgress
+            return debateProgress
+        }
+    }
 
+    func markProgress(_ progress: Progress,
+                      pointPrimaryKey: PrimaryKey,
+                      debatePrimaryKey: PrimaryKey,
+                      totalPoints: Int) -> Single<Response?> {
         if SessionManager.shared.isActiveRelay.value {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in
                     // Can capture self since it's a singleton, always in memory
-                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                    self.updateProgress(progress, pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
                 }).map { $0 as Response? }
         } else {
             ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-            updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+            updateProgress(progress, pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
             return Single.create {
                 $0(.success(nil))
                 return Disposables.create()
@@ -96,38 +106,19 @@ class UserDataManager {
         }
     }
 
-    func getProgress(for debatePrimaryKey: PrimaryKey) -> Single<Progress> {
-        if SessionManager.shared.isActiveRelay.value {
-            return progressNetworkService.makeRequest(with: .loadProgress(debatePrimaryKey: debatePrimaryKey))
-                .map(Progress.self)
-                .do(onSuccess: { progress in
-                    if let seenPoints = progress.seenPoints { self.currentSeenPoints = seenPoints } // Can capture self since it's a singleton, always in memory
-                })
-        } else {
-            return Single.create {
-                if let debateProgress = ProgressCoreDataAPI.loadProgress(debatePrimaryKey) {
-                    if let seenPoints = debateProgress.seenPoints { self.currentSeenPoints = seenPoints } // Can capture self since it's a singleton, always in memory
-                    $0(.success(debateProgress))
-                } else {
-                    $0(.error(UserDataError.loadLocalProgress))
-                }
-                return Disposables.create()
-            }
-        }
-    }
-
-    // TODO: Pass in progress object to this so I can utilize remove instead of firstIndex
-    private func updateProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) {
-        if let debateProgressIndex = progress.firstIndex(where: {$0.debatePrimaryKey == debatePrimaryKey}) {
-            var seenPoints = progress[debateProgressIndex].seenPoints ?? []
+    private func updateProgress(_ progress: Progress,
+                                pointPrimaryKey: PrimaryKey,
+                                debatePrimaryKey: PrimaryKey,
+                                totalPoints: Int) {
+        if let debateProgress = allProgress.removeValue(forKey: debatePrimaryKey) {
+            var seenPoints = debateProgress.seenPoints
             seenPoints.append(pointPrimaryKey)
-            let completedPercentage = Float(seenPoints.count) / Float(totalPoints)
-            progress.remove(at: debateProgressIndex)
-            progress.insert(Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints))
+            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
         } else {
             let seenPoints = [pointPrimaryKey]
-            let completedPercentage = Float(seenPoints.count) / Float(totalPoints)
-            progress.insert(Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints))
+            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
         }
     }
 
@@ -190,7 +181,7 @@ class UserDataManager {
             progressNetworkService.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
                 .subscribe(onSuccess: { (allProgress) in
-                    self.progress = Set(allProgress)
+                    self.allProgress = Dictionary(uniqueKeysWithValues: allProgress.map { ($0.debatePrimaryKey, $0) })
                     completion()
                 }) { (error) in
                     if let generalError = error as? GeneralError,
@@ -210,7 +201,7 @@ class UserDataManager {
                     }
                     return progress
                 }
-                progress = Set(localProgressFiltered)
+                allProgress = Dictionary(uniqueKeysWithValues: localProgressFiltered.map { ($0.debatePrimaryKey, $0) })
             } else {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't load your debates' progress from local data."))
@@ -259,7 +250,7 @@ class UserDataManager {
     }
 
     private func syncLocalProgressDataToBackend(_ completion: @escaping () -> Void) {
-        let legitimateProgress = progressArray.filter({ !($0.seenPoints ?? []).isEmpty})
+        let legitimateProgress = allProgressArray.filter({ !($0.seenPoints).isEmpty})
         guard !legitimateProgress.isEmpty else {
             completion()
             return

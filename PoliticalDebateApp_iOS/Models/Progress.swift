@@ -11,13 +11,7 @@ import CoreData
 struct Progress {
     let debatePrimaryKey: PrimaryKey
     let completedPercentage: Int
-    var seenPoints: [PrimaryKey]?
-
-    init(debatePrimaryKey: PrimaryKey, completedPercentage: Int, seenPoints: [PrimaryKey]? = nil) {
-        self.debatePrimaryKey = debatePrimaryKey
-        self.completedPercentage = completedPercentage
-        self.seenPoints = seenPoints
-    }
+    let seenPoints: [PrimaryKey]
 }
 
 extension Progress: Codable {
@@ -32,8 +26,7 @@ extension Progress: Codable {
 
         debatePrimaryKey = try container.decode(PrimaryKey.self, forKey: .debatePrimaryKey)
         completedPercentage = try container.decode(Int.self, forKey: .completedPercentage)
-        // We don't get seen points w/ the load all call
-        seenPoints = try container.decodeIfPresent([PrimaryKey].self, forKey: .seenPoints)
+        seenPoints = try container.decode([PrimaryKey].self, forKey: .seenPoints)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -51,18 +44,13 @@ extension Progress: Hashable {
 
 // Initializing from CoreData model
 extension Progress {
-    init?(from progress: LocalProgress, withSeenPoints: Bool = false) {
+    init?(from progress: LocalProgress) {
         guard let debatePrimaryKey32 = progress.debate?.primaryKey,
         let seenPoints = progress.seenPoints?.allObjects as? [LocalPoint] else {
                 return nil
         }
-        if withSeenPoints {
-            self.init(debatePrimaryKey: Int(debatePrimaryKey32),
-                      completedPercentage: Int(progress.completedPercentage),
-                      seenPoints: seenPoints.map { Int($0.primaryKey) })
-        } else {
-            self.init(debatePrimaryKey: Int(debatePrimaryKey32),
-                      completedPercentage: Int(progress.completedPercentage))
-        }
+        self.init(debatePrimaryKey: Int(debatePrimaryKey32),
+                  completedPercentage: Int(progress.completedPercentage),
+                  seenPoints: seenPoints.map { Int($0.primaryKey) })
     }
 }

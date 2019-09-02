@@ -10,14 +10,26 @@ import Moya
 import RxCocoa
 import RxSwift
 
+enum PointsTableViewState {
+    case standalone // Listing all debate points in standalone VC
+    case embeddedRebuttals // Embedding table of rebuttals in point VC
+}
+
 class PointsTableViewModel {
 
-    init(debate: Debate) {
-        fullDebateRelay = BehaviorRelay<Debate>(value: debate)
-        subscribeToSeenPointsAndDebateUpdates()
+    init(debate: Debate,
+         viewState: PointsTableViewState,
+         rebuttals: [Point]? = nil) {
+        self.debate = debate
+        self.viewState = viewState
+        if let rebuttals = rebuttals {
+            self.pointsRelay.accept(rebuttals)
+        }
+        subscribePointsUpdates()
     }
 
     private let disposeBag = DisposeBag()
+    let viewState: PointsTableViewState
 
     // MARK: - Datasource
 
@@ -29,63 +41,50 @@ class PointsTableViewModel {
     // or else it will complete and the value will be invalidated
     let pointsRetrievalErrorRelay = PublishRelay<Error>()
 
+    private let pointsRelay = BehaviorRelay<[Point]>(value: [])
+
     private let seenPointsRelay = BehaviorRelay<[PrimaryKey]>(value: [])
 
-    // Full debate as opposed to the stripped debate objects
-    // that the debates collection view uses
-    private let fullDebateRelay: BehaviorRelay<Debate>
-    lazy var debateTitleRelay = fullDebateRelay.map({ return $0.shortTitle })
-    private var debatePrimaryKey: PrimaryKey {
-        return fullDebateRelay.value.primaryKey
-    }
+    let debate: Debate
 
-    private func subscribeToSeenPointsAndDebateUpdates() {
-        BehaviorRelay.combineLatest(seenPointsRelay, fullDebateRelay) { return ($0, $1) }
+    private func subscribePointsUpdates() {
+        BehaviorRelay.combineLatest(pointsRelay, seenPointsRelay) { return ($0, $1) }
             .distinctUntilChanged { (lhs, rhs) -> Bool in
-                let seenPointsMatch = lhs.0 == rhs.0
-                let debatesMatch = lhs.1.primaryKey == rhs.1.primaryKey &&
-                    lhs.1.debateMap?.count ?? 0 == rhs.1.debateMap?.count ?? 0
+                let pointsMatch = lhs.0 == rhs.0
+                let seenPointsMatch = lhs.1 == rhs.1
 
-                return seenPointsMatch && debatesMatch
+                return pointsMatch && seenPointsMatch
             }.subscribe { [weak self] latestPointsEvent in
-                guard let seenPoints = latestPointsEvent.element?.0,
-                    let debate = latestPointsEvent.element?.1,
-                    let debatePoints = debate.debateMap else {
+                guard let points = latestPointsEvent.element?.0,
+                    let seenPoints = latestPointsEvent.element?.1,
+                    let debatePrimaryKey = self?.debate.primaryKey else {
                         return
                 }
 
-                self?.pointsDataSourceRelay.accept(debatePoints.map({ PointTableViewCellViewModel(point: $0,
-                                                                                                  debatePrimaryKey: debate.primaryKey,
-                                                                                                  seenPoints: seenPoints) }))
+                self?.pointsDataSourceRelay.accept(points.map({ PointTableViewCellViewModel(point: $0,
+                                                                                            debatePrimaryKey: debatePrimaryKey,
+                                                                                            seenPoints: seenPoints) }))
         }.disposed(by: disposeBag)
     }
 
     // MARK: - API calls
 
-    private let progressNetworkService = NetworkService<ProgressAPI>()
+    private let debateNetworkService = NetworkService<DebateAPI>()
 
-    func refreshSeenPoints() { seenPointsRelay.accept(UserDataManager.shared.currentSeenPoints) }
+    func retrieveAllDebatePoints() {
+        // Only should load all debate points if we're on the main standalone debate points view
+        guard viewState == .standalone else { return }
 
-    func retrieveSeenPoints() {
-        UserDataManager.shared.getProgress(for: debatePrimaryKey)
-            .subscribe(onSuccess: { [weak self] progress in
-                guard let seenPoints = progress.seenPoints else { return }
-
-                self?.seenPointsRelay.accept(seenPoints)
+        debateNetworkService.makeRequest(with: .debate(primaryKey: debate.primaryKey))
+            .map(Debate.self)
+            .subscribe(onSuccess: { [weak self] debate in
+                guard let debateMap = debate.debateMap else { return }
+                self?.pointsRelay.accept(debateMap)
             }) { [weak self] error in
                 self?.pointsRetrievalErrorRelay.accept(error)
             }.disposed(by: disposeBag)
     }
 
-    private let debateNetworkService = NetworkService<DebateAPI>()
+    func refreshSeenPoints() { seenPointsRelay.accept(UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints) }
 
-    func retrieveFullDebate() {
-        debateNetworkService.makeRequest(with: .debate(primaryKey: debatePrimaryKey))
-            .map(Debate.self)
-            .subscribe(onSuccess: { [weak self] debate in
-                self?.fullDebateRelay.accept(debate)
-            }) { [weak self] error in
-                self?.pointsRetrievalErrorRelay.accept(error)
-        }.disposed(by: disposeBag)
-    }
 }

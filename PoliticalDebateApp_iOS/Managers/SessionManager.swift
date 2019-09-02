@@ -6,6 +6,7 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Alamofire
 import Foundation
 import Moya
 import RxCocoa
@@ -73,15 +74,17 @@ class SessionManager {
 
     // MARK: - API interface
     private let authAPI = NetworkService<AuthAPI>()
+    static let unauthorizedStatusCode = 401
 
     let refreshAccessTokenIfNeeded = { (error: Observable<Error>) -> Observable<Void> in
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
-            guard let moyaError = error as? MoyaError,
-                moyaError.response?.statusCode == 401,
+            guard (error as? MoyaError)?.response?.statusCode == SessionManager.unauthorizedStatusCode ||
+                (error as? Alamofire.AFError)?.responseCode == SessionManager.unauthorizedStatusCode,
                 // Make sure this is our first refresh attempt
                 index == 0 else {
                     return .error(error) // Pass the error along
             }
+
             guard let refreshToken = SessionManager.shared.refreshToken else { // Make sure we have a refresh token
                 SessionManager.shared.logout()
                 NotificationBannerQueue.shared
@@ -89,6 +92,7 @@ class SessionManager {
                                                                       title: GeneralError.refreshTokenExpired.localizedDescription))
                 throw GeneralError.alreadyHandled // so consumer knows
             }
+
             return SessionManager.shared.authAPI.makeRequest(with: .tokenRefresh(refreshToken: refreshToken))
                 .asObservable()
                 .flatMap({ (response) -> Observable<Void> in

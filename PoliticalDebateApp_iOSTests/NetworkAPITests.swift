@@ -52,17 +52,6 @@ class NetworkAPITests: XCTestCase {
             }).disposed(by: disposeBag)
     }
 
-    func testGetSingleDebateProgressPoints() {
-        let testAPI = NetworkService<ProgressAPI>()
-        testAPI.makeRequest(with: .loadProgress(debatePrimaryKey: 1))
-            .map(Progress.self)
-            .subscribe(onSuccess: { progress in
-                XCTAssert(progress.debatePrimaryKey == 1)
-            }, onError: { err in
-                XCTAssert(false)
-            }).disposed(by: disposeBag)
-    }
-
     func testGetAllDebateProgressPoints() {
         let testAPI = NetworkService<ProgressAPI>()
         testAPI.makeRequest(with: .loadAllProgress)

@@ -32,8 +32,8 @@ class BasicUIElementFactory {
         let basicTextField = UITextField(frame: .zero)
         basicTextField.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                                   attributes: [
-                                                                    .font : GeneralFonts.text as Any,
-                                                                    .foregroundColor: GeneralColors.softButton as Any])
+                                                                    .font : GeneralFonts.text,
+                                                                    .foregroundColor: GeneralColors.softButton])
         basicTextField.font = GeneralFonts.text
         basicTextField.textColor = GeneralColors.hardButton
         basicTextField.borderStyle = .roundedRect

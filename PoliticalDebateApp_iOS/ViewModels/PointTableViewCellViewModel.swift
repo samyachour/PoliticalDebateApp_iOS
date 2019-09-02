@@ -20,7 +20,8 @@ struct PointTableViewCellViewModel {
     init(point: Point, debatePrimaryKey: PrimaryKey, seenPoints: [PrimaryKey]?) {
         self.point = point
         self.debatePrimaryKey = debatePrimaryKey
-        if let seenPoints = seenPoints {
+        if let seenPoints = seenPoints,
+            !seenPoints.isEmpty {
             hasCompletedPaths = PointTableViewCellViewModel.deriveHasCompletedPaths(point, seenPoints)
         } else {
             hasCompletedPaths = false
@@ -31,7 +32,8 @@ struct PointTableViewCellViewModel {
 
     private static func deriveHasCompletedPaths(_ point: Point, _ seenPoints: [PrimaryKey]) -> Bool {
         // Base case
-        guard let rebuttals = point.rebuttals else {
+        guard let rebuttals = point.rebuttals,
+            !rebuttals.isEmpty else {
             return seenPoints.contains(point.primaryKey)
         }
         // Recursively check for completion in rebuttals

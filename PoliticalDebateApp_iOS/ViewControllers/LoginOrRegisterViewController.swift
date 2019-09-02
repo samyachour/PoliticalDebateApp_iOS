@@ -99,10 +99,10 @@ extension LoginOrRegisterViewController {
 
     private func installViewConstraints() {
         navigationController?.navigationBar.tintColor = GeneralColors.softButton
-        view.backgroundColor = GeneralColors.background
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
-                                                                   .font: GeneralFonts.navBarTitle as Any]
+                                                                   .font: GeneralFonts.navBarTitle]
         navigationItem.rightBarButtonItem = infoButton.barButton
+        view.backgroundColor = GeneralColors.background
 
         view.addSubview(scrollViewContainer)
         scrollViewContainer.addSubview(stackViewContainer)

@@ -34,6 +34,12 @@ class DebatesCollectionViewController: UIViewController {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        viewModel.refreshDebatesWithLocalData()
+    }
+
     // MARK: - Dependencies
 
     private let sessionManager = SessionManager.shared
@@ -45,7 +51,7 @@ class DebatesCollectionViewController: UIViewController {
 
     private let searchTriggeredRelay = BehaviorRelay<String>(value: DebatesCollectionViewController.defaultSearchString)
     private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
-    private let userActionRelay = BehaviorRelay<Void>(value: ())
+    private let manualRefreshRelay = BehaviorRelay<Void>(value: ())
 
     // On this screen we are constantly running multiple animations at once
     // There is a problem when animation blocks are not called serially
@@ -98,7 +104,7 @@ class DebatesCollectionViewController: UIViewController {
                                             action: nil)
 
         searchButton.tintColor = GeneralColors.hardButton
-        searchButton.setTitleTextAttributes([.font : GeneralFonts.button as Any], for: .normal)
+        searchButton.setTitleTextAttributes([.font : GeneralFonts.button], for: .normal)
         searchButtonBar.items = [flexibleSpace, searchButton]
         searchButtonBar.sizeToFit()
         searchButtonBar.barTintColor = GeneralColors.navBarTint
@@ -158,11 +164,11 @@ extension DebatesCollectionViewController: UICollectionViewDelegate, UIScrollVie
     // MARK: View constraints
     // swiftlint:disable:next function_body_length
     private func installViewConstraints() {
-        view.backgroundColor = DebatesCollectionViewController.backgroundColor
         navigationItem.title = "Debates"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
-                                                                   .font: GeneralFonts.navBarTitle as Any]
+                                                                   .font: GeneralFonts.navBarTitle]
         navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
+        view.backgroundColor = DebatesCollectionViewController.backgroundColor
 
         headerElementsContainer.addSubview(searchTextField)
         headerElementsContainer.addSubview(sortByButton)
@@ -233,7 +239,7 @@ extension DebatesCollectionViewController: UICollectionViewDelegate, UIScrollVie
     }
 
     // MARK: View binding
-
+    // swiftlint:disable:next function_body_length
     private func installViewBinds() {
         searchTextField.delegate = self
         searchTextField.inputAccessoryView = searchButtonBar
@@ -267,7 +273,7 @@ extension DebatesCollectionViewController: UICollectionViewDelegate, UIScrollVie
 
         viewModel.subscribeToManualDebateUpdates(searchTriggeredRelay.asDriver(),
                                                  sortSelectionRelay.asDriver(),
-                                                 userActionRelay.asDriver())
+                                                 manualRefreshRelay.asDriver())
 
         animationBlocksRelay.subscribe { animationEvent in
             guard let animationBlock = animationEvent.element else { return }
@@ -285,7 +291,7 @@ extension DebatesCollectionViewController: UICollectionViewDelegate, UIScrollVie
                 guard let debateCollectionViewCellViewModel = debateCollectionViewCellViewModelEvent.element else { return }
 
                 self?.navigationController?
-                    .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debateCollectionViewCellViewModel.debate)),
+                    .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debateCollectionViewCellViewModel.debate, viewState: .standalone)),
                                         animated: true)
         }.disposed(by: disposeBag)
 
@@ -305,7 +311,7 @@ extension DebatesCollectionViewController: UICollectionViewDelegate, UIScrollVie
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { hideActiveUIElements() }
 
     @objc private func userPulledToRefresh() {
-        userActionRelay.accept(())
+        manualRefreshRelay.accept(())
         hideActiveUIElements()
     }
 

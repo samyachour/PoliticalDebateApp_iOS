@@ -30,19 +30,23 @@ class PointsTableViewController: UIViewController {
         installViewBinds()
         installViewConstraints()
 
-        viewModel.retrieveFullDebate()
-        viewModel.retrieveSeenPoints()
+        viewModel.retrieveAllDebatePoints()
     }
 
-    var isFirstViewWillAppear = true
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // No need to refresh on the first call to viewWillAppear
-        if isFirstViewWillAppear {
-            isFirstViewWillAppear = false
-        } else {
-            viewModel.refreshSeenPoints()
+        viewModel.refreshSeenPoints()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if viewModel.viewState == .standalone {
+            UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
+                self?.navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
+                self?.navigationController?.navigationBar.layoutIfNeeded()
+            }
         }
     }
 
@@ -52,6 +56,10 @@ class PointsTableViewController: UIViewController {
     private let disposeBag = DisposeBag()
 
     // MARK: - UI Properties
+
+    var pointsTableViewHeight: CGFloat { return pointsTableView.dynamicContentSize }
+
+    // MARK: - UI Elements
 
     private let tableViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
 
@@ -64,7 +72,14 @@ class PointsTableViewController: UIViewController {
         return pointsTableView
     }()
 
-    private let emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No points to show.")
+    private lazy var emptyStateLabel: UILabel = {
+        switch viewModel.viewState {
+        case .standalone:
+            return BasicUIElementFactory.generateEmptyStateLabel(text: "No points to show.")
+        case .embeddedRebuttals:
+            return BasicUIElementFactory.generateEmptyStateLabel(text: "No rebuttals to show.")
+        }
+    }()
 }
 
 // MARK: - View constraints & binding
@@ -73,10 +88,16 @@ extension PointsTableViewController: UICollectionViewDelegate, UIScrollViewDeleg
     // MARK: View constraints
 
     private func installViewConstraints() {
-        navigationController?.navigationBar.tintColor = GeneralColors.softButton
-        view.backgroundColor = GeneralColors.background
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
-                                                                   .font: GeneralFonts.navBarTitle as Any]
+        if viewModel.viewState == .standalone {
+            navigationItem.title = viewModel.debate.shortTitle
+            navigationController?.navigationBar.tintColor = GeneralColors.softButton
+            navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
+                                                                       .font: GeneralFonts.navBarTitle]
+            view.backgroundColor = GeneralColors.background
+        } else {
+            pointsTableView.alwaysBounceVertical = false
+            view.backgroundColor = .clear
+        }
 
         view.addSubview(tableViewContainer)
         tableViewContainer.addSubview(pointsTableView)
@@ -110,18 +131,17 @@ extension PointsTableViewController: UICollectionViewDelegate, UIScrollViewDeleg
     // MARK: View binding
 
     private func installViewBinds() {
-        viewModel.debateTitleRelay.subscribe { [weak self] shortTitleEvent in
-            guard let shortTitle = shortTitleEvent.element else { return }
-
-            self?.navigationItem.title = shortTitle
-        }.disposed(by: disposeBag)
-
         pointsTableView.rx
             .modelSelected(PointTableViewCellViewModel.self)
-            .subscribe { pointTableViewCellViewModelEvent in
-                guard let pointTableViewCellViewModel = pointTableViewCellViewModelEvent.element else { return }
+            .subscribe { [weak self] pointTableViewCellViewModelEvent in
+                guard let pointTableViewCellViewModel = pointTableViewCellViewModelEvent.element,
+                let debate = self?.viewModel.debate else {
+                    return
+                }
 
-                print(pointTableViewCellViewModel.point.description)
+                self?.navigationController?.pushViewController(PointViewController(viewModel: PointViewModel(point: pointTableViewCellViewModel.point,
+                                                                                                             debate: debate)),
+                                                               animated: true)
         }.disposed(by: disposeBag)
 
         installCollectionViewDataSource()
@@ -164,6 +184,15 @@ extension PointsTableViewController: UICollectionViewDelegate, UIScrollViewDeleg
             default:
                 ErrorHandler.showBasicErrorBanner()
             }
-            }.disposed(by: disposeBag)
+        }.disposed(by: disposeBag)
+    }
+}
+
+private extension UITableView {
+    var dynamicContentSize: CGFloat {
+        layoutIfNeeded()
+        return visibleCells.reduce(0.0, { (result, cell) -> CGFloat in
+            return result + cell.frame.height
+        })
     }
 }

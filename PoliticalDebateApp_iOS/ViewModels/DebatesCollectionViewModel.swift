@@ -24,11 +24,11 @@ class DebatesCollectionViewModel {
 
     // Used to filter the latest debates array through our starred & progress user data
     // and do local sorting if applicable
-    func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
+    private func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
 
         var newDebateCollectionViewCellViewModels = debates.map { debate -> DebateCollectionViewCellViewModel in
-            let completedPercentage = UserDataManager.shared.progress.first(where: {$0.debatePrimaryKey == debate.primaryKey})?.completedPercentage ?? 0
-            let isStarred = UserDataManager.shared.starred.contains(debate.primaryKey)
+            let completedPercentage = UserDataManager.shared.getProgress(for: debate.primaryKey).completedPercentage
+            let isStarred = UserDataManager.shared.isStarred(debate.primaryKey)
             return DebateCollectionViewCellViewModel(debate: debate,
                                                      completedPercentage: completedPercentage,
                                                      isStarred: isStarred)
@@ -44,13 +44,25 @@ class DebatesCollectionViewModel {
         debatesDataSourceRelay.accept(newDebateCollectionViewCellViewModels)
     }
 
+    func refreshDebatesWithLocalData() {
+        let newDebateCollectionViewCellViewModels = debatesDataSourceRelay.value.map { (debateCollectionViewCellViewModel) -> DebateCollectionViewCellViewModel in
+            let primaryKey = debateCollectionViewCellViewModel.debate.primaryKey
+            debateCollectionViewCellViewModel.completedPercentage = UserDataManager.shared.getProgress(for: primaryKey).completedPercentage
+            debateCollectionViewCellViewModel.isStarred = UserDataManager.shared.isStarred(primaryKey)
+
+            return debateCollectionViewCellViewModel
+        }
+
+        debatesDataSourceRelay.accept(newDebateCollectionViewCellViewModels)
+    }
+
     // MARK: - Input handling
 
     private let disposeBag = DisposeBag()
 
     func subscribeToManualDebateUpdates(_ searchTriggeredDriver: Driver<String>,
                                         _ sortSelectionDriver: Driver<SortByOption>,
-                                        _ userActionDriver: Driver<Void>) {
+                                        _ manualRefreshDriver: Driver<Void>) {
         let searchAndSortDriver = Driver
             .combineLatest(searchTriggeredDriver,
                            sortSelectionDriver) { return ($0, $1) }
@@ -60,8 +72,8 @@ class DebatesCollectionViewModel {
 
         Driver
             .combineLatest(searchAndSortDriver,
-                           userActionDriver) { (searchAndSortValue, _) -> (String, SortByOption) in
-                                // User action can be ignored since it just uses the latest search and sort values
+                           manualRefreshDriver) { (searchAndSortValue, _) -> (String, SortByOption) in
+                                // Manual refresh can be ignored since it just uses the latest search and sort values
                                 return searchAndSortValue
             }.drive(onNext: { [weak self] (searchString, sortSelection) in
                 self?.retrieveDebates(searchString: searchString, sortSelection: sortSelection)

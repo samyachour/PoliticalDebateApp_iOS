@@ -18,7 +18,7 @@ class PointTableViewCell: UITableViewCell {
         didSet {
             guard let viewModel = viewModel else { return }
 
-            containerView.backgroundColor = viewModel.point.side == .pro ? .customLightBlue : .customLightRed
+            containerView.backgroundColor = viewModel.point.side?.color
             pointLabel.text = viewModel.point.description
             checkImageView.image = viewModel.hasCompletedPaths ? UIImage.check : nil
         }
@@ -30,7 +30,6 @@ class PointTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         installConstraints()
-        installViewBinds()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -77,13 +76,15 @@ class PointTableViewCell: UITableViewCell {
     // MARK: - View constraints & Binding
 
     private func installConstraints() {
-        contentView.backgroundColor = GeneralColors.background
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
         selectionStyle = .none
 
         contentView.addSubview(containerView)
         containerView.addSubview(pointLabel)
         containerView.addSubview(checkImageView)
 
+        contentView.autoresizingMask = .flexibleHeight
         containerView.translatesAutoresizingMaskIntoConstraints = false
         pointLabel.translatesAutoresizingMaskIntoConstraints = false
         checkImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -91,21 +92,15 @@ class PointTableViewCell: UITableViewCell {
         containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
         containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: PointTableViewCell.inset).isActive = true
         containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PointTableViewCell.inset).isActive = true
-        // Need to set priority below required so as to not conflict with the built-in height anchor UIView-Encapsulated-Layout-Height
-        containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -PointTableViewCell.inset).injectPriority(.required - 1).isActive = true
+        containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -PointTableViewCell.inset).isActive = true
 
         pointLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
         pointLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PointTableViewCell.inset).isActive = true
-        pointLabel.trailingAnchor.constraint(equalTo: checkImageView.leadingAnchor).isActive = true
+        pointLabel.trailingAnchor.constraint(lessThanOrEqualTo: checkImageView.leadingAnchor).isActive = true
         pointLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PointTableViewCell.inset).isActive = true
 
         checkImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
         checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PointTableViewCell.inset).isActive = true
     }
 
-    private func installViewBinds() {}
-
-    @objc private func tappedToOpenPoint() {
-        // TODO: Push point VC
-    }
 }

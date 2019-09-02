@@ -42,9 +42,9 @@ final class ProgressCoreDataAPI {
             localPoint.progress = localProgress // to one
 
             localProgress.addToSeenPoints(localPoint) // to many
-            if let completionCount = localProgress.seenPoints?.allObjects.count {
-                let completionPercentage = Float(completionCount) / Float(totalPoints)
-                localProgress.completedPercentage = Int16(completionPercentage * 100)
+            if let completedCount = localProgress.seenPoints?.allObjects.count {
+                let completedPercentage = (Float(completedCount) / Float(totalPoints)) * 100
+                localProgress.completedPercentage = Int16(completedPercentage)
             }
         }
     }
@@ -61,14 +61,6 @@ final class ProgressCoreDataAPI {
         return localProgressRecords.map({ localProgress -> Progress? in
             Progress(from: localProgress)
         })
-    }
-
-    static func loadProgress(_ debatePrimaryKey: PrimaryKey) -> Progress? {
-        defer { saveContext() }
-
-        let (localProgress, _) = ProgressCoreDataAPI.loadProgressAndAssociatedDebate(debatePrimaryKey)
-
-        return Progress(from: localProgress, withSeenPoints: true)
     }
 
     static func clearAllProgress() {

@@ -125,7 +125,7 @@ extension SortByOption {
         case .progressAscending,
              .progressDescending,
              .noProgress:
-            return UserDataManager.shared.progressArray.map { $0.debatePrimaryKey }
+            return UserDataManager.shared.allProgressArray.map { $0.debatePrimaryKey }
         default:
             return nil
         }

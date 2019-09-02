@@ -10,7 +10,6 @@ import Moya
 
 enum ProgressAPI {
     case saveProgress(debatePrimaryKey: PrimaryKey, pointPrimaryKey: PrimaryKey)
-    case loadProgress(debatePrimaryKey: PrimaryKey)
     case loadAllProgress
     case saveBatchProgress(batchProgress: [Progress])
 }
@@ -31,7 +30,6 @@ extension ProgressAPI: TargetType {
     var path: String {
         switch self {
         case .saveProgress,
-             .loadProgress,
              .loadAllProgress:
             return "progress/"
         case .saveBatchProgress:
@@ -44,8 +42,7 @@ extension ProgressAPI: TargetType {
         case .saveProgress,
              .saveBatchProgress:
             return .put
-        case .loadProgress,
-             .loadAllProgress:
+        case .loadAllProgress:
             return .get
         }
     }
@@ -56,8 +53,6 @@ extension ProgressAPI: TargetType {
             return .requestParameters(parameters: [ProgressConstants.debatePrimaryKey: debatePrimaryKey,
                                                    ProgressConstants.pointPrimaryKey: pointPrimaryKey],
                                       encoding: JSONEncoding.default)
-        case .loadProgress(let debatePrimaryKey):
-            return .requestParameters(parameters: [DebateConstants.primaryKeyKey: debatePrimaryKey], encoding: PlainDjangoEncoding())
         case .loadAllProgress:
             return .requestPlain
         case .saveBatchProgress(let batchProgress):
@@ -74,8 +69,7 @@ extension ProgressAPI: TargetType {
         case .saveProgress,
              .saveBatchProgress:
             return .customCodes([201])
-        case .loadProgress,
-             .loadAllProgress:
+        case .loadAllProgress:
             return .customCodes([200])
         }
     }
@@ -87,7 +81,6 @@ extension ProgressAPI: AccessTokenAuthorizable {
     var authorizationType: AuthorizationType {
         switch self {
         case .saveProgress,
-             .loadProgress,
              .loadAllProgress,
              .saveBatchProgress:
             return .bearer
@@ -103,8 +96,6 @@ extension ProgressAPI {
         case .saveProgress,
              .saveBatchProgress:
             return StubAccess.stubbedResponse("Empty")
-        case .loadProgress:
-            return StubAccess.stubbedResponse("ProgressSingle")
         case .loadAllProgress:
             return StubAccess.stubbedResponse("ProgressAll")
         }
