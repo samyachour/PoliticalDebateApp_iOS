@@ -54,3 +54,18 @@ extension Progress {
                   seenPoints: seenPoints.map { Int($0.primaryKey) })
     }
 }
+
+struct BatchProgress {
+    let allDebatePoints: [Progress]
+}
+
+extension BatchProgress: Encodable {
+    private enum CodingKeys: String, CodingKey {
+        case allDebatePoints = "all_debate_points"
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(allDebatePoints, forKey: .allDebatePoints)
+    }
+}

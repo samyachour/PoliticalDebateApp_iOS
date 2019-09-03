@@ -19,7 +19,7 @@ class PointTableViewCell: UITableViewCell {
             guard let viewModel = viewModel else { return }
 
             containerView.backgroundColor = viewModel.point.side?.color
-            pointLabel.text = viewModel.point.description
+            pointLabel.text = viewModel.point.shortDescription
             checkImageView.image = viewModel.hasCompletedPaths ? UIImage.check : nil
         }
     }

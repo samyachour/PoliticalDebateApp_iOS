@@ -11,16 +11,15 @@ import Moya
 enum ProgressAPI {
     case saveProgress(debatePrimaryKey: PrimaryKey, pointPrimaryKey: PrimaryKey)
     case loadAllProgress
-    case saveBatchProgress(batchProgress: [Progress])
+    case saveBatchProgress(batchProgress: BatchProgress)
 }
 
 enum ProgressConstants {
     static let debatePrimaryKey = "debate_pk"
     static let pointPrimaryKey = "point_pk"
-    static let allDebatePointsKeys = "all_debate_points"
 }
 
-extension ProgressAPI: TargetType {
+extension ProgressAPI: CustomTargetType {
 
     var baseURL: URL {
         guard let url = URL(string: appBaseURL) else { fatalError("baseURL could not be configured.") }
@@ -64,13 +63,13 @@ extension ProgressAPI: TargetType {
         return nil
     }
 
-    var validationType: ValidationType {
+    var validSuccessCode: Int {
         switch self {
         case .saveProgress,
              .saveBatchProgress:
-            return .customCodes([201])
+            return 201
         case .loadAllProgress:
-            return .customCodes([200])
+            return 200
         }
     }
 

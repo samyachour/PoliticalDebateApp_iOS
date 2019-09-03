@@ -72,18 +72,11 @@ class PointsTableViewController: UIViewController {
         return pointsTableView
     }()
 
-    private lazy var emptyStateLabel: UILabel = {
-        switch viewModel.viewState {
-        case .standalone:
-            return BasicUIElementFactory.generateEmptyStateLabel(text: "No points to show.")
-        case .embeddedRebuttals:
-            return BasicUIElementFactory.generateEmptyStateLabel(text: "No rebuttals to show.")
-        }
-    }()
+    private lazy var emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No points to show.")
 }
 
 // MARK: - View constraints & binding
-extension PointsTableViewController: UICollectionViewDelegate, UIScrollViewDelegate {
+extension PointsTableViewController {
 
     // MARK: View constraints
 
@@ -119,7 +112,6 @@ extension PointsTableViewController: UICollectionViewDelegate, UIScrollViewDeleg
 
         emptyStateLabel.centerXAnchor.constraint(equalTo: tableViewContainer.centerXAnchor).isActive = true
         emptyStateLabel.centerYAnchor.constraint(equalTo: tableViewContainer.centerYAnchor).isActive = true
-
     }
 
     override func viewDidLayoutSubviews() {
@@ -144,10 +136,10 @@ extension PointsTableViewController: UICollectionViewDelegate, UIScrollViewDeleg
                                                                animated: true)
         }.disposed(by: disposeBag)
 
-        installCollectionViewDataSource()
+        installTableViewDataSource()
     }
 
-    private func installCollectionViewDataSource() {
+    private func installTableViewDataSource() {
         pointsTableView.register(PointTableViewCell.self, forCellReuseIdentifier: PointTableViewCell.reuseIdentifier)
         viewModel.sharedPointsDataSourceRelay
             .subscribe({ [weak self] (pointsDataSourceEvent) in

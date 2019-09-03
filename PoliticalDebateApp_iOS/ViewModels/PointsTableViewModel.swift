@@ -22,9 +22,7 @@ class PointsTableViewModel {
          rebuttals: [Point]? = nil) {
         self.debate = debate
         self.viewState = viewState
-        if let rebuttals = rebuttals {
-            self.pointsRelay.accept(rebuttals)
-        }
+        self.rebuttals = rebuttals
         subscribePointsUpdates()
     }
 
@@ -42,8 +40,9 @@ class PointsTableViewModel {
     let pointsRetrievalErrorRelay = PublishRelay<Error>()
 
     private let pointsRelay = BehaviorRelay<[Point]>(value: [])
+    private var rebuttals: [Point]? // Only used for embedded rebuttals table
 
-    private let seenPointsRelay = BehaviorRelay<[PrimaryKey]>(value: [])
+    private lazy var seenPointsRelay = BehaviorRelay<[PrimaryKey]>(value: UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints)
 
     let debate: Debate
 
@@ -73,7 +72,12 @@ class PointsTableViewModel {
 
     func retrieveAllDebatePoints() {
         // Only should load all debate points if we're on the main standalone debate points view
-        guard viewState == .standalone else { return }
+        guard viewState == .standalone else {
+            if let rebuttals = rebuttals {
+                pointsRelay.accept(rebuttals)
+            }
+            return
+        }
 
         debateNetworkService.makeRequest(with: .debate(primaryKey: debate.primaryKey))
             .map(Debate.self)

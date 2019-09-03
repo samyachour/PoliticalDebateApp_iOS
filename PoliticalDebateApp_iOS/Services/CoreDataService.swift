@@ -17,7 +17,6 @@ enum CoreDataConstants {
     static let primaryKeyAttribute = "primaryKey"
     static let debateRelationshipAttribute = "debate"
     static let progressRelationshipAttribute = "progress"
-    static let pointLabelAttribute = "label"
     static let container = "PoliticalDebateApp_iOS"
 }
 

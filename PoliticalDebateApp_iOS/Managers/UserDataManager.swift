@@ -86,19 +86,18 @@ class UserDataManager {
         }
     }
 
-    func markProgress(_ progress: Progress,
-                      pointPrimaryKey: PrimaryKey,
+    func markProgress(pointPrimaryKey: PrimaryKey,
                       debatePrimaryKey: PrimaryKey,
                       totalPoints: Int) -> Single<Response?> {
         if SessionManager.shared.isActiveRelay.value {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in
                     // Can capture self since it's a singleton, always in memory
-                    self.updateProgress(progress, pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
                 }).map { $0 as Response? }
         } else {
             ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-            updateProgress(progress, pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+            updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
             return Single.create {
                 $0(.success(nil))
                 return Disposables.create()
@@ -106,11 +105,10 @@ class UserDataManager {
         }
     }
 
-    private func updateProgress(_ progress: Progress,
-                                pointPrimaryKey: PrimaryKey,
+    private func updateProgress(pointPrimaryKey: PrimaryKey,
                                 debatePrimaryKey: PrimaryKey,
                                 totalPoints: Int) {
-        if let debateProgress = allProgress.removeValue(forKey: debatePrimaryKey) {
+        if let debateProgress = allProgress[debatePrimaryKey] {
             var seenPoints = debateProgress.seenPoints
             seenPoints.append(pointPrimaryKey)
             let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
@@ -250,13 +248,13 @@ class UserDataManager {
     }
 
     private func syncLocalProgressDataToBackend(_ completion: @escaping () -> Void) {
-        let legitimateProgress = allProgressArray.filter({ !($0.seenPoints).isEmpty})
+        let legitimateProgress = allProgressArray.filter({ !($0.seenPoints).isEmpty })
         guard !legitimateProgress.isEmpty else {
             completion()
             return
         }
 
-        progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: legitimateProgress))
+        progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: legitimateProgress)))
             .subscribe(onSuccess: { (_) in
                 // We've successfully sync'd the local data to the backend, now we can clear it
                 ProgressCoreDataAPI.clearAllProgress()

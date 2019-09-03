@@ -78,8 +78,8 @@ class SessionManager {
 
     let refreshAccessTokenIfNeeded = { (error: Observable<Error>) -> Observable<Void> in
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
-            guard (error as? MoyaError)?.response?.statusCode == SessionManager.unauthorizedStatusCode ||
-                (error as? Alamofire.AFError)?.responseCode == SessionManager.unauthorizedStatusCode,
+            guard let moyaError = error as? MoyaError,
+                moyaError.response?.statusCode == SessionManager.unauthorizedStatusCode,
                 // Make sure this is our first refresh attempt
                 index == 0 else {
                     return .error(error) // Pass the error along
@@ -90,18 +90,17 @@ class SessionManager {
                 NotificationBannerQueue.shared
                     .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                       title: GeneralError.refreshTokenExpired.localizedDescription))
-                throw GeneralError.alreadyHandled // so consumer knows
+                return .error(GeneralError.alreadyHandled) // so consumer knows
             }
 
             return SessionManager.shared.authAPI.makeRequest(with: .tokenRefresh(refreshToken: refreshToken))
                 .asObservable()
                 .flatMap({ (response) -> Observable<Void> in
-                    guard response.statusCode == 200,
-                        let newAccessToken = try? JSONDecoder().decode(TokenPair.self, from: response.data) else {
+                    guard let newAccessToken = try? JSONDecoder().decode(TokenPair.self, from: response.data) else {
                             SessionManager.shared.logout()
                             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                             title: GeneralError.refreshTokenExpired.localizedDescription))
-                            throw GeneralError.alreadyHandled // so consumer knows
+                            return .error(GeneralError.alreadyHandled) // so consumer knows
                     }
                     SessionManager.shared.accessToken = newAccessToken.accessTokenString
                     return .just(()) // retry source request

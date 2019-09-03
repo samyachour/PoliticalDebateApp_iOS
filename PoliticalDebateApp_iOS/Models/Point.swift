@@ -25,6 +25,7 @@ enum Side: String {
 
 struct Point {
     let primaryKey: PrimaryKey
+    let shortDescription: String
     let description: String
     let side: Side?
     let hyperlinks: [PointHyperlink]
@@ -35,6 +36,7 @@ struct Point {
 extension Point: Decodable {
     enum PointCodingKeys: String, CodingKey {
         case primaryKey = "pk"
+        case shortDescription = "short_description"
         case description
         case side
         case hyperlinks
@@ -46,6 +48,7 @@ extension Point: Decodable {
         let container = try decoder.container(keyedBy: PointCodingKeys.self)
 
         primaryKey = try container.decode(PrimaryKey.self, forKey: .primaryKey)
+        shortDescription = try container.decode(String.self, forKey: .shortDescription)
         description = try container.decode(String.self, forKey: .description)
         side = Side(rawValue: try container.decode(String.self, forKey: .side))
         hyperlinks = try container.decode([PointHyperlink].self, forKey: .hyperlinks)

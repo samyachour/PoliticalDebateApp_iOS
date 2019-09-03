@@ -14,7 +14,6 @@ import UIKit
 struct PointTableViewCellViewModel {
     let point: Point
     let debatePrimaryKey: PrimaryKey
-    // TODO: Add property for debate short title to set nav bar title?
     let hasCompletedPaths: Bool
 
     init(point: Point, debatePrimaryKey: PrimaryKey, seenPoints: [PrimaryKey]?) {

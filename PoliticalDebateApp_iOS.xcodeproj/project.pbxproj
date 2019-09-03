@@ -133,6 +133,15 @@
 		2E967440226BE91000821A73 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743F226BE91000821A73 /* CoreDataService.swift */; };
 		2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967441226BE91C00821A73 /* UserDataManager.swift */; };
 		2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
+		2EA87A35231DE39300FA6CB0 /* UIImage+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */; };
+		2EA87A36231DE39700FA6CB0 /* PointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */; };
+		2EA87A37231DE3CC00FA6CB0 /* PointTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A16F2311F19C00DD8E4A /* PointTableViewCellViewModel.swift */; };
+		2EA87A38231DE3EB00FA6CB0 /* PointViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC682231B3D2200438154 /* PointViewModel.swift */; };
+		2EA87A39231DE3EE00FA6CB0 /* PointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC684231B3D2D00438154 /* PointViewController.swift */; };
+		2EA87A3A231DE40300FA6CB0 /* SinglePointImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */; };
+		2EA87A3B231DE40600FA6CB0 /* SinglePointImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */; };
+		2EA87A3D231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */; };
+		2EA87A40231DF31700FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */; };
 		2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C522BBD5180087BC56 /* DebugLog.swift */; };
 		2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
 		2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
@@ -144,6 +153,8 @@
 		2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */; };
 		2EEEC683231B3D2200438154 /* PointViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC682231B3D2200438154 /* PointViewModel.swift */; };
 		2EEEC685231B3D2D00438154 /* PointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC684231B3D2D00438154 /* PointViewController.swift */; };
+		2EEEC689231CDF4600438154 /* SinglePointImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */; };
+		2EEEC68B231CDFE100438154 /* SinglePointImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */; };
 		2EF1E59B22DC688200C93DFB /* ButtonWithActionClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */; };
 		B5307AE15A1C031FA189B26E /* Pods_PoliticalDebateApp_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */; };
 		C1F8594D1844FD5A725FD14D /* Pods_PoliticalDebateApp_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B294A5E6DD428B59EE9B92B6 /* Pods_PoliticalDebateApp_iOS.framework */; };
@@ -243,6 +254,7 @@
 		2E96743F226BE91000821A73 /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
 		2E967441226BE91C00821A73 /* UserDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataManager.swift; sourceTree = "<group>"; };
 		2EA3D1A1228D35AC00019324 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
+		2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoyaTargetType+ValidSuccessCodes.swift"; sourceTree = "<group>"; };
 		2EBE46C522BBD5180087BC56 /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
 		2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
@@ -254,6 +266,8 @@
 		2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressCoreDataAPI.swift; sourceTree = "<group>"; };
 		2EEEC682231B3D2200438154 /* PointViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointViewModel.swift; sourceTree = "<group>"; };
 		2EEEC684231B3D2D00438154 /* PointViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointViewController.swift; sourceTree = "<group>"; };
+		2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePointImageViewModel.swift; sourceTree = "<group>"; };
+		2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePointImageViewController.swift; sourceTree = "<group>"; };
 		2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonWithActionClosure.swift; sourceTree = "<group>"; };
 		7A7E42EE5FCED9A963BBF6E4 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.release.xcconfig"; sourceTree = "<group>"; };
 		A4042BE1D4716D71FE5919AA /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -474,6 +488,7 @@
 				2E2E6DC122FC07880048B769 /* UIView+Fade.swift */,
 				2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */,
 				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
+				2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -488,6 +503,7 @@
 				2E12D7C22309DB000078B0DD /* PointsTableViewController.swift */,
 				2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */,
 				2EEEC684231B3D2D00438154 /* PointViewController.swift */,
+				2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -502,6 +518,7 @@
 				2E12D7C52309DB310078B0DD /* PointsTableViewModel.swift */,
 				2EE1A16F2311F19C00DD8E4A /* PointTableViewCellViewModel.swift */,
 				2EEEC682231B3D2200438154 /* PointViewModel.swift */,
+				2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -876,6 +893,7 @@
 				2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */,
 				2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */,
 				2E96743B226BDA8A00821A73 /* KeychainService.swift in Sources */,
+				2EEEC689231CDF4600438154 /* SinglePointImageViewModel.swift in Sources */,
 				2E23A708226ADA6200B2DCC3 /* NetworkService.swift in Sources */,
 				2EEEC683231B3D2200438154 /* PointViewModel.swift in Sources */,
 				2E2E6DC422FC0B710048B769 /* CAGradientLayer+Init.swift in Sources */,
@@ -889,6 +907,7 @@
 				2E2E6DC222FC07880048B769 /* UIView+Fade.swift in Sources */,
 				2EE1A1742312043100DD8E4A /* UIImage+Custom.swift in Sources */,
 				2E30A8E522BF4587007E386A /* StarredCoreDataAPI.swift in Sources */,
+				2EA87A3D231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */,
 				2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
 				2E36796522A4B278008190FE /* Progress.swift in Sources */,
 				2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */,
@@ -904,6 +923,7 @@
 				2E967440226BE91000821A73 /* CoreDataService.swift in Sources */,
 				2E2BB06822F2D66800ED02C0 /* BackendErrorMessage.swift in Sources */,
 				2EE1A1702311F19C00DD8E4A /* PointTableViewCellViewModel.swift in Sources */,
+				2EEEC68B231CDFE100438154 /* SinglePointImageViewController.swift in Sources */,
 				2E12D7C32309DB000078B0DD /* PointsTableViewController.swift in Sources */,
 				2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */,
 				2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */,
@@ -936,6 +956,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EA87A40231DF31700FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */,
 				2E30A91A22BF4BED007E386A /* String+Date.swift in Sources */,
 				2E5EC04822FA732900B41D54 /* BasicUIElementFactory.swift in Sources */,
 				2E5EC04A22FA734D00B41D54 /* EmailAndPasswordValidator.swift in Sources */,
@@ -949,8 +970,11 @@
 				2E30A8FE22BF4BED007E386A /* AccountViewModel.swift in Sources */,
 				2E23A6DB226AC7B400B2DCC3 /* NetworkAPITests.swift in Sources */,
 				2E5EC04F22FA737600B41D54 /* ButtonWithActionClosure.swift in Sources */,
+				2EA87A36231DE39700FA6CB0 /* PointTableViewCell.swift in Sources */,
 				2E30A90922BF4BED007E386A /* NetworkService.swift in Sources */,
+				2EA87A37231DE3CC00FA6CB0 /* PointTableViewCellViewModel.swift in Sources */,
 				2E30A90722BF4BED007E386A /* UserDataManager.swift in Sources */,
+				2EA87A39231DE3EE00FA6CB0 /* PointViewController.swift in Sources */,
 				2E30A92522BFE33F007E386A /* CoreDataService.swift in Sources */,
 				2E30A91422BF4BED007E386A /* StarredAPI.swift in Sources */,
 				2E2E6DC82300D1320048B769 /* CAGradientLayer+Init.swift in Sources */,
@@ -966,7 +990,9 @@
 				2E5EC05022FA737A00B41D54 /* BackendErrorMessage.swift in Sources */,
 				2E5EC04E22FA736E00B41D54 /* BannerOnScreen.swift in Sources */,
 				2E30A91222BF4BED007E386A /* ProgressAPI.swift in Sources */,
+				2EA87A3B231DE40600FA6CB0 /* SinglePointImageViewController.swift in Sources */,
 				2E30A91E22BF4BED007E386A /* DebugLog.swift in Sources */,
+				2EA87A3A231DE40300FA6CB0 /* SinglePointImageViewModel.swift in Sources */,
 				2E30A90422BF4BED007E386A /* Progress.swift in Sources */,
 				2E30A91722BF4BED007E386A /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
 				2E30A90D22BF4BED007E386A /* StarredCoreDataAPI.swift in Sources */,
@@ -982,11 +1008,13 @@
 				2E30A8FC22BF4BED007E386A /* DebatesCollectionViewModel.swift in Sources */,
 				2E12D7C72309DB310078B0DD /* PointsTableViewModel.swift in Sources */,
 				2E30A90E22BF4BED007E386A /* DebateAPI.swift in Sources */,
+				2EA87A35231DE39300FA6CB0 /* UIImage+Custom.swift in Sources */,
 				2E5EC04C22FA735700B41D54 /* NotificationBannerViewModel.swift in Sources */,
 				2E30A92422BFE25A007E386A /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
 				2E30A90222BF4BED007E386A /* Debate.swift in Sources */,
 				2E5EC04B22FA735200B41D54 /* NotificationBannerQueue.swift in Sources */,
 				2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */,
+				2EA87A38231DE3EB00FA6CB0 /* PointViewModel.swift in Sources */,
 				2E5EC05122FA738E00B41D54 /* NotificationBannerView.swift in Sources */,
 				2E2E6DC72300D1190048B769 /* UIView+Fade.swift in Sources */,
 			);

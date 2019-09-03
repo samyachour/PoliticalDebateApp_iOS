@@ -108,11 +108,11 @@ final class ProgressCoreDataAPI {
     }
     private static let pointLabelPredicate = { (pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey) -> NSPredicate in
         NSPredicate(format: "%K = %@ AND %K.%K.%K = %@",
-                    CoreDataConstants.pointLabelAttribute,
+                    CoreDataConstants.primaryKeyAttribute,
                     NSNumber(value: Int32(pointPrimaryKey)),
                     CoreDataConstants.progressRelationshipAttribute,
                     CoreDataConstants.debateRelationshipAttribute,
                     CoreDataConstants.primaryKeyAttribute,
-                    NSNumber(value: Int32( debatePrimaryKey)))
+                    NSNumber(value: Int32(debatePrimaryKey)))
     }
 }

@@ -26,7 +26,7 @@ enum DebateConstants {
     static let randomFilterValue = "random"
 }
 
-extension DebateAPI: TargetType {
+extension DebateAPI: CustomTargetType {
 
     var baseURL: URL {
         guard let url = URL(string: appBaseURL) else { fatalError("baseURL could not be configured.") }
@@ -76,11 +76,11 @@ extension DebateAPI: TargetType {
         return nil
     }
 
-    var validationType: ValidationType {
+    var validSuccessCode: Int {
         switch self {
         case .debate,
              .debateFilter:
-            return .customCodes([200])
+            return 200
         }
     }
 
@@ -125,7 +125,9 @@ extension SortByOption {
         case .progressAscending,
              .progressDescending,
              .noProgress:
-            return UserDataManager.shared.allProgressArray.map { $0.debatePrimaryKey }
+            return UserDataManager.shared.allProgressArray
+                .filter { $0.completedPercentage > 0 }
+                .map { $0.debatePrimaryKey }
         default:
             return nil
         }

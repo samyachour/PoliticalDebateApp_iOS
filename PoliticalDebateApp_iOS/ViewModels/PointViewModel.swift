@@ -6,6 +6,7 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Moya
 import RxCocoa
 import RxSwift
 
@@ -24,25 +25,45 @@ class PointViewModel {
     let point: Point
     let debate: Debate
 
-    // MARK: - Observables
+    private lazy var pointImages = point.images
+    lazy var pointImagesCount = pointImages.count
+    private var pointImageViewControllers = [SinglePointImageViewController]()
 
-    let pointHandlingErrorRelay = PublishRelay<Error>()
+    func getImagePage(at index: Int) -> SinglePointImageViewController? {
+        guard index >= 0 && index < pointImages.count else {
+            return nil
+        }
+        guard index < pointImageViewControllers.count else {
+            let newPointImageViewModel = SinglePointImageViewModel(pointImage: pointImages[index])
+            let newPointImageViewController = SinglePointImageViewController(viewModel: newPointImageViewModel)
+            pointImageViewControllers.append(newPointImageViewController)
+            return newPointImageViewController
+        }
+
+        return pointImageViewControllers[index]
+    }
+
+    func getIndexOf(_ viewController: UIViewController) -> Int? {
+        guard let pointImageViewController = viewController as? SinglePointImageViewController else {
+            return nil
+        }
+
+        return pointImageViewControllers.firstIndex(of: pointImageViewController)
+    }
 
     // MARK: - API calls
 
     private let progressNetworkService = NetworkService<ProgressAPI>()
 
-    func markAsSeen() {
-        let progress = UserDataManager.shared.getProgress(for: debate.primaryKey)
-        guard !progress.seenPoints.contains(point.primaryKey) else { return }
+    func markAsSeen() -> Single<Response?>? {
+        guard !UserDataManager.shared.getProgress(for: debate.primaryKey)
+            .seenPoints.contains(point.primaryKey) else {
+                return nil
+        }
 
-        UserDataManager.shared.markProgress(progress,
-                                            pointPrimaryKey: point.primaryKey,
-                                            debatePrimaryKey: debate.primaryKey,
-                                            totalPoints: debate.totalPoints)
-            .subscribe { [weak self] (error) in
-                self?.pointHandlingErrorRelay.accept(error)
-            }.disposed(by: disposeBag)
+        return UserDataManager.shared.markProgress(pointPrimaryKey: point.primaryKey,
+                                                   debatePrimaryKey: debate.primaryKey,
+                                                   totalPoints: debate.totalPoints)
     }
 
 }

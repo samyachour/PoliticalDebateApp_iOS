@@ -32,7 +32,7 @@ enum AuthConstants {
     static let newEmailKey = "new_email"
 }
 
-extension AuthAPI: TargetType {
+extension AuthAPI: CustomTargetType {
 
     var baseURL: URL {
         guard let url = URL(string: appBaseURL) else { fatalError("baseURL could not be configured.") }
@@ -114,7 +114,7 @@ extension AuthAPI: TargetType {
         return nil
     }
 
-    var validationType: ValidationType {
+    var validSuccessCode: Int {
         switch self {
         case .tokenRefresh,
              .tokenObtain,
@@ -124,9 +124,9 @@ extension AuthAPI: TargetType {
              .changePassword,
              .getCurrentEmail,
              .requestVerificationLink:
-            return .customCodes([200])
+            return 200
         case .registerUser:
-            return .customCodes([201])
+            return 201
         }
     }
 
