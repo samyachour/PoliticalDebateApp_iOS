@@ -17,7 +17,8 @@ struct NotificationBannerViewModel {
          duration: Duration? = nil,
          buttonConfig: ButtonConfiguration? = nil,
          iconConfig: IconConfiguration? = nil,
-         bannerCanBeDismissed: Bool? = nil) {
+         bannerCanBeDismissed: Bool? = nil,
+         bannerWasDismissedAutomatically: (() -> Void)? = nil) {
         self.title = title
         self.subtitle = subtitle
         self.duration = duration ?? style.defaultDuration
@@ -26,6 +27,7 @@ struct NotificationBannerViewModel {
         self.buttonConfig = buttonConfig ?? style.defaultButtonConfig
         self.iconConfig = iconConfig ?? style.defaultIconConfig
         self.bannerCanBeDismissed = bannerCanBeDismissed ?? style.defaultBannerCanBeDismissed
+        self.bannerWasDismissedAutomatically = bannerWasDismissedAutomatically ?? style.defaultBannerWasDismissedAutomatically
     }
 
     let title: String
@@ -36,6 +38,7 @@ struct NotificationBannerViewModel {
     let buttonConfig: ButtonConfiguration
     let iconConfig: IconConfiguration
     let bannerCanBeDismissed: Bool
+    let bannerWasDismissedAutomatically: (() -> Void)
     let identifier = UUID()
 
     enum NotificationBannerStyle: Int {
@@ -98,6 +101,10 @@ struct NotificationBannerViewModel {
                  .error:
                 return true
             }
+        }
+
+        var defaultBannerWasDismissedAutomatically: () -> Void {
+            return { return } // empty closure
         }
     }
 

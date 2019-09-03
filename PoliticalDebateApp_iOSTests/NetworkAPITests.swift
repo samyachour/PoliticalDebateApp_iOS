@@ -31,10 +31,12 @@ class NetworkAPITests: XCTestCase {
         testAPI.makeRequest(with: .debate(primaryKey: 2))
             .map(Debate.self)
             .subscribe(onSuccess: { debate in
-                XCTAssert(debate.title == "Should we ban assault rifles?")
-                XCTAssert(debate.debateMap?[0].description == "No because of our 2nd amendment rights")
-                XCTAssert(debate.debateMap?[0].rebuttals?[0].primaryKey == 2)
-                XCTAssert(debate.debateMap?[0].rebuttals?[0].images[0].source == "Wikipedia")
+                XCTAssert(debate.title == "Test debate number #0")
+                XCTAssert(debate.debateMap?[0].shortDescription == "Test point 1")
+                XCTAssert(debate.debateMap?[0].description == "This is a longer description of test point 1.")
+                XCTAssert(debate.debateMap?[0].side == .pro)
+                XCTAssert(debate.debateMap?[0].images[0].source == "Test source")
+                XCTAssert(debate.debateMap?[0].rebuttals?[0].primaryKey == 1)
             }, onError: { err in
                 XCTAssert(false)
             }).disposed(by: disposeBag)
@@ -47,17 +49,6 @@ class NetworkAPITests: XCTestCase {
             .subscribe(onSuccess: { debates in
                 XCTAssert(debates[0].primaryKey == 1)
             }, onError: { _ in
-                XCTAssert(false)
-            }).disposed(by: disposeBag)
-    }
-
-    func testGetSingleDebateProgressPoints() {
-        let testAPI = NetworkService<ProgressAPI>()
-        testAPI.makeRequest(with: .loadProgress(debatePrimaryKey: 1))
-            .map(Progress.self)
-            .subscribe(onSuccess: { progress in
-                XCTAssert(progress.debatePrimaryKey == 1)
-            }, onError: { err in
                 XCTAssert(false)
             }).disposed(by: disposeBag)
     }
@@ -80,6 +71,18 @@ class NetworkAPITests: XCTestCase {
             .subscribe(onSuccess: { (starred) in
                 XCTAssert(starred.starredList[0] == 1)
             }, onError: { _ in
+                XCTAssert(false)
+            }).disposed(by: disposeBag)
+    }
+
+    func testGetCurrentEmail() {
+        let testAPI = NetworkService<AuthAPI>()
+        testAPI.makeRequest(with: .getCurrentEmail)
+            .map(CurrentEmail.self)
+            .subscribe(onSuccess: { currentEmail in
+                XCTAssert(currentEmail.email == "reservedstubgenerationacct@mail.com")
+                XCTAssertTrue(currentEmail.isVerified)
+            }, onError: { err in
                 XCTAssert(false)
             }).disposed(by: disposeBag)
     }

@@ -1,1 +1,17 @@
-[{"completed_percentage": 50, "debate": 1}]
+[{"completed_percentage": 50, "debate": 1, "seen_points": [2]},
+ {"completed_percentage": 50, "debate": 2, "seen_points": [4]},
+ {"completed_percentage": 50, "debate": 12, "seen_points": [24]},
+ {"completed_percentage": 50, "debate": 21, "seen_points": [42]},
+ {"completed_percentage": 50, "debate": 52, "seen_points": [104]},
+ {"completed_percentage": 100, "debate": 67, "seen_points": [133, 134]},
+ {"completed_percentage": 100, "debate": 96, "seen_points": [191, 192]},
+ {"completed_percentage": 50, "debate": 97, "seen_points": [194]},
+ {"completed_percentage": 100, "debate": 112, "seen_points": [223, 224]},
+ {"completed_percentage": 50, "debate": 118, "seen_points": [236]},
+ {"completed_percentage": 50, "debate": 128, "seen_points": [256]},
+ {"completed_percentage": 100, "debate": 151, "seen_points": [301, 302]},
+ {"completed_percentage": 50, "debate": 174, "seen_points": [348]},
+ {"completed_percentage": 50, "debate": 210, "seen_points": [420]},
+ {"completed_percentage": 50, "debate": 217, "seen_points": [434]},
+ {"completed_percentage": 100, "debate": 248, "seen_points": [495, 496]},
+ {"completed_percentage": 100, "debate": 266, "seen_points": [531, 532]}]

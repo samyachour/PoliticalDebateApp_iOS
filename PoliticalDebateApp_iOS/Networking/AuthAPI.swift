@@ -15,6 +15,8 @@ enum AuthAPI {
     case changePassword(oldPassword: String, newPassword: String)
     case requestPasswordReset(email: String, forceSend: Bool?)
     case changeEmail(newEmail: String)
+    case getCurrentEmail
+    case requestVerificationLink
     case delete
 }
 
@@ -30,7 +32,7 @@ enum AuthConstants {
     static let newEmailKey = "new_email"
 }
 
-extension AuthAPI: TargetType {
+extension AuthAPI: CustomTargetType {
 
     var baseURL: URL {
         guard let url = URL(string: appBaseURL) else { fatalError("baseURL could not be configured.") }
@@ -51,6 +53,10 @@ extension AuthAPI: TargetType {
             return "request-password-reset/"
         case .changeEmail:
             return "change-email/"
+        case .getCurrentEmail:
+            return "get-current-email/"
+        case .requestVerificationLink:
+            return "request-verification-link/"
         case .delete:
             return "delete/"
         }
@@ -65,8 +71,11 @@ extension AuthAPI: TargetType {
              .delete:
             return .post
         case .changeEmail,
-             .changePassword:
+             .changePassword,
+             .requestVerificationLink:
             return .put
+        case .getCurrentEmail:
+            return .get
         }
     }
 
@@ -94,13 +103,31 @@ extension AuthAPI: TargetType {
         case .changeEmail(let newEmail):
             return .requestParameters(parameters: [AuthConstants.newEmailKey: newEmail.lowercased()],
                                       encoding: JSONEncoding.default)
-        case .delete:
+        case .delete,
+             .getCurrentEmail,
+             .requestVerificationLink:
             return .requestPlain
         }
     }
 
     var headers: [String: String]? {
         return nil
+    }
+
+    var validSuccessCode: Int {
+        switch self {
+        case .tokenRefresh,
+             .tokenObtain,
+             .requestPasswordReset,
+             .delete,
+             .changeEmail,
+             .changePassword,
+             .getCurrentEmail,
+             .requestVerificationLink:
+            return 200
+        case .registerUser:
+            return 201
+        }
     }
 
 }
@@ -116,7 +143,9 @@ extension AuthAPI: AccessTokenAuthorizable {
             return .none
         case .changePassword,
              .changeEmail,
-             .delete:
+             .delete,
+             .getCurrentEmail,
+             .requestVerificationLink:
             return .bearer
         }
     }
@@ -131,11 +160,14 @@ extension AuthAPI {
             return StubAccess.stubbedResponse("TokenRefresh")
         case .tokenObtain:
             return StubAccess.stubbedResponse("TokenObtain")
+        case .getCurrentEmail:
+            return StubAccess.stubbedResponse("GetCurrentEmail")
         case .registerUser,
              .changePassword,
              .requestPasswordReset,
              .changeEmail,
-             .delete:
+             .delete,
+             .requestVerificationLink:
             return StubAccess.stubbedResponse("Empty")
         }
     }

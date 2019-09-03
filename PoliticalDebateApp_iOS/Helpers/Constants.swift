@@ -27,12 +27,14 @@ enum GeneralColors {
 
 enum GeneralFonts {
     static let button = UIFont.primaryRegular()
+    static let text = UIFont.primaryRegular()
     static let navBarTitle = UIFont.primaryLight(24.0)
 }
 
 enum GeneralCopies {
     static let errorAlertTitle = "There was a problem"
     static let successAlertTitle = "Success"
+    static let retryTitle = "Retry"
 }
 
 enum GeneralError: Error {

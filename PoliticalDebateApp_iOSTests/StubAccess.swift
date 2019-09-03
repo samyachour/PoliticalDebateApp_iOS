@@ -12,7 +12,7 @@ class StubAccess {
     static func stubbedResponse(_ filename: String) -> Data {
         // These files are hardcoded so we know they exist
         // swiftlint:disable force_try
-        let path = Bundle(for: StubAccess.self).path(forResource: filename, ofType: "json", inDirectory: "StubbedResponses")!
-        return try! Data(contentsOf: URL(fileURLWithPath: path))
+        let path = Bundle.main.url(forResource: filename, withExtension: "json")!
+        return try! Data(contentsOf: path)
     }
 }

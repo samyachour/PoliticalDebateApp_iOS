@@ -18,7 +18,7 @@ enum StarredConstants {
     static let unstarredListKey = "unstarred_list"
 }
 
-extension StarredAPI: TargetType {
+extension StarredAPI: CustomTargetType {
 
     var baseURL: URL {
         guard let url = URL(string: appBaseURL) else { fatalError("baseURL could not be configured.") }
@@ -55,6 +55,15 @@ extension StarredAPI: TargetType {
 
     var headers: [String: String]? {
         return nil
+    }
+
+    var validSuccessCode: Int {
+        switch self {
+        case .starOrUnstarDebates:
+            return 201
+        case .loadAllStarred:
+            return 200
+        }
     }
 
 }

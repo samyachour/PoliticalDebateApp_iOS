@@ -16,7 +16,7 @@ class NotificationBannerQueue {
 
     @discardableResult func enqueueBanner(using viewModel: NotificationBannerViewModel) -> NotificationBannerID? {
         // Don't want the user to see duplicate banners
-        guard !bannersToShow.contains(viewModel) && viewModel != currentBannerOnScreen?.viewModel else { return nil }
+        guard !bannersToShow.contains(viewModel) else { return nil }
         bannersToShow.append(viewModel)
         return viewModel.identifier
     }
@@ -25,7 +25,7 @@ class NotificationBannerQueue {
         DispatchQueue.main.async {
             if let currentBannerOnScreen = self.currentBannerOnScreen {
                 if bannerID == currentBannerOnScreen.viewModel.identifier {
-                    self.dismiss(currentBannerOnScreen)
+                    self.dismiss(currentBannerOnScreen, automatic: false)
                 } else if let index = self.bannersToShow.firstIndex(where: { $0.identifier == bannerID }) {
                     self.bannersToShow.remove(at: index)
                 }
@@ -74,7 +74,7 @@ class NotificationBannerQueue {
         }
     }
 
-    private func dismiss(_ bannerOnScreen: BannerOnScreen) {
+    private func dismiss(_ bannerOnScreen: BannerOnScreen, automatic: Bool = true) {
         bannerOnScreen.timerDismissWorkItem?.cancel()
 
         mainWindow?.layoutIfNeeded()
@@ -87,6 +87,7 @@ class NotificationBannerQueue {
                             self.hideBanner(bannerOnScreen)
                             self.mainWindow?.layoutIfNeeded()
             }) { (_) in
+                if automatic { bannerOnScreen.viewModel.bannerWasDismissedAutomatically() }
                 bannerOnScreen.view.removeFromSuperview()
 
                 self.currentBannerOnScreen = nil
@@ -183,7 +184,10 @@ class NotificationBannerQueue {
         switch viewModel.buttonConfig {
         case .customTitle(_, let action),
              .customImage(_, let action):
-            button = ButtonWithActionClosure(action: action ?? dismissAction)
+            button = ButtonWithActionClosure(action: { [weak self] in
+                action?()
+                self?.dismissAction()
+            })
         }
 
         button?.titleLabel?.font = .primarySemibold(16)

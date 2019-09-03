@@ -32,9 +32,9 @@ class BasicUIElementFactory {
         let basicTextField = UITextField(frame: .zero)
         basicTextField.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                                   attributes: [
-                                                                    .font : GeneralFonts.button as Any,
-                                                                    .foregroundColor: GeneralColors.softButton as Any])
-        basicTextField.font = GeneralFonts.button
+                                                                    .font : GeneralFonts.text,
+                                                                    .foregroundColor: GeneralColors.softButton])
+        basicTextField.font = GeneralFonts.text
         basicTextField.textColor = GeneralColors.hardButton
         basicTextField.borderStyle = .roundedRect
         basicTextField.isSecureTextEntry = secureTextEntry
@@ -45,7 +45,7 @@ class BasicUIElementFactory {
         let basicHeadingLabel = UILabel(frame: .zero)
         basicHeadingLabel.text = text
         basicHeadingLabel.textColor = GeneralColors.text
-        basicHeadingLabel.font = GeneralFonts.button
+        basicHeadingLabel.font = GeneralFonts.text
         basicHeadingLabel.textAlignment = NSTextAlignment.center
         return basicHeadingLabel
     }
@@ -62,6 +62,16 @@ class BasicUIElementFactory {
                                                         bottom: spacing,
                                                         right: 0)
         return stackViewContainer
+    }
+
+    static func generateEmptyStateLabel(text: String) -> UILabel {
+        let emptyStateLabel = UILabel(frame: .zero)
+        emptyStateLabel.text = text
+        emptyStateLabel.textColor = UIColor.customDarkGray1
+        emptyStateLabel.font = UIFont.primaryRegular(24.0)
+        emptyStateLabel.textAlignment = NSTextAlignment.center
+        emptyStateLabel.alpha = 0.0
+        return emptyStateLabel
     }
 
 }

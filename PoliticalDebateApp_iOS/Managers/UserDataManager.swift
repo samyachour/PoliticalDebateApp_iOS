@@ -24,11 +24,12 @@ class UserDataManager {
 
     // MARK: - Global state
 
-    var starred = Set<PrimaryKey>()
-    var starredArray: [PrimaryKey] { return Array(starred) }
+    // Using set/dict for fast lookup
+    private var starred = Set<PrimaryKey>()
+    private var allProgress = [AnyHashable: Progress]()
 
-    var progress = Set<Progress>()
-    var progressArray: [Progress] { return Array(progress) }
+    var starredArray: [PrimaryKey] { return Array(starred) }
+    var allProgressArray: [Progress] { return allProgress.map { $0.value } }
 
     // MARK: - Setters
 
@@ -42,7 +43,11 @@ class UserDataManager {
     }
 
     private func clearProgress() {
-        progress.removeAll()
+        allProgress.removeAll()
+    }
+
+    func isStarred(_ debatePrimaryKey: PrimaryKey) -> Bool {
+        return starred.contains(debatePrimaryKey)
     }
 
     func starOrUnstarDebate(_ primaryKey: PrimaryKey, unstar: Bool) -> Single<Response?> {
@@ -71,7 +76,19 @@ class UserDataManager {
         }
     }
 
-    func markProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) -> Single<Response?> {
+    func getProgress(for debatePrimaryKey: PrimaryKey) -> Progress {
+        if let debateProgress = allProgress[debatePrimaryKey] {
+            return debateProgress
+        } else {
+            let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: 0, seenPoints: [])
+            allProgress[debatePrimaryKey] = debateProgress
+            return debateProgress
+        }
+    }
+
+    func markProgress(pointPrimaryKey: PrimaryKey,
+                      debatePrimaryKey: PrimaryKey,
+                      totalPoints: Int) -> Single<Response?> {
         if SessionManager.shared.isActiveRelay.value {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in
@@ -88,18 +105,18 @@ class UserDataManager {
         }
     }
 
-    // TODO: Pass in progress object to this so I can utilize remove instead of firstIndex
-    private func updateProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) {
-        if let debateProgressIndex = progress.firstIndex(where: {$0.debatePrimaryKey == debatePrimaryKey}) {
-            var seenPoints = progress[debateProgressIndex].seenPoints ?? []
+    private func updateProgress(pointPrimaryKey: PrimaryKey,
+                                debatePrimaryKey: PrimaryKey,
+                                totalPoints: Int) {
+        if let debateProgress = allProgress[debatePrimaryKey] {
+            var seenPoints = debateProgress.seenPoints
             seenPoints.append(pointPrimaryKey)
-            let completedPercentage = Float(seenPoints.count) / Float(totalPoints)
-            progress.remove(at: debateProgressIndex)
-            progress.insert(Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints))
+            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
         } else {
             let seenPoints = [pointPrimaryKey]
-            let completedPercentage = Float(seenPoints.count) / Float(totalPoints)
-            progress.insert(Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints))
+            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
         }
     }
 
@@ -162,7 +179,7 @@ class UserDataManager {
             progressNetworkService.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
                 .subscribe(onSuccess: { (allProgress) in
-                    self.progress = Set(allProgress)
+                    self.allProgress = Dictionary(uniqueKeysWithValues: allProgress.map { ($0.debatePrimaryKey, $0) })
                     completion()
                 }) { (error) in
                     if let generalError = error as? GeneralError,
@@ -182,7 +199,7 @@ class UserDataManager {
                     }
                     return progress
                 }
-                progress = Set(localProgressFiltered)
+                allProgress = Dictionary(uniqueKeysWithValues: localProgressFiltered.map { ($0.debatePrimaryKey, $0) })
             } else {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't load your debates' progress from local data."))
@@ -222,7 +239,7 @@ class UserDataManager {
                 .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                   title: "Could not sync your local starred data to the server.",
                                                                   buttonConfig: NotificationBannerViewModel
-                                                                    .ButtonConfiguration.customTitle(title: "Retry",
+                                                                    .ButtonConfiguration.customTitle(title: GeneralCopies.retryTitle,
                                                                                                      action: {
                                                                                                         self.syncLocalStarredDataToBackend(completion)
                                                                     })))
@@ -231,12 +248,13 @@ class UserDataManager {
     }
 
     private func syncLocalProgressDataToBackend(_ completion: @escaping () -> Void) {
-        guard !progress.isEmpty else {
+        let legitimateProgress = allProgressArray.filter({ !($0.seenPoints).isEmpty })
+        guard !legitimateProgress.isEmpty else {
             completion()
             return
         }
 
-        progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: progressArray))
+        progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: legitimateProgress)))
             .subscribe(onSuccess: { (_) in
                 // We've successfully sync'd the local data to the backend, now we can clear it
                 ProgressCoreDataAPI.clearAllProgress()
@@ -250,11 +268,22 @@ class UserDataManager {
                     .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                       title: "Could not sync your local progress data to the server.",
                                                                       buttonConfig: NotificationBannerViewModel
-                                                                        .ButtonConfiguration.customTitle(title: "Retry",
+                                                                        .ButtonConfiguration.customTitle(title: GeneralCopies.retryTitle,
                                                                                                          action: {
                                                                                                             self.syncLocalProgressDataToBackend(completion)
                                                                         })))
                 completion()
         }.disposed(by: disposeBag)
+    }
+}
+
+enum UserDataError: Error {
+    case loadLocalProgress
+
+    var localizedDescription: String {
+        switch self {
+        case .loadLocalProgress:
+            return "Could not load local progress."
+        }
     }
 }

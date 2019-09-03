@@ -6,6 +6,7 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Alamofire
 import Foundation
 import Moya
 import RxCocoa
@@ -73,31 +74,33 @@ class SessionManager {
 
     // MARK: - API interface
     private let authAPI = NetworkService<AuthAPI>()
+    static let unauthorizedStatusCode = 401
 
     let refreshAccessTokenIfNeeded = { (error: Observable<Error>) -> Observable<Void> in
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
-                moyaError.response?.statusCode == 401,
+                moyaError.response?.statusCode == SessionManager.unauthorizedStatusCode,
                 // Make sure this is our first refresh attempt
                 index == 0 else {
                     return .error(error) // Pass the error along
             }
+
             guard let refreshToken = SessionManager.shared.refreshToken else { // Make sure we have a refresh token
                 SessionManager.shared.logout()
                 NotificationBannerQueue.shared
                     .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                       title: GeneralError.refreshTokenExpired.localizedDescription))
-                throw GeneralError.alreadyHandled // so consumer knows
+                return .error(GeneralError.alreadyHandled) // so consumer knows
             }
+
             return SessionManager.shared.authAPI.makeRequest(with: .tokenRefresh(refreshToken: refreshToken))
                 .asObservable()
                 .flatMap({ (response) -> Observable<Void> in
-                    guard response.statusCode == 200,
-                        let newAccessToken = try? JSONDecoder().decode(TokenPair.self, from: response.data) else {
+                    guard let newAccessToken = try? JSONDecoder().decode(TokenPair.self, from: response.data) else {
                             SessionManager.shared.logout()
                             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                             title: GeneralError.refreshTokenExpired.localizedDescription))
-                            throw GeneralError.alreadyHandled // so consumer knows
+                            return .error(GeneralError.alreadyHandled) // so consumer knows
                     }
                     SessionManager.shared.accessToken = newAccessToken.accessTokenString
                     return .just(()) // retry source request
@@ -114,7 +117,9 @@ class SessionManager {
                 self.refreshToken = tokenPair.refreshTokenString
                 self.accessToken = tokenPair.accessTokenString
 
+                #if !TEST
                 UserDataManager.shared.syncUserDataToBackend()
+                #endif
             })
             .map({ _ in }) // consumer shouldn't see the tokenPair
     }
@@ -124,5 +129,7 @@ class SessionManager {
         refreshToken = nil
 
         UserDataManager.shared.clearUserData()
+        // Prepares our core data persistent container for reading/writing data
+        UserDataManager.shared.loadUserData()
     }
 }

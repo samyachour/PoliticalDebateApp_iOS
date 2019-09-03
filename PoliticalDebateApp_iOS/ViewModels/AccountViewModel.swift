@@ -21,6 +21,14 @@ class AccountViewModel {
         return authNetworkService.makeRequest(with: .changeEmail(newEmail: newEmail))
     }
 
+    func getCurrentEmail() -> Single<Response> {
+        return authNetworkService.makeRequest(with: .getCurrentEmail)
+    }
+
+    func requestVerificationLink() -> Single<Response> {
+        return authNetworkService.makeRequest(with: .requestVerificationLink)
+    }
+
     // Backend uses 'old' vocabulary
     func changePassword(from oldPassword: String, to newPassword: String) -> Single<Response> {
         return authNetworkService.makeRequest(with: .changePassword(oldPassword: oldPassword, newPassword: newPassword))

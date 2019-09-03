@@ -95,43 +95,97 @@ extension AccountViewController {
     private func installViewConstraints() {
         navigationItem.title = "Account"
         navigationController?.navigationBar.tintColor = GeneralColors.softButton
-        view.backgroundColor = GeneralColors.background
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
-                                                                   .font: GeneralFonts.navBarTitle as Any]
+                                                                   .font: GeneralFonts.navBarTitle]
+        view.backgroundColor = GeneralColors.background
 
         view.addSubview(scrollViewContainer)
         scrollViewContainer.addSubview(stackViewContainer)
 
         for subview in stackViewContainer.arrangedSubviews where subview as? UITextField != nil {
             subview.translatesAutoresizingMaskIntoConstraints = false
-            subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
-                                              constant: -AccountViewController.horizontalEdgeInset).isActive = true
             subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
                                              constant: AccountViewController.horizontalEdgeInset).isActive = true
+            subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
+                                              constant: -AccountViewController.horizontalEdgeInset).isActive = true
         }
 
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false
         stackViewContainer.translatesAutoresizingMaskIntoConstraints = false
 
+        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
         scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         scrollViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
-        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
 
+        stackViewContainer.leadingAnchor.constraint(equalTo: scrollViewContainer.leadingAnchor).isActive = true
         stackViewContainer.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor).isActive = true
         stackViewContainer.trailingAnchor.constraint(equalTo: scrollViewContainer.trailingAnchor).isActive = true
         stackViewContainer.bottomAnchor.constraint(equalTo: scrollViewContainer.bottomAnchor).isActive = true
-        stackViewContainer.leadingAnchor.constraint(equalTo: scrollViewContainer.leadingAnchor).isActive = true
 
         stackViewContainer.widthAnchor.constraint(equalTo: scrollViewContainer.widthAnchor).isActive = true
     }
 
     private func installViewBinds() {
+        getCurrentEmail()
         submitChangesButton.addTarget(self, action: #selector(submitChangesButtonTapped), for: .touchUpInside)
         logOutButton.addTarget(self, action: #selector(logOutButtonTapped), for: .touchUpInside)
         deleteAccountButton.addTarget(self, action: #selector(deleteAccountButtonTapped), for: .touchUpInside)
         installKeyboardShiftingObserver() // from KeyboardReactable
         installHideKeyboardTapGesture() // from KeyboardReactable
+    }
+
+    private func getCurrentEmail() {
+        viewModel.getCurrentEmail()
+            .map(CurrentEmail.self)
+            .subscribe(onSuccess: { [weak self] currentEmail in
+                if let currentChangeEmailLabelText = self?.changeEmailLabel.text {
+                    self?.changeEmailLabel.text = "\(currentChangeEmailLabelText) (\(currentEmail.email))"
+                }
+                if currentEmail.isVerified {
+                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                    title: "Your email is unverified.",
+                                                                                                    subtitle: "You won't be able to reset your password.",
+                                                                                                    buttonConfig: .customTitle(title: "Resend link", action: {
+                                                                                                        self?.requestVerificationLink()
+                                                                                                    })
+                    ))
+                }
+            }) { error in
+                if let generalError = error as? GeneralError,
+                    generalError == .alreadyHandled {
+                    return
+                }
+
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: "Couldn't retrieve your current email."))
+        }.disposed(by: disposeBag)
+    }
+
+    private func requestVerificationLink() {
+        viewModel.requestVerificationLink().subscribe(onSuccess: { (_) in
+            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                            title: "Successfully sent verification link."))
+        }) { error in
+            if let generalError = error as? GeneralError,
+                generalError == .alreadyHandled {
+                return
+            }
+            guard let moyaError = error as? MoyaError,
+                let response = moyaError.response else {
+                    ErrorHandler.showBasicErrorBanner()
+                    return
+            }
+
+            switch response.statusCode {
+            case 400:
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: "Failed to send a verification link.",
+                                                                                                subtitle: "Your current email is invalid."))
+            default:
+                ErrorHandler.showBasicErrorBanner()
+            }
+        }.disposed(by: disposeBag)
     }
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
@@ -150,7 +204,8 @@ extension AccountViewController {
             viewModel.changeEmail(to: newEmail).subscribe(onSuccess: { [weak self] (_) in
                 NotificationBannerQueue.shared
                     .enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                      title: "Email change succeeded. Please check your email for a verification link."))
+                                                                      title: "Email change succeeded.",
+                                                                      subtitle: "Please check your email for a verification link."))
                 self?.newEmailTextField.text = nil
             }) { error in
                 if let generalError = error as? GeneralError,
