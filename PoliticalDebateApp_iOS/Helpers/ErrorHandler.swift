@@ -90,14 +90,19 @@ class ErrorHandler {
         guard let responseBody = try? response.mapJSON(),
             let responseDict = responseBody as? [AnyHashable: String],
             let responseString = responseDict["detail"],
-            let durationRange = responseString.range(of: "available in ") else {
+            let durationRangeStart = responseString.range(of: "available in "),
+            let durationRangeEnd = responseString.range(of: " seconds"),
+            let timeRemaining = Int(responseString[durationRangeStart.upperBound..<durationRangeEnd.lowerBound]) else {
                 return
         }
 
-        let timeRemaining = responseString[durationRange.upperBound...]
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.unitsStyle = .full
+        guard let timeRemainingFormatted = formatter.string(from: TimeInterval(timeRemaining)) else { return }
 
         let throttleAlert = UIAlertController(title: "You are doing that too much",
-                                              message: "Please try again in \(timeRemaining)",
+                                              message: "Please try again in \(timeRemainingFormatted)",
                                               preferredStyle: .alert)
         throttleAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
 
