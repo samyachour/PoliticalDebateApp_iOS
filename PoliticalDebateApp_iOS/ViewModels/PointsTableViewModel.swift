@@ -15,12 +15,14 @@ enum PointsTableViewState {
     case embeddedRebuttals // Embedding table of rebuttals in point VC
 }
 
-class PointsTableViewModel {
+class PointsTableViewModel: StarrableViewModel {
 
     init(debate: Debate,
+         isStarred: Bool = false,
          viewState: PointsTableViewState,
          rebuttals: [Point]? = nil) {
         self.debate = debate
+        self.isStarred = isStarred
         self.viewState = viewState
         self.rebuttals = rebuttals
         subscribePointsUpdates()
@@ -45,6 +47,7 @@ class PointsTableViewModel {
     private lazy var seenPointsRelay = BehaviorRelay<[PrimaryKey]>(value: UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints)
 
     let debate: Debate
+    var isStarred: Bool
 
     private func subscribePointsUpdates() {
         BehaviorRelay.combineLatest(pointsRelay, seenPointsRelay) { return ($0, $1) }

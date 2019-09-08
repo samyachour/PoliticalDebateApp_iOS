@@ -293,7 +293,9 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                 guard let debateCollectionViewCellViewModel = debateCollectionViewCellViewModelEvent.element else { return }
 
                 self?.navigationController?
-                    .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debateCollectionViewCellViewModel.debate, viewState: .standalone)),
+                    .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debateCollectionViewCellViewModel.debate,
+                                                                                                  isStarred: debateCollectionViewCellViewModel.isStarred,
+                                                                                                  viewState: .standalone)),
                                         animated: true)
         }.disposed(by: disposeBag)
 

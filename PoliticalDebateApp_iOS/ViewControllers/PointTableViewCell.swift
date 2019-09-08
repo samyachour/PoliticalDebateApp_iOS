@@ -16,11 +16,9 @@ class PointTableViewCell: UITableViewCell {
 
     var viewModel: PointTableViewCellViewModel? {
         didSet {
-            guard let viewModel = viewModel else { return }
-
-            containerView.backgroundColor = viewModel.point.side?.color
-            pointLabel.text = viewModel.point.shortDescription
-            checkImageView.image = viewModel.hasCompletedPaths ? UIImage.check : nil
+            containerView.backgroundColor = viewModel?.point.side?.color
+            pointLabel.text = viewModel?.point.shortDescription
+            checkImageView.image = (viewModel?.hasCompletedPaths ?? false) ? UIImage.check : nil
         }
     }
 
@@ -39,9 +37,7 @@ class PointTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        containerView.backgroundColor = nil
-        pointLabel.text = nil
-        checkImageView.image = nil
+        viewModel = nil
         disposeBag = DisposeBag()
     }
 

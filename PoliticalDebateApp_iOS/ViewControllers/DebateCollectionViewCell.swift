@@ -16,10 +16,9 @@ class DebateCollectionViewCell: UICollectionViewCell {
 
     var viewModel: DebateCollectionViewCellViewModel? {
         didSet {
-            guard let viewModel = viewModel else { return }
             UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
-                self?.starredButton.tintColor = viewModel.starTintColor
-                self?.debateTitleLabel.text = self?.viewModel?.debate.title ?? ""
+                self?.starredButton.tintColor = self?.viewModel?.starTintColor
+                self?.debateTitleLabel.text = self?.viewModel?.debate.title
                 self?.debateProgressView.setProgress(Float(self?.viewModel?.completedPercentage ?? 0) / 100, animated: false)
             })
         }
@@ -41,9 +40,7 @@ class DebateCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        starredButton.tintColor = .clear
-        debateTitleLabel.text = nil
-        debateProgressView.setProgress(0.0, animated: false)
+        viewModel = nil
         disposeBag = DisposeBag()
     }
 

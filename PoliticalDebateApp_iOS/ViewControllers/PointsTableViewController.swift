@@ -72,6 +72,12 @@ class PointsTableViewController: UIViewController {
         return pointsTableView
     }()
 
+    private lazy var starredButton: UIButton = {
+        let starredButton = UIButton(frame: .zero)
+        starredButton.setImage(UIImage.star, for: .normal)
+        return starredButton
+    }()
+
     private lazy var emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No points to show.")
 }
 
@@ -86,6 +92,8 @@ extension PointsTableViewController {
             navigationController?.navigationBar.tintColor = GeneralColors.softButton
             navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
                                                                        .font: GeneralFonts.navBarTitle]
+            starredButton.tintColor = viewModel.starTintColor
+            navigationItem.rightBarButtonItem = UIBarButtonItem(customView: starredButton)
             view.backgroundColor = GeneralColors.background
         } else {
             pointsTableView.alwaysBounceVertical = false
@@ -123,6 +131,8 @@ extension PointsTableViewController {
     // MARK: View binding
 
     private func installViewBinds() {
+        starredButton.addTarget(self, action: #selector(starredButtonTapped), for: .touchUpInside)
+
         pointsTableView.rx
             .modelSelected(PointTableViewCellViewModel.self)
             .subscribe { [weak self] pointTableViewCellViewModelEvent in
@@ -177,6 +187,26 @@ extension PointsTableViewController {
                 ErrorHandler.showBasicErrorBanner()
             }
         }.disposed(by: disposeBag)
+    }
+
+    @objc private func starredButtonTapped() {
+        viewModel.starOrUnstarDebate().subscribe(onSuccess: { [weak self] _ in
+            UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
+                self?.starredButton.tintColor = self?.viewModel.starTintColor
+            })
+            }, onError: { error in
+                if let generalError = error as? GeneralError,
+                    generalError == .alreadyHandled {
+                    return
+                }
+                guard error as? MoyaError != nil else {
+                    ErrorHandler.showBasicErrorBanner()
+                    return
+                }
+
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: "Couldn't save starred debate to server."))
+        }).disposed(by: disposeBag)
     }
 }
 
