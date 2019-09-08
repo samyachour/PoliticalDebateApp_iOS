@@ -40,7 +40,7 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
 
     // MARK: - Dependencies
 
-    private let userDefaults = UserDefaults.standard
+    private let userDefaults = UserDefaultsManager.shared
 
     // MARK: - Observers & Observables
 
@@ -151,9 +151,9 @@ extension LoginOrRegisterViewController {
     }
 
     private func showInfoAlertIfNeeded() {
-        guard !userDefaults.bool(forKey: UserDefaultsKeys.hasSeenRegisterInfoAlert.rawValue) else { return }
+        guard !userDefaults.hasSeenRegisterInfoAlert else { return }
 
-        userDefaults.set(true, forKey: UserDefaultsKeys.hasSeenRegisterInfoAlert.rawValue)
+        userDefaults.hasSeenRegisterInfoAlert = true
         showInfoAlert()
     }
 
