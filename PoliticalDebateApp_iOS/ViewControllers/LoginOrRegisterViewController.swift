@@ -32,6 +32,16 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
         installViewBinds()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        showInfoAlertIfNeeded()
+    }
+
+    // MARK: - Dependencies
+
+    private let userDefaults = UserDefaults.standard
+
     // MARK: - Observers & Observables
 
     private let viewModel: LoginOrRegisterViewModel
@@ -132,7 +142,7 @@ extension LoginOrRegisterViewController {
     }
 
     private func installViewBinds() {
-        infoButton.button.addTarget(self, action: #selector(infoButtonTapped), for: .touchUpInside)
+        infoButton.button.addTarget(self, action: #selector(showInfoAlert), for: .touchUpInside)
         submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
         forgotPasswordButton.addTarget(self, action: #selector(forgotPasswordTapped), for: .touchUpInside)
         installLoginOrRegisterButtonBinds()
@@ -140,10 +150,17 @@ extension LoginOrRegisterViewController {
         installHideKeyboardTapGesture() // from KeyboardReactable
     }
 
-    @objc private func infoButtonTapped() {
-        let infoAlert = UIAlertController(title: "Signing up",
+    private func showInfoAlertIfNeeded() {
+        guard !userDefaults.bool(forKey: UserDefaultsKeys.hasSeenRegisterInfoAlert.rawValue) else { return }
+
+        userDefaults.set(true, forKey: UserDefaultsKeys.hasSeenRegisterInfoAlert.rawValue)
+        showInfoAlert()
+    }
+
+    @objc private func showInfoAlert() {
+        let infoAlert = UIAlertController(title: "Heads up",
                                           message: """
-                                                               The only reason to have an account is to sync your data to other platforms.
+                                                               The ONLY reason to make an account is to sync your data (progress, starred, etc.) between web and mobile.
 
                                                                We only use your email to reset your password. You will never receive any other mailing from us.
                                                            """,

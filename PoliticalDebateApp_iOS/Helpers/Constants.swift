@@ -16,6 +16,10 @@ enum Constants {
     static let timeBetweenRetries = 1.0
 }
 
+enum UserDefaultsKeys: String {
+    case hasSeenRegisterInfoAlert
+}
+
 enum GeneralColors {
     static let navBarTint = UIColor.customLightGreen1
     static let softButton = UIColor.customDarkGray1

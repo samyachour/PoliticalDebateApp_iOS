@@ -50,7 +50,7 @@ extension Point: Decodable {
         primaryKey = try container.decode(PrimaryKey.self, forKey: .primaryKey)
         shortDescription = try container.decode(String.self, forKey: .shortDescription)
         description = try container.decode(String.self, forKey: .description)
-        side = Side(rawValue: try container.decode(String.self, forKey: .side))
+        side = Side(rawValue: try container.decode(String.self, forKey: .side).lowercased())
         hyperlinks = try container.decode([PointHyperlink].self, forKey: .hyperlinks)
         images = try container.decode([PointImage].self, forKey: .images)
         // We don't always have rebuttals
