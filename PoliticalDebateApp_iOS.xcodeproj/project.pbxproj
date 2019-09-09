@@ -143,6 +143,8 @@
 		2EA87A3D231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */; };
 		2EA87A40231DF31700FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */; };
 		2EAF701B2324E13B00398D6B /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701A2324E13B00398D6B /* UserDefaultsManager.swift */; };
+		2EAF701D2325A5BF00398D6B /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */; };
+		2EAF701F2325AE5900398D6B /* StarrableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */; };
 		2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C522BBD5180087BC56 /* DebugLog.swift */; };
 		2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
 		2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
@@ -257,6 +259,8 @@
 		2EA3D1A1228D35AC00019324 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
 		2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoyaTargetType+ValidSuccessCodes.swift"; sourceTree = "<group>"; };
 		2EAF701A2324E13B00398D6B /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatter.swift; sourceTree = "<group>"; };
+		2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarrableViewModel.swift; sourceTree = "<group>"; };
 		2EBE46C522BBD5180087BC56 /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
 		2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
@@ -492,6 +496,8 @@
 				2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */,
 				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
 				2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */,
+				2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */,
+				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -940,6 +946,7 @@
 				2E0D84BA22A7952400E4B0E7 /* LoginOrRegisterViewController.swift in Sources */,
 				2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */,
 				2E5EC05322FA783600B41D54 /* DebateCollectionViewCell.swift in Sources */,
+				2EAF701F2325AE5900398D6B /* StarrableViewModel.swift in Sources */,
 				2E0D848622A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift in Sources */,
 				2EC7890822D059FE009402F1 /* ErrorHandler.swift in Sources */,
 				2E0D848822A7054A00E4B0E7 /* UIFont+Custom.swift in Sources */,
@@ -953,6 +960,7 @@
 				2E287CC022DC4A7B000A4CF2 /* NotificationBannerQueue.swift in Sources */,
 				2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */,
 				2E2BB06422F2C05C00ED02C0 /* KeyboardReactableProtocol.swift in Sources */,
+				2EAF701D2325A5BF00398D6B /* MarkdownFormatter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

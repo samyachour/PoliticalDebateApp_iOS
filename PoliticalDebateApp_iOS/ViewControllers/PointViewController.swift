@@ -139,11 +139,12 @@ extension PointViewController: UITextViewDelegate, UIPageViewControllerDataSourc
     }
 
     private func installDescriptionText() {
-        let descriptionString = viewModel.point.description
-        let attributedString = NSMutableAttributedString(attributedString: NSAttributedString(string: descriptionString,
-                                                                                              attributes: [NSAttributedString.Key.font : GeneralFonts.text,
-                                                                                                           NSAttributedString.Key.foregroundColor: GeneralColors.text]))
-        let compatibleSourceString = NSString(string: descriptionString) // NSAttributedString requires NSRange which only comes from NSString
+        guard let attributedString = MarkDownFormatter.formatBold(in: viewModel.point.description, regularAttributes: [.font : GeneralFonts.text,
+                                                                                                                       .foregroundColor: GeneralColors.text]) else {
+                return
+        }
+
+        let compatibleSourceString = NSString(string: attributedString.string) // NSAttributedString requires NSRange which only comes from NSString
 
         viewModel.point.hyperlinks.forEach { (pointHyperlink) in
             let substring = pointHyperlink.substring

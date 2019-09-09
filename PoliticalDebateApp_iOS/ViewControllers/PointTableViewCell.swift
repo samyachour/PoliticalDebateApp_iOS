@@ -16,11 +16,11 @@ class PointTableViewCell: UITableViewCell {
 
     var viewModel: PointTableViewCellViewModel? {
         didSet {
-            guard let viewModel = viewModel else { return }
-
-            containerView.backgroundColor = viewModel.point.side?.color
-            pointLabel.text = viewModel.point.shortDescription
-            checkImageView.image = viewModel.hasCompletedPaths ? UIImage.check : nil
+            containerView.backgroundColor = viewModel?.point.side?.color
+            pointLabel.attributedText = MarkDownFormatter.formatBold(in: viewModel?.point.shortDescription,
+                                                                     regularAttributes: [.font: GeneralFonts.text,
+                                                                                         .foregroundColor: GeneralColors.text])
+            checkImageView.image = (viewModel?.hasCompletedPaths ?? false) ? UIImage.check : nil
         }
     }
 
@@ -39,9 +39,7 @@ class PointTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
 
-        containerView.backgroundColor = nil
-        pointLabel.text = nil
-        checkImageView.image = nil
+        viewModel = nil
         disposeBag = DisposeBag()
     }
 
@@ -60,8 +58,6 @@ class PointTableViewCell: UITableViewCell {
 
     private lazy var pointLabel: UILabel = {
         let pointLabel = UILabel(frame: .zero)
-        pointLabel.textColor = GeneralColors.text
-        pointLabel.font = GeneralFonts.text
         pointLabel.numberOfLines = 0
         return pointLabel
     }()
