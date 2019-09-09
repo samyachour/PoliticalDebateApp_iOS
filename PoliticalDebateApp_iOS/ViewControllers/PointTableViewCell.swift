@@ -17,7 +17,9 @@ class PointTableViewCell: UITableViewCell {
     var viewModel: PointTableViewCellViewModel? {
         didSet {
             containerView.backgroundColor = viewModel?.point.side?.color
-            pointLabel.text = viewModel?.point.shortDescription
+            pointLabel.attributedText = MarkDownFormatter.formatBold(in: viewModel?.point.shortDescription,
+                                                                     regularAttributes: [.font: GeneralFonts.text,
+                                                                                         .foregroundColor: GeneralColors.text])
             checkImageView.image = (viewModel?.hasCompletedPaths ?? false) ? UIImage.check : nil
         }
     }
@@ -56,8 +58,6 @@ class PointTableViewCell: UITableViewCell {
 
     private lazy var pointLabel: UILabel = {
         let pointLabel = UILabel(frame: .zero)
-        pointLabel.textColor = GeneralColors.text
-        pointLabel.font = GeneralFonts.text
         pointLabel.numberOfLines = 0
         return pointLabel
     }()
