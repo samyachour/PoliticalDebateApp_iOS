@@ -8,26 +8,21 @@
 
 import UIKit
 
+/// NOTE: Try printing UIFont.familyNames and then UIFont.fontNames(forFamilyname: "Family name") to see available file names
 extension UIFont {
-    static let standardSize: CGFloat = 16.0
+    static let standardSize: CGFloat = 18.0
 
     // These font files are hardcoded so they must exist
-    static func primaryLight(_ size: CGFloat = UIFont.standardSize) -> UIFont {
-        return UIFont(name: "Manrope-Light", size: size)!
-    }
     static func primaryRegular(_ size: CGFloat = UIFont.standardSize) -> UIFont {
-        return UIFont(name: "Manrope-Regular", size: size)!
+        return UIFont(name: "Roboto-Regular", size: size)!
+    }
+    static func primaryItalic(_ size: CGFloat = UIFont.standardSize) -> UIFont {
+        return UIFont(name: "Roboto-Italic", size: size)!
     }
     static func primaryBold(_ size: CGFloat = UIFont.standardSize) -> UIFont {
-        return UIFont(name: "Manrope-Bold", size: size)!
+        return UIFont(name: "Roboto-Bold", size: size)!
     }
-    static func primaryThin(_ size: CGFloat = UIFont.standardSize) -> UIFont {
-        return UIFont(name: "Manrope-Thin", size: size)!
-    }
-    static func primaryMedium(_ size: CGFloat = UIFont.standardSize) -> UIFont {
-        return UIFont(name: "Manrope-Medium", size: size)!
-    }
-    static func primarySemibold(_ size: CGFloat = UIFont.standardSize) -> UIFont {
-        return UIFont(name: "Manrope-Semibold", size: size)!
+    static func primaryLight(_ size: CGFloat = UIFont.standardSize) -> UIFont {
+        return UIFont(name: "Roboto-Light", size: size)!
     }
 }

@@ -17,9 +17,8 @@ class PointTableViewCell: UITableViewCell {
     var viewModel: PointTableViewCellViewModel? {
         didSet {
             containerView.backgroundColor = viewModel?.point.side?.color
-            pointLabel.attributedText = MarkDownFormatter.formatBold(in: viewModel?.point.shortDescription,
-                                                                     regularAttributes: [.font: GeneralFonts.text,
-                                                                                         .foregroundColor: GeneralColors.text])
+            pointLabel.attributedText = MarkDownFormatter.format(viewModel?.point.shortDescription, with: [.font: GeneralFonts.text,
+                                                                                                           .foregroundColor: GeneralColors.text])
             checkImageView.image = (viewModel?.hasCompletedPaths ?? false) ? UIImage.check : nil
         }
     }

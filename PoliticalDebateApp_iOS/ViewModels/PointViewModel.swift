@@ -30,17 +30,16 @@ class PointViewModel {
     private var pointImageViewControllers = [SinglePointImageViewController]()
 
     func getImagePage(at index: Int) -> SinglePointImageViewController? {
-        guard index >= 0 && index < pointImages.count else {
-            return nil
-        }
-        guard index < pointImageViewControllers.count else {
+        guard pointImages[safe: index] != nil else { return nil }
+
+        guard let singlePointImageViewController = pointImageViewControllers[safe: index] else {
             let newPointImageViewModel = SinglePointImageViewModel(pointImage: pointImages[index])
             let newPointImageViewController = SinglePointImageViewController(viewModel: newPointImageViewModel)
             pointImageViewControllers.append(newPointImageViewController)
             return newPointImageViewController
         }
 
-        return pointImageViewControllers[index]
+        return singlePointImageViewController
     }
 
     func getIndexOf(_ viewController: UIViewController) -> Int? {

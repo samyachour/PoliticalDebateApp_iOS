@@ -81,7 +81,7 @@ class SinglePointImageViewController: UIViewController {
     private lazy var nameAndSourceLabel: UILabel = {
         let nameAndSourceLabel = UILabel(frame: .zero)
         nameAndSourceLabel.numberOfLines = 0
-        nameAndSourceLabel.font = UIFont.primaryMedium(12.0)
+        nameAndSourceLabel.font = .primaryRegular(14.0)
         nameAndSourceLabel.textColor = .customDarkGray2
         if let imageName = viewModel.pointImage.name {
             nameAndSourceLabel.text = "\(imageName) - \(viewModel.pointImage.source)"

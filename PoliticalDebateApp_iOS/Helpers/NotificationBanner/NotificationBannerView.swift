@@ -24,7 +24,7 @@ class NotificationBannerView: UIView {
         subtitleLabel.textColor = viewModel?.foregroundColor
 
         leftImageView.image = image
-        leftImageView.tintColor = viewModel?.foregroundColor ?? UIColor.clear
+        leftImageView.tintColor = viewModel?.foregroundColor ?? .clear
 
         setTitle(title: title, subtitle: subtitle)
 
@@ -119,7 +119,7 @@ class NotificationBannerView: UIView {
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
 
-        titleLabel.font = .primaryRegular(16)
+        titleLabel.font = .primaryRegular(18)
         titleLabel.numberOfLines = 0
 
         return titleLabel

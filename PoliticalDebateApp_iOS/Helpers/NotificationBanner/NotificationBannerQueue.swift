@@ -190,7 +190,7 @@ class NotificationBannerQueue {
             })
         }
 
-        button?.titleLabel?.font = .primarySemibold(16)
+        button?.titleLabel?.font = .primaryBold(16)
         button?.contentEdgeInsets = UIEdgeInsets(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0)
         button?.setTitleColor(viewModel.foregroundColor, for: .normal)
 
