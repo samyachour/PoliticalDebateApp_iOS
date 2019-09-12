@@ -9,7 +9,6 @@
 import Moya
 import RxCocoa
 import RxSwift
-import RxSwiftExt
 
 var appBaseURL: String {
     // TODO: Change URLs

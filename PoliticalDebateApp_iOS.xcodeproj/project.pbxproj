@@ -25,12 +25,6 @@
 		2E0D848622A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848522A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift */; };
 		2E0D848822A7054A00E4B0E7 /* UIFont+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */; };
 		2E0D848A22A7057300E4B0E7 /* UIColor+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */; };
-		2E0D84A722A70F2600E4B0E7 /* Manrope-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D849522A70F2600E4B0E7 /* Manrope-Semibold.otf */; };
-		2E0D84A822A70F2600E4B0E7 /* Manrope-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D849622A70F2600E4B0E7 /* Manrope-Light.otf */; };
-		2E0D84AE22A70F2600E4B0E7 /* Manrope-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D849C22A70F2600E4B0E7 /* Manrope-Thin.otf */; };
-		2E0D84B122A70F2600E4B0E7 /* Manrope-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D849F22A70F2600E4B0E7 /* Manrope-Regular.otf */; };
-		2E0D84B222A70F2600E4B0E7 /* Manrope-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D84A022A70F2600E4B0E7 /* Manrope-Bold.otf */; };
-		2E0D84B422A70F2600E4B0E7 /* Manrope-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2E0D84A222A70F2600E4B0E7 /* Manrope-Medium.otf */; };
 		2E0D84BA22A7952400E4B0E7 /* LoginOrRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84B922A7952400E4B0E7 /* LoginOrRegisterViewController.swift */; };
 		2E0D84BC22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BB22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift */; };
 		2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */; };
@@ -145,6 +139,19 @@
 		2EAF701B2324E13B00398D6B /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701A2324E13B00398D6B /* UserDefaultsManager.swift */; };
 		2EAF701D2325A5BF00398D6B /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */; };
 		2EAF701F2325AE5900398D6B /* StarrableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */; };
+		2EAF70232327853D00398D6B /* Collection+SafeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */; };
+		2EAF70592329EE7400398D6B /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF704D2329EE7300398D6B /* Roboto-Thin.ttf */; };
+		2EAF705A2329EE7400398D6B /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF704E2329EE7300398D6B /* Roboto-Regular.ttf */; };
+		2EAF705B2329EE7400398D6B /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF704F2329EE7300398D6B /* Roboto-ThinItalic.ttf */; };
+		2EAF705C2329EE7400398D6B /* Roboto-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70502329EE7300398D6B /* Roboto-RegularItalic.ttf */; };
+		2EAF705D2329EE7400398D6B /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70512329EE7300398D6B /* Roboto-LightItalic.ttf */; };
+		2EAF705E2329EE7400398D6B /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70522329EE7300398D6B /* Roboto-BoldItalic.ttf */; };
+		2EAF705F2329EE7400398D6B /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70532329EE7300398D6B /* Roboto-Black.ttf */; };
+		2EAF70602329EE7400398D6B /* Roboto-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70542329EE7300398D6B /* Roboto-Light.ttf */; };
+		2EAF70612329EE7400398D6B /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70552329EE7400398D6B /* Roboto-BlackItalic.ttf */; };
+		2EAF70622329EE7400398D6B /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70562329EE7400398D6B /* Roboto-Medium.ttf */; };
+		2EAF70632329EE7400398D6B /* Roboto-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70572329EE7400398D6B /* Roboto-MediumItalic.ttf */; };
+		2EAF70642329EE7400398D6B /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70582329EE7400398D6B /* Roboto-Bold.ttf */; };
 		2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C522BBD5180087BC56 /* DebugLog.swift */; };
 		2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
 		2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
@@ -196,12 +203,6 @@
 		2E0D848522A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebatesCollectionViewModel.swift; sourceTree = "<group>"; };
 		2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Custom.swift"; sourceTree = "<group>"; };
 		2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Custom.swift"; sourceTree = "<group>"; };
-		2E0D849522A70F2600E4B0E7 /* Manrope-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Semibold.otf"; sourceTree = "<group>"; };
-		2E0D849622A70F2600E4B0E7 /* Manrope-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Light.otf"; sourceTree = "<group>"; };
-		2E0D849C22A70F2600E4B0E7 /* Manrope-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Thin.otf"; sourceTree = "<group>"; };
-		2E0D849F22A70F2600E4B0E7 /* Manrope-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Regular.otf"; sourceTree = "<group>"; };
-		2E0D84A022A70F2600E4B0E7 /* Manrope-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Bold.otf"; sourceTree = "<group>"; };
-		2E0D84A222A70F2600E4B0E7 /* Manrope-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Manrope-Medium.otf"; sourceTree = "<group>"; };
 		2E0D84B922A7952400E4B0E7 /* LoginOrRegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOrRegisterViewController.swift; sourceTree = "<group>"; };
 		2E0D84BB22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOrRegisterViewModel.swift; sourceTree = "<group>"; };
 		2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
@@ -261,6 +262,19 @@
 		2EAF701A2324E13B00398D6B /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatter.swift; sourceTree = "<group>"; };
 		2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarrableViewModel.swift; sourceTree = "<group>"; };
+		2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+SafeIndex.swift"; sourceTree = "<group>"; };
+		2EAF704D2329EE7300398D6B /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
+		2EAF704E2329EE7300398D6B /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		2EAF704F2329EE7300398D6B /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70502329EE7300398D6B /* Roboto-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-RegularItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70512329EE7300398D6B /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70522329EE7300398D6B /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70532329EE7300398D6B /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Black.ttf"; sourceTree = "<group>"; };
+		2EAF70542329EE7300398D6B /* Roboto-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Light.ttf"; sourceTree = "<group>"; };
+		2EAF70552329EE7400398D6B /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70562329EE7400398D6B /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		2EAF70572329EE7400398D6B /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70582329EE7400398D6B /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		2EBE46C522BBD5180087BC56 /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
 		2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
@@ -357,22 +371,9 @@
 		2E0D848C22A70BA100E4B0E7 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				2E0D849422A70F2600E4B0E7 /* Manrope */,
+				2EAF704C2329EE3200398D6B /* Roboto */,
 			);
 			path = Fonts;
-			sourceTree = "<group>";
-		};
-		2E0D849422A70F2600E4B0E7 /* Manrope */ = {
-			isa = PBXGroup;
-			children = (
-				2E0D849522A70F2600E4B0E7 /* Manrope-Semibold.otf */,
-				2E0D849622A70F2600E4B0E7 /* Manrope-Light.otf */,
-				2E0D849C22A70F2600E4B0E7 /* Manrope-Thin.otf */,
-				2E0D849F22A70F2600E4B0E7 /* Manrope-Regular.otf */,
-				2E0D84A022A70F2600E4B0E7 /* Manrope-Bold.otf */,
-				2E0D84A222A70F2600E4B0E7 /* Manrope-Medium.otf */,
-			);
-			path = Manrope;
 			sourceTree = "<group>";
 		};
 		2E23A6B6226AC7B300B2DCC3 = {
@@ -498,6 +499,7 @@
 				2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */,
 				2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */,
 				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
+				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -552,6 +554,25 @@
 				2E96743F226BE91000821A73 /* CoreDataService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		2EAF704C2329EE3200398D6B /* Roboto */ = {
+			isa = PBXGroup;
+			children = (
+				2EAF70532329EE7300398D6B /* Roboto-Black.ttf */,
+				2EAF70552329EE7400398D6B /* Roboto-BlackItalic.ttf */,
+				2EAF70582329EE7400398D6B /* Roboto-Bold.ttf */,
+				2EAF70522329EE7300398D6B /* Roboto-BoldItalic.ttf */,
+				2EAF70542329EE7300398D6B /* Roboto-Light.ttf */,
+				2EAF70512329EE7300398D6B /* Roboto-LightItalic.ttf */,
+				2EAF70562329EE7400398D6B /* Roboto-Medium.ttf */,
+				2EAF70572329EE7400398D6B /* Roboto-MediumItalic.ttf */,
+				2EAF704E2329EE7300398D6B /* Roboto-Regular.ttf */,
+				2EAF70502329EE7300398D6B /* Roboto-RegularItalic.ttf */,
+				2EAF704D2329EE7300398D6B /* Roboto-Thin.ttf */,
+				2EAF704F2329EE7300398D6B /* Roboto-ThinItalic.ttf */,
+			);
+			path = Roboto;
 			sourceTree = "<group>";
 		};
 		2EEDE91322BEE985000A4F2B /* LocalData */ = {
@@ -685,23 +706,29 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EAF70592329EE7400398D6B /* Roboto-Thin.ttf in Resources */,
 				2E89210D230E6BFF00DD9556 /* DebateSingle.json in Resources */,
-				2E0D84B422A70F2600E4B0E7 /* Manrope-Medium.otf in Resources */,
-				2E0D84B222A70F2600E4B0E7 /* Manrope-Bold.otf in Resources */,
-				2E0D84AE22A70F2600E4B0E7 /* Manrope-Thin.otf in Resources */,
+				2EAF705C2329EE7400398D6B /* Roboto-RegularItalic.ttf in Resources */,
 				2E23A6F8226AC7D400B2DCC3 /* README.md in Resources */,
+				2EAF70632329EE7400398D6B /* Roboto-MediumItalic.ttf in Resources */,
 				2E0A9D62230D211400D10CC8 /* Empty.json in Resources */,
 				2E23A6F7226AC7D400B2DCC3 /* .gitignore in Resources */,
 				2E89210E230E6C0200DD9556 /* GetCurrentEmail.json in Resources */,
+				2EAF705F2329EE7400398D6B /* Roboto-Black.ttf in Resources */,
 				2E0A9D5C230D1F4900D10CC8 /* TokenRefresh.json in Resources */,
-				2E0D84A722A70F2600E4B0E7 /* Manrope-Semibold.otf in Resources */,
 				2E0A9D5A230D1F4900D10CC8 /* ProgressAll.json in Resources */,
 				2E0A9D52230D1F4900D10CC8 /* TokenObtain.json in Resources */,
+				2EAF70622329EE7400398D6B /* Roboto-Medium.ttf in Resources */,
+				2EAF70602329EE7400398D6B /* Roboto-Light.ttf in Resources */,
 				2E23A6F6226AC7D400B2DCC3 /* .swiftlint.yml in Resources */,
 				2E0A9D58230D1F4900D10CC8 /* DebateFilter.json in Resources */,
+				2EAF705E2329EE7400398D6B /* Roboto-BoldItalic.ttf in Resources */,
+				2EAF70642329EE7400398D6B /* Roboto-Bold.ttf in Resources */,
 				2E0A9D5E230D1F4900D10CC8 /* Starred.json in Resources */,
-				2E0D84B122A70F2600E4B0E7 /* Manrope-Regular.otf in Resources */,
-				2E0D84A822A70F2600E4B0E7 /* Manrope-Light.otf in Resources */,
+				2EAF705B2329EE7400398D6B /* Roboto-ThinItalic.ttf in Resources */,
+				2EAF70612329EE7400398D6B /* Roboto-BlackItalic.ttf in Resources */,
+				2EAF705D2329EE7400398D6B /* Roboto-LightItalic.ttf in Resources */,
+				2EAF705A2329EE7400398D6B /* Roboto-Regular.ttf in Resources */,
 				2E23A6D0226AC7B300B2DCC3 /* LaunchScreen.storyboard in Resources */,
 				2E23A6CD226AC7B300B2DCC3 /* Assets.xcassets in Resources */,
 			);
@@ -817,20 +844,11 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/RxBlocking/RxBlocking.framework",
-				"${BUILT_PRODUCTS_DIR}/RxTest/RxTest.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxBlocking.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxTest.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -843,26 +861,11 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
-				"${BUILT_PRODUCTS_DIR}/Moya/Moya.framework",
-				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
-				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
-				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/RxSwiftExt/RxSwiftExt.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Moya.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Result.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwiftExt.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -933,6 +936,7 @@
 				2E2BB06822F2D66800ED02C0 /* BackendErrorMessage.swift in Sources */,
 				2EE1A1702311F19C00DD8E4A /* PointTableViewCellViewModel.swift in Sources */,
 				2EEEC68B231CDFE100438154 /* SinglePointImageViewController.swift in Sources */,
+				2EAF70232327853D00398D6B /* Collection+SafeIndex.swift in Sources */,
 				2E12D7C32309DB000078B0DD /* PointsTableViewController.swift in Sources */,
 				2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */,
 				2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */,

@@ -11,15 +11,32 @@ import UIKit
 
 class MarkDownFormatter {
 
+    static func format(_ sourceString: String?,
+                       with regularAttributes: [NSAttributedString.Key: Any],
+                       hyperlinks: [PointHyperlink]? = nil) -> NSMutableAttributedString? {
+        guard let sourceString = sourceString,
+            let regularFontSize = (regularAttributes[.font] as? UIFont)?.pointSize else {
+            return nil
+        }
+
+        var attributedString = NSMutableAttributedString(string: sourceString, attributes: regularAttributes)
+        attributedString = format(attributedString, between: MarkDownFormatter.boldKey,
+                                  formattedAttributes: [NSAttributedString.Key.font: UIFont.primaryBold(regularFontSize)])
+        attributedString = format(attributedString, between: MarkDownFormatter.italicsKey,
+                                  formattedAttributes: [NSAttributedString.Key.font: UIFont.primaryItalic(regularFontSize)])
+        if let hyperlinks = hyperlinks {
+            attributedString = format(attributedString, with: hyperlinks)
+        }
+        return attributedString
+    }
+
     private static let boldKey = "**"
-    static func formatBold(in sourceString: String?, regularAttributes: [NSAttributedString.Key: Any]) -> NSMutableAttributedString? {
-        guard let sourceString = sourceString else { return nil }
+    private static let italicsKey = "*"
 
-        let attributedString = NSMutableAttributedString(string: sourceString, attributes: regularAttributes)
-        guard let regularFont = regularAttributes[NSAttributedString.Key.font] as? UIFont else { return attributedString }
-
-        let boldAttributes = [NSAttributedString.Key.font: UIFont.primaryBold(regularFont.pointSize)]
-        let compatibleSourceString = NSString(string: sourceString) // NSAttributedString requires NSRange which only comes from NSString
+    private static func format(_ attributedString: NSMutableAttributedString,
+                               between key: String,
+                               formattedAttributes: [NSAttributedString.Key: Any]) -> NSMutableAttributedString {
+        let compatibleSourceString = NSString(string: attributedString.string) // NSAttributedString requires NSRange which only comes from NSString
 
         var range1: NSRange
         var newStartIndex1: Int
@@ -29,17 +46,17 @@ class MarkDownFormatter {
         while true {
             range1 = compatibleSourceString.range(of: MarkDownFormatter.boldKey,
                                                   range: NSRange(location: newStartIndex2,
-                                                                 length: sourceString.count - newStartIndex2))
+                                                                 length: compatibleSourceString.length - newStartIndex2))
             newStartIndex1 = range1.location + range1.length
             guard range1.location != NSNotFound else { break }
 
             range2 = compatibleSourceString.range(of: MarkDownFormatter.boldKey,
                                                   range: NSRange(location: newStartIndex1,
-                                                                 length: sourceString.count - newStartIndex1))
+                                                                 length: compatibleSourceString.length - newStartIndex1))
             newStartIndex2 = range2.location + range2.length
             guard range2.location != NSNotFound else { break }
 
-            attributedString.addAttributes(boldAttributes,
+            attributedString.addAttributes(formattedAttributes,
                                            range: NSRange(location: newStartIndex1,
                                                           length: range2.location - newStartIndex1))
 
@@ -52,6 +69,21 @@ class MarkDownFormatter {
                                                                    length: range2.length),
                                                        with: "")
 
+        }
+
+        return attributedString
+    }
+
+    private static func format(_ attributedString: NSMutableAttributedString, with hyperlinks: [PointHyperlink]) -> NSMutableAttributedString {
+       let compatibleSourceString = NSString(string: attributedString.string) // NSAttributedString requires NSRange which only comes from NSString
+
+        hyperlinks.forEach { (pointHyperlink) in
+            let substring = pointHyperlink.substring
+            // Only will apply the hyperlink to the first instance of the substring
+            let range = compatibleSourceString.range(of: substring, options: .caseInsensitive)
+            if range.location != NSNotFound {
+                attributedString.addAttribute(.link, value: pointHyperlink.url, range: range)
+            }
         }
 
         return attributedString

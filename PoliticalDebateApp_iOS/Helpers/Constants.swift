@@ -27,7 +27,7 @@ enum GeneralColors {
 
 enum GeneralFonts {
     static let button = UIFont.primaryRegular()
-    static let text = UIFont.primaryRegular()
+    static let text = UIFont.primaryLight()
     static let navBarTitle = UIFont.primaryLight(24.0)
 }
 

@@ -61,6 +61,11 @@ class PointViewController: UIViewController {
         descriptionTextView.isUserInteractionEnabled = true
         descriptionTextView.isScrollEnabled = false
         descriptionTextView.backgroundColor = .clear
+        descriptionTextView.attributedText = MarkDownFormatter.format(viewModel.point.description,
+                                                                      with: [.font: GeneralFonts.text,
+                                                                             .foregroundColor: GeneralColors.text],
+                                                                      hyperlinks: viewModel.point.hyperlinks)
+        descriptionTextView.sizeToFit()
         return descriptionTextView
     }()
 
@@ -134,29 +139,6 @@ extension PointViewController: UITextViewDelegate, UIPageViewControllerDataSourc
             imagePageControl.topAnchor.constraint(equalTo: imagePageViewController.view.bottomAnchor, constant: PointViewController.inset).isActive = true
             imagePageControl.bottomAnchor.constraint(equalTo: pointsTableViewController.view.topAnchor, constant: -PointViewController.inset).isActive = true
         }
-
-        installDescriptionText()
-    }
-
-    private func installDescriptionText() {
-        guard let attributedString = MarkDownFormatter.formatBold(in: viewModel.point.description, regularAttributes: [.font : GeneralFonts.text,
-                                                                                                                       .foregroundColor: GeneralColors.text]) else {
-                return
-        }
-
-        let compatibleSourceString = NSString(string: attributedString.string) // NSAttributedString requires NSRange which only comes from NSString
-
-        viewModel.point.hyperlinks.forEach { (pointHyperlink) in
-            let substring = pointHyperlink.substring
-            // Only will apply the hyperlink to the first instance of the substring
-            let range = compatibleSourceString.range(of: substring, options: .caseInsensitive)
-            if range.location != NSNotFound {
-                attributedString.addAttribute(.link, value: pointHyperlink.url, range: range)
-            }
-        }
-
-        descriptionTextView.attributedText = attributedString
-        descriptionTextView.sizeToFit()
     }
 
     override func viewDidLayoutSubviews() {

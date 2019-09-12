@@ -13,7 +13,6 @@ target 'PoliticalDebateApp_iOS' do
   pod 'RxCocoa', '~> 4'
   pod 'SwiftLint'
   pod 'Moya/RxSwift', '~> 13.0'
-  pod 'RxSwiftExt', '~> 3'
 
   target 'PoliticalDebateApp_iOSTests' do
     inherit! :search_paths

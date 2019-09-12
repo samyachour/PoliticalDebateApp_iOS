@@ -16,7 +16,7 @@ class BasicUIElementFactory {
         let basicBarButton = UIButton(frame: .zero)
         basicBarButton.setTitle(title, for: .normal)
         basicBarButton.setTitleColor(GeneralColors.softButton, for: .normal)
-        basicBarButton.titleLabel?.font = UIFont.primaryRegular(14.0)
+        basicBarButton.titleLabel?.font = .primaryRegular(16.0)
         return (basicBarButton, UIBarButtonItem(customView: basicBarButton))
     }
 
@@ -67,8 +67,8 @@ class BasicUIElementFactory {
     static func generateEmptyStateLabel(text: String) -> UILabel {
         let emptyStateLabel = UILabel(frame: .zero)
         emptyStateLabel.text = text
-        emptyStateLabel.textColor = UIColor.customDarkGray1
-        emptyStateLabel.font = UIFont.primaryRegular(24.0)
+        emptyStateLabel.textColor = .customDarkGray1
+        emptyStateLabel.font = .primaryRegular(24.0)
         emptyStateLabel.textAlignment = NSTextAlignment.center
         emptyStateLabel.alpha = 0.0
         return emptyStateLabel

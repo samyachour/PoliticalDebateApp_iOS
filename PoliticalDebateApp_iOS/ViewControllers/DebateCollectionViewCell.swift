@@ -68,7 +68,7 @@ class DebateCollectionViewCell: UICollectionViewCell {
 
     private lazy var debateProgressView: UIProgressView = {
         let debateProgressView = UIProgressView()
-        debateProgressView.progressTintColor = UIColor.customLightGreen2
+        debateProgressView.progressTintColor = .customLightGreen2
         debateProgressView.trackTintColor = .clear
         return debateProgressView
     }()
