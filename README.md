@@ -11,7 +11,6 @@ For our iOS app we use Swift and ReactiveX.
 Dependencies:
 - [Swift](https://github.com/apple/swift) 4.2
 - [RxSwift, RxCocoa, RxBlocking, RxTest](https://github.com/ReactiveX/RxSwift) 4.5.0
-- [RxSwiftExt](https://github.com/RxSwiftCommunity/RxSwiftExt)  3.4.0
 - [SwiftLint](https://github.com/realm/SwiftLint) 0.31.0
 - [Moya](https://github.com/Moya/Moya) 13.0.0
     - [Alamofire](https://github.com/Alamofire/Alamofire) 4.8.2
