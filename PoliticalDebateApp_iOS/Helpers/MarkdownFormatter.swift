@@ -23,7 +23,7 @@ class MarkDownFormatter {
         attributedString = format(attributedString, between: MarkDownFormatter.boldKey,
                                   formattedAttributes: [NSAttributedString.Key.font: UIFont.primaryBold(regularFontSize)])
         attributedString = format(attributedString, between: MarkDownFormatter.italicsKey,
-                                  formattedAttributes: [NSAttributedString.Key.font: UIFont.primaryItalic(regularFontSize)])
+                                  formattedAttributes: [NSAttributedString.Key.font: UIFont.primaryLightItalic(regularFontSize)])
         if let hyperlinks = hyperlinks {
             attributedString = format(attributedString, with: hyperlinks)
         }
@@ -44,13 +44,13 @@ class MarkDownFormatter {
         var newStartIndex2 = 0
 
         while true {
-            range1 = compatibleSourceString.range(of: MarkDownFormatter.boldKey,
+            range1 = compatibleSourceString.range(of: key,
                                                   range: NSRange(location: newStartIndex2,
                                                                  length: compatibleSourceString.length - newStartIndex2))
             newStartIndex1 = range1.location + range1.length
             guard range1.location != NSNotFound else { break }
 
-            range2 = compatibleSourceString.range(of: MarkDownFormatter.boldKey,
+            range2 = compatibleSourceString.range(of: key,
                                                   range: NSRange(location: newStartIndex1,
                                                                  length: compatibleSourceString.length - newStartIndex1))
             newStartIndex2 = range2.location + range2.length

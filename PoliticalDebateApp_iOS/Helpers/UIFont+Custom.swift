@@ -16,13 +16,13 @@ extension UIFont {
     static func primaryRegular(_ size: CGFloat = UIFont.standardSize) -> UIFont {
         return UIFont(name: "Roboto-Regular", size: size)!
     }
-    static func primaryItalic(_ size: CGFloat = UIFont.standardSize) -> UIFont {
-        return UIFont(name: "Roboto-Italic", size: size)!
-    }
     static func primaryBold(_ size: CGFloat = UIFont.standardSize) -> UIFont {
         return UIFont(name: "Roboto-Bold", size: size)!
     }
     static func primaryLight(_ size: CGFloat = UIFont.standardSize) -> UIFont {
         return UIFont(name: "Roboto-Light", size: size)!
+    }
+    static func primaryLightItalic(_ size: CGFloat = UIFont.standardSize) -> UIFont {
+        return UIFont(name: "Roboto-LightItalic", size: size)!
     }
 }

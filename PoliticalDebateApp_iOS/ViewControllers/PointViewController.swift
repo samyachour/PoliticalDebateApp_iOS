@@ -128,7 +128,9 @@ extension PointViewController: UITextViewDelegate, UIPageViewControllerDataSourc
         pointsTableViewController.view.topAnchor.constraint(greaterThanOrEqualTo: descriptionTextView.bottomAnchor).isActive = true
         pointsTableViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         pointsTableViewController.view.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
-        pointsTableViewHeightAnchor = pointsTableViewController.view.heightAnchor.constraint(equalToConstant: 0.0).injectPriority(.required - 1)
+        // Set the height to the entire screen initially so the tableView.visibleCells property will include
+        // all the cells and we can accurately recompute the necessary height
+        pointsTableViewHeightAnchor = pointsTableViewController.view.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height).injectPriority(.required - 1)
         pointsTableViewHeightAnchor?.isActive = true
         pointsTableViewController.didMove(toParent: self)
 

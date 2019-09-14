@@ -57,7 +57,7 @@ class PointsTableViewController: UIViewController {
 
     // MARK: - UI Properties
 
-    var pointsTableViewHeight: CGFloat { return pointsTableView.dynamicContentSize }
+    var pointsTableViewHeight: CGFloat { return pointsTableView.dynamicContentHeight }
 
     // MARK: - UI Elements
 
@@ -69,6 +69,7 @@ class PointsTableViewController: UIViewController {
         pointsTableView.backgroundColor = .clear
         pointsTableView.rowHeight = UITableView.automaticDimension
         pointsTableView.estimatedRowHeight = 50
+        pointsTableView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0)
         return pointsTableView
     }()
 
@@ -125,7 +126,7 @@ extension PointsTableViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        tableViewContainer.fadeView(style: .vertical, percentage: 0.04)
+        tableViewContainer.fadeView(style: .vertical, percentage: 0.03)
     }
 
     // MARK: View binding
@@ -211,9 +212,10 @@ extension PointsTableViewController {
 }
 
 private extension UITableView {
-    var dynamicContentSize: CGFloat {
+    var dynamicContentHeight: CGFloat {
         layoutIfNeeded()
-        return visibleCells.reduce(0.0, { (result, cell) -> CGFloat in
+        let verticalInsets = contentInset.top + contentInset.bottom
+        return verticalInsets + visibleCells.reduce(0.0, { (result, cell) -> CGFloat in
             return result + cell.frame.height
         })
     }

@@ -84,10 +84,11 @@ class PointTableViewCell: UITableViewCell {
         pointLabel.translatesAutoresizingMaskIntoConstraints = false
         checkImageView.translatesAutoresizingMaskIntoConstraints = false
 
+        let containerVerticalInset: CGFloat = 8.0
         containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
-        containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: PointTableViewCell.inset).isActive = true
+        containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: containerVerticalInset).isActive = true
         containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PointTableViewCell.inset).isActive = true
-        containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -PointTableViewCell.inset).isActive = true
+        containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -containerVerticalInset).isActive = true
 
         pointLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
         pointLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PointTableViewCell.inset).isActive = true

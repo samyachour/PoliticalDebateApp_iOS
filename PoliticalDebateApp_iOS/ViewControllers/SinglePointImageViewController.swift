@@ -29,13 +29,18 @@ class SinglePointImageViewController: UIViewController {
 
         installViewConstraints()
         imageView.load(url: viewModel.pointImage.url) { [weak self] in
-            self?.moveLabelUnderImage()
+            UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
+                self?.moveLabelUnderImage()
+                self?.view.alpha = 1.0
+            })
         }
     }
 
     // MARK: - View constriants
 
     private func installViewConstraints() {
+        view.alpha = 0.0
+
         view.addSubview(imageView)
         view.addSubview(nameAndSourceLabel)
 
