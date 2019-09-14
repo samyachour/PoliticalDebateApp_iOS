@@ -22,8 +22,6 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Roboto-Black.ttfRoboto-BlackItalic.ttfRoboto-Bold.ttfRoboto-BoldItalic.ttfRoboto-Light.ttfRoboto-LightItalic.ttfRoboto-Medium.ttfRoboto-MediumItalic.ttfRoboto-Regular.ttfRoboto-RegularItalic.ttfRoboto-Thin.ttfRoboto-ThinItalic.ttf</string>
-		<string>Roboto-BlackItalic.ttf</string>
 		<string>Roboto-Bold.ttf</string>
 		<string>Roboto-BoldItalic.ttf</string>
 		<string>Roboto-Light.ttf</string>
