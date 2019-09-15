@@ -10,34 +10,21 @@ import CoreData
 
 final class ProgressCoreDataAPI {
 
-    // MARK: - Core data
-
-    // So all our tasks run on the same private background queue when updating/retreiving records
-    private static let context = CoreDataService.persistentContainer.newBackgroundContext()
-    private static func saveContext() {
-        do {
-            try ProgressCoreDataAPI.context.save()
-        } catch {
-            CoreDataService.showCoreDataSaveAlert()
-        }
-    }
-
     // MARK: - CRUD operations
 
     static func saveProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) {
-        defer { saveContext() }
+        defer { CoreDataService.saveContext() }
 
         let (localProgress, _) = ProgressCoreDataAPI.loadProgressAndAssociatedDebate(debatePrimaryKey)
 
         let localPointRecords: [LocalPoint]? = CoreDataService
             .fetchRecordsForEntity(CoreDataConstants.pointEntity,
-                                   in: ProgressCoreDataAPI.context,
                                    with: ProgressCoreDataAPI.pointLabelPredicate(pointPrimaryKey, debatePrimaryKey),
                                    unique: true)
 
         // Never saved this point before
         if localPointRecords?.first == nil {
-            let localPoint = LocalPoint(context: ProgressCoreDataAPI.context)
+            let localPoint: LocalPoint = CoreDataService.createRecord()
             localPoint.primaryKey = Int32(pointPrimaryKey)
             localPoint.progress = localProgress // to one
 
@@ -50,11 +37,11 @@ final class ProgressCoreDataAPI {
     }
 
     static func loadAllProgress() -> [Progress?]? {
-        defer { saveContext() }
+        defer { CoreDataService.saveContext() }
 
         // Explicit type for generic method
         guard let localProgressRecords: [LocalProgress] = CoreDataService
-            .fetchRecordsForEntity(CoreDataConstants.progressEntity, in: ProgressCoreDataAPI.context) else {
+            .fetchRecordsForEntity(CoreDataConstants.progressEntity) else {
                 return nil
         }
 
@@ -64,16 +51,16 @@ final class ProgressCoreDataAPI {
     }
 
     static func clearAllProgress() {
-        defer { saveContext() }
+        defer { CoreDataService.saveContext() }
 
         // Explicit type for generic method
         guard let localProgressRecords: [LocalProgress] = CoreDataService
-            .fetchRecordsForEntity(CoreDataConstants.progressEntity, in: ProgressCoreDataAPI.context) else {
+            .fetchRecordsForEntity(CoreDataConstants.progressEntity) else {
                 return
         }
 
         localProgressRecords.forEach { (localProgress) in
-            context.delete(localProgress)
+            CoreDataService.deleteRecord(localProgress)
         }
     }
 
@@ -84,13 +71,12 @@ final class ProgressCoreDataAPI {
         // Explicit type for generic method
         let localDebateRecords: [LocalDebate]? = CoreDataService
             .fetchRecordsForEntity(CoreDataConstants.debateEntity,
-                                   in: ProgressCoreDataAPI.context,
                                    with: ProgressCoreDataAPI.debatePrimaryKeyPredicate(debatePrimaryKey),
                                    unique: true)
-        let localDebate = localDebateRecords?.first ?? LocalDebate(context: ProgressCoreDataAPI.context)
+        let localDebate: LocalDebate = localDebateRecords?.first ?? CoreDataService.createRecord()
         localDebate.primaryKey = Int32(debatePrimaryKey)
 
-        let localProgress = localDebate.progress ?? LocalProgress(context: ProgressCoreDataAPI.context)
+        let localProgress: LocalProgress = localDebate.progress ?? CoreDataService.createRecord()
 
         // One to one relationship
         localProgress.debate = localDebate

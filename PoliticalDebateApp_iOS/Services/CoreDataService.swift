@@ -25,7 +25,6 @@ final class CoreDataService {
     // MARK: - CRUD Operations
 
     static func fetchRecordsForEntity<T: NSManagedObject>(_ entity: String,
-                                                          in managedObjectContext: NSManagedObjectContext,
                                                           with predicate: NSPredicate? = nil,
                                                           unique: Bool = false) -> [T]? {
         guard CoreDataService.loadedStores else {
@@ -42,7 +41,7 @@ final class CoreDataService {
             fetchRequest.predicate = predicate
         }
 
-        let results = try? managedObjectContext.fetch(fetchRequest) as? [T]
+        let results = try? context.fetch(fetchRequest) as? [T]
 
         // If we should only receive 1 record w/ from the request but we get more than 1
         if let count = results?.count,
@@ -54,7 +53,27 @@ final class CoreDataService {
         return results
     }
 
+    static func createRecord<T: NSManagedObject>() -> T {
+        return T(context: context)
+    }
+
+    static func deleteRecord<T: NSManagedObject>(_ object: T) {
+        context.delete(object)
+    }
+
     // MARK: - Loading and saving context
+
+    // So separate tasks can share objects across the same context and run synchronously on the same private background queue
+    private static let context = CoreDataService.persistentContainer.newBackgroundContext()
+
+    static func saveContext() {
+        do {
+            try context.save()
+        } catch {
+            print(error)
+            CoreDataService.showCoreDataSaveAlert()
+        }
+    }
 
     static let persistentContainer = NSPersistentContainer(name: CoreDataConstants.container)
     private static var loadedStores = false
@@ -86,18 +105,6 @@ final class CoreDataService {
             CoreDataService.loadedStores = true
             completionHandler(nil) // success
         })
-    }
-
-    static func saveContext () {
-        let context = CoreDataService.persistentContainer.viewContext
-
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                CoreDataService.showCoreDataSaveAlert()
-            }
-        }
     }
 
     // MARK: - Helpers

@@ -10,44 +10,32 @@ import CoreData
 
 final class StarredCoreDataAPI {
 
-    // MARK: - Core data
-
-    // So all our tasks run on the same private background queue when updating/retreiving records
-    private static let context = CoreDataService.persistentContainer.newBackgroundContext()
-    private static func saveContext() {
-        do {
-            try StarredCoreDataAPI.context.save()
-        } catch {
-            CoreDataService.showCoreDataSaveAlert()
-        }
-    }
-
     // MARK: - CRUD operations
 
     static func starOrUnstarDebate(_ debatePrimaryKey: PrimaryKey, unstar: Bool = false) {
-        defer { saveContext() }
+        defer { CoreDataService.saveContext() }
 
         let localStarred = StarredCoreDataAPI.loadStarredDebates()
 
         // Explicit type for generic method
         let localDebateRecords: [LocalDebate]? = CoreDataService
             .fetchRecordsForEntity(CoreDataConstants.debateEntity,
-                                   in: StarredCoreDataAPI.context,
                                    with: StarredCoreDataAPI.debatePrimaryKeyPredicate(debatePrimaryKey),
                                    unique: true)
-        let localDebate = localDebateRecords?.first ?? LocalDebate(context: StarredCoreDataAPI.context)
+        let localDebate: LocalDebate = localDebateRecords?.first ?? CoreDataService.createRecord()
         localDebate.primaryKey = Int32(debatePrimaryKey)
-        localDebate.starred = localStarred
 
         if unstar {
+            localDebate.starred = nil
             localStarred.removeFromStarredList(localDebate)
         } else {
+            localDebate.starred = localStarred
             localStarred.addToStarredList(localDebate)
         }
     }
 
     static func loadAllStarred() -> Starred? {
-        defer { saveContext() }
+        defer { CoreDataService.saveContext() }
 
         let localStarred = StarredCoreDataAPI.loadStarredDebates()
 
@@ -55,10 +43,10 @@ final class StarredCoreDataAPI {
     }
 
     static func clearAllStarred() {
-        defer { saveContext() }
+        defer { CoreDataService.saveContext() }
 
         let localStarred = StarredCoreDataAPI.loadStarredDebates()
-        context.delete(localStarred)
+        CoreDataService.deleteRecord(localStarred)
     }
 
     // MARK: - Helpers
@@ -67,10 +55,9 @@ final class StarredCoreDataAPI {
     private static func loadStarredDebates() -> LocalStarred {
         // Explicit type for generic method
         let localStarredRecords: [LocalStarred]? = CoreDataService.fetchRecordsForEntity(CoreDataConstants.starredEntity,
-                                                                                         in: StarredCoreDataAPI.context,
                                                                                          unique: true)
         // If it's a new user (no localStarredRecords) create a starred list
-        let localStarred = localStarredRecords?.first ?? LocalStarred(context: StarredCoreDataAPI.context)
+        let localStarred: LocalStarred = localStarredRecords?.first ?? CoreDataService.createRecord()
 
         return localStarred
     }

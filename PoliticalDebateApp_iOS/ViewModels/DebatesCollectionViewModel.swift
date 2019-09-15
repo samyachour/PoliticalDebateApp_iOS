@@ -45,6 +45,8 @@ class DebatesCollectionViewModel {
     }
 
     func refreshDebatesWithLocalData() {
+        guard !debatesDataSourceRelay.value.isEmpty else { return } // no point in refreshing 0 debates
+
         let newDebateCollectionViewCellViewModels = debatesDataSourceRelay.value.map { (debateCollectionViewCellViewModel) -> DebateCollectionViewCellViewModel in
             let primaryKey = debateCollectionViewCellViewModel.debate.primaryKey
             debateCollectionViewCellViewModel.completedPercentage = UserDataManager.shared.getProgress(for: primaryKey).completedPercentage
