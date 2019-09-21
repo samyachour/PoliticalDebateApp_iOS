@@ -117,6 +117,7 @@
 		2E5EC05722FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5EC05622FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift */; };
 		2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094622A4931100DF486A /* ProgressAPI.swift */; };
 		2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
+		2E6FD0E02336D75400196643 /* DeepLinkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6FD0DF2336D75400196643 /* DeepLinkService.swift */; };
 		2E892109230E6ABF00DD9556 /* CurrentEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E892108230E6ABF00DD9556 /* CurrentEmail.swift */; };
 		2E89210A230E6B2900DD9556 /* CurrentEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E892108230E6ABF00DD9556 /* CurrentEmail.swift */; };
 		2E89210C230E6BBB00DD9556 /* GetCurrentEmail.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */; };
@@ -249,6 +250,7 @@
 		2E5EC05622FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		2E69094622A4931100DF486A /* ProgressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAPI.swift; sourceTree = "<group>"; };
 		2E69094C22A4932700DF486A /* StarredAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredAPI.swift; sourceTree = "<group>"; };
+		2E6FD0DF2336D75400196643 /* DeepLinkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkService.swift; sourceTree = "<group>"; };
 		2E892108230E6ABF00DD9556 /* CurrentEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentEmail.swift; sourceTree = "<group>"; };
 		2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GetCurrentEmail.json; sourceTree = "<group>"; };
 		2E967438226BD34E00821A73 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
@@ -548,6 +550,7 @@
 				2E23A707226ADA6200B2DCC3 /* NetworkService.swift */,
 				2E96743A226BDA8A00821A73 /* KeychainService.swift */,
 				2E96743F226BE91000821A73 /* CoreDataService.swift */,
+				2E6FD0DF2336D75400196643 /* DeepLinkService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -932,6 +935,7 @@
 				2E12D7C32309DB000078B0DD /* PointsTableViewController.swift in Sources */,
 				2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */,
 				2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */,
+				2E6FD0E02336D75400196643 /* DeepLinkService.swift in Sources */,
 				2EE1A1722311F1AB00DD8E4A /* PointTableViewCell.swift in Sources */,
 				2E5EC05722FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift in Sources */,
 				2E0D848A22A7057300E4B0E7 /* UIColor+Custom.swift in Sources */,

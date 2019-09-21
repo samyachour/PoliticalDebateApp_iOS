@@ -14,12 +14,12 @@ enum ProgressAPI {
     case saveBatchProgress(batchProgress: BatchProgress)
 }
 
-enum ProgressConstants {
-    static let debatePrimaryKey = "debate_pk"
-    static let pointPrimaryKey = "point_pk"
-}
-
 extension ProgressAPI: CustomTargetType {
+
+    enum Constants {
+        static let debatePrimaryKey = "debate_pk"
+        static let pointPrimaryKey = "point_pk"
+    }
 
     var baseURL: URL {
         guard let url = URL(string: appBaseURL) else { fatalError("baseURL could not be configured.") }
@@ -49,8 +49,8 @@ extension ProgressAPI: CustomTargetType {
     var task: Task {
         switch self {
         case .saveProgress(let debatePrimaryKey, let pointPrimaryKey):
-            return .requestParameters(parameters: [ProgressConstants.debatePrimaryKey: debatePrimaryKey,
-                                                   ProgressConstants.pointPrimaryKey: pointPrimaryKey],
+            return .requestParameters(parameters: [Constants.debatePrimaryKey: debatePrimaryKey,
+                                                   Constants.pointPrimaryKey: pointPrimaryKey],
                                       encoding: JSONEncoding.default)
         case .loadAllProgress:
             return .requestPlain

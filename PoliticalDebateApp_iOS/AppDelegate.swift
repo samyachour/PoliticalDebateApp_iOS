@@ -66,4 +66,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         CoreDataService.saveContext()
     }
 
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        DeepLinkService.handle(url)
+        return true
+    }
+
 }

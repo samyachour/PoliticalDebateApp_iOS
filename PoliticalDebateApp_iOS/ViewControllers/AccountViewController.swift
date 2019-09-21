@@ -173,7 +173,7 @@ extension AccountViewController {
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicErrorBanner()
+                    ErrorHandler.showBasicRetryErrorBanner()
                     return
             }
 
@@ -183,7 +183,7 @@ extension AccountViewController {
                                                                                                 title: "Failed to send a verification link.",
                                                                                                 subtitle: "Your current email is invalid."))
             default:
-                ErrorHandler.showBasicErrorBanner()
+                ErrorHandler.showBasicRetryErrorBanner()
             }
         }.disposed(by: disposeBag)
     }
@@ -214,7 +214,7 @@ extension AccountViewController {
                 }
                 guard let moyaError = error as? MoyaError,
                     let response = moyaError.response else {
-                        ErrorHandler.showBasicErrorBanner()
+                        ErrorHandler.showBasicRetryErrorBanner()
                         return
                 }
 
@@ -256,7 +256,7 @@ extension AccountViewController {
                 }
                 guard let moyaError = error as? MoyaError,
                     let response = moyaError.response else {
-                        ErrorHandler.showBasicErrorBanner()
+                        ErrorHandler.showBasicRetryErrorBanner()
                         return
                 }
 
@@ -265,7 +265,7 @@ extension AccountViewController {
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Your current password is incorrect."))
                 default:
-                    ErrorHandler.showBasicErrorBanner()
+                    ErrorHandler.showBasicRetryErrorBanner()
                 }
             }.disposed(by: disposeBag)
         }
@@ -301,7 +301,7 @@ extension AccountViewController {
                     return
                 }
 
-                ErrorHandler.showBasicErrorBanner()
+                ErrorHandler.showBasicRetryErrorBanner()
             }.disposed(by: self.disposeBag)
         }))
         confirmationPopUp.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))

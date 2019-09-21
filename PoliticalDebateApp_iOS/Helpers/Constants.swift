@@ -39,6 +39,7 @@ enum GeneralCopies {
 
 enum GeneralError: Error {
     case basic
+    case retry
     case report
     case connectivity
     case alreadyHandled // For consumers to know if producers have already handled the error
@@ -47,9 +48,11 @@ enum GeneralError: Error {
     var localizedDescription: String {
         switch self {
         case .basic:
-            return "Something weird happened. Please try again."
+            return "Something weird happened."
+        case .retry:
+            return "Please try again."
         case .report:
-            return "Something weird happened. Please report this to the developer."
+            return "Please report this to the developer."
         case .connectivity:
             return "Having trouble connecting to the network."
         case .alreadyHandled:

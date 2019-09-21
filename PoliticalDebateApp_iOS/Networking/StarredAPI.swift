@@ -13,12 +13,12 @@ enum StarredAPI {
     case loadAllStarred
 }
 
-enum StarredConstants {
-    static let starredListKey = "starred_list"
-    static let unstarredListKey = "unstarred_list"
-}
-
 extension StarredAPI: CustomTargetType {
+
+    enum Constants {
+        static let starredListKey = "starred_list"
+        static let unstarredListKey = "unstarred_list"
+    }
 
     var baseURL: URL {
         guard let url = URL(string: appBaseURL) else { fatalError("baseURL could not be configured.") }
@@ -45,8 +45,8 @@ extension StarredAPI: CustomTargetType {
     var task: Task {
         switch self {
         case .starOrUnstarDebates(let starred, let unstarred):
-            return .requestParameters(parameters: [StarredConstants.starredListKey : starred,
-                                                   StarredConstants.unstarredListKey : unstarred],
+            return .requestParameters(parameters: [Constants.starredListKey : starred,
+                                                   Constants.unstarredListKey : unstarred],
                                       encoding: JSONEncoding.default)
         case .loadAllStarred:
             return .requestPlain

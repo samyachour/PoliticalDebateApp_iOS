@@ -176,16 +176,15 @@ extension PointsTableViewController {
             }
             guard let moyaError = errorEvent.element as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicErrorBanner()
+                    ErrorHandler.showBasicRetryErrorBanner()
                     return
             }
 
             switch response.statusCode {
             case 400:
-                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: GeneralError.report.localizedDescription))
+                ErrorHandler.showBasicReportErrorBanner()
             default:
-                ErrorHandler.showBasicErrorBanner()
+                ErrorHandler.showBasicRetryErrorBanner()
             }
         }.disposed(by: disposeBag)
     }
@@ -201,7 +200,7 @@ extension PointsTableViewController {
                     return
                 }
                 guard error as? MoyaError != nil else {
-                    ErrorHandler.showBasicErrorBanner()
+                    ErrorHandler.showBasicRetryErrorBanner()
                     return
                 }
 

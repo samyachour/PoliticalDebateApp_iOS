@@ -41,7 +41,7 @@ class PointsTableViewModel: StarrableViewModel {
     // or else it will complete and the value will be invalidated
     let pointsRetrievalErrorRelay = PublishRelay<Error>()
 
-    private let pointsRelay = BehaviorRelay<[Point]>(value: [])
+    private lazy var pointsRelay = BehaviorRelay<[Point]>(value: debate.debateMap ?? [])
     private var rebuttals: [Point]? // Only used for embedded rebuttals table
 
     private lazy var seenPointsRelay = BehaviorRelay<[PrimaryKey]>(value: UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints)
@@ -74,8 +74,8 @@ class PointsTableViewModel: StarrableViewModel {
     private let debateNetworkService = NetworkService<DebateAPI>()
 
     func retrieveAllDebatePoints() {
-        // Only should load all debate points if we're on the main standalone debate points view
-        guard viewState == .standalone else {
+        // Only should load all debate points if we're on the main standalone debate points view and don't already have the debate map
+        guard viewState == .standalone && pointsRelay.value.isEmpty else {
             if let rebuttals = rebuttals {
                 pointsRelay.accept(rebuttals)
             }
@@ -85,7 +85,11 @@ class PointsTableViewModel: StarrableViewModel {
         debateNetworkService.makeRequest(with: .debate(primaryKey: debate.primaryKey))
             .map(Debate.self)
             .subscribe(onSuccess: { [weak self] debate in
-                guard let debateMap = debate.debateMap else { return }
+                guard let debateMap = debate.debateMap,
+                    !debateMap.isEmpty else {
+                        ErrorHandler.showBasicReportErrorBanner()
+                        return
+                }
                 self?.pointsRelay.accept(debateMap)
             }) { [weak self] error in
                 self?.pointsRetrievalErrorRelay.accept(error)
