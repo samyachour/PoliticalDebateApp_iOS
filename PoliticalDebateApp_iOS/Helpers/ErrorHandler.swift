@@ -21,9 +21,16 @@ class ErrorHandler {
                                                                                         title: error.localizedDescription))
     }
 
-    static func showBasicErrorBanner() {
+    static func showBasicRetryErrorBanner() {
         NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                        title: GeneralError.basic.localizedDescription))
+                                                                                        title: GeneralError.basic.localizedDescription,
+                                                                                        subtitle: GeneralError.retry.localizedDescription))
+    }
+
+    static func showBasicReportErrorBanner(_ title: String = GeneralError.basic.localizedDescription) {
+        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                        title: title,
+                                                                                        subtitle: GeneralError.report.localizedDescription))
     }
 
     // MARK: - Server errors
@@ -127,7 +134,7 @@ class ErrorHandler {
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                             title: "An account associated with that email already exists."))
         default:
-            ErrorHandler.showBasicErrorBanner()
+            ErrorHandler.showBasicRetryErrorBanner()
         }
     }
 }

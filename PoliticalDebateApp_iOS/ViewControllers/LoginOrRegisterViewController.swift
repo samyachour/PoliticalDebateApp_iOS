@@ -200,7 +200,7 @@ extension LoginOrRegisterViewController {
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicErrorBanner()
+                    ErrorHandler.showBasicRetryErrorBanner()
                     return
             }
 
@@ -210,7 +210,7 @@ extension LoginOrRegisterViewController {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't find an account associated with those credentials."))
             default:
-                ErrorHandler.showBasicErrorBanner()
+                ErrorHandler.showBasicRetryErrorBanner()
             }
         }.disposed(by: disposeBag)
     }
@@ -232,7 +232,7 @@ extension LoginOrRegisterViewController {
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicErrorBanner()
+                    ErrorHandler.showBasicRetryErrorBanner()
                     return
             }
 
@@ -259,7 +259,7 @@ extension LoginOrRegisterViewController {
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicErrorBanner()
+                    ErrorHandler.showBasicRetryErrorBanner()
                     return
             }
             switch response.statusCode {
@@ -291,12 +291,12 @@ extension LoginOrRegisterViewController {
                         return
                     }
                 }
-                ErrorHandler.showBasicErrorBanner()
+                ErrorHandler.showBasicRetryErrorBanner()
             case 404:
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't find an account associated with that email."))
             default:
-                ErrorHandler.showBasicErrorBanner()
+                ErrorHandler.showBasicRetryErrorBanner()
             }
         }).disposed(by: self.disposeBag)
     }

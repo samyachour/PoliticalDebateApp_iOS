@@ -127,7 +127,7 @@ class DebateCollectionViewCell: UICollectionViewCell {
                 return
             }
             guard error as? MoyaError != nil else {
-                ErrorHandler.showBasicErrorBanner()
+                ErrorHandler.showBasicRetryErrorBanner()
                 return
             }
 

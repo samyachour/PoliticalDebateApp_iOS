@@ -13,20 +13,20 @@ enum DebateAPI {
     case debateFilter(searchString: String?, filter: SortByOption?)
 }
 
-enum DebateConstants {
-    static let primaryKeyKey = "pk"
-    static let searchStringKey = "search_string"
-    static let filterKey = "filter"
-    static let starredPrimaryKeysKey = "all_starred"
-    static let progressPrimaryKeysKey = "all_progress"
-    static let lastUpdatedFilterValue = "last_updated"
-    static let starredFilterValue = "starred"
-    static let progressFilterValue = "progress"
-    static let noProgressFilterValue = "no_progress"
-    static let randomFilterValue = "random"
-}
-
 extension DebateAPI: CustomTargetType {
+
+    enum Constants {
+        static let primaryKeyKey = "pk"
+        static let searchStringKey = "search_string"
+        static let filterKey = "filter"
+        static let starredPrimaryKeysKey = "all_starred"
+        static let progressPrimaryKeysKey = "all_progress"
+        static let lastUpdatedFilterValue = "last_updated"
+        static let starredFilterValue = "starred"
+        static let progressFilterValue = "progress"
+        static let noProgressFilterValue = "no_progress"
+        static let randomFilterValue = "random"
+    }
 
     var baseURL: URL {
         guard let url = URL(string: appBaseURL) else { fatalError("baseURL could not be configured.") }
@@ -54,15 +54,15 @@ extension DebateAPI: CustomTargetType {
     var task: Task {
         switch self {
         case .debate(let primaryKey):
-            return .requestParameters(parameters: [DebateConstants.primaryKeyKey : primaryKey], encoding: PlainDjangoEncoding())
+            return .requestParameters(parameters: [Constants.primaryKeyKey : primaryKey], encoding: PlainDjangoEncoding())
         case .debateFilter(let searchString, let filter):
             var params = [String: Any]()
             if let searchString = searchString,
                 !searchString.isEmpty {
-                params[DebateConstants.searchStringKey] = searchString
+                params[Constants.searchStringKey] = searchString
             }
             if let filter = filter {
-                params[DebateConstants.filterKey] = filter.backendFilterName
+                params[Constants.filterKey] = filter.backendFilterName
                 if let filterArrayName = filter.arrayFilterName,
                     let filterArray = filter.primaryKeysArray {
                     params[filterArrayName] = filterArray
@@ -92,27 +92,27 @@ extension SortByOption {
         switch self {
         case .sortBy, // backend sorting defaults to last updated
              .lastUpdated:
-            return DebateConstants.lastUpdatedFilterValue
+            return DebateAPI.Constants.lastUpdatedFilterValue
         case .starred:
-            return DebateConstants.starredFilterValue
+            return DebateAPI.Constants.starredFilterValue
         case .progressAscending,
              .progressDescending:
-            return DebateConstants.progressFilterValue
+            return DebateAPI.Constants.progressFilterValue
         case .noProgress:
-            return DebateConstants.noProgressFilterValue
+            return DebateAPI.Constants.noProgressFilterValue
         case .random:
-            return DebateConstants.randomFilterValue
+            return DebateAPI.Constants.randomFilterValue
         }
     }
 
     var arrayFilterName: String? {
         switch self {
         case .starred:
-            return DebateConstants.starredPrimaryKeysKey
+            return DebateAPI.Constants.starredPrimaryKeysKey
         case .progressAscending,
              .progressDescending,
              .noProgress:
-            return DebateConstants.progressPrimaryKeysKey
+            return DebateAPI.Constants.progressPrimaryKeysKey
         default:
             return nil
         }

@@ -21,9 +21,9 @@ class SessionManager {
     private var accessToken: String? {
         didSet {
             if let accessToken = accessToken {
-                saveTokenToKeychain(accessToken, withKey: AuthConstants.accessTokenKey)
+                saveTokenToKeychain(accessToken, withKey: AuthAPI.Constants.accessTokenKey)
             } else {
-                deleteTokenFromKeychain(withKey: AuthConstants.accessTokenKey)
+                deleteTokenFromKeychain(withKey: AuthAPI.Constants.accessTokenKey)
             }
             // If we set the accessToken to/from nil
             if (oldValue == nil) != (accessToken == nil) {
@@ -42,9 +42,9 @@ class SessionManager {
     private var refreshToken: String? {
         didSet {
             if let refreshToken = refreshToken {
-                saveTokenToKeychain(refreshToken, withKey: AuthConstants.refreshTokenKey)
+                saveTokenToKeychain(refreshToken, withKey: AuthAPI.Constants.refreshTokenKey)
             } else {
-                deleteTokenFromKeychain(withKey: AuthConstants.refreshTokenKey)
+                deleteTokenFromKeychain(withKey: AuthAPI.Constants.refreshTokenKey)
             }
         }
     }
@@ -53,8 +53,8 @@ class SessionManager {
     private let tokenEncoding: String.Encoding = .utf8
 
     func resumeSession() {
-        guard let accessTokenData = KeychainService.load(key: AuthConstants.accessTokenKey),
-            let refreshTokenData = KeychainService.load(key: AuthConstants.refreshTokenKey) else {
+        guard let accessTokenData = KeychainService.load(key: AuthAPI.Constants.accessTokenKey),
+            let refreshTokenData = KeychainService.load(key: AuthAPI.Constants.refreshTokenKey) else {
                 return
         }
         accessToken = String(data: accessTokenData, encoding: tokenEncoding)

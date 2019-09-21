@@ -165,16 +165,15 @@ extension PointViewController: UITextViewDelegate, UIPageViewControllerDataSourc
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicErrorBanner()
+                    ErrorHandler.showBasicRetryErrorBanner()
                     return
             }
 
             switch response.statusCode {
             case 404:
-                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: GeneralError.report.localizedDescription))
+                ErrorHandler.showBasicReportErrorBanner()
             default:
-                ErrorHandler.showBasicErrorBanner()
+                ErrorHandler.showBasicRetryErrorBanner()
             }
         }).disposed(by: disposeBag)
     }
