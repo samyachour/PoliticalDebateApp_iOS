@@ -63,7 +63,6 @@ class PointTableViewCell: UITableViewCell {
 
     private lazy var checkImageView: UIImageView = {
         let checkImageView = UIImageView(frame: .zero)
-        checkImageView.contentMode = .right
         checkImageView.tintColor = .customLightGreen2
         return checkImageView
     }()
@@ -92,11 +91,12 @@ class PointTableViewCell: UITableViewCell {
 
         pointLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
         pointLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PointTableViewCell.inset).isActive = true
-        pointLabel.trailingAnchor.constraint(lessThanOrEqualTo: checkImageView.leadingAnchor).isActive = true
+        pointLabel.trailingAnchor.constraint(lessThanOrEqualTo: checkImageView.leadingAnchor, constant: -4).isActive = true
         pointLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PointTableViewCell.inset).isActive = true
 
         checkImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
         checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PointTableViewCell.inset).isActive = true
+        checkImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 
 }

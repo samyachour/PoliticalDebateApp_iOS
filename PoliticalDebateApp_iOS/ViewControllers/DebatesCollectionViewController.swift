@@ -369,23 +369,23 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     // MARK: - UI Animation handling
 
     @objc private func hideActiveUIElements() {
-        hidePickerView() // If user taps away to dismiss picker, they have not changed selection
+        hidePickerView()
         resignSearchTextField()
     }
 
     private func resignSearchTextField() {
         if searchTextField.isFirstResponder {
             searchTextField.resignFirstResponder()
-            if searchTextField.text?.isEmpty ?? true { // Shrink the text field if it's empty
-                animationBlocksRelay.accept { [weak self] in
-                    UIView.animate(withDuration: Constants.standardAnimationDuration,
-                                   delay: 0.0,
-                                   options: .curveEaseInOut,
-                                   animations: {
-                                    self?.searchTextFieldTrailingAnchor?.isActive = false
-                                    self?.view.layoutIfNeeded()
-                    }, completion: nil)
-                }
+        }
+        if searchTextField.text?.isEmpty ?? true { // Shrink the text field if it's empty
+            animationBlocksRelay.accept { [weak self] in
+                UIView.animate(withDuration: Constants.standardAnimationDuration,
+                               delay: 0.0,
+                               options: .curveEaseInOut,
+                               animations: {
+                                self?.searchTextFieldTrailingAnchor?.isActive = false
+                                self?.view.layoutIfNeeded()
+                }, completion: nil)
             }
         }
     }
