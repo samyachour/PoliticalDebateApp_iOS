@@ -35,8 +35,10 @@ struct PointTableViewCellViewModel {
             !rebuttals.isEmpty else {
             return seenPoints.contains(point.primaryKey)
         }
-        // Recursively check for completion in rebuttals
-        return rebuttals.allSatisfy({ seenPoints.contains($0.primaryKey) &&
-            deriveHasCompletedPaths($0, seenPoints) })
+        // Recursively check for completion for the current point & its rebuttals
+        return seenPoints.contains(point.primaryKey) && rebuttals.allSatisfy({
+            seenPoints.contains($0.primaryKey) &&
+            deriveHasCompletedPaths($0, seenPoints)
+        })
     }
 }
