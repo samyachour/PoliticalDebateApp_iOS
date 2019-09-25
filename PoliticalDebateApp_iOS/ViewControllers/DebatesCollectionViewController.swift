@@ -268,13 +268,16 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         sortByPickerView.rx.itemSelected.subscribe({ [weak self] itemEvent in
             guard let item = itemEvent.element else { return }
 
-            self?.hideActiveUIElements()
-            self?.updateSortBySelection(with: item.row)
+            self?.activateSearch() // make sure we search w/ the latest value
             self?.sortSelectionRelay.accept(SortByOption(rawValue: item.row) ?? SortByOption.defaultValue)
         }).disposed(by: disposeBag)
 
+        let sharedSortSelectionRelay = sortSelectionRelay.asDriver().asSharedSequence()
+
+        sharedSortSelectionRelay.drive(onNext: updateSortBySelection).disposed(by: disposeBag)
+
         viewModel.subscribeToManualDebateUpdates(searchTriggeredRelay.asDriver(),
-                                                 sortSelectionRelay.asDriver(),
+                                                 sharedSortSelectionRelay,
                                                  manualRefreshRelay.asDriver())
 
         animationBlocksRelay.subscribe { animationEvent in
@@ -390,14 +393,13 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         }
     }
 
-    private func updateSortBySelection(with pickerChoice: Int) {
+    private func updateSortBySelection(_ pickerChoice: SortByOption) {
         animationBlocksRelay.accept { [weak self] in
             guard let sortByButton = self?.sortByButton else { return }
             UIView.transition(with: sortByButton, duration: Constants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
-                let optionSelected = SortByOption(rawValue: pickerChoice)
-                self?.sortByButton.setTitle(optionSelected?.stringValue ?? DebatesCollectionViewController.sortByDefaultlabel,
+                self?.sortByButton.setTitle(pickerChoice.stringValue,
                                             for: .normal)
-                self?.sortByButton.setTitleColor(optionSelected?.selectionColor, for: .normal)
+                self?.sortByButton.setTitleColor(pickerChoice.selectionColor, for: .normal)
             }, completion: nil)
         }
     }

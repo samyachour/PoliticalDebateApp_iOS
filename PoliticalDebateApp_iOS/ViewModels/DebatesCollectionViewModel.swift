@@ -77,7 +77,9 @@ class DebatesCollectionViewModel {
                            manualRefreshDriver) { (searchAndSortValue, _) -> (String, SortByOption) in
                                 // Manual refresh can be ignored since it just uses the latest search and sort values
                                 return searchAndSortValue
-            }.drive(onNext: { [weak self] (searchString, sortSelection) in
+            }
+            .debounce(0.3)
+            .drive(onNext: { [weak self] (searchString, sortSelection) in
                 self?.retrieveDebates(searchString: searchString, sortSelection: sortSelection)
             })
             .disposed(by: disposeBag)
