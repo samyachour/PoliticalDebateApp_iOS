@@ -20,7 +20,9 @@ enum CoreDataConstants {
     static let container = "PoliticalDebateApp_iOS"
 }
 
-final class CoreDataService {
+struct CoreDataService {
+
+    private init() {}
 
     // MARK: - CRUD Operations
 

@@ -54,6 +54,12 @@ class PointViewController: UIViewController {
 
     // MARK: - UI Elements
 
+    private lazy var homeButton: UIButton = {
+        let homeButton = UIButton(frame: .zero)
+        homeButton.setImage(UIImage.home, for: .normal)
+        return homeButton
+    }()
+
     private lazy var descriptionTextView: UITextView = {
         let descriptionTextView = UITextView(frame: .zero)
         descriptionTextView.isEditable = false
@@ -100,6 +106,7 @@ extension PointViewController: UITextViewDelegate, UIPageViewControllerDataSourc
     // MARK: View constraints
 
     private func installViewConstraints() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: homeButton)
         navigationController?.navigationBar.tintColor = GeneralColors.softButton
         view.backgroundColor = GeneralColors.background
 
@@ -152,9 +159,20 @@ extension PointViewController: UITextViewDelegate, UIPageViewControllerDataSourc
     // MARK: View binding
 
     private func installViewBinds() {
+        homeButton.addTarget(self, action: #selector(homeButtonTapped), for: .touchUpInside)
         descriptionTextView.delegate = self
         imagePageViewController.dataSource = self
         imagePageViewController.delegate = self
+    }
+
+    @objc private func homeButtonTapped() {
+        guard let mainPointsTableViewController = navigationController?.viewControllers.reversed()
+            .first(where: { (viewController) -> Bool in
+                // Find the nearest most parent VC of main debate points
+                return viewController as? PointsTableViewController != nil
+            }) else { return }
+
+        navigationController?.popToViewController(mainPointsTableViewController, animated: true)
     }
 
     private func markAsSeen() {

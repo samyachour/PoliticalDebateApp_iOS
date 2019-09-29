@@ -12,7 +12,7 @@ enum UrlHosts: String {
     case debate
 }
 
-class DeepLinkService {
+struct DeepLinkService {
 
     private init() {}
 

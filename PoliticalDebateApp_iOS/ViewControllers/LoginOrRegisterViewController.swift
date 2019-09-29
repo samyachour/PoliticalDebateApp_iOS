@@ -190,8 +190,6 @@ extension LoginOrRegisterViewController {
 
     private func loginTapped(email: String, password: String) {
         viewModel.login(with: email, password: password).subscribe(onSuccess: { [weak self] _ in
-            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                            title: "Successfully logged in"))
             self?.navigationController?.popViewController(animated: true)
         }) { error in
             if let generalError = error as? GeneralError,
@@ -223,7 +221,8 @@ extension LoginOrRegisterViewController {
         }
         viewModel.register(email: email, password: password).subscribe(onSuccess: { [weak self] (_) in
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                            title: "Registration succeeded. Please check your email for a verification link."))
+                                                                                            title: "Registration succeeded.",
+                                                                                            subtitle: "Please check your email for a verification link."))
             self?.loginTapped(email: email, password: password) // log the user in after registering
         }) { error in
             if let generalError = error as? GeneralError,

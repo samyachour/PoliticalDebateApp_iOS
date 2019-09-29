@@ -88,7 +88,8 @@ extension PointsTableViewController {
     // MARK: View constraints
 
     private func installViewConstraints() {
-        if viewModel.viewState == .standalone {
+        switch viewModel.viewState {
+        case .standalone:
             navigationItem.title = viewModel.debate.shortTitle
             navigationController?.navigationBar.tintColor = GeneralColors.softButton
             navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
@@ -96,7 +97,7 @@ extension PointsTableViewController {
             starredButton.tintColor = viewModel.starTintColor
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: starredButton)
             view.backgroundColor = GeneralColors.background
-        } else {
+        case .embeddedRebuttals:
             pointsTableView.alwaysBounceVertical = false
             view.backgroundColor = .clear
         }

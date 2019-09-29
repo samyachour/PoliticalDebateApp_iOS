@@ -274,7 +274,9 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         let sharedSortSelectionRelay = sortSelectionRelay.asDriver().asSharedSequence()
 
-        sharedSortSelectionRelay.drive(onNext: updateSortBySelection).disposed(by: disposeBag)
+        sharedSortSelectionRelay.drive(onNext: { [weak self] pickerChoice in
+            self?.updateSortBySelection(pickerChoice)
+        }).disposed(by: disposeBag)
 
         viewModel.subscribeToManualDebateUpdates(searchTriggeredRelay.asDriver(),
                                                  sharedSortSelectionRelay,

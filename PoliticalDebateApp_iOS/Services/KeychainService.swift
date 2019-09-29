@@ -9,7 +9,9 @@
 import Foundation
 import Security
 
-final class KeychainService {
+struct KeychainService {
+
+    private init() {}
 
     @discardableResult static func save(key: String, data: Data) -> OSStatus {
         let query = [

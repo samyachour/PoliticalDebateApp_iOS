@@ -113,11 +113,13 @@ class SessionManager {
                                                       password: password))
             .map(TokenPair.self)
             .do(onSuccess: { (tokenPair) in
-                // Can capture self since it's a singleton, always in memory
                 self.refreshToken = tokenPair.refreshTokenString
                 self.accessToken = tokenPair.accessTokenString
 
                 #if !TEST
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                                title: "Successfully logged in",
+                                                                                                subtitle: "Syncing your local data to the cloud, please wait..."))
                 UserDataManager.shared.syncUserDataToBackend()
                 #endif
             })

@@ -8,7 +8,9 @@
 
 import CoreData
 
-final class StarredCoreDataAPI {
+struct StarredCoreDataAPI {
+
+    private init() {}
 
     // MARK: - CRUD operations
 
