@@ -146,6 +146,7 @@ extension AccountViewController {
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Your email is unverified.",
                                                                                                     subtitle: "You won't be able to reset your password.",
+                                                                                                    duration: .seconds(seconds: 3),
                                                                                                     buttonConfig: .customTitle(title: "Resend link", action: {
                                                                                                         self?.requestVerificationLink()
                                                                                                     })

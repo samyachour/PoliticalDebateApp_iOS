@@ -91,7 +91,7 @@ class DebatesCollectionViewController: UIViewController {
         return sortByPickerView
     }()
 
-    private let searchTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Search...")
+    private let searchTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Search...", returnKeyType: .search)
 
     private let searchButtonBar: UIToolbar = {
         let searchButtonBar = UIToolbar()
@@ -113,15 +113,22 @@ class DebatesCollectionViewController: UIViewController {
 
     private let collectionViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
 
-    private let debatesCollectionView: UICollectionView = {
+    private var orientedCollectionViewItemSize: CGSize {
+        let isPortrait = UIApplication.shared.statusBarOrientation.isPortrait
+        let widthDividend: CGFloat = isPortrait ? 2 : 3
+        let spaces: CGFloat = isPortrait ? 3 : 4
+        let cellWidthAndHeight = (UIScreen.main.bounds.width - (spaces * DebatesCollectionViewController.cellSpacing))/widthDividend
+        return CGSize(width: cellWidthAndHeight, height: cellWidthAndHeight)
+    }
+    private lazy var currentItemSize = orientedCollectionViewItemSize
+
+    private lazy var debatesCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         // Not using flow layout delegate
         layout.minimumLineSpacing = DebatesCollectionViewController.cellSpacing
         layout.minimumInteritemSpacing = DebatesCollectionViewController.cellSpacing
-        let screenWidth = UIScreen.main.bounds.width
-        let cellWidthAndHeight = (screenWidth - (3 * DebatesCollectionViewController.cellSpacing))/2
-        layout.itemSize = CGSize(width: cellWidthAndHeight, height: cellWidthAndHeight)
+        layout.itemSize = currentItemSize
 
         let debatesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         debatesCollectionView.backgroundColor = .clear
@@ -159,7 +166,7 @@ extension DebatesCollectionViewController: UITextFieldDelegate {
 }
 
 // MARK: - View constraints & binding
-extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionViewDelegate {
+extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
     // MARK: View constraints
     // swiftlint:disable:next function_body_length
@@ -236,6 +243,12 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         collectionViewContainer.fadeView(style: .vertical, percentage: 0.04)
         sortByPickerView.fadeView(style: .bottom, percentage: 0.1)
+    }
+
+    // MARK: Collection view delegate
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return orientedCollectionViewItemSize
     }
 
     // MARK: View binding
@@ -426,5 +439,17 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                 self?.view.layoutIfNeeded()
             })
         }
+    }
+}
+
+// MARK: - Device rotation
+extension DebatesCollectionViewController {
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { [weak self] _ in
+            self?.debatesCollectionView.collectionViewLayout.invalidateLayout()
+            if let orientedCollectionViewItemSize = self?.orientedCollectionViewItemSize {
+                self?.currentItemSize = orientedCollectionViewItemSize
+            }
+        })
     }
 }
