@@ -137,16 +137,15 @@ extension PointsTableViewController {
 
         pointsTableView.rx
             .modelSelected(PointTableViewCellViewModel.self)
-            .subscribe { [weak self] pointTableViewCellViewModelEvent in
-                guard let pointTableViewCellViewModel = pointTableViewCellViewModelEvent.element,
-                let debate = self?.viewModel.debate else {
+            .subscribe(onNext: { [weak self] pointTableViewCellViewModel in
+                guard let debate = self?.viewModel.debate else {
                     return
                 }
 
                 self?.navigationController?.pushViewController(PointViewController(viewModel: PointViewModel(point: pointTableViewCellViewModel.point,
                                                                                                              debate: debate)),
                                                                animated: true)
-        }.disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
 
         installTableViewDataSource()
     }
@@ -154,11 +153,7 @@ extension PointsTableViewController {
     private func installTableViewDataSource() {
         pointsTableView.register(PointTableViewCell.self, forCellReuseIdentifier: PointTableViewCell.reuseIdentifier)
         viewModel.sharedPointsDataSourceRelay
-            .subscribe({ [weak self] (pointsDataSourceEvent) in
-                guard let pointsCollectionViewCellViewModels = pointsDataSourceEvent.element else {
-                    return
-                }
-
+            .subscribe(onNext: { [weak self] (pointsCollectionViewCellViewModels) in
                 UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
                     self?.emptyStateLabel.alpha = pointsCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
                 })
@@ -170,12 +165,12 @@ extension PointsTableViewController {
                                                 cell.viewModel = viewModel
             }.disposed(by: disposeBag)
 
-        viewModel.pointsRetrievalErrorRelay.subscribe { errorEvent in
-            if let generalError = errorEvent.element as? GeneralError,
+        viewModel.pointsRetrievalErrorRelay.subscribe(onNext: { error in
+            if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {
                 return
             }
-            guard let moyaError = errorEvent.element as? MoyaError,
+            guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
                     ErrorHandler.showBasicRetryErrorBanner()
                     return
@@ -187,7 +182,7 @@ extension PointsTableViewController {
             default:
                 ErrorHandler.showBasicRetryErrorBanner()
             }
-        }.disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
     }
 
     @objc private func starredButtonTapped() {

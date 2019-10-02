@@ -304,9 +304,8 @@ extension LoginOrRegisterViewController {
 
         loginOrRegisterButton.addTarget(self, action: #selector(loginOrRegisterButtonTapped), for: .touchUpInside)
 
-        viewModel.loginOrRegisterStateRelay.subscribe { [weak self] (newStateEvent) in
-            guard let newLoginOrRegisterState = newStateEvent.element,
-                let self = self else {
+        viewModel.loginOrRegisterStateRelay.subscribe(onNext: { [weak self] (newLoginOrRegisterState) in
+            guard let self = self else {
                     return
             }
 
@@ -335,7 +334,7 @@ extension LoginOrRegisterViewController {
                 // In case we just animated the alpha to 0
                 self.infoButton.button.isHidden = !shouldShowConfirmPasswordField
             }
-            }.disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
     }
 
     @objc private func loginOrRegisterButtonTapped() {

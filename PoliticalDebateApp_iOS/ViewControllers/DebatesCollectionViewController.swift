@@ -245,7 +245,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         sortByPickerView.fadeView(style: .bottom, percentage: 0.1)
     }
 
-    // MARK: Collection view delegate
+    // MARK: Collection view flow layout delegate
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return orientedCollectionViewItemSize
@@ -259,14 +259,13 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         sessionManager.isActiveRelay
             .distinctUntilChanged()
-            .subscribe { [weak self] isActive in
-                guard let isActive = isActive.element else { return }
+            .subscribe(onNext: { [weak self] isActive in
                 if isActive {
                     self?.navigationItem.rightBarButtonItem = self?.accountButton.barButton
                 } else {
                     self?.navigationItem.rightBarButtonItem = self?.loginButton.barButton
                 }
-            }.disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
 
         loginButton.button.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         accountButton.button.addTarget(self, action: #selector(accountTapped), for: .touchUpInside)
@@ -278,9 +277,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                 optionLabel
             }.disposed(by: disposeBag)
 
-        sortByPickerView.rx.itemSelected.subscribe({ [weak self] itemEvent in
-            guard let item = itemEvent.element else { return }
-
+        sortByPickerView.rx.itemSelected.subscribe(onNext: { [weak self] item in
             self?.activateSearch() // make sure we search w/ the latest value
             self?.sortSelectionRelay.accept(SortByOption(rawValue: item.row) ?? SortByOption.defaultValue)
         }).disposed(by: disposeBag)
@@ -295,10 +292,9 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                                                  sharedSortSelectionRelay,
                                                  manualRefreshRelay.asDriver())
 
-        animationBlocksRelay.subscribe { animationEvent in
-            guard let animationBlock = animationEvent.element else { return }
+        animationBlocksRelay.subscribe(onNext: { animationBlock in
             animationBlock()
-        }.disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
 
         debatesRefreshControl.addTarget(self, action: #selector(userPulledToRefresh), for: .valueChanged)
         debatesCollectionView.refreshControl = debatesRefreshControl
@@ -307,15 +303,13 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         debatesCollectionView.rx
             .modelSelected(DebateCollectionViewCellViewModel.self)
-            .subscribe { [weak self] (debateCollectionViewCellViewModelEvent) in
-                guard let debateCollectionViewCellViewModel = debateCollectionViewCellViewModelEvent.element else { return }
-
+            .subscribe(onNext: { [weak self] (debateCollectionViewCellViewModel) in
                 self?.navigationController?
                     .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debateCollectionViewCellViewModel.debate,
                                                                                                   isStarred: debateCollectionViewCellViewModel.isStarred,
                                                                                                   viewState: .standalone)),
                                         animated: true)
-        }.disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
 
         installCollectionViewDataSource()
     }
@@ -345,11 +339,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     private func installCollectionViewDataSource() {
         debatesCollectionView.register(DebateCollectionViewCell.self, forCellWithReuseIdentifier: DebateCollectionViewCell.reuseIdentifier)
         viewModel.sharedDebatesDataSourceRelay
-            .subscribe({ [weak self] (debatesDataSourceEvent) in
-                guard let debateCollectionViewCellViewModels = debatesDataSourceEvent.element else {
-                    return
-                }
-
+            .subscribe(onNext: { [weak self] (debateCollectionViewCellViewModels) in
                 self?.debatesRefreshControl.endRefreshing()
                 UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
                     self?.emptyStateLabel.alpha = debateCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
@@ -362,14 +352,14 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             cell.viewModel = viewModel
         }.disposed(by: disposeBag)
 
-        viewModel.debatesRetrievalErrorRelay.subscribe { [weak self] errorEvent in
+        viewModel.debatesRetrievalErrorRelay.subscribe(onNext: { [weak self] error in
             self?.debatesRefreshControl.endRefreshing()
 
-            if let generalError = errorEvent.element as? GeneralError,
+            if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {
                 return
             }
-            guard let moyaError = errorEvent.element as? MoyaError,
+            guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
                     ErrorHandler.showBasicRetryErrorBanner()
                     return
@@ -381,7 +371,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             default:
                 ErrorHandler.showBasicRetryErrorBanner()
             }
-        }.disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
     }
 
     // MARK: - UI Animation handling
