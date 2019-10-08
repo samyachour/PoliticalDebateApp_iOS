@@ -13,9 +13,9 @@ import RxSwift
 var appBaseURL: String {
     #if DEBUG
 //     return "http://localhost:8000/api/"
-    return "https://politicaldebateapp-backend-debug.herokuapp.com/api/"
+    return "https://politicaldebateapp-debug.herokuapp.com/api/"
     #else
-    return "https://politicaldebateapp-backend-prod.herokuapp.com/api/"
+    return "https://politicaldebateapp-prod.herokuapp.com/api/"
     #endif
 }
 
