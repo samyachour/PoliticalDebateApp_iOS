@@ -238,6 +238,7 @@ class UserDataManager {
             NotificationBannerQueue.shared
                 .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                   title: "Could not sync your local starred data to the server.",
+                                                                  subtitle: "Please try logging out and back in again.",
                                                                   buttonConfig: NotificationBannerViewModel
                                                                     .ButtonConfiguration.customTitle(title: GeneralCopies.retryTitle,
                                                                                                      action: {
@@ -267,6 +268,7 @@ class UserDataManager {
                 NotificationBannerQueue.shared
                     .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                       title: "Could not sync your local progress data to the server.",
+                                                                      subtitle: "Please try logging out and back in again.",
                                                                       buttonConfig: NotificationBannerViewModel
                                                                         .ButtonConfiguration.customTitle(title: GeneralCopies.retryTitle,
                                                                                                          action: {

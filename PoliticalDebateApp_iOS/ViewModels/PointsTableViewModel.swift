@@ -56,10 +56,8 @@ class PointsTableViewModel: StarrableViewModel {
                 let seenPointsMatch = lhs.1 == rhs.1
 
                 return pointsMatch && seenPointsMatch
-        }.subscribe(onNext: { [weak self] (pointsAndSeenPoints) in
+        }.subscribe(onNext: { [weak self] (points, seenPoints) in
             guard let debatePrimaryKey = self?.debate.primaryKey else { return }
-
-            let (points, seenPoints) = pointsAndSeenPoints
 
             self?.pointsDataSourceRelay.accept(points.map({ PointTableViewCellViewModel(point: $0,
                                                                                         debatePrimaryKey: debatePrimaryKey,

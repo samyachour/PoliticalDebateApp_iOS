@@ -24,12 +24,10 @@ extension KeyboardReactable where Self: UIViewController {
 
         Observable.merge([keyboardWillShowProducer, keyboardWillHideProducer])
             .withLatestFrom(latestYOffsetRelay, resultSelector: { notification, latestYOffsetValue in (notification, latestYOffsetValue)})
-            .subscribe(onNext: { [weak self] (keyboardNotificationAndLatestYOffset) in
+            .subscribe(onNext: { [weak self] (notification, latestYOffsetValue) in
                 guard self?.view.window != nil else { // make sure view is onscreen
                         return
                 }
-
-                let (notification, latestYOffsetValue) = keyboardNotificationAndLatestYOffset
 
                 if notification.name == UIResponder.keyboardWillShowNotification {
                     guard let activeTextField = self?.activeTextField,
