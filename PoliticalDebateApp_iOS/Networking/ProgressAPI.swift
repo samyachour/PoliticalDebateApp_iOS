@@ -30,9 +30,9 @@ extension ProgressAPI: CustomTargetType {
         switch self {
         case .saveProgress,
              .loadAllProgress:
-            return "progress/"
+            return "v1/progress/"
         case .saveBatchProgress:
-            return "progress/batch/"
+            return "v1/progress/batch/"
         }
     }
 

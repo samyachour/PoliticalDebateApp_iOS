@@ -29,7 +29,7 @@ extension StarredAPI: CustomTargetType {
         switch self {
         case .starOrUnstarDebates,
              .loadAllStarred:
-            return "starred/"
+            return "v1/starred/"
         }
     }
 
