@@ -93,24 +93,6 @@ class DebatesCollectionViewController: UIViewController {
 
     private let searchTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Search...", returnKeyType: .search)
 
-    private let searchButtonBar: UIToolbar = {
-        let searchButtonBar = UIToolbar()
-        let searchButton = UIBarButtonItem(title: "Search",
-                                           style: .plain,
-                                           target: self,
-                                           action: #selector(activateSearch))
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace,
-                                            target: self,
-                                            action: nil)
-
-        searchButton.tintColor = GeneralColors.hardButton
-        searchButton.setTitleTextAttributes([.font : GeneralFonts.button], for: .normal)
-        searchButtonBar.items = [flexibleSpace, searchButton]
-        searchButtonBar.sizeToFit()
-        searchButtonBar.barTintColor = GeneralColors.navBarTint
-        return searchButtonBar
-    }()
-
     private let collectionViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
 
     private var orientedCollectionViewItemSize: CGSize {
@@ -256,7 +238,6 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     // swiftlint:disable:next function_body_length
     private func installViewBinds() {
         searchTextField.delegate = self
-        searchTextField.inputAccessoryView = searchButtonBar
 
         sessionManager.isActiveRelay
             .distinctUntilChanged()
