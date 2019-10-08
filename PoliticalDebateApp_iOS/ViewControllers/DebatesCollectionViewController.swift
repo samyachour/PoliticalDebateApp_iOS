@@ -233,6 +233,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         debatesCollectionView.topAnchor.constraint(equalTo: collectionViewContainer.topAnchor).isActive = true
         debatesCollectionView.trailingAnchor.constraint(equalTo: collectionViewContainer.trailingAnchor).isActive = true
         debatesCollectionView.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor).isActive = true
+        debatesCollectionView.alpha = 0.0
 
         emptyStateLabel.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
         emptyStateLabel.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
@@ -343,6 +344,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                 self?.debatesRefreshControl.endRefreshing()
                 UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
                     self?.emptyStateLabel.alpha = debateCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
+                    self?.debatesCollectionView.alpha = debateCollectionViewCellViewModels.isEmpty ? 0.0 : 1.0
                 })
             }).disposed(by: disposeBag)
 

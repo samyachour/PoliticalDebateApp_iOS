@@ -119,6 +119,7 @@ extension PointsTableViewController {
         pointsTableView.topAnchor.constraint(equalTo: tableViewContainer.topAnchor).isActive = true
         pointsTableView.trailingAnchor.constraint(equalTo: tableViewContainer.trailingAnchor).isActive = true
         pointsTableView.bottomAnchor.constraint(equalTo: tableViewContainer.bottomAnchor).isActive = true
+        pointsTableView.alpha = 0.0
 
         emptyStateLabel.centerXAnchor.constraint(equalTo: tableViewContainer.centerXAnchor).isActive = true
         emptyStateLabel.centerYAnchor.constraint(equalTo: tableViewContainer.centerYAnchor).isActive = true
@@ -153,9 +154,10 @@ extension PointsTableViewController {
     private func installTableViewDataSource() {
         pointsTableView.register(PointTableViewCell.self, forCellReuseIdentifier: PointTableViewCell.reuseIdentifier)
         viewModel.sharedPointsDataSourceRelay
-            .subscribe(onNext: { [weak self] (pointsCollectionViewCellViewModels) in
+            .subscribe(onNext: { [weak self] (pointsTableViewCellViewModels) in
                 UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
-                    self?.emptyStateLabel.alpha = pointsCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
+                    self?.emptyStateLabel.alpha = pointsTableViewCellViewModels.isEmpty ? 1.0 : 0.0
+                    self?.pointsTableView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
                 })
             }).disposed(by: disposeBag)
 
