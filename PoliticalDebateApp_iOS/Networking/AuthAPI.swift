@@ -36,29 +36,29 @@ extension AuthAPI: CustomTargetType {
 
     var baseURL: URL {
         guard let url = URL(string: appBaseURL) else { fatalError("baseURL could not be configured.") }
-        return url.appendingPathComponent("auth/")
+        return url
     }
 
     var path: String {
         switch self {
         case .tokenRefresh:
-            return "token/refresh/"
+            return "v1/auth/token/refresh/"
         case .tokenObtain:
-            return "token/obtain/"
+            return "v1/auth/token/obtain/"
         case .registerUser:
-            return "register/"
+            return "v1/auth/register/"
         case .changePassword:
-            return "change-password/"
+            return "v1/auth/change-password/"
         case .requestPasswordReset:
-            return "request-password-reset/"
+            return "v1/auth/request-password-reset/"
         case .changeEmail:
-            return "change-email/"
+            return "v1/auth/change-email/"
         case .getCurrentEmail:
-            return "get-current-email/"
+            return "v1/auth/get-current-email/"
         case .requestVerificationLink:
-            return "request-verification-link/"
+            return "v1/auth/request-verification-link/"
         case .delete:
-            return "delete/"
+            return "v1/auth/delete/"
         }
     }
 

@@ -54,10 +54,10 @@ class UserDataManager {
         if SessionManager.shared.isActiveRelay.value {
             let starred = unstar ? [] : [primaryKey]
             let unstarred = unstar ? [primaryKey] : []
-            return starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starred, unstarred: unstarred)).do(onSuccess: { (_) in
-                // Can capture self since it's a singleton, always in memory
-                self.updateStarred(primaryKey, unstar: unstar)
-            }).map { $0 as Response? }
+            return starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starred, unstarred: unstarred))
+                .do(onSuccess: { (_) in
+                    self.updateStarred(primaryKey, unstar: unstar)
+                }).map { $0 as Response? }
         } else {
             StarredCoreDataAPI.starOrUnstarDebate(primaryKey, unstar: unstar)
             updateStarred(primaryKey, unstar: unstar)
@@ -92,7 +92,6 @@ class UserDataManager {
         if SessionManager.shared.isActiveRelay.value {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in
-                    // Can capture self since it's a singleton, always in memory
                     self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
                 }).map { $0 as Response? }
         } else {
@@ -125,7 +124,6 @@ class UserDataManager {
     func loadUserData(_ completion: (() -> Void)? = nil) {
 
         let loadUserData = {
-            // Can capture self since it's a singleton, always in memory
             self.loadStarred {
                 // Called after completion in case loadStarred refreshes the access token
                 self.loadProgress {
@@ -151,7 +149,6 @@ class UserDataManager {
             starredNetworkService.makeRequest(with: .loadAllStarred)
                 .map(Starred.self)
                 .subscribe(onSuccess: { starred in
-                    // Can capture self since it's a singleton, always in memory
                     self.starred = Set(starred.starredList)
                     completion()
                 }) { error in
@@ -165,7 +162,7 @@ class UserDataManager {
             }.disposed(by: disposeBag)
         } else {
             if let localStarred = StarredCoreDataAPI.loadAllStarred() {
-                self.starred = Set(localStarred.starredList)
+                starred = Set(localStarred.starredList)
             } else {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't load your starred debates from local data."))
@@ -211,25 +208,28 @@ class UserDataManager {
     // MARK: - Synchronizing local data w/ backend
 
     func syncUserDataToBackend() {
-        syncLocalStarredDataToBackend {
-            // Can capture self since it's a singleton, always in memory
-            self.syncLocalProgressDataToBackend {
+        syncLocalStarredDataToBackend { starredSuccess in
+            self.syncLocalProgressDataToBackend { progressSuccess in
+                if starredSuccess && progressSuccess {
+                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                                    title: "Successfully synced your local data to the cloud."))
+                }
                 // Need to make sure we've posted to the backend before retrieving the latest user data from it
                 self.loadUserData() // Backend syncing is typically called after the user is newly authenticated
             }
         }
     }
 
-    private func syncLocalStarredDataToBackend(_ completion: @escaping () -> Void) {
+    private func syncLocalStarredDataToBackend(_ completion: @escaping (Bool) -> Void) {
         guard !starred.isEmpty else {
-            completion()
+            completion(true)
             return
         }
 
         starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starredArray, unstarred: [])).subscribe(onSuccess: { (_) in
             // We've successfully sync'd the local data to the backend, now we can clear it
             StarredCoreDataAPI.clearAllStarred()
-            completion()
+            completion(true)
         }) { (error) in
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {
@@ -238,19 +238,20 @@ class UserDataManager {
             NotificationBannerQueue.shared
                 .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                   title: "Could not sync your local starred data to the server.",
+                                                                  subtitle: "Please try logging out and back in again.",
                                                                   buttonConfig: NotificationBannerViewModel
                                                                     .ButtonConfiguration.customTitle(title: GeneralCopies.retryTitle,
                                                                                                      action: {
                                                                                                         self.syncLocalStarredDataToBackend(completion)
                                                                     })))
-            completion()
+            completion(false)
         }.disposed(by: disposeBag)
     }
 
-    private func syncLocalProgressDataToBackend(_ completion: @escaping () -> Void) {
+    private func syncLocalProgressDataToBackend(_ completion: @escaping (Bool) -> Void) {
         let legitimateProgress = allProgressArray.filter({ !($0.seenPoints).isEmpty })
         guard !legitimateProgress.isEmpty else {
-            completion()
+            completion(true)
             return
         }
 
@@ -258,7 +259,7 @@ class UserDataManager {
             .subscribe(onSuccess: { (_) in
                 // We've successfully sync'd the local data to the backend, now we can clear it
                 ProgressCoreDataAPI.clearAllProgress()
-                completion()
+                completion(true)
             }) { (error) in
                 if let generalError = error as? GeneralError,
                     generalError == .alreadyHandled {
@@ -267,12 +268,13 @@ class UserDataManager {
                 NotificationBannerQueue.shared
                     .enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                       title: "Could not sync your local progress data to the server.",
+                                                                      subtitle: "Please try logging out and back in again.",
                                                                       buttonConfig: NotificationBannerViewModel
                                                                         .ButtonConfiguration.customTitle(title: GeneralCopies.retryTitle,
                                                                                                          action: {
                                                                                                             self.syncLocalProgressDataToBackend(completion)
                                                                         })))
-                completion()
+                completion(false)
         }.disposed(by: disposeBag)
     }
 }

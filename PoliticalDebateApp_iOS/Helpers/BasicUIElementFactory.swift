@@ -28,7 +28,7 @@ class BasicUIElementFactory {
         return forgotPasswordButton
     }
 
-    static func generateTextField(placeholder: String, secureTextEntry: Bool = false) -> UITextField {
+    static func generateTextField(placeholder: String, secureTextEntry: Bool = false, returnKeyType: UIReturnKeyType = .default) -> UITextField {
         let basicTextField = UITextField(frame: .zero)
         basicTextField.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                                   attributes: [
@@ -38,6 +38,7 @@ class BasicUIElementFactory {
         basicTextField.textColor = GeneralColors.hardButton
         basicTextField.borderStyle = .roundedRect
         basicTextField.isSecureTextEntry = secureTextEntry
+        basicTextField.returnKeyType = returnKeyType
         return basicTextField
     }
 

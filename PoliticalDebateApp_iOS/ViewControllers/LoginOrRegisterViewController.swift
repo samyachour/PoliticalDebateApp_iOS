@@ -190,8 +190,6 @@ extension LoginOrRegisterViewController {
 
     private func loginTapped(email: String, password: String) {
         viewModel.login(with: email, password: password).subscribe(onSuccess: { [weak self] _ in
-            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                            title: "Successfully logged in"))
             self?.navigationController?.popViewController(animated: true)
         }) { error in
             if let generalError = error as? GeneralError,
@@ -223,7 +221,8 @@ extension LoginOrRegisterViewController {
         }
         viewModel.register(email: email, password: password).subscribe(onSuccess: { [weak self] (_) in
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                            title: "Registration succeeded. Please check your email for a verification link."))
+                                                                                            title: "Registration succeeded.",
+                                                                                            subtitle: "Please check your email for a verification link."))
             self?.loginTapped(email: email, password: password) // log the user in after registering
         }) { error in
             if let generalError = error as? GeneralError,
@@ -305,9 +304,8 @@ extension LoginOrRegisterViewController {
 
         loginOrRegisterButton.addTarget(self, action: #selector(loginOrRegisterButtonTapped), for: .touchUpInside)
 
-        viewModel.loginOrRegisterStateRelay.subscribe { [weak self] (newStateEvent) in
-            guard let newLoginOrRegisterState = newStateEvent.element,
-                let self = self else {
+        viewModel.loginOrRegisterStateRelay.subscribe(onNext: { [weak self] (newLoginOrRegisterState) in
+            guard let self = self else {
                     return
             }
 
@@ -336,7 +334,7 @@ extension LoginOrRegisterViewController {
                 // In case we just animated the alpha to 0
                 self.infoButton.button.isHidden = !shouldShowConfirmPasswordField
             }
-            }.disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
     }
 
     @objc private func loginOrRegisterButtonTapped() {

@@ -110,6 +110,7 @@ class DebateCollectionViewCell: UICollectionViewCell {
         super.layoutSubviews()
 
         gradientLayer.frame = contentView.bounds
+        debateProgressView.fadeView(style: .top, percentage: 0.2)
     }
 
     private func installViewBinds() {

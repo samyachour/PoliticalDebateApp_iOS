@@ -24,11 +24,8 @@ extension KeyboardReactable where Self: UIViewController {
 
         Observable.merge([keyboardWillShowProducer, keyboardWillHideProducer])
             .withLatestFrom(latestYOffsetRelay, resultSelector: { notification, latestYOffsetValue in (notification, latestYOffsetValue)})
-            .subscribe({ [weak self] (event) in
-                guard let notification = event.element?.0,
-                    let latestYOffsetValue = event.element?.1,
-                    // Make sure view is on screen
-                    self?.view.window != nil else {
+            .subscribe(onNext: { [weak self] (notification, latestYOffsetValue) in
+                guard self?.view.window != nil else { // make sure view is onscreen
                         return
                 }
 

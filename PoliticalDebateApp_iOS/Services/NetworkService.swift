@@ -11,12 +11,11 @@ import RxCocoa
 import RxSwift
 
 var appBaseURL: String {
-    // TODO: Change URLs
     #if DEBUG
-    // In our build phases we have a script that runs after ProcessInfoPlistFile & allows ATS HTTP for the Debug environment
-    return "http://localhost:8000/api/v1/"
+//     return "http://localhost:8000/api/"
+    return "https://politicaldebateapp-debug.herokuapp.com/api/"
     #else
-    return "https://server:8000/api/v1/"
+    return "https://politicaldebateapp.herokuapp.com/api/"
     #endif
 }
 

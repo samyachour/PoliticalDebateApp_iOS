@@ -56,17 +56,13 @@ class PointsTableViewModel: StarrableViewModel {
                 let seenPointsMatch = lhs.1 == rhs.1
 
                 return pointsMatch && seenPointsMatch
-            }.subscribe { [weak self] latestPointsEvent in
-                guard let points = latestPointsEvent.element?.0,
-                    let seenPoints = latestPointsEvent.element?.1,
-                    let debatePrimaryKey = self?.debate.primaryKey else {
-                        return
-                }
+        }.subscribe(onNext: { [weak self] (points, seenPoints) in
+            guard let debatePrimaryKey = self?.debate.primaryKey else { return }
 
-                self?.pointsDataSourceRelay.accept(points.map({ PointTableViewCellViewModel(point: $0,
-                                                                                            debatePrimaryKey: debatePrimaryKey,
-                                                                                            seenPoints: seenPoints) }))
-        }.disposed(by: disposeBag)
+            self?.pointsDataSourceRelay.accept(points.map({ PointTableViewCellViewModel(point: $0,
+                                                                                        debatePrimaryKey: debatePrimaryKey,
+                                                                                        seenPoints: seenPoints) }))
+        }).disposed(by: disposeBag)
     }
 
     // MARK: - API calls

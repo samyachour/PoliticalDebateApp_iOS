@@ -36,9 +36,9 @@ extension DebateAPI: CustomTargetType {
     var path: String {
         switch self {
         case .debate:
-            return "debate/"
+            return "v1/debate/"
         case .debateFilter:
-            return "debate/filter/"
+            return "v1/debate/filter/"
         }
     }
 

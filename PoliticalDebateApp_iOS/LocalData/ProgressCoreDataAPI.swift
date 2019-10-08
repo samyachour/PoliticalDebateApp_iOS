@@ -8,7 +8,9 @@
 
 import CoreData
 
-final class ProgressCoreDataAPI {
+struct ProgressCoreDataAPI {
+
+    private init() {}
 
     // MARK: - CRUD operations
 
