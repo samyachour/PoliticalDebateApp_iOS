@@ -1,0 +1,1477 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2E0A9D52230D1F4900D10CC8 /* TokenObtain.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4B230D1F4600D10CC8 /* TokenObtain.json */; };
+		2E0A9D53230D1F4900D10CC8 /* TokenObtain.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4B230D1F4600D10CC8 /* TokenObtain.json */; };
+		2E0A9D57230D1F4900D10CC8 /* DebateSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4D230D1F4600D10CC8 /* DebateSingle.json */; };
+		2E0A9D58230D1F4900D10CC8 /* DebateFilter.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4E230D1F4700D10CC8 /* DebateFilter.json */; };
+		2E0A9D59230D1F4900D10CC8 /* DebateFilter.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4E230D1F4700D10CC8 /* DebateFilter.json */; };
+		2E0A9D5A230D1F4900D10CC8 /* ProgressAll.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4F230D1F4700D10CC8 /* ProgressAll.json */; };
+		2E0A9D5B230D1F4900D10CC8 /* ProgressAll.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4F230D1F4700D10CC8 /* ProgressAll.json */; };
+		2E0A9D5C230D1F4900D10CC8 /* TokenRefresh.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D50230D1F4800D10CC8 /* TokenRefresh.json */; };
+		2E0A9D5D230D1F4900D10CC8 /* TokenRefresh.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D50230D1F4800D10CC8 /* TokenRefresh.json */; };
+		2E0A9D5E230D1F4900D10CC8 /* Starred.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D51230D1F4800D10CC8 /* Starred.json */; };
+		2E0A9D5F230D1F4900D10CC8 /* Starred.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D51230D1F4800D10CC8 /* Starred.json */; };
+		2E0A9D60230D1FC900D10CC8 /* StubAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F56226B29A30007BCAF /* StubAccess.swift */; };
+		2E0A9D62230D211400D10CC8 /* Empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D61230D211400D10CC8 /* Empty.json */; };
+		2E0A9D63230D211400D10CC8 /* Empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D61230D211400D10CC8 /* Empty.json */; };
+		2E0D848422A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */; };
+		2E0D848622A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848522A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift */; };
+		2E0D848822A7054A00E4B0E7 /* UIFont+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */; };
+		2E0D848A22A7057300E4B0E7 /* UIColor+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */; };
+		2E0D84BA22A7952400E4B0E7 /* LoginOrRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84B922A7952400E4B0E7 /* LoginOrRegisterViewController.swift */; };
+		2E0D84BC22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BB22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift */; };
+		2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */; };
+		2E0D84C022A7954300E4B0E7 /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */; };
+		2E12D7C32309DB000078B0DD /* PointsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E12D7C22309DB000078B0DD /* PointsTableViewController.swift */; };
+		2E12D7C42309DB000078B0DD /* PointsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E12D7C22309DB000078B0DD /* PointsTableViewController.swift */; };
+		2E12D7C62309DB310078B0DD /* PointsTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E12D7C52309DB310078B0DD /* PointsTableViewModel.swift */; };
+		2E12D7C72309DB310078B0DD /* PointsTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E12D7C52309DB310078B0DD /* PointsTableViewModel.swift */; };
+		2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */; };
+		2E23A6C5226AC7B300B2DCC3 /* DebatesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C4226AC7B300B2DCC3 /* DebatesCollectionViewController.swift */; };
+		2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */; };
+		2E23A6CD226AC7B300B2DCC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6CC226AC7B300B2DCC3 /* Assets.xcassets */; };
+		2E23A6D0226AC7B300B2DCC3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6CE226AC7B300B2DCC3 /* LaunchScreen.storyboard */; };
+		2E23A6DB226AC7B400B2DCC3 /* NetworkAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6DA226AC7B400B2DCC3 /* NetworkAPITests.swift */; };
+		2E23A6E6226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6E5226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift */; };
+		2E23A6F6226AC7D400B2DCC3 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6F3226AC7D400B2DCC3 /* .swiftlint.yml */; };
+		2E23A6F7226AC7D400B2DCC3 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6F4226AC7D400B2DCC3 /* .gitignore */; };
+		2E23A6F8226AC7D400B2DCC3 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2E23A6F5226AC7D400B2DCC3 /* README.md */; };
+		2E23A702226ACE5600B2DCC3 /* Debate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A701226ACE5600B2DCC3 /* Debate.swift */; };
+		2E23A705226AD39200B2DCC3 /* DebateAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A704226AD39200B2DCC3 /* DebateAPI.swift */; };
+		2E23A708226ADA6200B2DCC3 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A707226ADA6200B2DCC3 /* NetworkService.swift */; };
+		2E23A713226AE36600B2DCC3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A712226AE36600B2DCC3 /* Constants.swift */; };
+		2E287CBD22DC4A7B000A4CF2 /* BannerOnScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CB922DC4A7A000A4CF2 /* BannerOnScreen.swift */; };
+		2E287CBE22DC4A7B000A4CF2 /* NotificationBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CBA22DC4A7B000A4CF2 /* NotificationBannerView.swift */; };
+		2E287CBF22DC4A7B000A4CF2 /* NotificationBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CBB22DC4A7B000A4CF2 /* NotificationBannerViewModel.swift */; };
+		2E287CC022DC4A7B000A4CF2 /* NotificationBannerQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CBC22DC4A7B000A4CF2 /* NotificationBannerQueue.swift */; };
+		2E2BB06222F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */; };
+		2E2BB06422F2C05C00ED02C0 /* KeyboardReactableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */; };
+		2E2BB06622F2C95D00ED02C0 /* BasicUIElementFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */; };
+		2E2BB06822F2D66800ED02C0 /* BackendErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06722F2D66800ED02C0 /* BackendErrorMessage.swift */; };
+		2E2E6DC222FC07880048B769 /* UIView+Fade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E6DC122FC07880048B769 /* UIView+Fade.swift */; };
+		2E2E6DC422FC0B710048B769 /* CAGradientLayer+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */; };
+		2E2E6DC52300D1110048B769 /* DebateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5EC05222FA783600B41D54 /* DebateCollectionViewCell.swift */; };
+		2E2E6DC62300D1140048B769 /* DebateCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5EC05622FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift */; };
+		2E2E6DC72300D1190048B769 /* UIView+Fade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E6DC122FC07880048B769 /* UIView+Fade.swift */; };
+		2E2E6DC82300D1320048B769 /* CAGradientLayer+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */; };
+		2E30A8E522BF4587007E386A /* StarredCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */; };
+		2E30A8E922BF4773007E386A /* SafelyShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */; };
+		2E30A8FC22BF4BED007E386A /* DebatesCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848522A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift */; };
+		2E30A8FD22BF4BED007E386A /* LoginOrRegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BB22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift */; };
+		2E30A8FE22BF4BED007E386A /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */; };
+		2E30A8FF22BF4BED007E386A /* DebatesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C4226AC7B300B2DCC3 /* DebatesCollectionViewController.swift */; };
+		2E30A90022BF4BED007E386A /* LoginOrRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84B922A7952400E4B0E7 /* LoginOrRegisterViewController.swift */; };
+		2E30A90122BF4BED007E386A /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */; };
+		2E30A90222BF4BED007E386A /* Debate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A701226ACE5600B2DCC3 /* Debate.swift */; };
+		2E30A90322BF4BED007E386A /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
+		2E30A90422BF4BED007E386A /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796422A4B278008190FE /* Progress.swift */; };
+		2E30A90522BF4BED007E386A /* Starred.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796622A4B280008190FE /* Starred.swift */; };
+		2E30A90622BF4BED007E386A /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967438226BD34E00821A73 /* SessionManager.swift */; };
+		2E30A90722BF4BED007E386A /* UserDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967441226BE91C00821A73 /* UserDataManager.swift */; };
+		2E30A90922BF4BED007E386A /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A707226ADA6200B2DCC3 /* NetworkService.swift */; };
+		2E30A90A22BF4BED007E386A /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743A226BDA8A00821A73 /* KeychainService.swift */; };
+		2E30A90D22BF4BED007E386A /* StarredCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */; };
+		2E30A90E22BF4BED007E386A /* DebateAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A704226AD39200B2DCC3 /* DebateAPI.swift */; };
+		2E30A91022BF4BED007E386A /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
+		2E30A91222BF4BED007E386A /* ProgressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094622A4931100DF486A /* ProgressAPI.swift */; };
+		2E30A91422BF4BED007E386A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
+		2E30A91622BF4BED007E386A /* NSLayoutConstraint+Priority.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */; };
+		2E30A91722BF4BED007E386A /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
+		2E30A91822BF4BED007E386A /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
+		2E30A91922BF4BED007E386A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A712226AE36600B2DCC3 /* Constants.swift */; };
+		2E30A91A22BF4BED007E386A /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* String+Date.swift */; };
+		2E30A91B22BF4BED007E386A /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
+		2E30A91C22BF4BED007E386A /* UIFont+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */; };
+		2E30A91D22BF4BED007E386A /* UIColor+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */; };
+		2E30A91E22BF4BED007E386A /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C522BBD5180087BC56 /* DebugLog.swift */; };
+		2E30A91F22BF4BED007E386A /* SafelyShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */; };
+		2E30A92022BF4BED007E386A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */; };
+		2E30A92222BFE168007E386A /* ProgressCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */; };
+		2E30A92422BFE25A007E386A /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */; };
+		2E30A92522BFE33F007E386A /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743F226BE91000821A73 /* CoreDataService.swift */; };
+		2E36796522A4B278008190FE /* Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796422A4B278008190FE /* Progress.swift */; };
+		2E36796722A4B280008190FE /* Starred.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796622A4B280008190FE /* Starred.swift */; };
+		2E3A0C8A22D707BC00087B2A /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3A0C8922D707BC00087B2A /* Point.swift */; };
+		2E3A0C8B22D7087D00087B2A /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3A0C8922D707BC00087B2A /* Point.swift */; };
+		2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* String+Date.swift */; };
+		2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
+		2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F56226B29A30007BCAF /* StubAccess.swift */; };
+		2E5EC04822FA732900B41D54 /* BasicUIElementFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */; };
+		2E5EC04922FA734100B41D54 /* KeyboardReactableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */; };
+		2E5EC04A22FA734D00B41D54 /* EmailAndPasswordValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */; };
+		2E5EC04B22FA735200B41D54 /* NotificationBannerQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CBC22DC4A7B000A4CF2 /* NotificationBannerQueue.swift */; };
+		2E5EC04C22FA735700B41D54 /* NotificationBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CBB22DC4A7B000A4CF2 /* NotificationBannerViewModel.swift */; };
+		2E5EC04D22FA735D00B41D54 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7890722D059FE009402F1 /* ErrorHandler.swift */; };
+		2E5EC04E22FA736E00B41D54 /* BannerOnScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CB922DC4A7A000A4CF2 /* BannerOnScreen.swift */; };
+		2E5EC04F22FA737600B41D54 /* ButtonWithActionClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */; };
+		2E5EC05022FA737A00B41D54 /* BackendErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2BB06722F2D66800ED02C0 /* BackendErrorMessage.swift */; };
+		2E5EC05122FA738E00B41D54 /* NotificationBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E287CBA22DC4A7B000A4CF2 /* NotificationBannerView.swift */; };
+		2E5EC05322FA783600B41D54 /* DebateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5EC05222FA783600B41D54 /* DebateCollectionViewCell.swift */; };
+		2E5EC05722FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5EC05622FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift */; };
+		2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094622A4931100DF486A /* ProgressAPI.swift */; };
+		2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69094C22A4932700DF486A /* StarredAPI.swift */; };
+		2E6FD0E02336D75400196643 /* DeepLinkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6FD0DF2336D75400196643 /* DeepLinkService.swift */; };
+		2E892109230E6ABF00DD9556 /* CurrentEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E892108230E6ABF00DD9556 /* CurrentEmail.swift */; };
+		2E89210A230E6B2900DD9556 /* CurrentEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E892108230E6ABF00DD9556 /* CurrentEmail.swift */; };
+		2E89210C230E6BBB00DD9556 /* GetCurrentEmail.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */; };
+		2E89210D230E6BFF00DD9556 /* DebateSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4D230D1F4600D10CC8 /* DebateSingle.json */; };
+		2E89210E230E6C0200DD9556 /* GetCurrentEmail.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */; };
+		2E967439226BD34E00821A73 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967438226BD34E00821A73 /* SessionManager.swift */; };
+		2E96743B226BDA8A00821A73 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743A226BDA8A00821A73 /* KeychainService.swift */; };
+		2E967440226BE91000821A73 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743F226BE91000821A73 /* CoreDataService.swift */; };
+		2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967441226BE91C00821A73 /* UserDataManager.swift */; };
+		2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
+		2EA87A35231DE39300FA6CB0 /* UIImage+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */; };
+		2EA87A36231DE39700FA6CB0 /* PointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */; };
+		2EA87A37231DE3CC00FA6CB0 /* PointTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A16F2311F19C00DD8E4A /* PointTableViewCellViewModel.swift */; };
+		2EA87A38231DE3EB00FA6CB0 /* PointViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC682231B3D2200438154 /* PointViewModel.swift */; };
+		2EA87A39231DE3EE00FA6CB0 /* PointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC684231B3D2D00438154 /* PointViewController.swift */; };
+		2EA87A3A231DE40300FA6CB0 /* SinglePointImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */; };
+		2EA87A3B231DE40600FA6CB0 /* SinglePointImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */; };
+		2EA87A3D231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */; };
+		2EA87A40231DF31700FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */; };
+		2EAF701B2324E13B00398D6B /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701A2324E13B00398D6B /* UserDefaultsManager.swift */; };
+		2EAF701D2325A5BF00398D6B /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */; };
+		2EAF701F2325AE5900398D6B /* StarrableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */; };
+		2EAF70232327853D00398D6B /* Collection+SafeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */; };
+		2EAF70592329EE7400398D6B /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF704D2329EE7300398D6B /* Roboto-Thin.ttf */; };
+		2EAF705A2329EE7400398D6B /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF704E2329EE7300398D6B /* Roboto-Regular.ttf */; };
+		2EAF705B2329EE7400398D6B /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF704F2329EE7300398D6B /* Roboto-ThinItalic.ttf */; };
+		2EAF705C2329EE7400398D6B /* Roboto-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70502329EE7300398D6B /* Roboto-RegularItalic.ttf */; };
+		2EAF705D2329EE7400398D6B /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70512329EE7300398D6B /* Roboto-LightItalic.ttf */; };
+		2EAF705E2329EE7400398D6B /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70522329EE7300398D6B /* Roboto-BoldItalic.ttf */; };
+		2EAF70602329EE7400398D6B /* Roboto-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70542329EE7300398D6B /* Roboto-Light.ttf */; };
+		2EAF70622329EE7400398D6B /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70562329EE7400398D6B /* Roboto-Medium.ttf */; };
+		2EAF70632329EE7400398D6B /* Roboto-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70572329EE7400398D6B /* Roboto-MediumItalic.ttf */; };
+		2EAF70642329EE7400398D6B /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70582329EE7400398D6B /* Roboto-Bold.ttf */; };
+		2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C522BBD5180087BC56 /* DebugLog.swift */; };
+		2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
+		2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
+		2EC7890822D059FE009402F1 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7890722D059FE009402F1 /* ErrorHandler.swift */; };
+		2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
+		2EE1A1702311F19C00DD8E4A /* PointTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A16F2311F19C00DD8E4A /* PointTableViewCellViewModel.swift */; };
+		2EE1A1722311F1AB00DD8E4A /* PointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */; };
+		2EE1A1742312043100DD8E4A /* UIImage+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */; };
+		2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */; };
+		2EEEC683231B3D2200438154 /* PointViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC682231B3D2200438154 /* PointViewModel.swift */; };
+		2EEEC685231B3D2D00438154 /* PointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC684231B3D2D00438154 /* PointViewController.swift */; };
+		2EEEC689231CDF4600438154 /* SinglePointImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */; };
+		2EEEC68B231CDFE100438154 /* SinglePointImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */; };
+		2EF1E59B22DC688200C93DFB /* ButtonWithActionClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */; };
+		B5307AE15A1C031FA189B26E /* Pods_PoliticalDebateApp_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */; };
+		C1F8594D1844FD5A725FD14D /* Pods_PoliticalDebateApp_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B294A5E6DD428B59EE9B92B6 /* Pods_PoliticalDebateApp_iOS.framework */; };
+		C8A8D5D71259D82EE76A8AB8 /* Pods_PoliticalDebateApp_iOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E9127E5132AA34688E16C18 /* Pods_PoliticalDebateApp_iOSUITests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2E23A6D7226AC7B400B2DCC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2E23A6B7226AC7B300B2DCC3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2E23A6BE226AC7B300B2DCC3;
+			remoteInfo = PoliticalDebateApp_iOS;
+		};
+		2E23A6E2226AC7B400B2DCC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2E23A6B7226AC7B300B2DCC3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2E23A6BE226AC7B300B2DCC3;
+			remoteInfo = PoliticalDebateApp_iOS;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E9127E5132AA34688E16C18 /* Pods_PoliticalDebateApp_iOSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2162EE9CB2F8CA1A2CF41A7A /* Pods-PoliticalDebateApp_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		2E0A9D4B230D1F4600D10CC8 /* TokenObtain.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TokenObtain.json; sourceTree = "<group>"; };
+		2E0A9D4D230D1F4600D10CC8 /* DebateSingle.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DebateSingle.json; sourceTree = "<group>"; };
+		2E0A9D4E230D1F4700D10CC8 /* DebateFilter.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DebateFilter.json; sourceTree = "<group>"; };
+		2E0A9D4F230D1F4700D10CC8 /* ProgressAll.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ProgressAll.json; sourceTree = "<group>"; };
+		2E0A9D50230D1F4800D10CC8 /* TokenRefresh.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TokenRefresh.json; sourceTree = "<group>"; };
+		2E0A9D51230D1F4800D10CC8 /* Starred.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Starred.json; sourceTree = "<group>"; };
+		2E0A9D61230D211400D10CC8 /* Empty.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Empty.json; sourceTree = "<group>"; };
+		2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+Priority.swift"; sourceTree = "<group>"; };
+		2E0D848522A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebatesCollectionViewModel.swift; sourceTree = "<group>"; };
+		2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Custom.swift"; sourceTree = "<group>"; };
+		2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Custom.swift"; sourceTree = "<group>"; };
+		2E0D84B922A7952400E4B0E7 /* LoginOrRegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOrRegisterViewController.swift; sourceTree = "<group>"; };
+		2E0D84BB22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOrRegisterViewModel.swift; sourceTree = "<group>"; };
+		2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
+		2E12D7C22309DB000078B0DD /* PointsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsTableViewController.swift; sourceTree = "<group>"; };
+		2E12D7C52309DB310078B0DD /* PointsTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsTableViewModel.swift; sourceTree = "<group>"; };
+		2E23A6BF226AC7B300B2DCC3 /* Political Debates.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Political Debates.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2E23A6C4226AC7B300B2DCC3 /* DebatesCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebatesCollectionViewController.swift; sourceTree = "<group>"; };
+		2E23A6CA226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PoliticalDebateApp_iOS.xcdatamodel; sourceTree = "<group>"; };
+		2E23A6CC226AC7B300B2DCC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2E23A6CF226AC7B300B2DCC3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2E23A6D1226AC7B300B2DCC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2E23A6D6226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PoliticalDebateApp_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E23A6DA226AC7B400B2DCC3 /* NetworkAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkAPITests.swift; sourceTree = "<group>"; };
+		2E23A6DC226AC7B400B2DCC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2E23A6E1226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PoliticalDebateApp_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E23A6E5226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoliticalDebateApp_iOSUITests.swift; sourceTree = "<group>"; };
+		2E23A6E7226AC7B400B2DCC3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2E23A6F3226AC7D400B2DCC3 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
+		2E23A6F4226AC7D400B2DCC3 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		2E23A6F5226AC7D400B2DCC3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		2E23A701226ACE5600B2DCC3 /* Debate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debate.swift; sourceTree = "<group>"; };
+		2E23A704226AD39200B2DCC3 /* DebateAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateAPI.swift; sourceTree = "<group>"; };
+		2E23A707226ADA6200B2DCC3 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		2E23A712226AE36600B2DCC3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		2E287CB922DC4A7A000A4CF2 /* BannerOnScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannerOnScreen.swift; sourceTree = "<group>"; };
+		2E287CBA22DC4A7B000A4CF2 /* NotificationBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationBannerView.swift; sourceTree = "<group>"; };
+		2E287CBB22DC4A7B000A4CF2 /* NotificationBannerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationBannerViewModel.swift; sourceTree = "<group>"; };
+		2E287CBC22DC4A7B000A4CF2 /* NotificationBannerQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationBannerQueue.swift; sourceTree = "<group>"; };
+		2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailAndPasswordValidator.swift; sourceTree = "<group>"; };
+		2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardReactableProtocol.swift; sourceTree = "<group>"; };
+		2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicUIElementFactory.swift; sourceTree = "<group>"; };
+		2E2BB06722F2D66800ED02C0 /* BackendErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendErrorMessage.swift; sourceTree = "<group>"; };
+		2E2E6DC122FC07880048B769 /* UIView+Fade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Fade.swift"; sourceTree = "<group>"; };
+		2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAGradientLayer+Init.swift"; sourceTree = "<group>"; };
+		2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredCoreDataAPI.swift; sourceTree = "<group>"; };
+		2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafelyShowAlert.swift; sourceTree = "<group>"; };
+		2E36796422A4B278008190FE /* Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Progress.swift; sourceTree = "<group>"; };
+		2E36796622A4B280008190FE /* Starred.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Starred.swift; sourceTree = "<group>"; };
+		2E3A0C8922D707BC00087B2A /* Point.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
+		2E5C5F42226B08220007BCAF /* String+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Date.swift"; sourceTree = "<group>"; };
+		2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainDjangoEncoding.swift; sourceTree = "<group>"; };
+		2E5C5F56226B29A30007BCAF /* StubAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubAccess.swift; sourceTree = "<group>"; };
+		2E5EC05222FA783600B41D54 /* DebateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateCollectionViewCell.swift; sourceTree = "<group>"; };
+		2E5EC05622FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebateCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
+		2E69094622A4931100DF486A /* ProgressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAPI.swift; sourceTree = "<group>"; };
+		2E69094C22A4932700DF486A /* StarredAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarredAPI.swift; sourceTree = "<group>"; };
+		2E6FD0DF2336D75400196643 /* DeepLinkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkService.swift; sourceTree = "<group>"; };
+		2E892108230E6ABF00DD9556 /* CurrentEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentEmail.swift; sourceTree = "<group>"; };
+		2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GetCurrentEmail.json; sourceTree = "<group>"; };
+		2E967438226BD34E00821A73 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		2E96743A226BDA8A00821A73 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		2E96743F226BE91000821A73 /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
+		2E967441226BE91C00821A73 /* UserDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataManager.swift; sourceTree = "<group>"; };
+		2EA3D1A1228D35AC00019324 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
+		2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoyaTargetType+ValidSuccessCodes.swift"; sourceTree = "<group>"; };
+		2EAF701A2324E13B00398D6B /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatter.swift; sourceTree = "<group>"; };
+		2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarrableViewModel.swift; sourceTree = "<group>"; };
+		2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+SafeIndex.swift"; sourceTree = "<group>"; };
+		2EAF704D2329EE7300398D6B /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
+		2EAF704E2329EE7300398D6B /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		2EAF704F2329EE7300398D6B /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70502329EE7300398D6B /* Roboto-RegularItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-RegularItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70512329EE7300398D6B /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70522329EE7300398D6B /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70542329EE7300398D6B /* Roboto-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Light.ttf"; sourceTree = "<group>"; };
+		2EAF70562329EE7400398D6B /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		2EAF70572329EE7400398D6B /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
+		2EAF70582329EE7400398D6B /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
+		2EBE46C522BBD5180087BC56 /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
+		2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
+		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
+		2EC7890722D059FE009402F1 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
+		2ED2FDA12290CC210093B6A7 /* TokenPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPair.swift; sourceTree = "<group>"; };
+		2EE1A16F2311F19C00DD8E4A /* PointTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointTableViewCellViewModel.swift; sourceTree = "<group>"; };
+		2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointTableViewCell.swift; sourceTree = "<group>"; };
+		2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Custom.swift"; sourceTree = "<group>"; };
+		2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressCoreDataAPI.swift; sourceTree = "<group>"; };
+		2EEEC682231B3D2200438154 /* PointViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointViewModel.swift; sourceTree = "<group>"; };
+		2EEEC684231B3D2D00438154 /* PointViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointViewController.swift; sourceTree = "<group>"; };
+		2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePointImageViewModel.swift; sourceTree = "<group>"; };
+		2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePointImageViewController.swift; sourceTree = "<group>"; };
+		2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonWithActionClosure.swift; sourceTree = "<group>"; };
+		7A7E42EE5FCED9A963BBF6E4 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.release.xcconfig"; sourceTree = "<group>"; };
+		A4042BE1D4716D71FE5919AA /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; sourceTree = "<group>"; };
+		AAC19EF7DF8E9E43D162A455 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		ADB9BD0CDD1CBE12528061F6 /* Pods-PoliticalDebateApp_iOS.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.test.xcconfig"; sourceTree = "<group>"; };
+		AFCB4D323C984F53B2217668 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		B294A5E6DD428B59EE9B92B6 /* Pods_PoliticalDebateApp_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB4B5C9A06643441D9D82F7F /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.test.xcconfig"; sourceTree = "<group>"; };
+		C0ABC1F301196AEFDF8D01AC /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.test.xcconfig"; sourceTree = "<group>"; };
+		E6FC36CDDAF615B806EA261D /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2E23A6BC226AC7B300B2DCC3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1F8594D1844FD5A725FD14D /* Pods_PoliticalDebateApp_iOS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E23A6D3226AC7B400B2DCC3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5307AE15A1C031FA189B26E /* Pods_PoliticalDebateApp_iOSTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E23A6DE226AC7B400B2DCC3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C8A8D5D71259D82EE76A8AB8 /* Pods_PoliticalDebateApp_iOSUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2060EB8BB7F453104959922C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2162EE9CB2F8CA1A2CF41A7A /* Pods-PoliticalDebateApp_iOS.debug.xcconfig */,
+				7A7E42EE5FCED9A963BBF6E4 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */,
+				AFCB4D323C984F53B2217668 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */,
+				AAC19EF7DF8E9E43D162A455 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */,
+				E6FC36CDDAF615B806EA261D /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */,
+				A4042BE1D4716D71FE5919AA /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */,
+				ADB9BD0CDD1CBE12528061F6 /* Pods-PoliticalDebateApp_iOS.test.xcconfig */,
+				BB4B5C9A06643441D9D82F7F /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */,
+				C0ABC1F301196AEFDF8D01AC /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		2E0A9D4A230D1F3600D10CC8 /* StubbedResponses */ = {
+			isa = PBXGroup;
+			children = (
+				2E89210B230E6BBB00DD9556 /* GetCurrentEmail.json */,
+				2E0A9D61230D211400D10CC8 /* Empty.json */,
+				2E0A9D4E230D1F4700D10CC8 /* DebateFilter.json */,
+				2E0A9D4D230D1F4600D10CC8 /* DebateSingle.json */,
+				2E0A9D4F230D1F4700D10CC8 /* ProgressAll.json */,
+				2E0A9D51230D1F4800D10CC8 /* Starred.json */,
+				2E0A9D4B230D1F4600D10CC8 /* TokenObtain.json */,
+				2E0A9D50230D1F4800D10CC8 /* TokenRefresh.json */,
+			);
+			path = StubbedResponses;
+			sourceTree = "<group>";
+		};
+		2E0D848B22A70B7D00E4B0E7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A6CC226AC7B300B2DCC3 /* Assets.xcassets */,
+				2E0D848C22A70BA100E4B0E7 /* Fonts */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		2E0D848C22A70BA100E4B0E7 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				2EAF704C2329EE3200398D6B /* Roboto */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		2E23A6B6226AC7B300B2DCC3 = {
+			isa = PBXGroup;
+			children = (
+				2E23A6F4226AC7D400B2DCC3 /* .gitignore */,
+				2E23A6F3226AC7D400B2DCC3 /* .swiftlint.yml */,
+				2E23A6F5226AC7D400B2DCC3 /* README.md */,
+				2E23A6C1226AC7B300B2DCC3 /* PoliticalDebateApp_iOS */,
+				2E23A6D9226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests */,
+				2E23A6E4226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests */,
+				2E23A6C0226AC7B300B2DCC3 /* Products */,
+				2060EB8BB7F453104959922C /* Pods */,
+				CAEF5118B43D4999D207811B /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		2E23A6C0226AC7B300B2DCC3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A6BF226AC7B300B2DCC3 /* Political Debates.app */,
+				2E23A6D6226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.xctest */,
+				2E23A6E1226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2E23A6C1226AC7B300B2DCC3 /* PoliticalDebateApp_iOS */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A700226ACE0300B2DCC3 /* ViewModels */,
+				2E23A6FF226ACDFD00B2DCC3 /* ViewControllers */,
+				2E23A6FD226ACDED00B2DCC3 /* Models */,
+				2E23A6FC226ACDE200B2DCC3 /* Managers */,
+				2E96743C226BDFEA00821A73 /* Services */,
+				2EEDE91322BEE985000A4F2B /* LocalData */,
+				2E23A6FB226ACDDD00B2DCC3 /* Networking */,
+				2E23A6FE226ACDF600B2DCC3 /* Helpers */,
+				2E0D848B22A70B7D00E4B0E7 /* Resources */,
+				2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */,
+				2E23A6CE226AC7B300B2DCC3 /* LaunchScreen.storyboard */,
+				2E23A6D1226AC7B300B2DCC3 /* Info.plist */,
+			);
+			path = PoliticalDebateApp_iOS;
+			sourceTree = "<group>";
+		};
+		2E23A6D9226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				2E5C5F56226B29A30007BCAF /* StubAccess.swift */,
+				2E0A9D4A230D1F3600D10CC8 /* StubbedResponses */,
+				2E23A6DA226AC7B400B2DCC3 /* NetworkAPITests.swift */,
+				2E23A6DC226AC7B400B2DCC3 /* Info.plist */,
+			);
+			path = PoliticalDebateApp_iOSTests;
+			sourceTree = "<group>";
+		};
+		2E23A6E4226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A6E5226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift */,
+				2E23A6E7226AC7B400B2DCC3 /* Info.plist */,
+			);
+			path = PoliticalDebateApp_iOSUITests;
+			sourceTree = "<group>";
+		};
+		2E23A6FB226ACDDD00B2DCC3 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A704226AD39200B2DCC3 /* DebateAPI.swift */,
+				2EA3D1A1228D35AC00019324 /* AuthAPI.swift */,
+				2E69094622A4931100DF486A /* ProgressAPI.swift */,
+				2E69094C22A4932700DF486A /* StarredAPI.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		2E23A6FC226ACDE200B2DCC3 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				2E967438226BD34E00821A73 /* SessionManager.swift */,
+				2E967441226BE91C00821A73 /* UserDataManager.swift */,
+				2EAF701A2324E13B00398D6B /* UserDefaultsManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		2E23A6FD226ACDED00B2DCC3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A701226ACE5600B2DCC3 /* Debate.swift */,
+				2ED2FDA12290CC210093B6A7 /* TokenPair.swift */,
+				2E36796422A4B278008190FE /* Progress.swift */,
+				2E36796622A4B280008190FE /* Starred.swift */,
+				2E3A0C8922D707BC00087B2A /* Point.swift */,
+				2E2BB06722F2D66800ED02C0 /* BackendErrorMessage.swift */,
+				2E892108230E6ABF00DD9556 /* CurrentEmail.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		2E23A6FE226ACDF600B2DCC3 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				2E287CB822DC487F000A4CF2 /* NotificationBanner */,
+				2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */,
+				2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */,
+				2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */,
+				2E23A712226AE36600B2DCC3 /* Constants.swift */,
+				2E5C5F42226B08220007BCAF /* String+Date.swift */,
+				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
+				2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */,
+				2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */,
+				2EBE46C522BBD5180087BC56 /* DebugLog.swift */,
+				2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */,
+				2EC7890722D059FE009402F1 /* ErrorHandler.swift */,
+				2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */,
+				2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */,
+				2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */,
+				2E2E6DC122FC07880048B769 /* UIView+Fade.swift */,
+				2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */,
+				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
+				2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */,
+				2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */,
+				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
+				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		2E23A6FF226ACDFD00B2DCC3 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A6C4226AC7B300B2DCC3 /* DebatesCollectionViewController.swift */,
+				2E0D84B922A7952400E4B0E7 /* LoginOrRegisterViewController.swift */,
+				2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */,
+				2E5EC05222FA783600B41D54 /* DebateCollectionViewCell.swift */,
+				2E12D7C22309DB000078B0DD /* PointsTableViewController.swift */,
+				2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */,
+				2EEEC684231B3D2D00438154 /* PointViewController.swift */,
+				2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		2E23A700226ACE0300B2DCC3 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				2E0D848522A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift */,
+				2E0D84BB22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift */,
+				2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */,
+				2E5EC05622FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift */,
+				2E12D7C52309DB310078B0DD /* PointsTableViewModel.swift */,
+				2EE1A16F2311F19C00DD8E4A /* PointTableViewCellViewModel.swift */,
+				2EEEC682231B3D2200438154 /* PointViewModel.swift */,
+				2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		2E287CB822DC487F000A4CF2 /* NotificationBanner */ = {
+			isa = PBXGroup;
+			children = (
+				2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */,
+				2E287CBA22DC4A7B000A4CF2 /* NotificationBannerView.swift */,
+				2E287CBB22DC4A7B000A4CF2 /* NotificationBannerViewModel.swift */,
+				2E287CB922DC4A7A000A4CF2 /* BannerOnScreen.swift */,
+				2E287CBC22DC4A7B000A4CF2 /* NotificationBannerQueue.swift */,
+			);
+			path = NotificationBanner;
+			sourceTree = "<group>";
+		};
+		2E96743C226BDFEA00821A73 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A707226ADA6200B2DCC3 /* NetworkService.swift */,
+				2E96743A226BDA8A00821A73 /* KeychainService.swift */,
+				2E96743F226BE91000821A73 /* CoreDataService.swift */,
+				2E6FD0DF2336D75400196643 /* DeepLinkService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		2EAF704C2329EE3200398D6B /* Roboto */ = {
+			isa = PBXGroup;
+			children = (
+				2EAF70582329EE7400398D6B /* Roboto-Bold.ttf */,
+				2EAF70522329EE7300398D6B /* Roboto-BoldItalic.ttf */,
+				2EAF70542329EE7300398D6B /* Roboto-Light.ttf */,
+				2EAF70512329EE7300398D6B /* Roboto-LightItalic.ttf */,
+				2EAF70562329EE7400398D6B /* Roboto-Medium.ttf */,
+				2EAF70572329EE7400398D6B /* Roboto-MediumItalic.ttf */,
+				2EAF704E2329EE7300398D6B /* Roboto-Regular.ttf */,
+				2EAF70502329EE7300398D6B /* Roboto-RegularItalic.ttf */,
+				2EAF704D2329EE7300398D6B /* Roboto-Thin.ttf */,
+				2EAF704F2329EE7300398D6B /* Roboto-ThinItalic.ttf */,
+			);
+			path = Roboto;
+			sourceTree = "<group>";
+		};
+		2EEDE91322BEE985000A4F2B /* LocalData */ = {
+			isa = PBXGroup;
+			children = (
+				2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */,
+				2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */,
+				2E30A8E422BF4587007E386A /* StarredCoreDataAPI.swift */,
+			);
+			path = LocalData;
+			sourceTree = "<group>";
+		};
+		CAEF5118B43D4999D207811B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B294A5E6DD428B59EE9B92B6 /* Pods_PoliticalDebateApp_iOS.framework */,
+				1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */,
+				1E9127E5132AA34688E16C18 /* Pods_PoliticalDebateApp_iOSUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2E23A6BE226AC7B300B2DCC3 /* PoliticalDebateApp_iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2E23A6EA226AC7B400B2DCC3 /* Build configuration list for PBXNativeTarget "PoliticalDebateApp_iOS" */;
+			buildPhases = (
+				010EEA1AD172882888C5B030 /* [CP] Check Pods Manifest.lock */,
+				2E23A6BB226AC7B300B2DCC3 /* Sources */,
+				2E23A6BC226AC7B300B2DCC3 /* Frameworks */,
+				2E23A6BD226AC7B300B2DCC3 /* Resources */,
+				90B9B5BB8420D5E1919E30EF /* [CP] Embed Pods Frameworks */,
+				2E23A6F9226ACA5600B2DCC3 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PoliticalDebateApp_iOS;
+			productName = PoliticalDebateApp_iOS;
+			productReference = 2E23A6BF226AC7B300B2DCC3 /* Political Debates.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2E23A6D5226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2E23A6ED226AC7B400B2DCC3 /* Build configuration list for PBXNativeTarget "PoliticalDebateApp_iOSTests" */;
+			buildPhases = (
+				16F5F7FACC22FE88957FF779 /* [CP] Check Pods Manifest.lock */,
+				2E23A6D2226AC7B400B2DCC3 /* Sources */,
+				2E23A6D3226AC7B400B2DCC3 /* Frameworks */,
+				2E23A6D4226AC7B400B2DCC3 /* Resources */,
+				383D76544149C5C585EE271A /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2E23A6D8226AC7B400B2DCC3 /* PBXTargetDependency */,
+			);
+			name = PoliticalDebateApp_iOSTests;
+			productName = PoliticalDebateApp_iOSTests;
+			productReference = 2E23A6D6226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		2E23A6E0226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2E23A6F0226AC7B400B2DCC3 /* Build configuration list for PBXNativeTarget "PoliticalDebateApp_iOSUITests" */;
+			buildPhases = (
+				B580ABBAEBE0A9EA58A0839F /* [CP] Check Pods Manifest.lock */,
+				2E23A6DD226AC7B400B2DCC3 /* Sources */,
+				2E23A6DE226AC7B400B2DCC3 /* Frameworks */,
+				2E23A6DF226AC7B400B2DCC3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2E23A6E3226AC7B400B2DCC3 /* PBXTargetDependency */,
+			);
+			name = PoliticalDebateApp_iOSUITests;
+			productName = PoliticalDebateApp_iOSUITests;
+			productReference = 2E23A6E1226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2E23A6B7226AC7B300B2DCC3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1020;
+				LastUpgradeCheck = 1020;
+				ORGANIZATIONNAME = PoliticalDebateApp;
+				TargetAttributes = {
+					2E23A6BE226AC7B300B2DCC3 = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
+					2E23A6D5226AC7B400B2DCC3 = {
+						CreatedOnToolsVersion = 10.2.1;
+						TestTargetID = 2E23A6BE226AC7B300B2DCC3;
+					};
+					2E23A6E0226AC7B400B2DCC3 = {
+						CreatedOnToolsVersion = 10.2.1;
+						TestTargetID = 2E23A6BE226AC7B300B2DCC3;
+					};
+				};
+			};
+			buildConfigurationList = 2E23A6BA226AC7B300B2DCC3 /* Build configuration list for PBXProject "PoliticalDebateApp_iOS" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2E23A6B6226AC7B300B2DCC3;
+			productRefGroup = 2E23A6C0226AC7B300B2DCC3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2E23A6BE226AC7B300B2DCC3 /* PoliticalDebateApp_iOS */,
+				2E23A6D5226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests */,
+				2E23A6E0226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2E23A6BD226AC7B300B2DCC3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2EAF70592329EE7400398D6B /* Roboto-Thin.ttf in Resources */,
+				2E89210D230E6BFF00DD9556 /* DebateSingle.json in Resources */,
+				2EAF705C2329EE7400398D6B /* Roboto-RegularItalic.ttf in Resources */,
+				2E23A6F8226AC7D400B2DCC3 /* README.md in Resources */,
+				2EAF70632329EE7400398D6B /* Roboto-MediumItalic.ttf in Resources */,
+				2E0A9D62230D211400D10CC8 /* Empty.json in Resources */,
+				2E23A6F7226AC7D400B2DCC3 /* .gitignore in Resources */,
+				2E89210E230E6C0200DD9556 /* GetCurrentEmail.json in Resources */,
+				2E0A9D5C230D1F4900D10CC8 /* TokenRefresh.json in Resources */,
+				2E0A9D5A230D1F4900D10CC8 /* ProgressAll.json in Resources */,
+				2E0A9D52230D1F4900D10CC8 /* TokenObtain.json in Resources */,
+				2EAF70622329EE7400398D6B /* Roboto-Medium.ttf in Resources */,
+				2EAF70602329EE7400398D6B /* Roboto-Light.ttf in Resources */,
+				2E23A6F6226AC7D400B2DCC3 /* .swiftlint.yml in Resources */,
+				2E0A9D58230D1F4900D10CC8 /* DebateFilter.json in Resources */,
+				2EAF705E2329EE7400398D6B /* Roboto-BoldItalic.ttf in Resources */,
+				2EAF70642329EE7400398D6B /* Roboto-Bold.ttf in Resources */,
+				2E0A9D5E230D1F4900D10CC8 /* Starred.json in Resources */,
+				2EAF705B2329EE7400398D6B /* Roboto-ThinItalic.ttf in Resources */,
+				2EAF705D2329EE7400398D6B /* Roboto-LightItalic.ttf in Resources */,
+				2EAF705A2329EE7400398D6B /* Roboto-Regular.ttf in Resources */,
+				2E23A6D0226AC7B300B2DCC3 /* LaunchScreen.storyboard in Resources */,
+				2E23A6CD226AC7B300B2DCC3 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E23A6D4226AC7B400B2DCC3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2E89210C230E6BBB00DD9556 /* GetCurrentEmail.json in Resources */,
+				2E0A9D5B230D1F4900D10CC8 /* ProgressAll.json in Resources */,
+				2E0A9D63230D211400D10CC8 /* Empty.json in Resources */,
+				2E0A9D5F230D1F4900D10CC8 /* Starred.json in Resources */,
+				2E0A9D5D230D1F4900D10CC8 /* TokenRefresh.json in Resources */,
+				2E0A9D57230D1F4900D10CC8 /* DebateSingle.json in Resources */,
+				2E0A9D53230D1F4900D10CC8 /* TokenObtain.json in Resources */,
+				2E0A9D59230D1F4900D10CC8 /* DebateFilter.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E23A6DF226AC7B400B2DCC3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		010EEA1AD172882888C5B030 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PoliticalDebateApp_iOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		16F5F7FACC22FE88957FF779 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PoliticalDebateApp_iOSTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2E23A6F9226ACA5600B2DCC3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
+		383D76544149C5C585EE271A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		90B9B5BB8420D5E1919E30EF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B580ABBAEBE0A9EA58A0839F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PoliticalDebateApp_iOSUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2E23A6BB226AC7B300B2DCC3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2E2BB06222F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift in Sources */,
+				2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */,
+				2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */,
+				2E96743B226BDA8A00821A73 /* KeychainService.swift in Sources */,
+				2EEEC689231CDF4600438154 /* SinglePointImageViewModel.swift in Sources */,
+				2E23A708226ADA6200B2DCC3 /* NetworkService.swift in Sources */,
+				2EEEC683231B3D2200438154 /* PointViewModel.swift in Sources */,
+				2E2E6DC422FC0B710048B769 /* CAGradientLayer+Init.swift in Sources */,
+				2E69094D22A4932700DF486A /* StarredAPI.swift in Sources */,
+				2E23A702226ACE5600B2DCC3 /* Debate.swift in Sources */,
+				2E30A8E922BF4773007E386A /* SafelyShowAlert.swift in Sources */,
+				2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */,
+				2E967439226BD34E00821A73 /* SessionManager.swift in Sources */,
+				2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
+				2E892109230E6ABF00DD9556 /* CurrentEmail.swift in Sources */,
+				2E2E6DC222FC07880048B769 /* UIView+Fade.swift in Sources */,
+				2EE1A1742312043100DD8E4A /* UIImage+Custom.swift in Sources */,
+				2E30A8E522BF4587007E386A /* StarredCoreDataAPI.swift in Sources */,
+				2EA87A3D231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */,
+				2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
+				2E36796522A4B278008190FE /* Progress.swift in Sources */,
+				2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */,
+				2E0D84BC22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift in Sources */,
+				2E23A6C5226AC7B300B2DCC3 /* DebatesCollectionViewController.swift in Sources */,
+				2E3A0C8A22D707BC00087B2A /* Point.swift in Sources */,
+				2E0D848422A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift in Sources */,
+				2E23A6CB226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
+				2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */,
+				2E12D7C62309DB310078B0DD /* PointsTableViewModel.swift in Sources */,
+				2E287CBF22DC4A7B000A4CF2 /* NotificationBannerViewModel.swift in Sources */,
+				2E287CBE22DC4A7B000A4CF2 /* NotificationBannerView.swift in Sources */,
+				2E967440226BE91000821A73 /* CoreDataService.swift in Sources */,
+				2E2BB06822F2D66800ED02C0 /* BackendErrorMessage.swift in Sources */,
+				2EE1A1702311F19C00DD8E4A /* PointTableViewCellViewModel.swift in Sources */,
+				2EEEC68B231CDFE100438154 /* SinglePointImageViewController.swift in Sources */,
+				2EAF70232327853D00398D6B /* Collection+SafeIndex.swift in Sources */,
+				2E12D7C32309DB000078B0DD /* PointsTableViewController.swift in Sources */,
+				2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */,
+				2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */,
+				2E6FD0E02336D75400196643 /* DeepLinkService.swift in Sources */,
+				2EE1A1722311F1AB00DD8E4A /* PointTableViewCell.swift in Sources */,
+				2E5EC05722FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift in Sources */,
+				2E0D848A22A7057300E4B0E7 /* UIColor+Custom.swift in Sources */,
+				2EAF701B2324E13B00398D6B /* UserDefaultsManager.swift in Sources */,
+				2E36796722A4B280008190FE /* Starred.swift in Sources */,
+				2E0D84C022A7954300E4B0E7 /* AccountViewModel.swift in Sources */,
+				2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */,
+				2E0D84BA22A7952400E4B0E7 /* LoginOrRegisterViewController.swift in Sources */,
+				2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */,
+				2E5EC05322FA783600B41D54 /* DebateCollectionViewCell.swift in Sources */,
+				2EAF701F2325AE5900398D6B /* StarrableViewModel.swift in Sources */,
+				2E0D848622A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift in Sources */,
+				2EC7890822D059FE009402F1 /* ErrorHandler.swift in Sources */,
+				2E0D848822A7054A00E4B0E7 /* UIFont+Custom.swift in Sources */,
+				2E2BB06622F2C95D00ED02C0 /* BasicUIElementFactory.swift in Sources */,
+				2E0A9D60230D1FC900D10CC8 /* StubAccess.swift in Sources */,
+				2E23A705226AD39200B2DCC3 /* DebateAPI.swift in Sources */,
+				2E23A713226AE36600B2DCC3 /* Constants.swift in Sources */,
+				2EEEC685231B3D2D00438154 /* PointViewController.swift in Sources */,
+				2E287CBD22DC4A7B000A4CF2 /* BannerOnScreen.swift in Sources */,
+				2EF1E59B22DC688200C93DFB /* ButtonWithActionClosure.swift in Sources */,
+				2E287CC022DC4A7B000A4CF2 /* NotificationBannerQueue.swift in Sources */,
+				2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */,
+				2E2BB06422F2C05C00ED02C0 /* KeyboardReactableProtocol.swift in Sources */,
+				2EAF701D2325A5BF00398D6B /* MarkdownFormatter.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E23A6D2226AC7B400B2DCC3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2EA87A40231DF31700FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */,
+				2E30A91A22BF4BED007E386A /* String+Date.swift in Sources */,
+				2E5EC04822FA732900B41D54 /* BasicUIElementFactory.swift in Sources */,
+				2E5EC04A22FA734D00B41D54 /* EmailAndPasswordValidator.swift in Sources */,
+				2E30A90022BF4BED007E386A /* LoginOrRegisterViewController.swift in Sources */,
+				2E30A91B22BF4BED007E386A /* PlainDjangoEncoding.swift in Sources */,
+				2E30A91C22BF4BED007E386A /* UIFont+Custom.swift in Sources */,
+				2E30A92022BF4BED007E386A /* AppDelegate.swift in Sources */,
+				2E2E6DC52300D1110048B769 /* DebateCollectionViewCell.swift in Sources */,
+				2E30A91922BF4BED007E386A /* Constants.swift in Sources */,
+				2E30A91F22BF4BED007E386A /* SafelyShowAlert.swift in Sources */,
+				2E30A8FE22BF4BED007E386A /* AccountViewModel.swift in Sources */,
+				2E23A6DB226AC7B400B2DCC3 /* NetworkAPITests.swift in Sources */,
+				2E5EC04F22FA737600B41D54 /* ButtonWithActionClosure.swift in Sources */,
+				2EA87A36231DE39700FA6CB0 /* PointTableViewCell.swift in Sources */,
+				2E30A90922BF4BED007E386A /* NetworkService.swift in Sources */,
+				2EA87A37231DE3CC00FA6CB0 /* PointTableViewCellViewModel.swift in Sources */,
+				2E30A90722BF4BED007E386A /* UserDataManager.swift in Sources */,
+				2EA87A39231DE3EE00FA6CB0 /* PointViewController.swift in Sources */,
+				2E30A92522BFE33F007E386A /* CoreDataService.swift in Sources */,
+				2E30A91422BF4BED007E386A /* StarredAPI.swift in Sources */,
+				2E2E6DC82300D1320048B769 /* CAGradientLayer+Init.swift in Sources */,
+				2E30A8FD22BF4BED007E386A /* LoginOrRegisterViewModel.swift in Sources */,
+				2E30A91D22BF4BED007E386A /* UIColor+Custom.swift in Sources */,
+				2E3A0C8B22D7087D00087B2A /* Point.swift in Sources */,
+				2E30A91822BF4BED007E386A /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
+				2E5EC04922FA734100B41D54 /* KeyboardReactableProtocol.swift in Sources */,
+				2E30A90122BF4BED007E386A /* AccountViewController.swift in Sources */,
+				2E30A90322BF4BED007E386A /* TokenPair.swift in Sources */,
+				2E12D7C42309DB000078B0DD /* PointsTableViewController.swift in Sources */,
+				2E30A90622BF4BED007E386A /* SessionManager.swift in Sources */,
+				2E5EC05022FA737A00B41D54 /* BackendErrorMessage.swift in Sources */,
+				2E5EC04E22FA736E00B41D54 /* BannerOnScreen.swift in Sources */,
+				2E30A91222BF4BED007E386A /* ProgressAPI.swift in Sources */,
+				2EA87A3B231DE40600FA6CB0 /* SinglePointImageViewController.swift in Sources */,
+				2E30A91E22BF4BED007E386A /* DebugLog.swift in Sources */,
+				2EA87A3A231DE40300FA6CB0 /* SinglePointImageViewModel.swift in Sources */,
+				2E30A90422BF4BED007E386A /* Progress.swift in Sources */,
+				2E30A91722BF4BED007E386A /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
+				2E30A90D22BF4BED007E386A /* StarredCoreDataAPI.swift in Sources */,
+				2E30A91022BF4BED007E386A /* AuthAPI.swift in Sources */,
+				2E30A90522BF4BED007E386A /* Starred.swift in Sources */,
+				2E30A92222BFE168007E386A /* ProgressCoreDataAPI.swift in Sources */,
+				2E5EC04D22FA735D00B41D54 /* ErrorHandler.swift in Sources */,
+				2E89210A230E6B2900DD9556 /* CurrentEmail.swift in Sources */,
+				2E30A91622BF4BED007E386A /* NSLayoutConstraint+Priority.swift in Sources */,
+				2E2E6DC62300D1140048B769 /* DebateCollectionViewCellViewModel.swift in Sources */,
+				2E30A90A22BF4BED007E386A /* KeychainService.swift in Sources */,
+				2E30A8FF22BF4BED007E386A /* DebatesCollectionViewController.swift in Sources */,
+				2E30A8FC22BF4BED007E386A /* DebatesCollectionViewModel.swift in Sources */,
+				2E12D7C72309DB310078B0DD /* PointsTableViewModel.swift in Sources */,
+				2E30A90E22BF4BED007E386A /* DebateAPI.swift in Sources */,
+				2EA87A35231DE39300FA6CB0 /* UIImage+Custom.swift in Sources */,
+				2E5EC04C22FA735700B41D54 /* NotificationBannerViewModel.swift in Sources */,
+				2E30A92422BFE25A007E386A /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
+				2E30A90222BF4BED007E386A /* Debate.swift in Sources */,
+				2E5EC04B22FA735200B41D54 /* NotificationBannerQueue.swift in Sources */,
+				2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */,
+				2EA87A38231DE3EB00FA6CB0 /* PointViewModel.swift in Sources */,
+				2E5EC05122FA738E00B41D54 /* NotificationBannerView.swift in Sources */,
+				2E2E6DC72300D1190048B769 /* UIView+Fade.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E23A6DD226AC7B400B2DCC3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2E23A6E6226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2E23A6D8226AC7B400B2DCC3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2E23A6BE226AC7B300B2DCC3 /* PoliticalDebateApp_iOS */;
+			targetProxy = 2E23A6D7226AC7B400B2DCC3 /* PBXContainerItemProxy */;
+		};
+		2E23A6E3226AC7B400B2DCC3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2E23A6BE226AC7B300B2DCC3 /* PoliticalDebateApp_iOS */;
+			targetProxy = 2E23A6E2226AC7B400B2DCC3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		2E23A6CE226AC7B300B2DCC3 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2E23A6CF226AC7B300B2DCC3 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2E23A6E8226AC7B400B2DCC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2E23A6E9226AC7B400B2DCC3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2E23A6EB226AC7B400B2DCC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2162EE9CB2F8CA1A2CF41A7A /* Pods-PoliticalDebateApp_iOS.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
+				PRODUCT_NAME = "Political Debates";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2E23A6EC226AC7B400B2DCC3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7A7E42EE5FCED9A963BBF6E4 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
+				PRODUCT_NAME = "Political Debates";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		2E23A6EE226AC7B400B2DCC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AFCB4D323C984F53B2217668 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PoliticalDebateApp_iOS.app/PoliticalDebateApp_iOS";
+			};
+			name = Debug;
+		};
+		2E23A6EF226AC7B400B2DCC3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AAC19EF7DF8E9E43D162A455 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PoliticalDebateApp_iOS.app/PoliticalDebateApp_iOS";
+			};
+			name = Release;
+		};
+		2E23A6F1226AC7B400B2DCC3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E6FC36CDDAF615B806EA261D /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOSUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOSUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PoliticalDebateApp_iOS;
+			};
+			name = Debug;
+		};
+		2E23A6F2226AC7B400B2DCC3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A4042BE1D4716D71FE5919AA /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOSUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOSUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PoliticalDebateApp_iOS;
+			};
+			name = Release;
+		};
+		2E7D187922BEE7DA00D570D8 /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"TEST=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = TEST;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Test;
+		};
+		2E7D187A22BEE7DA00D570D8 /* Test */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = ADB9BD0CDD1CBE12528061F6 /* Pods-PoliticalDebateApp_iOS.test.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
+				PRODUCT_NAME = "Political Debates";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Test;
+		};
+		2E7D187B22BEE7DA00D570D8 /* Test */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB4B5C9A06643441D9D82F7F /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PoliticalDebateApp_iOS.app/PoliticalDebateApp_iOS";
+			};
+			name = Test;
+		};
+		2E7D187C22BEE7DA00D570D8 /* Test */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0ABC1F301196AEFDF8D01AC /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U64BTXUUVE;
+				INFOPLIST_FILE = PoliticalDebateApp_iOSUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOSUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PoliticalDebateApp_iOS;
+			};
+			name = Test;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2E23A6BA226AC7B300B2DCC3 /* Build configuration list for PBXProject "PoliticalDebateApp_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2E23A6E8226AC7B400B2DCC3 /* Debug */,
+				2E7D187922BEE7DA00D570D8 /* Test */,
+				2E23A6E9226AC7B400B2DCC3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2E23A6EA226AC7B400B2DCC3 /* Build configuration list for PBXNativeTarget "PoliticalDebateApp_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2E23A6EB226AC7B400B2DCC3 /* Debug */,
+				2E7D187A22BEE7DA00D570D8 /* Test */,
+				2E23A6EC226AC7B400B2DCC3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2E23A6ED226AC7B400B2DCC3 /* Build configuration list for PBXNativeTarget "PoliticalDebateApp_iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2E23A6EE226AC7B400B2DCC3 /* Debug */,
+				2E7D187B22BEE7DA00D570D8 /* Test */,
+				2E23A6EF226AC7B400B2DCC3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2E23A6F0226AC7B400B2DCC3 /* Build configuration list for PBXNativeTarget "PoliticalDebateApp_iOSUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2E23A6F1226AC7B400B2DCC3 /* Debug */,
+				2E7D187C22BEE7DA00D570D8 /* Test */,
+				2E23A6F2226AC7B400B2DCC3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		2E23A6C9226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2E23A6CA226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodel */,
+			);
+			currentVersion = 2E23A6CA226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodel */;
+			path = PoliticalDebateApp_iOS.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 2E23A6B7226AC7B300B2DCC3 /* Project object */;
+}
