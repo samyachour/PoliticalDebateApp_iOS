@@ -79,7 +79,8 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
                                                                                                               confirmPasswordTextField,
                                                                                                               submitButton,
                                                                                                               forgotPasswordButton,
-                                                                                                              loginOrRegisterButton])
+                                                                                                              loginOrRegisterButton,
+                                                                                                              complianceTextView])
 
     private let emailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Email")
 
@@ -101,11 +102,36 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
 
     private let loginOrRegisterButton = BasicUIElementFactory.generateButton()
 
+    private let complianceTextView: UITextView = {
+        let complianceTextView = UITextView(frame: .zero)
+        complianceTextView.isEditable = false
+        complianceTextView.dataDetectorTypes = .link
+        complianceTextView.isUserInteractionEnabled = true
+        complianceTextView.isScrollEnabled = false
+        complianceTextView.backgroundColor = .clear
+
+        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.primaryRegular(14.0),
+                                                         .foregroundColor: UIColor.customDarkGray1]
+        let privacyPolicyString = "Privacy Policy"
+        let termsAndConditionsString = "Terms and Conditions"
+        let complianceString = "By continuing, you agree to the Political Debate app's \(privacyPolicyString) and \(termsAndConditionsString)."
+        if let privacyPolicyUrl = URL(string: "https://samyachour.github.io/PoliticalDebateApp/PrivacyPolicy.html"),
+            let termsAndConditionsUrl = URL(string: "https://samyachour.github.io/PoliticalDebateApp/TermsAndConditions.html") {
+            let hyperlinks = [PointHyperlink(substring: privacyPolicyString, url: privacyPolicyUrl),
+                              PointHyperlink(substring: termsAndConditionsString, url: termsAndConditionsUrl)]
+            complianceTextView.attributedText = MarkDownFormatter.format(complianceString, with: attributes, hyperlinks: hyperlinks)
+
+            complianceTextView.textAlignment = .center
+            complianceTextView.sizeToFit()
+        }
+        return complianceTextView
+    }()
+
 }
 
 // MARK: - View constraints & binding
 
-extension LoginOrRegisterViewController {
+extension LoginOrRegisterViewController: UITextViewDelegate {
 
     private func installViewConstraints() {
         navigationController?.navigationBar.tintColor = GeneralColors.softButton
@@ -148,6 +174,7 @@ extension LoginOrRegisterViewController {
         installLoginOrRegisterButtonBinds()
         installKeyboardShiftingObserver() // from KeyboardReactable
         installHideKeyboardTapGesture() // from KeyboardReactable
+        complianceTextView.delegate = self
     }
 
     private func showInfoAlertIfNeeded() {
@@ -339,5 +366,12 @@ extension LoginOrRegisterViewController {
 
     @objc private func loginOrRegisterButtonTapped() {
         viewModel.loginOrRegisterStateRelay.accept((self.viewModel.loginOrRegisterStateRelay.value.state.otherState, true))
+    }
+
+    // MARK: UITextViewDelegate
+
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        UIApplication.shared.open(URL)
+        return false
     }
 }

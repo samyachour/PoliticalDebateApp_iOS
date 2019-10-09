@@ -90,6 +90,11 @@ extension PointImage: Decodable {
 struct PointHyperlink {
     let substring: String
     let url: URL
+
+    init(substring: String, url: URL) {
+        self.substring = substring
+        self.url = url
+    }
 }
 
 extension PointHyperlink: Decodable {

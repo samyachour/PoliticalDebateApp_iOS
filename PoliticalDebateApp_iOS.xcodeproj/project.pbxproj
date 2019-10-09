@@ -208,7 +208,7 @@
 		2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
 		2E12D7C22309DB000078B0DD /* PointsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsTableViewController.swift; sourceTree = "<group>"; };
 		2E12D7C52309DB310078B0DD /* PointsTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsTableViewModel.swift; sourceTree = "<group>"; };
-		2E23A6BF226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PoliticalDebateApp_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E23A6BF226AC7B300B2DCC3 /* Political Debates.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Political Debates.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2E23A6C4226AC7B300B2DCC3 /* DebatesCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebatesCollectionViewController.swift; sourceTree = "<group>"; };
 		2E23A6CA226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PoliticalDebateApp_iOS.xcdatamodel; sourceTree = "<group>"; };
@@ -392,7 +392,7 @@
 		2E23A6C0226AC7B300B2DCC3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2E23A6BF226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.app */,
+				2E23A6BF226AC7B300B2DCC3 /* Political Debates.app */,
 				2E23A6D6226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests.xctest */,
 				2E23A6E1226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests.xctest */,
 			);
@@ -612,7 +612,7 @@
 			);
 			name = PoliticalDebateApp_iOS;
 			productName = PoliticalDebateApp_iOS;
-			productReference = 2E23A6BF226AC7B300B2DCC3 /* PoliticalDebateApp_iOS.app */;
+			productReference = 2E23A6BF226AC7B300B2DCC3 /* Political Debates.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2E23A6D5226AC7B400B2DCC3 /* PoliticalDebateApp_iOSTests */ = {
@@ -1178,7 +1178,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Political Debates";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1198,7 +1198,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Political Debates";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1366,7 +1366,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Political Debates";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
