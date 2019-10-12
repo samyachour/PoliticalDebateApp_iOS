@@ -93,6 +93,7 @@ class PointsTableViewController: UIViewController {
         pointsTableView.rowHeight = UITableView.automaticDimension
         pointsTableView.estimatedRowHeight = 50
         pointsTableView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0)
+        pointsTableView.delaysContentTouches = false
         return pointsTableView
     }()
 
