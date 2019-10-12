@@ -139,10 +139,13 @@ extension AccountViewController {
         viewModel.getCurrentEmail()
             .map(CurrentEmail.self)
             .subscribe(onSuccess: { [weak self] currentEmail in
-                if let currentChangeEmailLabelText = self?.changeEmailLabel.text {
-                    self?.changeEmailLabel.text = "\(currentChangeEmailLabelText) (\(currentEmail.email))"
+                if let changeEmailLabel = self?.changeEmailLabel,
+                    let currentChangeEmailLabelText = changeEmailLabel.text {
+                    UIView.transition(with: changeEmailLabel, duration: Constants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
+                        changeEmailLabel.text = "\(currentChangeEmailLabelText) (\(currentEmail.email))"
+                    }, completion: nil)
                 }
-                if currentEmail.isVerified {
+                if !currentEmail.isVerified {
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Your email is unverified.",
                                                                                                     subtitle: "You won't be able to reset your password.",

@@ -51,6 +51,11 @@ class UserDataManager {
     }
 
     func starOrUnstarDebate(_ primaryKey: PrimaryKey, unstar: Bool) -> Single<Response?> {
+        guard !starred.contains(primaryKey) && !unstar ||
+            starred.contains(primaryKey) && unstar else {
+            return .just(nil) // already have this data
+        }
+
         if SessionManager.shared.isActiveRelay.value {
             let starred = unstar ? [] : [primaryKey]
             let unstarred = unstar ? [primaryKey] : []
@@ -89,6 +94,10 @@ class UserDataManager {
     func markProgress(pointPrimaryKey: PrimaryKey,
                       debatePrimaryKey: PrimaryKey,
                       totalPoints: Int) -> Single<Response?> {
+        guard !(allProgress[debatePrimaryKey]?.seenPoints.contains(pointPrimaryKey) ?? false) else {
+            return .just(nil) // already have this data
+        }
+
         if SessionManager.shared.isActiveRelay.value {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in

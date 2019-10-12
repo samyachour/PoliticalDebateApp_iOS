@@ -16,7 +16,7 @@ class PointTableViewCell: UITableViewCell {
 
     var viewModel: PointTableViewCellViewModel? {
         didSet {
-            containerView.backgroundColor = viewModel?.point.side?.color
+            containerView.backgroundColor = viewModel?.backgroundColor
             pointLabel.attributedText = MarkDownFormatter.format(viewModel?.point.shortDescription, with: [.font: GeneralFonts.text,
                                                                                                            .foregroundColor: GeneralColors.text])
             checkImageView.image = (viewModel?.hasCompletedPaths ?? false) ? UIImage.check : nil
@@ -45,7 +45,6 @@ class PointTableViewCell: UITableViewCell {
     // MARK: - UI Properties
 
     private static let cornerRadius: CGFloat = 26.0
-    private static let inset: CGFloat = 16.0
 
     // MARK: - UI Elements
 
@@ -84,19 +83,30 @@ class PointTableViewCell: UITableViewCell {
         checkImageView.translatesAutoresizingMaskIntoConstraints = false
 
         let containerVerticalInset: CGFloat = 8.0
-        containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
+        containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: PointsTableViewController.elementSpacing).isActive = true
         containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: containerVerticalInset).isActive = true
-        containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PointTableViewCell.inset).isActive = true
+        containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
         containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -containerVerticalInset).isActive = true
 
-        pointLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
-        pointLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PointTableViewCell.inset).isActive = true
+        pointLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PointsTableViewController.elementSpacing).isActive = true
+        pointLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PointsTableViewController.elementSpacing).isActive = true
         pointLabel.trailingAnchor.constraint(lessThanOrEqualTo: checkImageView.leadingAnchor, constant: -4).isActive = true
-        pointLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PointTableViewCell.inset).isActive = true
+        pointLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
 
         checkImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PointTableViewCell.inset).isActive = true
+        checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
         checkImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+
+        UIView.animate(withDuration: Constants.quickAnimationDuration) { [weak self] in
+            if highlighted {
+                self?.containerView.backgroundColor = GeneralColors.selected
+            } else {
+                self?.containerView.backgroundColor = self?.viewModel?.backgroundColor
+            }
+        }
+    }
 }

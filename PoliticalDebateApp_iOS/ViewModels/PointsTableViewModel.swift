@@ -37,6 +37,10 @@ class PointsTableViewModel: StarrableViewModel {
     lazy var sharedPointsDataSourceRelay = pointsDataSourceRelay
         .skip(1) // empty array emission initialized w/ relay
         .share()
+    private let contextPointsDataSourceRelay = BehaviorRelay<[Point]>(value: [])
+    lazy var sharedContextPointsDataSourceRelay = contextPointsDataSourceRelay
+        .skip(1) // empty array emission initialized w/ relay
+        .share()
     // When we want to propogate errors, we can't do it through the viewModelRelay
     // or else it will complete and the value will be invalidated
     let pointsRetrievalErrorRelay = PublishRelay<Error>()
@@ -46,7 +50,7 @@ class PointsTableViewModel: StarrableViewModel {
 
     private lazy var seenPointsRelay = BehaviorRelay<[PrimaryKey]>(value: UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints)
 
-    let debate: Debate
+    var debate: Debate
     var isStarred: Bool
 
     private func subscribePointsUpdates() {
@@ -82,16 +86,30 @@ class PointsTableViewModel: StarrableViewModel {
             .map(Debate.self)
             .subscribe(onSuccess: { [weak self] debate in
                 guard let debateMap = debate.debateMap,
+                    let contextPoints = debate.contextPoints,
                     !debateMap.isEmpty else {
                         ErrorHandler.showBasicReportErrorBanner()
                         return
                 }
                 self?.pointsRelay.accept(debateMap)
+                self?.contextPointsDataSourceRelay.accept(contextPoints)
+                self?.debate = debate
             }) { [weak self] error in
                 self?.pointsRetrievalErrorRelay.accept(error)
             }.disposed(by: disposeBag)
     }
 
     func refreshSeenPoints() { seenPointsRelay.accept(UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints) }
+
+    func markContextPointsAsSeen() {
+        contextPointsDataSourceRelay.value.forEach({ [weak self] (point) in
+            guard let self = self else { return }
+
+            // Don't care if this call succeeds or fails
+            UserDataManager.shared.markProgress(pointPrimaryKey: point.primaryKey,
+                                                debatePrimaryKey: debate.primaryKey,
+                                                totalPoints: debate.totalPoints).subscribe().disposed(by: self.disposeBag)
+        })
+    }
 
 }

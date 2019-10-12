@@ -48,8 +48,16 @@ class DebateCollectionViewCell: UICollectionViewCell {
 
     private static let cellColor = UIColor.customLightGreen1
     private static let cornerRadius: CGFloat = 16.0
+    private static let defaultTintViewColor: UIColor = .clear
 
     // MARK: - UI Elements
+
+    // Needed so we can have a gradient layer but still animate the cell color on hightlighted
+    private lazy var tintView: UIView = {
+        let tintView = UIView()
+        tintView.backgroundColor = DebateCollectionViewCell.defaultTintViewColor
+        return tintView
+    }()
 
     private lazy var starredButton: UIButton = {
         let starredButton = UIButton(frame: .zero)
@@ -83,13 +91,20 @@ class DebateCollectionViewCell: UICollectionViewCell {
         contentView.backgroundColor = DebateCollectionViewCell.cellColor
         contentView.layer.addSublayer(gradientLayer)
 
+        contentView.addSubview(tintView)
         contentView.addSubview(starredButton)
         contentView.addSubview(debateTitleLabel)
         contentView.addSubview(debateProgressView)
 
+        tintView.translatesAutoresizingMaskIntoConstraints = false
         starredButton.translatesAutoresizingMaskIntoConstraints = false
         debateTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         debateProgressView.translatesAutoresizingMaskIntoConstraints = false
+
+        tintView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        tintView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        tintView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        tintView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
 
         starredButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8).isActive = true
         starredButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8).isActive = true
@@ -104,6 +119,18 @@ class DebateCollectionViewCell: UICollectionViewCell {
         debateProgressView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         debateProgressView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         debateProgressView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+    }
+
+    override var isHighlighted: Bool {
+        didSet {
+            UIView.animate(withDuration: Constants.quickAnimationDuration) { [weak self] in
+                if self?.isHighlighted ?? false {
+                    self?.tintView.backgroundColor = GeneralColors.selected
+                } else {
+                    self?.tintView.backgroundColor = DebateCollectionViewCell.defaultTintViewColor
+                }
+            }
+        }
     }
 
     override func layoutSubviews() {

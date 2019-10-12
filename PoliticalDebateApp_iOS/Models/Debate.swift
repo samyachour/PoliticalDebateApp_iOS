@@ -16,7 +16,33 @@ struct Debate {
     let shortTitle: String
     let lastUpdated: Date?
     let totalPoints: Int
-    let debateMap: [Point]?
+    private let allPoints: [Point]?
+    var contextPoints: [Point]? {
+        return allPoints?.filter({ (point) -> Bool in
+            switch point.side {
+            case .pro,
+                 .con:
+                return false
+            case .context:
+                return true
+            case .none:
+                return false
+            }
+        })
+    }
+    var debateMap: [Point]? {
+        return allPoints?.filter({ (point) -> Bool in
+            switch point.side {
+            case .pro,
+                 .con:
+                return true
+            case .context:
+                return false
+            case .none:
+                return false
+            }
+        })
+    }
 }
 
 extension Debate: Decodable {
@@ -26,7 +52,7 @@ extension Debate: Decodable {
         case shortTitle = "short_title"
         case lastUpdated = "last_updated"
         case totalPoints = "total_points"
-        case debateMap = "debate_map"
+        case allPoints = "debate_map"
     }
 
     init(from decoder: Decoder) throws {
@@ -37,7 +63,7 @@ extension Debate: Decodable {
         title = try container.decode(String.self, forKey: .title)
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()
         totalPoints = try container.decode(Int.self, forKey: .totalPoints)
-        // We don't get the map with the search call
-        debateMap = try container.decodeIfPresent([Point].self, forKey: .debateMap)
+        // We don't get the debate points with the search call
+        allPoints = try container.decodeIfPresent([Point].self, forKey: .allPoints)
     }
 }
