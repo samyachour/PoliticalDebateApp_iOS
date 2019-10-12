@@ -16,9 +16,9 @@ struct Debate {
     let shortTitle: String
     let lastUpdated: Date?
     let totalPoints: Int
-    private let allPoints: [Point]?
+    private let debateMap: [Point]?
     var contextPoints: [Point]? {
-        return allPoints?.filter({ (point) -> Bool in
+        return debateMap?.filter({ (point) -> Bool in
             switch point.side {
             case .pro,
                  .con:
@@ -30,8 +30,8 @@ struct Debate {
             }
         })
     }
-    var debateMap: [Point]? {
-        return allPoints?.filter({ (point) -> Bool in
+    var sidedPoints: [Point]? {
+        return debateMap?.filter({ (point) -> Bool in
             switch point.side {
             case .pro,
                  .con:
@@ -52,7 +52,7 @@ extension Debate: Decodable {
         case shortTitle = "short_title"
         case lastUpdated = "last_updated"
         case totalPoints = "total_points"
-        case allPoints = "debate_map"
+        case debateMap = "debate_map"
     }
 
     init(from decoder: Decoder) throws {
@@ -64,6 +64,6 @@ extension Debate: Decodable {
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()
         totalPoints = try container.decode(Int.self, forKey: .totalPoints)
         // We don't get the debate points with the search call
-        allPoints = try container.decodeIfPresent([Point].self, forKey: .allPoints)
+        debateMap = try container.decodeIfPresent([Point].self, forKey: .debateMap)
     }
 }

@@ -8,7 +8,7 @@
 
 import XCTest
 import RxSwift
-@testable import PoliticalDebateApp_iOS
+@testable import Political_Debates
 
 class NetworkAPITests: XCTestCase {
 
@@ -32,11 +32,11 @@ class NetworkAPITests: XCTestCase {
             .map(Debate.self)
             .subscribe(onSuccess: { debate in
                 XCTAssert(debate.title == "Test debate number #0")
-                XCTAssert(debate.debateMap?[0].shortDescription == "Test point 1")
-                XCTAssert(debate.debateMap?[0].description == "This is a longer description of test point 1.")
-                XCTAssert(debate.debateMap?[0].side == .pro)
-                XCTAssert(debate.debateMap?[0].images[0].source == "Test source")
-                XCTAssert(debate.debateMap?[0].rebuttals?[0].primaryKey == 1)
+                XCTAssert(debate.sidedPoints?[0].shortDescription == "Test point 1")
+                XCTAssert(debate.sidedPoints?[0].description == "This is a longer description of test point 1.")
+                XCTAssert(debate.sidedPoints?[0].side == .pro)
+                XCTAssert(debate.sidedPoints?[0].images[0].source == "Test source")
+                XCTAssert(debate.sidedPoints?[0].rebuttals?[0].primaryKey == 1)
             }, onError: { err in
                 XCTAssert(false)
             }).disposed(by: disposeBag)

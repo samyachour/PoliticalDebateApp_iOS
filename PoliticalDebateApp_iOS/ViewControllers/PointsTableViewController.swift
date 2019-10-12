@@ -224,7 +224,7 @@ extension PointsTableViewController {
 
     private func installTableViewDataSource() {
         pointsTableView.register(PointTableViewCell.self, forCellReuseIdentifier: PointTableViewCell.reuseIdentifier)
-        viewModel.sharedPointsDataSourceRelay
+        viewModel.sharedSidedPointsDataSourceRelay
             .subscribe(onNext: { [weak self] (pointsTableViewCellViewModels) in
                 UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
                     self?.emptyStateLabel.alpha = pointsTableViewCellViewModels.isEmpty ? 1.0 : 0.0
@@ -233,7 +233,7 @@ extension PointsTableViewController {
                 })
             }).disposed(by: disposeBag)
 
-        viewModel.sharedPointsDataSourceRelay
+        viewModel.sharedSidedPointsDataSourceRelay
             .bind(to: pointsTableView.rx.items(cellIdentifier: PointTableViewCell.reuseIdentifier,
                                                cellType: PointTableViewCell.self)) { _, viewModel, cell in
                                                 cell.viewModel = viewModel

@@ -28,10 +28,10 @@ class DebatesCollectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        UserDataManager.shared.loadUserData { [weak self] in
-            self?.installViewConstraints()
-            self?.installViewBinds()
-        }
+        installViewConstraints()
+        installViewBinds()
+
+        UserDataManager.shared.loadUserData()
     }
 
     override func viewWillAppear(_ animated: Bool) {

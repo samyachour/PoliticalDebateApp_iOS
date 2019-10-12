@@ -33,8 +33,8 @@ class PointsTableViewModel: StarrableViewModel {
 
     // MARK: - Datasource
 
-    private let pointsDataSourceRelay = BehaviorRelay<[PointTableViewCellViewModel]>(value: [])
-    lazy var sharedPointsDataSourceRelay = pointsDataSourceRelay
+    private let sidedPointsDataSourceRelay = BehaviorRelay<[PointTableViewCellViewModel]>(value: [])
+    lazy var sharedSidedPointsDataSourceRelay = sidedPointsDataSourceRelay
         .skip(1) // empty array emission initialized w/ relay
         .share()
     private let contextPointsDataSourceRelay = BehaviorRelay<[Point]>(value: [])
@@ -45,7 +45,7 @@ class PointsTableViewModel: StarrableViewModel {
     // or else it will complete and the value will be invalidated
     let pointsRetrievalErrorRelay = PublishRelay<Error>()
 
-    private lazy var pointsRelay = BehaviorRelay<[Point]>(value: debate.debateMap ?? [])
+    private lazy var sidedPointsRelay = BehaviorRelay<[Point]>(value: debate.sidedPoints ?? [])
     private var rebuttals: [Point]? // Only used for embedded rebuttals table
 
     private lazy var seenPointsRelay = BehaviorRelay<[PrimaryKey]>(value: UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints)
@@ -54,7 +54,7 @@ class PointsTableViewModel: StarrableViewModel {
     var isStarred: Bool
 
     private func subscribePointsUpdates() {
-        BehaviorRelay.combineLatest(pointsRelay, seenPointsRelay) { return ($0, $1) }
+        BehaviorRelay.combineLatest(sidedPointsRelay, seenPointsRelay) { return ($0, $1) }
             .distinctUntilChanged { (lhs, rhs) -> Bool in
                 let pointsMatch = lhs.0 == rhs.0
                 let seenPointsMatch = lhs.1 == rhs.1
@@ -63,9 +63,9 @@ class PointsTableViewModel: StarrableViewModel {
         }.subscribe(onNext: { [weak self] (points, seenPoints) in
             guard let debatePrimaryKey = self?.debate.primaryKey else { return }
 
-            self?.pointsDataSourceRelay.accept(points.map({ PointTableViewCellViewModel(point: $0,
-                                                                                        debatePrimaryKey: debatePrimaryKey,
-                                                                                        seenPoints: seenPoints) }))
+            self?.sidedPointsDataSourceRelay.accept(points.map({ PointTableViewCellViewModel(point: $0,
+                                                                                             debatePrimaryKey: debatePrimaryKey,
+                                                                                             seenPoints: seenPoints) }))
         }).disposed(by: disposeBag)
     }
 
@@ -75,9 +75,9 @@ class PointsTableViewModel: StarrableViewModel {
 
     func retrieveAllDebatePoints() {
         // Only should load all debate points if we're on the main standalone debate points view and don't already have the debate map
-        guard viewState == .standalone && pointsRelay.value.isEmpty else {
+        guard viewState == .standalone && sidedPointsRelay.value.isEmpty else {
             if let rebuttals = rebuttals {
-                pointsRelay.accept(rebuttals)
+                sidedPointsRelay.accept(rebuttals)
             }
             return
         }
@@ -85,13 +85,13 @@ class PointsTableViewModel: StarrableViewModel {
         debateNetworkService.makeRequest(with: .debate(primaryKey: debate.primaryKey))
             .map(Debate.self)
             .subscribe(onSuccess: { [weak self] debate in
-                guard let debateMap = debate.debateMap,
+                guard let sidedPoints = debate.sidedPoints,
                     let contextPoints = debate.contextPoints,
-                    !debateMap.isEmpty else {
+                    !sidedPoints.isEmpty else {
                         ErrorHandler.showBasicReportErrorBanner()
                         return
                 }
-                self?.pointsRelay.accept(debateMap)
+                self?.sidedPointsRelay.accept(sidedPoints)
                 self?.contextPointsDataSourceRelay.accept(contextPoints)
                 self?.debate = debate
             }) { [weak self] error in

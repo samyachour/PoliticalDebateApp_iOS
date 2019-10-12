@@ -88,7 +88,7 @@ class BasicUIElementFactory {
         let privacyPolicyString = "Privacy Policy"
         let termsAndConditionsString = "Terms and Conditions"
         let complianceString = login ? "By continuing, you agree to the Political Debate app's \(privacyPolicyString) and \(termsAndConditionsString)." :
-        "\(privacyPolicyString) and \(termsAndConditionsString)."
+        "\(privacyPolicyString) and \(termsAndConditionsString)"
         if let privacyPolicyUrl = URL(string: "https://samyachour.github.io/PoliticalDebateApp/PrivacyPolicy.html"),
             let termsAndConditionsUrl = URL(string: "https://samyachour.github.io/PoliticalDebateApp/TermsAndConditions.html") {
             let hyperlinks = [PointHyperlink(substring: privacyPolicyString, url: privacyPolicyUrl),
