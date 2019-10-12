@@ -62,7 +62,8 @@ class AccountViewController: UIViewController, KeyboardReactable {
                                                                                                               confirmNewPasswordTextField,
                                                                                                               submitChangesButton,
                                                                                                               logOutButton,
-                                                                                                              deleteAccountButton])
+                                                                                                              deleteAccountButton,
+                                                                                                              complianceTextView])
 
     private let changeEmailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change email")
 
@@ -86,11 +87,13 @@ class AccountViewController: UIViewController, KeyboardReactable {
 
     private let deleteAccountButton = BasicUIElementFactory.generateButton(title: "Delete account")
 
+    private let complianceTextView = BasicUIElementFactory.generateComplianceTextView(login: false)
+
 }
 
 // MARK: - View constraints & binding
 
-extension AccountViewController {
+extension AccountViewController: UITextViewDelegate {
 
     private func installViewConstraints() {
         navigationItem.title = "Account"
@@ -133,6 +136,7 @@ extension AccountViewController {
         deleteAccountButton.addTarget(self, action: #selector(deleteAccountButtonTapped), for: .touchUpInside)
         installKeyboardShiftingObserver() // from KeyboardReactable
         installHideKeyboardTapGesture() // from KeyboardReactable
+        complianceTextView.delegate = self
     }
 
     private func getCurrentEmail() {
@@ -311,6 +315,13 @@ extension AccountViewController {
         confirmationPopUp.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
 
         self.present(confirmationPopUp, animated: true)
+    }
+
+    // MARK: UITextViewDelegate
+
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        UIApplication.shared.open(URL)
+        return false
     }
 
 }
