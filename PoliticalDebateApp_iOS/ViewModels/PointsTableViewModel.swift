@@ -102,14 +102,11 @@ class PointsTableViewModel: StarrableViewModel {
     func refreshSeenPoints() { seenPointsRelay.accept(UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints) }
 
     func markContextPointsAsSeen() {
-        contextPointsDataSourceRelay.value.forEach({ [weak self] (point) in
-            guard let self = self else { return }
 
-            // Don't care if this call succeeds or fails
-            UserDataManager.shared.markProgress(pointPrimaryKey: point.primaryKey,
-                                                debatePrimaryKey: debate.primaryKey,
-                                                totalPoints: debate.totalPoints).subscribe().disposed(by: self.disposeBag)
-        })
+        // Don't care if this call succeeds or fails
+        UserDataManager.shared.markBatchProgress(pointPrimaryKeys: contextPointsDataSourceRelay.value.map { $0.primaryKey },
+                                                 debatePrimaryKey: debate.primaryKey,
+                                                 totalPoints: debate.totalPoints).subscribe().disposed(by: self.disposeBag)
     }
 
 }

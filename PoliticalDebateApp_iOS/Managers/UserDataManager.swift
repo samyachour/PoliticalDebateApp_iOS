@@ -113,10 +113,40 @@ class UserDataManager {
         }
     }
 
+    func markBatchProgress(pointPrimaryKeys: [PrimaryKey],
+                           debatePrimaryKey: PrimaryKey,
+                           totalPoints: Int) -> Single<Response?> {
+        guard allProgress[debatePrimaryKey]?.seenPoints.allSatisfy({ !pointPrimaryKeys.contains($0) }) ?? true else {
+            return .just(nil) // already have this data
+        }
+
+        if SessionManager.shared.isActiveRelay.value {
+            let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey,
+                                          completedPercentage: 0, // doesn't get sent to the backend anyway
+                                          seenPoints: pointPrimaryKeys)
+            return progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: [debateProgress])))
+                .do(onSuccess: { (_) in
+                    pointPrimaryKeys.forEach { (pointPrimaryKey) in
+                        self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                    }
+                }).map { $0 as Response? }
+        } else {
+            pointPrimaryKeys.forEach { (pointPrimaryKey) in
+                ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+            }
+            return Single.create {
+                $0(.success(nil))
+                return Disposables.create()
+            }
+        }
+    }
+
     private func updateProgress(pointPrimaryKey: PrimaryKey,
                                 debatePrimaryKey: PrimaryKey,
                                 totalPoints: Int) {
-        if let debateProgress = allProgress[debatePrimaryKey] {
+        if let debateProgress = allProgress[debatePrimaryKey],
+            !debateProgress.seenPoints.contains(pointPrimaryKey) {
             var seenPoints = debateProgress.seenPoints
             seenPoints.append(pointPrimaryKey)
             let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
