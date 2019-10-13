@@ -116,7 +116,8 @@ class UserDataManager {
     func markBatchProgress(pointPrimaryKeys: [PrimaryKey],
                            debatePrimaryKey: PrimaryKey,
                            totalPoints: Int) -> Single<Response?> {
-        guard allProgress[debatePrimaryKey]?.seenPoints.allSatisfy({ !pointPrimaryKeys.contains($0) }) ?? true else {
+        guard !pointPrimaryKeys.isEmpty,
+            allProgress[debatePrimaryKey]?.seenPoints.allSatisfy({ !pointPrimaryKeys.contains($0) }) ?? true else {
             return .just(nil) // already have this data
         }
 
