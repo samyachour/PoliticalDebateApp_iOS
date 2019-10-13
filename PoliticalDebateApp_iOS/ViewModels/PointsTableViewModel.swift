@@ -12,7 +12,7 @@ import RxSwift
 
 enum PointsTableViewState {
     case standalone // Listing all debate points in standalone VC
-    case embeddedRebuttals // Embedding table of rebuttals in point VC
+    case embedded // Embedding table in point VC
 }
 
 class PointsTableViewModel: StarrableViewModel {
@@ -20,12 +20,13 @@ class PointsTableViewModel: StarrableViewModel {
     init(debate: Debate,
          isStarred: Bool = false,
          viewState: PointsTableViewState,
-         rebuttals: [Point]? = nil) {
+         embeddedSidedPoints: [Point]? = nil) {
         self.debate = debate
         self.isStarred = isStarred
         self.viewState = viewState
-        self.rebuttals = rebuttals
-        subscribePointsUpdates()
+        self.embeddedSidedPoints = embeddedSidedPoints
+        subscribeSidedPointsUpdates()
+        subscribeToContextPointsUpdates()
     }
 
     private let disposeBag = DisposeBag()
@@ -46,14 +47,14 @@ class PointsTableViewModel: StarrableViewModel {
     let pointsRetrievalErrorRelay = PublishRelay<Error>()
 
     private lazy var sidedPointsRelay = BehaviorRelay<[Point]>(value: debate.sidedPoints ?? [])
-    private var rebuttals: [Point]? // Only used for embedded rebuttals table
+    private var embeddedSidedPoints: [Point]?
 
     private lazy var seenPointsRelay = BehaviorRelay<[PrimaryKey]>(value: UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints)
 
     var debate: Debate
     var isStarred: Bool
 
-    private func subscribePointsUpdates() {
+    private func subscribeSidedPointsUpdates() {
         BehaviorRelay.combineLatest(sidedPointsRelay, seenPointsRelay) { return ($0, $1) }
             .distinctUntilChanged { (lhs, rhs) -> Bool in
                 let pointsMatch = lhs.0 == rhs.0
@@ -69,6 +70,22 @@ class PointsTableViewModel: StarrableViewModel {
         }).disposed(by: disposeBag)
     }
 
+    private func subscribeToContextPointsUpdates() {
+        sharedContextPointsDataSourceRelay
+            .take(1)
+            .subscribe(onNext: { [weak self] (contextPoints) in
+                guard let self = self else { return }
+
+                // Don't care if this call succeeds or fails
+                UserDataManager.shared
+                    .markBatchProgress(pointPrimaryKeys: contextPoints.map { $0.primaryKey },
+                                       debatePrimaryKey: self.debate.primaryKey,
+                                       totalPoints: self.debate.totalPoints)
+                    .subscribe()
+                    .disposed(by: self.disposeBag)
+            }).disposed(by: disposeBag)
+    }
+
     // MARK: - API calls
 
     private let debateNetworkService = NetworkService<DebateAPI>()
@@ -76,8 +93,8 @@ class PointsTableViewModel: StarrableViewModel {
     func retrieveAllDebatePoints() {
         // Only should load all debate points if we're on the main standalone debate points view and don't already have the debate map
         guard viewState == .standalone && sidedPointsRelay.value.isEmpty else {
-            if let rebuttals = rebuttals {
-                sidedPointsRelay.accept(rebuttals)
+            if let embeddedSidedPoints = embeddedSidedPoints {
+                sidedPointsRelay.accept(embeddedSidedPoints)
             }
             return
         }
@@ -100,13 +117,5 @@ class PointsTableViewModel: StarrableViewModel {
     }
 
     func refreshSeenPoints() { seenPointsRelay.accept(UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints) }
-
-    func markContextPointsAsSeen() {
-
-        // Don't care if this call succeeds or fails
-        UserDataManager.shared.markBatchProgress(pointPrimaryKeys: contextPointsDataSourceRelay.value.map { $0.primaryKey },
-                                                 debatePrimaryKey: debate.primaryKey,
-                                                 totalPoints: debate.totalPoints).subscribe().disposed(by: self.disposeBag)
-    }
 
 }

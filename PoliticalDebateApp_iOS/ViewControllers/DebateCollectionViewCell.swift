@@ -19,7 +19,9 @@ class DebateCollectionViewCell: UICollectionViewCell {
             UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
                 if let viewModel = self?.viewModel { self?.starredButton.tintColor = viewModel.starTintColor }
                 self?.debateTitleLabel.text = self?.viewModel?.debate.title
-                self?.debateProgressView.setProgress(Float(self?.viewModel?.completedPercentage ?? 0) / 100, animated: false)
+                UIView.animate(withDuration: Constants.standardAnimationDuration) {
+                    self?.debateProgressView.setProgress(Float(self?.viewModel?.completedPercentage ?? 0) / 100, animated: true)
+                }
             })
         }
     }
