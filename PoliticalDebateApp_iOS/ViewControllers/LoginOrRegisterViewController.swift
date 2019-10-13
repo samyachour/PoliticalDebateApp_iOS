@@ -80,7 +80,8 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
                                                                                                               submitButton,
                                                                                                               forgotPasswordButton,
                                                                                                               loginOrRegisterButton,
-                                                                                                              complianceTextView])
+                                                                                                              complianceTextView,
+                                                                                                              versionLabel])
 
     private let emailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Email")
 
@@ -103,6 +104,8 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
     private let loginOrRegisterButton = BasicUIElementFactory.generateButton()
 
     private let complianceTextView = BasicUIElementFactory.generateComplianceTextView(login: true)
+
+    private let versionLabel = BasicUIElementFactory.generateVersionLabel()
 
 }
 

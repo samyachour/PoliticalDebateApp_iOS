@@ -44,13 +44,11 @@ class PointsTableViewController: UIViewController {
 
         switch viewModel.viewState {
         case .standalone:
-            viewModel.markContextPointsAsSeen()
-
             UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
                 self?.navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
                 self?.navigationController?.navigationBar.layoutIfNeeded()
             }
-        case .embeddedRebuttals:
+        case .embedded:
             break
         }
     }
@@ -121,7 +119,7 @@ extension PointsTableViewController {
             starredButton.tintColor = viewModel.starTintColor
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: starredButton)
             view.backgroundColor = GeneralColors.background
-        case .embeddedRebuttals:
+        case .embedded:
             pointsTableView.alwaysBounceVertical = false
             view.backgroundColor = .clear
         }
@@ -157,7 +155,7 @@ extension PointsTableViewController {
             contextLabelsStackView.alpha = 0.0
 
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: contextLabelsStackView.bottomAnchor, constant: 4)
-        case .embeddedRebuttals:
+        case .embedded:
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
         }
     }
@@ -165,7 +163,7 @@ extension PointsTableViewController {
     private func updateContentLabelsStackView(shouldShow: Bool) {
         switch viewModel.viewState {
         case .standalone where !shouldShow,
-            .embeddedRebuttals:
+            .embedded:
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
             contextLabelsStackView.removeFromSuperview()
         case .standalone:
@@ -199,7 +197,7 @@ extension PointsTableViewController {
         switch viewModel.viewState {
         case .standalone:
             installContextLabelsDataSource()
-        case .embeddedRebuttals:
+        case .embedded:
             break
         }
         installTableViewDataSource()

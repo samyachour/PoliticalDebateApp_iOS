@@ -69,6 +69,8 @@ struct CoreDataService {
     private static let context = CoreDataService.persistentContainer.newBackgroundContext()
 
     static func saveContext() {
+        guard loadedStores else { return }
+
         do {
             try context.save()
         } catch {

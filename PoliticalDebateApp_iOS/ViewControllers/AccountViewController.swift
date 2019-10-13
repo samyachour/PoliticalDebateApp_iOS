@@ -63,7 +63,8 @@ class AccountViewController: UIViewController, KeyboardReactable {
                                                                                                               submitChangesButton,
                                                                                                               logOutButton,
                                                                                                               deleteAccountButton,
-                                                                                                              complianceTextView])
+                                                                                                              complianceTextView,
+                                                                                                              versionLabel])
 
     private let changeEmailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change email")
 
@@ -88,6 +89,8 @@ class AccountViewController: UIViewController, KeyboardReactable {
     private let deleteAccountButton = BasicUIElementFactory.generateButton(title: "Delete account")
 
     private let complianceTextView = BasicUIElementFactory.generateComplianceTextView(login: false)
+
+    private let versionLabel = BasicUIElementFactory.generateVersionLabel()
 
 }
 
