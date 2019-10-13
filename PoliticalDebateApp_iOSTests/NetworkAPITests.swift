@@ -25,7 +25,6 @@ class NetworkAPITests: XCTestCase {
     // classes do not work when you use them from a different target, e.g.
     // Could not cast value of type 'PoliticalDebateApp_iOS.LocalStarred' (0x600002570910) to 'PoliticalDebateApp_iOSTests.LocalStarred' (0x11956e5d8).
 
-
     func testGetSingleDebate() {
         let testAPI = NetworkService<DebateAPI>()
         testAPI.makeRequest(with: .debate(primaryKey: 2))
