@@ -98,8 +98,8 @@ class PointViewController: UIViewController {
     }()
 
     private lazy var pointsTableViewController = PointsTableViewController(viewModel: PointsTableViewModel(debate: viewModel.debate,
-                                                                                                           viewState: .embeddedRebuttals,
-                                                                                                           rebuttals: viewModel.point.rebuttals))
+                                                                                                           viewState: .embedded,
+                                                                                                           embeddedSidedPoints: viewModel.point.rebuttals))
 }
 
 // MARK: - View constraints & binding

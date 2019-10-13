@@ -12,7 +12,7 @@ import RxSwift
 
 enum PointsTableViewState {
     case standalone // Listing all debate points in standalone VC
-    case embeddedRebuttals // Embedding table of rebuttals in point VC
+    case embedded // Embedding table in point VC
 }
 
 class PointsTableViewModel: StarrableViewModel {
@@ -20,11 +20,11 @@ class PointsTableViewModel: StarrableViewModel {
     init(debate: Debate,
          isStarred: Bool = false,
          viewState: PointsTableViewState,
-         rebuttals: [Point]? = nil) {
+         embeddedSidedPoints: [Point]? = nil) {
         self.debate = debate
         self.isStarred = isStarred
         self.viewState = viewState
-        self.rebuttals = rebuttals
+        self.embeddedSidedPoints = embeddedSidedPoints
         subscribeSidedPointsUpdates()
         subscribeToContextPointsUpdates()
     }
@@ -47,7 +47,7 @@ class PointsTableViewModel: StarrableViewModel {
     let pointsRetrievalErrorRelay = PublishRelay<Error>()
 
     private lazy var sidedPointsRelay = BehaviorRelay<[Point]>(value: debate.sidedPoints ?? [])
-    private var rebuttals: [Point]? // Only used for embedded rebuttals table
+    private var embeddedSidedPoints: [Point]?
 
     private lazy var seenPointsRelay = BehaviorRelay<[PrimaryKey]>(value: UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints)
 
@@ -93,8 +93,8 @@ class PointsTableViewModel: StarrableViewModel {
     func retrieveAllDebatePoints() {
         // Only should load all debate points if we're on the main standalone debate points view and don't already have the debate map
         guard viewState == .standalone && sidedPointsRelay.value.isEmpty else {
-            if let rebuttals = rebuttals {
-                sidedPointsRelay.accept(rebuttals)
+            if let embeddedSidedPoints = embeddedSidedPoints {
+                sidedPointsRelay.accept(embeddedSidedPoints)
             }
             return
         }
