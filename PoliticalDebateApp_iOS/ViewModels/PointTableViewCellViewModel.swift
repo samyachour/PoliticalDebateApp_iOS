@@ -15,6 +15,9 @@ struct PointTableViewCellViewModel {
     let point: Point
     let debatePrimaryKey: PrimaryKey
     let hasCompletedPaths: Bool
+    var backgroundColor: UIColor? {
+        return point.side?.color
+    }
 
     init(point: Point, debatePrimaryKey: PrimaryKey, seenPoints: [PrimaryKey]?) {
         self.point = point

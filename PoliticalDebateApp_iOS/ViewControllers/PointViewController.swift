@@ -57,6 +57,8 @@ class PointViewController: UIViewController {
     private lazy var homeButton: UIButton = {
         let homeButton = UIButton(frame: .zero)
         homeButton.setImage(UIImage.home, for: .normal)
+        let inset: CGFloat = 8.0
+        homeButton.contentEdgeInsets = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: 0.0)
         return homeButton
     }()
 

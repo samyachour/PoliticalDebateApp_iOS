@@ -9,7 +9,7 @@ For our iOS app we use Swift and ReactiveX.
 #### Setup
 
 Dependencies:
-- [see file here](https://github.com/samyachour/PoliticalDebateApp_iOS/blob/develop/Podfile)
+- [see file here](https://github.com/samyachour/PoliticalDebateApp_iOS/blob/develop/Podfile.lock)
 
 Instructions:
 - download or clone project

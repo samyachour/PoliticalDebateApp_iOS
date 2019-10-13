@@ -55,11 +55,6 @@ class PointViewModel {
     private let progressNetworkService = NetworkService<ProgressAPI>()
 
     func markAsSeen() -> Single<Response?>? {
-        guard !UserDataManager.shared.getProgress(for: debate.primaryKey)
-            .seenPoints.contains(point.primaryKey) else {
-                return nil
-        }
-
         return UserDataManager.shared.markProgress(pointPrimaryKey: point.primaryKey,
                                                    debatePrimaryKey: debate.primaryKey,
                                                    totalPoints: debate.totalPoints)

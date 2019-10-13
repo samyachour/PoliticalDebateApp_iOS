@@ -75,4 +75,30 @@ class BasicUIElementFactory {
         return emptyStateLabel
     }
 
+    static func generateComplianceTextView(login: Bool) -> UITextView {
+        let complianceTextView = UITextView(frame: .zero)
+        complianceTextView.isEditable = false
+        complianceTextView.dataDetectorTypes = .link
+        complianceTextView.isUserInteractionEnabled = true
+        complianceTextView.isScrollEnabled = false
+        complianceTextView.backgroundColor = .clear
+
+        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.primaryRegular(14.0),
+                                                         .foregroundColor: UIColor.customDarkGray1]
+        let privacyPolicyString = "Privacy Policy"
+        let termsAndConditionsString = "Terms and Conditions"
+        let complianceString = login ? "By continuing, you agree to the Political Debate app's \(privacyPolicyString) and \(termsAndConditionsString)." :
+        "\(privacyPolicyString) and \(termsAndConditionsString)"
+        if let privacyPolicyUrl = URL(string: "https://samyachour.github.io/PoliticalDebateApp/PrivacyPolicy.html"),
+            let termsAndConditionsUrl = URL(string: "https://samyachour.github.io/PoliticalDebateApp/TermsAndConditions.html") {
+            let hyperlinks = [PointHyperlink(substring: privacyPolicyString, url: privacyPolicyUrl),
+                              PointHyperlink(substring: termsAndConditionsString, url: termsAndConditionsUrl)]
+            complianceTextView.attributedText = MarkDownFormatter.format(complianceString, with: attributes, hyperlinks: hyperlinks)
+
+            complianceTextView.textAlignment = .center
+            complianceTextView.sizeToFit()
+        }
+        return complianceTextView
+    }
+
 }

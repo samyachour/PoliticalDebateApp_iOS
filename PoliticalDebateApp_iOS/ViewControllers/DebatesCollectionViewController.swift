@@ -28,10 +28,10 @@ class DebatesCollectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        UserDataManager.shared.loadUserData { [weak self] in
-            self?.installViewConstraints()
-            self?.installViewBinds()
-        }
+        installViewConstraints()
+        installViewBinds()
+
+        UserDataManager.shared.loadUserData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -116,6 +116,7 @@ class DebatesCollectionViewController: UIViewController {
         debatesCollectionView.backgroundColor = .clear
         debatesCollectionView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0)
         debatesCollectionView.alwaysBounceVertical = true
+        debatesCollectionView.delaysContentTouches = false
         return debatesCollectionView
     }()
 
