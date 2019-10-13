@@ -44,8 +44,6 @@ class PointsTableViewController: UIViewController {
 
         switch viewModel.viewState {
         case .standalone:
-            viewModel.markContextPointsAsSeen()
-
             UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
                 self?.navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
                 self?.navigationController?.navigationBar.layoutIfNeeded()

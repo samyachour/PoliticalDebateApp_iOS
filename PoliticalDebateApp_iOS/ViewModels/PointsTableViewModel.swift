@@ -25,7 +25,8 @@ class PointsTableViewModel: StarrableViewModel {
         self.isStarred = isStarred
         self.viewState = viewState
         self.rebuttals = rebuttals
-        subscribePointsUpdates()
+        subscribeSidedPointsUpdates()
+        subscribeToContextPointsUpdates()
     }
 
     private let disposeBag = DisposeBag()
@@ -53,7 +54,7 @@ class PointsTableViewModel: StarrableViewModel {
     var debate: Debate
     var isStarred: Bool
 
-    private func subscribePointsUpdates() {
+    private func subscribeSidedPointsUpdates() {
         BehaviorRelay.combineLatest(sidedPointsRelay, seenPointsRelay) { return ($0, $1) }
             .distinctUntilChanged { (lhs, rhs) -> Bool in
                 let pointsMatch = lhs.0 == rhs.0
@@ -67,6 +68,22 @@ class PointsTableViewModel: StarrableViewModel {
                                                                                              debatePrimaryKey: debatePrimaryKey,
                                                                                              seenPoints: seenPoints) }))
         }).disposed(by: disposeBag)
+    }
+
+    private func subscribeToContextPointsUpdates() {
+        sharedContextPointsDataSourceRelay
+            .take(1)
+            .subscribe(onNext: { [weak self] (contextPoints) in
+                guard let self = self else { return }
+
+                // Don't care if this call succeeds or fails
+                UserDataManager.shared
+                    .markBatchProgress(pointPrimaryKeys: contextPoints.map { $0.primaryKey },
+                                       debatePrimaryKey: self.debate.primaryKey,
+                                       totalPoints: self.debate.totalPoints)
+                    .subscribe()
+                    .disposed(by: self.disposeBag)
+            }).disposed(by: disposeBag)
     }
 
     // MARK: - API calls
@@ -100,13 +117,5 @@ class PointsTableViewModel: StarrableViewModel {
     }
 
     func refreshSeenPoints() { seenPointsRelay.accept(UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints) }
-
-    func markContextPointsAsSeen() {
-
-        // Don't care if this call succeeds or fails
-        UserDataManager.shared.markBatchProgress(pointPrimaryKeys: contextPointsDataSourceRelay.value.map { $0.primaryKey },
-                                                 debatePrimaryKey: debate.primaryKey,
-                                                 totalPoints: debate.totalPoints).subscribe().disposed(by: self.disposeBag)
-    }
 
 }
