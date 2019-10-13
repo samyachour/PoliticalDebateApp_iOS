@@ -101,4 +101,16 @@ class BasicUIElementFactory {
         return complianceTextView
     }
 
+    static func generateVersionLabel() -> UILabel {
+        let versionLabel = UILabel(frame: .zero)
+        versionLabel.textAlignment = .center
+        versionLabel.font = .primaryLight(16.0)
+        versionLabel.textColor = .customDarkGray1
+        if let infoDict = Bundle.main.infoDictionary,
+            let version = infoDict["CFBundleShortVersionString"] as? String {
+            versionLabel.text = "Version \(version)"
+        }
+        return versionLabel
+    }
+
 }
