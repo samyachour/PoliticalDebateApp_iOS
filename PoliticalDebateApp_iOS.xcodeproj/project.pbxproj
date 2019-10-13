@@ -1177,6 +1177,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
 				PRODUCT_NAME = "Political Debates";
 				SWIFT_VERSION = 5.0;
@@ -1197,6 +1198,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
 				PRODUCT_NAME = "Political Debates";
 				SWIFT_VERSION = 5.0;
@@ -1365,6 +1367,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
 				PRODUCT_NAME = "Political Debates";
 				SWIFT_VERSION = 5.0;

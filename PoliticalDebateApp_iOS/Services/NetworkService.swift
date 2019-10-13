@@ -12,7 +12,6 @@ import RxSwift
 
 var appBaseURL: String {
     #if DEBUG
-//     return "http://localhost:8000/api/"
     return "https://politicaldebateapp-debug.herokuapp.com/api/"
     #else
     return "https://politicaldebateapp-prod.herokuapp.com/api/"
@@ -55,7 +54,7 @@ struct NetworkService<T>: Networkable where T: CustomTargetType & AccessTokenAut
     }
 
     // For returning stubbed sample data for the given API
-    fileprivate let stubbingProvider = MoyaProvider<T>(stubClosure: MoyaProvider.immediatelyStub)
+    private let stubbingProvider = MoyaProvider<T>(stubClosure: MoyaProvider.immediatelyStub)
 
     private func makeTestRequest(with appAPI: T) -> Single<Response> {
         return stubbingProvider.rx.request(appAPI)

@@ -12,6 +12,7 @@ import UIKit
 enum Side: String {
     case pro
     case con
+    case context
 
     var color: UIColor {
         switch self {
@@ -19,6 +20,8 @@ enum Side: String {
             return .customLightBlue
         case .con:
             return .customLightRed
+        case .context:
+            return .clear
         }
     }
 }
