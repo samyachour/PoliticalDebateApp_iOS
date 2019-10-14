@@ -111,7 +111,7 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
 
 // MARK: - View constraints & binding
 
-extension LoginOrRegisterViewController: UITextViewDelegate {
+extension LoginOrRegisterViewController {
 
     private func installViewConstraints() {
         navigationController?.navigationBar.tintColor = GeneralColors.softButton
@@ -347,9 +347,10 @@ extension LoginOrRegisterViewController: UITextViewDelegate {
     @objc private func loginOrRegisterButtonTapped() {
         viewModel.loginOrRegisterStateRelay.accept((self.viewModel.loginOrRegisterStateRelay.value.state.otherState, true))
     }
+}
 
-    // MARK: UITextViewDelegate
-
+// MARK: - UITextViewDelegate
+extension LoginOrRegisterViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         UIApplication.shared.open(URL)
         return false

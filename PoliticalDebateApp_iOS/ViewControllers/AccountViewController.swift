@@ -96,7 +96,7 @@ class AccountViewController: UIViewController, KeyboardReactable {
 
 // MARK: - View constraints & binding
 
-extension AccountViewController: UITextViewDelegate {
+extension AccountViewController {
 
     private func installViewConstraints() {
         navigationItem.title = "Account"
@@ -320,11 +320,12 @@ extension AccountViewController: UITextViewDelegate {
         self.present(confirmationPopUp, animated: true)
     }
 
-    // MARK: UITextViewDelegate
+}
 
+// MARK: - UITextViewDelegate
+extension AccountViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         UIApplication.shared.open(URL)
         return false
     }
-
 }

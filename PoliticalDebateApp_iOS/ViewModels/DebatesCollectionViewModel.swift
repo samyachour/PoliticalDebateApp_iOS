@@ -12,6 +12,15 @@ import RxSwift
 
 class DebatesCollectionViewModel {
 
+    init() {
+        UserDataManager.shared.sharedUserDataLoadedRelay
+            .subscribe(onNext: { [weak self] loaded in
+                guard loaded else { return }
+
+                self?.refreshDebatesWithLocalData()
+            }).disposed(by: disposeBag)
+    }
+
     // MARK: - Datasource
 
     private let debatesDataSourceRelay = BehaviorRelay<[DebateCollectionViewCellViewModel]>(value: [])

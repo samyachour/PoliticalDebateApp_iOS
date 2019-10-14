@@ -161,13 +161,24 @@ class UserDataManager {
 
     // MARK: - Loading user data
 
-    func loadUserData(_ completion: (() -> Void)? = nil) {
+    private let userDataLoadedRelay = BehaviorRelay<Bool>(value: false)
+    lazy var sharedUserDataLoadedRelay = userDataLoadedRelay
+        .skip(1)
+        .share(replay: 1, scope: .whileConnected)
+    var userDataLoaded: Bool { return userDataLoadedRelay.value }
+
+    func loadUserData() {
 
         let loadUserData = {
-            self.loadStarred {
+            self.loadStarred { starredError in
                 // Called after completion in case loadStarred refreshes the access token
-                self.loadProgress {
-                    completion?()
+                self.loadProgress { progressError in
+                    guard starredError == nil && progressError == nil else {
+                        self.userDataLoadedRelay.accept(false)
+                        return
+                    }
+
+                    self.userDataLoadedRelay.accept(true)
                 }
             }
         }
@@ -184,48 +195,67 @@ class UserDataManager {
 
     }
 
-    private func loadStarred(_ completion: @escaping () -> Void) {
+    private func loadStarred(_ completion: @escaping (_ error: Error?) -> Void) {
         if SessionManager.shared.isActiveRelay.value {
             starredNetworkService.makeRequest(with: .loadAllStarred)
                 .map(Starred.self)
                 .subscribe(onSuccess: { starred in
                     self.starred = Set(starred.starredList)
-                    completion()
+                    completion(nil)
                 }) { error in
                     if let generalError = error as? GeneralError,
                         generalError == .alreadyHandled {
                         return
                     }
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: "Couldn't load your starred debates from the server."))
-                    completion()
+                                                                                                    title: "Couldn't load your starred debates from the server.",
+                                                                                                    buttonConfig: .customTitle(title: GeneralCopies.retryTitle,
+                                                                                                                               action: {
+                                                                                                                                self.loadStarred { error in completion(error) }
+                                                                                                    }),
+                                                                                                    bannerWasDismissedAutomatically: {
+                                                                                                        completion(UserDataError.loadRemoteStarred)
+                    }))
             }.disposed(by: disposeBag)
         } else {
             if let localStarred = StarredCoreDataAPI.loadAllStarred() {
                 starred = Set(localStarred.starredList)
+                completion(nil)
             } else {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: "Couldn't load your starred debates from local data."))
+                                                                                                title: "Couldn't load your starred debates from local data.",
+                                                                                                buttonConfig: .customTitle(title: GeneralCopies.retryTitle,
+                                                                                                                           action: {
+                                                                                                                            self.loadStarred { error in completion(error) }
+                                                                                                }),
+                                                                                                bannerWasDismissedAutomatically: {
+                                                                                                    completion(UserDataError.loadLocalStarred)
+                }))
             }
-            completion()
         }
     }
 
-    private func loadProgress(_ completion: @escaping () -> Void) {
+    private func loadProgress(_ completion: @escaping (_ error: Error?) -> Void) {
         if SessionManager.shared.isActiveRelay.value {
             progressNetworkService.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
                 .subscribe(onSuccess: { (allProgress) in
                     self.allProgress = Dictionary(uniqueKeysWithValues: allProgress.map { ($0.debatePrimaryKey, $0) })
-                    completion()
+                    completion(nil)
                 }) { (error) in
                     if let generalError = error as? GeneralError,
                         generalError == .alreadyHandled {
                         return
                     }
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: "Couldn't load your debates' progress from the server."))
-                    completion()
+                                                                                                    title: "Couldn't load your debates' progress from the server.",
+                                                                                                    buttonConfig: .customTitle(title: GeneralCopies.retryTitle,
+                                                                                                                               action: {
+                                                                                                                               self.loadProgress { error in completion(error) }
+                                                                                                    }),
+                                                                                                    bannerWasDismissedAutomatically: {
+                                                                                                        completion(UserDataError.loadRemoteProgress)
+                    }))
             }.disposed(by: disposeBag)
         } else {
             if let localProgress = ProgressCoreDataAPI.loadAllProgress() {
@@ -237,11 +267,18 @@ class UserDataManager {
                     return progress
                 }
                 allProgress = Dictionary(uniqueKeysWithValues: localProgressFiltered.map { ($0.debatePrimaryKey, $0) })
+                completion(nil)
             } else {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: "Couldn't load your debates' progress from local data."))
+                                                                                                title: "Couldn't load your debates' progress from local data.",
+                                                                                                buttonConfig: .customTitle(title: GeneralCopies.retryTitle,
+                                                                                                                           action: {
+                                                                                                                            self.loadProgress { error in completion(error) }
+                                                                                                }),
+                                                                                                bannerWasDismissedAutomatically: {
+                                                                                                    completion(UserDataError.loadLocalProgress)
+                }))
             }
-            completion()
         }
     }
 
@@ -320,10 +357,19 @@ class UserDataManager {
 }
 
 enum UserDataError: Error {
+    case loadRemoteStarred
+    case loadLocalStarred
+    case loadRemoteProgress
     case loadLocalProgress
 
     var localizedDescription: String {
         switch self {
+        case .loadRemoteStarred:
+            return "Could not load remote starred."
+        case .loadLocalStarred:
+            return "Could not load local starred."
+        case .loadRemoteProgress:
+            return "Could not load remote progress."
         case .loadLocalProgress:
             return "Could not load local progress."
         }

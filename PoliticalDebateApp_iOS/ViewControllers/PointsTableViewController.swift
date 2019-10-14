@@ -74,12 +74,12 @@ class PointsTableViewController: UIViewController {
 
     // MARK: - UI Elements
 
-    private let contextLabelsStackView: UIStackView = {
-        let contextLabelsStackView = UIStackView(frame: .zero)
-        contextLabelsStackView.alignment = .leading
-        contextLabelsStackView.axis = .vertical
-        contextLabelsStackView.spacing = PointsTableViewController.elementSpacing
-        return contextLabelsStackView
+    private let contextTextViewsStackView: UIStackView = {
+        let contextTextViewsStackView = UIStackView(frame: .zero)
+        contextTextViewsStackView.alignment = .leading
+        contextTextViewsStackView.axis = .vertical
+        contextTextViewsStackView.spacing = PointsTableViewController.elementSpacing
+        return contextTextViewsStackView
     }()
 
     private let tableViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
@@ -100,8 +100,6 @@ class PointsTableViewController: UIViewController {
         starredButton.setImage(UIImage.star, for: .normal)
         return starredButton
     }()
-
-    private lazy var emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No points to show.")
 }
 
 // MARK: - View constraints & binding
@@ -126,11 +124,9 @@ extension PointsTableViewController {
 
         view.addSubview(tableViewContainer)
         tableViewContainer.addSubview(pointsTableView)
-        tableViewContainer.addSubview(emptyStateLabel)
 
         tableViewContainer.translatesAutoresizingMaskIntoConstraints = false
         pointsTableView.translatesAutoresizingMaskIntoConstraints = false
-        emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
 
         tableViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         tableViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
@@ -142,30 +138,27 @@ extension PointsTableViewController {
         pointsTableView.bottomAnchor.constraint(equalTo: tableViewContainer.bottomAnchor).isActive = true
         pointsTableView.alpha = 0.0
 
-        emptyStateLabel.centerXAnchor.constraint(equalTo: tableViewContainer.centerXAnchor).isActive = true
-        emptyStateLabel.centerYAnchor.constraint(equalTo: tableViewContainer.centerYAnchor).isActive = true
-
         switch viewModel.viewState {
         case .standalone:
-            view.addSubview(contextLabelsStackView)
-            contextLabelsStackView.translatesAutoresizingMaskIntoConstraints = false
-            contextLabelsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 4 + PointsTableViewController.elementSpacing).isActive = true
-            contextLabelsStackView.topAnchor.constraint(equalTo: topLayoutAnchor, constant: PointsTableViewController.elementSpacing).isActive = true
-            contextLabelsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
-            contextLabelsStackView.alpha = 0.0
+            view.addSubview(contextTextViewsStackView)
+            contextTextViewsStackView.translatesAutoresizingMaskIntoConstraints = false
+            contextTextViewsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PointsTableViewController.elementSpacing).isActive = true
+            contextTextViewsStackView.topAnchor.constraint(equalTo: topLayoutAnchor, constant: PointsTableViewController.elementSpacing).isActive = true
+            contextTextViewsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
+            contextTextViewsStackView.alpha = 0.0
 
-            tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: contextLabelsStackView.bottomAnchor, constant: 4)
+            tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: contextTextViewsStackView.bottomAnchor, constant: 4)
         case .embedded:
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
         }
     }
 
-    private func updateContentLabelsStackView(shouldShow: Bool) {
+    private func updateContentTextViewsStackView(shouldShow: Bool) {
         switch viewModel.viewState {
         case .standalone where !shouldShow,
             .embedded:
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
-            contextLabelsStackView.removeFromSuperview()
+            contextTextViewsStackView.removeFromSuperview()
         case .standalone:
             break
         }
@@ -196,28 +189,29 @@ extension PointsTableViewController {
 
         switch viewModel.viewState {
         case .standalone:
-            installContextLabelsDataSource()
+            installContextTextViewsDataSource()
         case .embedded:
             break
         }
         installTableViewDataSource()
     }
 
-    private func installContextLabelsDataSource() {
+    private func installContextTextViewsDataSource() {
         viewModel.sharedContextPointsDataSourceRelay.subscribe(onNext: { [weak self] (contextPoints) in
-            self?.updateContentLabelsStackView(shouldShow: !contextPoints.isEmpty)
+            self?.updateContentTextViewsStackView(shouldShow: !contextPoints.isEmpty)
             guard !contextPoints.isEmpty else { return }
 
-            let contextPointLabels: [UILabel] = contextPoints.map { (contextPoint) in
-                let contextPointLabel = UILabel(frame: .zero)
-                contextPointLabel.numberOfLines = 0
-                contextPointLabel.attributedText = MarkDownFormatter.format(contextPoint.description,
-                                                                            with: [.font: GeneralFonts.text,
-                                                                                   .foregroundColor: GeneralColors.text],
-                                                                            hyperlinks: contextPoint.hyperlinks)
-                return contextPointLabel
+            let contextTextViews: [UITextView] = contextPoints.map { [weak self] (contextPoint) in
+                let contextTextView = BasicUIElementFactory.generateDescriptionTextView(MarkDownFormatter.format(contextPoint.description,
+                                                                                                                 with: [.font: GeneralFonts.text,
+                                                                                                                        .foregroundColor: GeneralColors.text],
+                                                                                                                 hyperlinks: contextPoint.hyperlinks))
+                guard let self = self else { return contextTextView }
+
+                contextTextView.delegate = self
+                return contextTextView
             }
-            contextPointLabels.forEach { self?.contextLabelsStackView.addArrangedSubview($0) }
+            contextTextViews.forEach { self?.contextTextViewsStackView.addArrangedSubview($0) }
         }).disposed(by: disposeBag)
     }
 
@@ -226,8 +220,7 @@ extension PointsTableViewController {
         viewModel.sharedSidedPointsDataSourceRelay
             .subscribe(onNext: { [weak self] (pointsTableViewCellViewModels) in
                 UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
-                    self?.emptyStateLabel.alpha = pointsTableViewCellViewModels.isEmpty ? 1.0 : 0.0
-                    self?.contextLabelsStackView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
+                    self?.contextTextViewsStackView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
                     self?.pointsTableView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
                 })
             }).disposed(by: disposeBag)
@@ -279,6 +272,15 @@ extension PointsTableViewController {
     }
 }
 
+// MARK: - UITextViewDelegate
+extension PointsTableViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        UIApplication.shared.open(URL)
+        return false
+    }
+}
+
+// MARK: UITableView dynamicContentHeight
 private extension UITableView {
     var dynamicContentHeight: CGFloat {
         layoutIfNeeded()

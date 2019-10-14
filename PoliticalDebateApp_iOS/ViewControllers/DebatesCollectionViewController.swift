@@ -30,10 +30,6 @@ class DebatesCollectionViewController: UIViewController {
 
         installViewConstraints()
         installViewBinds()
-
-        UserDataManager.shared.loadUserData { [weak self] in
-            self?.viewModel.refreshDebatesWithLocalData()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -62,20 +62,10 @@ class PointViewController: UIViewController {
         return homeButton
     }()
 
-    private lazy var descriptionTextView: UITextView = {
-        let descriptionTextView = UITextView(frame: .zero)
-        descriptionTextView.isEditable = false
-        descriptionTextView.dataDetectorTypes = .link
-        descriptionTextView.isUserInteractionEnabled = true
-        descriptionTextView.isScrollEnabled = false
-        descriptionTextView.backgroundColor = .clear
-        descriptionTextView.attributedText = MarkDownFormatter.format(viewModel.point.description,
-                                                                      with: [.font: GeneralFonts.text,
-                                                                             .foregroundColor: GeneralColors.text],
-                                                                      hyperlinks: viewModel.point.hyperlinks)
-        descriptionTextView.sizeToFit()
-        return descriptionTextView
-    }()
+    private lazy var descriptionTextView = BasicUIElementFactory.generateDescriptionTextView(MarkDownFormatter.format(viewModel.point.description,
+                                                                                                                      with: [.font: GeneralFonts.text,
+                                                                                                                             .foregroundColor: GeneralColors.text],
+                                                                                                                      hyperlinks: viewModel.point.hyperlinks))
 
     private lazy var imagePageViewController: UIPageViewController = {
         let imagePageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
@@ -103,7 +93,7 @@ class PointViewController: UIViewController {
 }
 
 // MARK: - View constraints & binding
-extension PointViewController: UITextViewDelegate, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+extension PointViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     // MARK: View constraints
 
@@ -198,13 +188,6 @@ extension PointViewController: UITextViewDelegate, UIPageViewControllerDataSourc
         }).disposed(by: disposeBag)
     }
 
-    // MARK: UITextViewDelegate
-
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        UIApplication.shared.open(URL)
-        return false
-    }
-
     // MARK: UIPageViewControllerDataSource & UIPageViewControllerDelegate
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
@@ -235,5 +218,13 @@ extension PointViewController: UITextViewDelegate, UIPageViewControllerDataSourc
         UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
             self?.imagePageControl.currentPage = newIndex
         }
+    }
+}
+
+// MARK: - UITextViewDelegate
+extension PointViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        UIApplication.shared.open(URL)
+        return false
     }
 }

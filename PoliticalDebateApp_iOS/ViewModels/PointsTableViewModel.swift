@@ -27,6 +27,13 @@ class PointsTableViewModel: StarrableViewModel {
         self.embeddedSidedPoints = embeddedSidedPoints
         subscribeSidedPointsUpdates()
         subscribeToContextPointsUpdates()
+
+        UserDataManager.shared.sharedUserDataLoadedRelay
+            .subscribe(onNext: { [weak self] loaded in
+                guard loaded else { return }
+
+                self?.refreshSeenPoints()
+            }).disposed(by: disposeBag)
     }
 
     private let disposeBag = DisposeBag()
@@ -72,8 +79,15 @@ class PointsTableViewModel: StarrableViewModel {
 
     private func subscribeToContextPointsUpdates() {
         sharedContextPointsDataSourceRelay
-            .take(1)
-            .subscribe(onNext: { [weak self] (contextPoints) in
+            .take(1).asSingle()
+            .flatMap({ (contextPoints) -> Single<[Point]> in
+                guard !UserDataManager.shared.userDataLoaded else { return .just(contextPoints) }
+
+                return UserDataManager.shared.sharedUserDataLoadedRelay
+                    .take(1).asSingle()
+                    .map { loaded in return loaded ? contextPoints : [] }
+            })
+            .subscribe(onSuccess: { [weak self] (contextPoints) in
                 guard let self = self else { return }
 
                 // Don't care if this call succeeds or fails

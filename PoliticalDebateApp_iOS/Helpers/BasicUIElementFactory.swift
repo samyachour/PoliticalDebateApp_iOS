@@ -113,4 +113,16 @@ class BasicUIElementFactory {
         return versionLabel
     }
 
+    static func generateDescriptionTextView(_ attributedText: NSAttributedString? = nil) -> UITextView {
+        let descriptionTextView = LinkResponsiveTextView(frame: .zero)
+        descriptionTextView.isEditable = false
+        descriptionTextView.dataDetectorTypes = .link
+        descriptionTextView.isUserInteractionEnabled = true
+        descriptionTextView.isScrollEnabled = false
+        descriptionTextView.backgroundColor = .clear
+        descriptionTextView.attributedText = attributedText
+        descriptionTextView.sizeToFit()
+        return descriptionTextView
+    }
+
 }

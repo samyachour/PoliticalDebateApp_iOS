@@ -17,9 +17,13 @@ class PointTableViewCell: UITableViewCell {
     var viewModel: PointTableViewCellViewModel? {
         didSet {
             containerView.backgroundColor = viewModel?.backgroundColor
-            pointLabel.attributedText = MarkDownFormatter.format(viewModel?.point.shortDescription, with: [.font: GeneralFonts.text,
-                                                                                                           .foregroundColor: GeneralColors.text])
-            checkImageView.image = (viewModel?.hasCompletedPaths ?? false) ? UIImage.check : nil
+            pointTextView.attributedText = MarkDownFormatter.format(viewModel?.point.shortDescription, with: [.font: GeneralFonts.text,
+                                                                                                           .foregroundColor: GeneralColors.text],
+                                                                    hyperlinks: viewModel?.point.hyperlinks)
+            pointTextView.sizeToFit()
+            UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
+                self?.checkImageView.image = (self?.viewModel?.hasCompletedPaths ?? false) ? UIImage.check : nil
+            }
         }
     }
 
@@ -29,6 +33,7 @@ class PointTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         installConstraints()
+        installViewBinds()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -45,6 +50,7 @@ class PointTableViewCell: UITableViewCell {
     // MARK: - UI Properties
 
     private static let cornerRadius: CGFloat = 26.0
+    private static let inset: CGFloat = 10.0
 
     // MARK: - UI Elements
 
@@ -54,11 +60,7 @@ class PointTableViewCell: UITableViewCell {
         return containerView
     }()
 
-    private lazy var pointLabel: UILabel = {
-        let pointLabel = UILabel(frame: .zero)
-        pointLabel.numberOfLines = 0
-        return pointLabel
-    }()
+    private lazy var pointTextView = BasicUIElementFactory.generateDescriptionTextView()
 
     private lazy var checkImageView: UIImageView = {
         let checkImageView = UIImageView(frame: .zero)
@@ -74,12 +76,12 @@ class PointTableViewCell: UITableViewCell {
         selectionStyle = .none
 
         contentView.addSubview(containerView)
-        containerView.addSubview(pointLabel)
+        containerView.addSubview(pointTextView)
         containerView.addSubview(checkImageView)
 
         contentView.autoresizingMask = .flexibleHeight
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        pointLabel.translatesAutoresizingMaskIntoConstraints = false
+        pointTextView.translatesAutoresizingMaskIntoConstraints = false
         checkImageView.translatesAutoresizingMaskIntoConstraints = false
 
         let containerVerticalInset: CGFloat = 8.0
@@ -88,14 +90,18 @@ class PointTableViewCell: UITableViewCell {
         containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
         containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -containerVerticalInset).isActive = true
 
-        pointLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PointsTableViewController.elementSpacing).isActive = true
-        pointLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PointsTableViewController.elementSpacing).isActive = true
-        pointLabel.trailingAnchor.constraint(lessThanOrEqualTo: checkImageView.leadingAnchor, constant: -4).isActive = true
-        pointLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
+        pointTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
+        pointTextView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PointTableViewCell.inset).isActive = true
+        pointTextView.trailingAnchor.constraint(lessThanOrEqualTo: checkImageView.leadingAnchor, constant: -2).isActive = true
+        pointTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PointTableViewCell.inset).isActive = true
 
         checkImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
+        checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PointTableViewCell.inset - 4).isActive = true
         checkImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+    }
+
+    private func installViewBinds() {
+        pointTextView.delegate = self
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
@@ -108,5 +114,13 @@ class PointTableViewCell: UITableViewCell {
                 self?.containerView.backgroundColor = self?.viewModel?.backgroundColor
             }
         }
+    }
+}
+
+// MARK: - UITextViewDelegate
+extension PointTableViewCell: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        UIApplication.shared.open(URL)
+        return false
     }
 }
