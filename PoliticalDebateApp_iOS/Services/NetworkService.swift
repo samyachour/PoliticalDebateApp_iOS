@@ -27,7 +27,7 @@ private protocol Networkable {
 
 struct NetworkService<T>: Networkable where T: CustomTargetType & AccessTokenAuthorizable {
     fileprivate let provider = MoyaProvider<T>(plugins: [
-        NetworkLoggerPlugin(verbose: true),
+        NetworkLoggerPlugin(),
         AccessTokenPlugin { SessionManager.shared.publicAccessToken }
         ])
 
