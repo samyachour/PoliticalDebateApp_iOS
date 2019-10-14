@@ -103,6 +103,7 @@ struct CoreDataService {
                 debugLog(error.localizedDescription)
                 CoreDataService.showCoreDataLoadAlert()
                 completionHandler(GeneralError.alreadyHandled)
+                return
             }
             debugLog("Core Data stack has been initialized with description: \(storeDescription)")
 

@@ -22,10 +22,7 @@ struct PlainDjangoEncoding: ParameterEncoding {
             parameters.values.count == 1,
             urlRequest.httpMethod == "GET"
         else {
-            throw AFError.parameterEncodingFailed(
-                reason: AFError.ParameterEncodingFailureReason.propertyListEncodingFailed(
-                    error: PlainDjangoEncodingError.invalidParameterNumber
-            ))
+            throw AFError.parameterEncodingFailed(reason: .customEncodingFailed(error: PlainDjangoEncodingError.invalidParameterNumber))
         }
 
         guard let url = urlRequest.url else {
@@ -38,10 +35,7 @@ struct PlainDjangoEncoding: ParameterEncoding {
         } else if let param = parameters.values.first as? Int {
             urlRequest.url = URL.init(string: url.absoluteString + String(param))
         } else {
-            throw AFError.parameterEncodingFailed(
-                reason: AFError.ParameterEncodingFailureReason.propertyListEncodingFailed(
-                    error: PlainDjangoEncodingError.invalidParameterType
-            ))
+            throw AFError.parameterEncodingFailed(reason: .customEncodingFailed(error: PlainDjangoEncodingError.invalidParameterType))
         }
         return urlRequest
     }

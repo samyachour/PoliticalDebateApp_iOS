@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		180EEE533818D2EAB26DC869 /* Pods_PoliticalDebateApp_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DC6696C3CA8E5F4E1ECF080 /* Pods_PoliticalDebateApp_iOSTests.framework */; };
+		1BC9FA230E3AE492F8B57D9F /* Pods_PoliticalDebateApp_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99BB88DAAFCFA4C867B987D6 /* Pods_PoliticalDebateApp_iOS.framework */; };
 		2E0A9D52230D1F4900D10CC8 /* TokenObtain.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4B230D1F4600D10CC8 /* TokenObtain.json */; };
 		2E0A9D53230D1F4900D10CC8 /* TokenObtain.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4B230D1F4600D10CC8 /* TokenObtain.json */; };
 		2E0A9D57230D1F4900D10CC8 /* DebateSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E0A9D4D230D1F4600D10CC8 /* DebateSingle.json */; };
@@ -165,9 +167,7 @@
 		2EEEC689231CDF4600438154 /* SinglePointImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */; };
 		2EEEC68B231CDFE100438154 /* SinglePointImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */; };
 		2EF1E59B22DC688200C93DFB /* ButtonWithActionClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */; };
-		B5307AE15A1C031FA189B26E /* Pods_PoliticalDebateApp_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */; };
-		C1F8594D1844FD5A725FD14D /* Pods_PoliticalDebateApp_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B294A5E6DD428B59EE9B92B6 /* Pods_PoliticalDebateApp_iOS.framework */; };
-		C8A8D5D71259D82EE76A8AB8 /* Pods_PoliticalDebateApp_iOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E9127E5132AA34688E16C18 /* Pods_PoliticalDebateApp_iOSUITests.framework */; };
+		D49C9382E7FE1D928DF01724 /* Pods_PoliticalDebateApp_iOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9AA7F3722C55AFF2E20D376 /* Pods_PoliticalDebateApp_iOSUITests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -188,9 +188,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E9127E5132AA34688E16C18 /* Pods_PoliticalDebateApp_iOSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2162EE9CB2F8CA1A2CF41A7A /* Pods-PoliticalDebateApp_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		141AB07BACA48E119EAC2988 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		18758978D5EC9B50EEC51E12 /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.test.xcconfig"; sourceTree = "<group>"; };
+		2DC6696C3CA8E5F4E1ECF080 /* Pods_PoliticalDebateApp_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E0A9D4B230D1F4600D10CC8 /* TokenObtain.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TokenObtain.json; sourceTree = "<group>"; };
 		2E0A9D4D230D1F4600D10CC8 /* DebateSingle.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DebateSingle.json; sourceTree = "<group>"; };
 		2E0A9D4E230D1F4700D10CC8 /* DebateFilter.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DebateFilter.json; sourceTree = "<group>"; };
@@ -287,15 +287,15 @@
 		2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePointImageViewModel.swift; sourceTree = "<group>"; };
 		2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePointImageViewController.swift; sourceTree = "<group>"; };
 		2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonWithActionClosure.swift; sourceTree = "<group>"; };
-		7A7E42EE5FCED9A963BBF6E4 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.release.xcconfig"; sourceTree = "<group>"; };
-		A4042BE1D4716D71FE5919AA /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; sourceTree = "<group>"; };
-		AAC19EF7DF8E9E43D162A455 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		ADB9BD0CDD1CBE12528061F6 /* Pods-PoliticalDebateApp_iOS.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.test.xcconfig"; sourceTree = "<group>"; };
-		AFCB4D323C984F53B2217668 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B294A5E6DD428B59EE9B92B6 /* Pods_PoliticalDebateApp_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BB4B5C9A06643441D9D82F7F /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.test.xcconfig"; sourceTree = "<group>"; };
-		C0ABC1F301196AEFDF8D01AC /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.test.xcconfig"; sourceTree = "<group>"; };
-		E6FC36CDDAF615B806EA261D /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		331D28D94F43ECDFFE6E52DC /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; sourceTree = "<group>"; };
+		36D67260FE78FCE9BB1EDC30 /* Pods-PoliticalDebateApp_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		559DFCBA2C226ADDE4B55E9F /* Pods-PoliticalDebateApp_iOS.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.test.xcconfig"; sourceTree = "<group>"; };
+		7FC93FE40AD040E4473B8BC4 /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		94BB85BC864649CCBF398867 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOS.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS.release.xcconfig"; sourceTree = "<group>"; };
+		99BB88DAAFCFA4C867B987D6 /* Pods_PoliticalDebateApp_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6EF6F91FB2D7C08CA2F7969 /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.test.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.test.xcconfig"; sourceTree = "<group>"; };
+		C1450607747337AD3BE3F1C4 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSTests.debug.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		D9AA7F3722C55AFF2E20D376 /* Pods_PoliticalDebateApp_iOSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoliticalDebateApp_iOSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -303,7 +303,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1F8594D1844FD5A725FD14D /* Pods_PoliticalDebateApp_iOS.framework in Frameworks */,
+				1BC9FA230E3AE492F8B57D9F /* Pods_PoliticalDebateApp_iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,7 +311,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5307AE15A1C031FA189B26E /* Pods_PoliticalDebateApp_iOSTests.framework in Frameworks */,
+				180EEE533818D2EAB26DC869 /* Pods_PoliticalDebateApp_iOSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,25 +319,35 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C8A8D5D71259D82EE76A8AB8 /* Pods_PoliticalDebateApp_iOSUITests.framework in Frameworks */,
+				D49C9382E7FE1D928DF01724 /* Pods_PoliticalDebateApp_iOSUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0786A41FF80244D962589139 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				99BB88DAAFCFA4C867B987D6 /* Pods_PoliticalDebateApp_iOS.framework */,
+				2DC6696C3CA8E5F4E1ECF080 /* Pods_PoliticalDebateApp_iOSTests.framework */,
+				D9AA7F3722C55AFF2E20D376 /* Pods_PoliticalDebateApp_iOSUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		2060EB8BB7F453104959922C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				2162EE9CB2F8CA1A2CF41A7A /* Pods-PoliticalDebateApp_iOS.debug.xcconfig */,
-				7A7E42EE5FCED9A963BBF6E4 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */,
-				AFCB4D323C984F53B2217668 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */,
-				AAC19EF7DF8E9E43D162A455 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */,
-				E6FC36CDDAF615B806EA261D /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */,
-				A4042BE1D4716D71FE5919AA /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */,
-				ADB9BD0CDD1CBE12528061F6 /* Pods-PoliticalDebateApp_iOS.test.xcconfig */,
-				BB4B5C9A06643441D9D82F7F /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */,
-				C0ABC1F301196AEFDF8D01AC /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */,
+				36D67260FE78FCE9BB1EDC30 /* Pods-PoliticalDebateApp_iOS.debug.xcconfig */,
+				559DFCBA2C226ADDE4B55E9F /* Pods-PoliticalDebateApp_iOS.test.xcconfig */,
+				94BB85BC864649CCBF398867 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */,
+				C1450607747337AD3BE3F1C4 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */,
+				B6EF6F91FB2D7C08CA2F7969 /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */,
+				141AB07BACA48E119EAC2988 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */,
+				7FC93FE40AD040E4473B8BC4 /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */,
+				18758978D5EC9B50EEC51E12 /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */,
+				331D28D94F43ECDFFE6E52DC /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -385,7 +395,7 @@
 				2E23A6E4226AC7B400B2DCC3 /* PoliticalDebateApp_iOSUITests */,
 				2E23A6C0226AC7B300B2DCC3 /* Products */,
 				2060EB8BB7F453104959922C /* Pods */,
-				CAEF5118B43D4999D207811B /* Frameworks */,
+				0786A41FF80244D962589139 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -582,16 +592,6 @@
 			path = LocalData;
 			sourceTree = "<group>";
 		};
-		CAEF5118B43D4999D207811B /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				B294A5E6DD428B59EE9B92B6 /* Pods_PoliticalDebateApp_iOS.framework */,
-				1D7E7DBF71D799DB9F5E3D36 /* Pods_PoliticalDebateApp_iOSTests.framework */,
-				1E9127E5132AA34688E16C18 /* Pods_PoliticalDebateApp_iOSUITests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -599,12 +599,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2E23A6EA226AC7B400B2DCC3 /* Build configuration list for PBXNativeTarget "PoliticalDebateApp_iOS" */;
 			buildPhases = (
-				010EEA1AD172882888C5B030 /* [CP] Check Pods Manifest.lock */,
+				A0836D7EEFC6B544A1F5885A /* [CP] Check Pods Manifest.lock */,
 				2E23A6BB226AC7B300B2DCC3 /* Sources */,
 				2E23A6BC226AC7B300B2DCC3 /* Frameworks */,
 				2E23A6BD226AC7B300B2DCC3 /* Resources */,
-				90B9B5BB8420D5E1919E30EF /* [CP] Embed Pods Frameworks */,
 				2E23A6F9226ACA5600B2DCC3 /* ShellScript */,
+				DEABDA43C810C47BB389EB73 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -619,11 +619,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2E23A6ED226AC7B400B2DCC3 /* Build configuration list for PBXNativeTarget "PoliticalDebateApp_iOSTests" */;
 			buildPhases = (
-				16F5F7FACC22FE88957FF779 /* [CP] Check Pods Manifest.lock */,
+				D524ED7A2581FCD6B7389662 /* [CP] Check Pods Manifest.lock */,
 				2E23A6D2226AC7B400B2DCC3 /* Sources */,
 				2E23A6D3226AC7B400B2DCC3 /* Frameworks */,
 				2E23A6D4226AC7B400B2DCC3 /* Resources */,
-				383D76544149C5C585EE271A /* [CP] Embed Pods Frameworks */,
+				18130384621BFAEB3A96184B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -639,7 +639,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2E23A6F0226AC7B400B2DCC3 /* Build configuration list for PBXNativeTarget "PoliticalDebateApp_iOSUITests" */;
 			buildPhases = (
-				B580ABBAEBE0A9EA58A0839F /* [CP] Check Pods Manifest.lock */,
+				D3CBA9F5B8DB8FBA375EF393 /* [CP] Check Pods Manifest.lock */,
 				2E23A6DD226AC7B400B2DCC3 /* Sources */,
 				2E23A6DE226AC7B400B2DCC3 /* Frameworks */,
 				2E23A6DF226AC7B400B2DCC3 /* Resources */,
@@ -753,7 +753,41 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		010EEA1AD172882888C5B030 /* [CP] Check Pods Manifest.lock */ = {
+		18130384621BFAEB3A96184B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2E23A6F9226ACA5600B2DCC3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
+		A0836D7EEFC6B544A1F5885A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -775,7 +809,29 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		16F5F7FACC22FE88957FF779 /* [CP] Check Pods Manifest.lock */ = {
+		D3CBA9F5B8DB8FBA375EF393 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PoliticalDebateApp_iOSUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D524ED7A2581FCD6B7389662 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -797,41 +853,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2E23A6F9226ACA5600B2DCC3 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
-		};
-		383D76544149C5C585EE271A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOSTests/Pods-PoliticalDebateApp_iOSTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		90B9B5BB8420D5E1919E30EF /* [CP] Embed Pods Frameworks */ = {
+		DEABDA43C810C47BB389EB73 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -846,28 +868,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PoliticalDebateApp_iOS/Pods-PoliticalDebateApp_iOS-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B580ABBAEBE0A9EA58A0839F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-PoliticalDebateApp_iOSUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1166,7 +1166,7 @@
 		};
 		2E23A6EB226AC7B400B2DCC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2162EE9CB2F8CA1A2CF41A7A /* Pods-PoliticalDebateApp_iOS.debug.xcconfig */;
+			baseConfigurationReference = 36D67260FE78FCE9BB1EDC30 /* Pods-PoliticalDebateApp_iOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -1187,7 +1187,7 @@
 		};
 		2E23A6EC226AC7B400B2DCC3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7A7E42EE5FCED9A963BBF6E4 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */;
+			baseConfigurationReference = 94BB85BC864649CCBF398867 /* Pods-PoliticalDebateApp_iOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -1208,7 +1208,7 @@
 		};
 		2E23A6EE226AC7B400B2DCC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AFCB4D323C984F53B2217668 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */;
+			baseConfigurationReference = C1450607747337AD3BE3F1C4 /* Pods-PoliticalDebateApp_iOSTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1230,7 +1230,7 @@
 		};
 		2E23A6EF226AC7B400B2DCC3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AAC19EF7DF8E9E43D162A455 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */;
+			baseConfigurationReference = 141AB07BACA48E119EAC2988 /* Pods-PoliticalDebateApp_iOSTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1252,7 +1252,7 @@
 		};
 		2E23A6F1226AC7B400B2DCC3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E6FC36CDDAF615B806EA261D /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */;
+			baseConfigurationReference = 7FC93FE40AD040E4473B8BC4 /* Pods-PoliticalDebateApp_iOSUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
@@ -1273,7 +1273,7 @@
 		};
 		2E23A6F2226AC7B400B2DCC3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4042BE1D4716D71FE5919AA /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */;
+			baseConfigurationReference = 331D28D94F43ECDFFE6E52DC /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
@@ -1356,7 +1356,7 @@
 		};
 		2E7D187A22BEE7DA00D570D8 /* Test */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ADB9BD0CDD1CBE12528061F6 /* Pods-PoliticalDebateApp_iOS.test.xcconfig */;
+			baseConfigurationReference = 559DFCBA2C226ADDE4B55E9F /* Pods-PoliticalDebateApp_iOS.test.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -1377,7 +1377,7 @@
 		};
 		2E7D187B22BEE7DA00D570D8 /* Test */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB4B5C9A06643441D9D82F7F /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */;
+			baseConfigurationReference = B6EF6F91FB2D7C08CA2F7969 /* Pods-PoliticalDebateApp_iOSTests.test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1399,7 +1399,7 @@
 		};
 		2E7D187C22BEE7DA00D570D8 /* Test */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C0ABC1F301196AEFDF8D01AC /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */;
+			baseConfigurationReference = 18758978D5EC9B50EEC51E12 /* Pods-PoliticalDebateApp_iOSUITests.test.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
