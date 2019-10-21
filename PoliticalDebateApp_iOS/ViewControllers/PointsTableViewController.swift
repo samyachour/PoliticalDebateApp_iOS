@@ -74,6 +74,13 @@ class PointsTableViewController: UIViewController {
 
     // MARK: - UI Elements
 
+    private let loadingIndicator: UIActivityIndicatorView = {
+        let loadingIndicator = UIActivityIndicatorView(style: .whiteLarge)
+        loadingIndicator.color = .customDarkGray2
+        loadingIndicator.hidesWhenStopped = true
+        return loadingIndicator
+    }()
+
     private let contextTextViewsStackView: UIStackView = {
         let contextTextViewsStackView = UIStackView(frame: .zero)
         contextTextViewsStackView.alignment = .leading
@@ -100,6 +107,7 @@ class PointsTableViewController: UIViewController {
         starredButton.setImage(UIImage.star, for: .normal)
         return starredButton
     }()
+
 }
 
 // MARK: - View constraints & binding
@@ -117,6 +125,7 @@ extension PointsTableViewController {
             starredButton.tintColor = viewModel.starTintColor
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: starredButton)
             view.backgroundColor = GeneralColors.background
+            installLoadingIndicator()
         case .embedded:
             pointsTableView.alwaysBounceVertical = false
             view.backgroundColor = .clear
@@ -151,6 +160,14 @@ extension PointsTableViewController {
         case .embedded:
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
         }
+    }
+
+    private func installLoadingIndicator() {
+        view.addSubview(loadingIndicator)
+        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
+        loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        loadingIndicator.startAnimating()
     }
 
     private func updateContentTextViewsStackView(shouldShow: Bool) {
@@ -219,9 +236,10 @@ extension PointsTableViewController {
         pointsTableView.register(SidedPointTableViewCell.self, forCellReuseIdentifier: SidedPointTableViewCell.reuseIdentifier)
         viewModel.sharedSidedPointsDataSourceRelay
             .subscribe(onNext: { [weak self] (pointsTableViewCellViewModels) in
-                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
+                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
                     self?.contextTextViewsStackView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
                     self?.pointsTableView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
+                    self?.loadingIndicator.stopAnimating()
                 })
             }).disposed(by: disposeBag)
 
