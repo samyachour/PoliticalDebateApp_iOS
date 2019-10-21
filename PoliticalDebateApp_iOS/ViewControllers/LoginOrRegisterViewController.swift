@@ -214,6 +214,10 @@ extension LoginOrRegisterViewController {
                  404:
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't find an account associated with those credentials."))
+            case _ where Constants.retryErrorCodes.contains(response.statusCode):
+                ErrorHandler.showBasicRetryErrorBanner { [weak self] in
+                    self?.loginTapped(email: email, password: password)
+                }
             default:
                 ErrorHandler.showBasicRetryErrorBanner()
             }
@@ -297,7 +301,7 @@ extension LoginOrRegisterViewController {
                         return
                     }
                 }
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandler.showBasicReportErrorBanner()
             case 404:
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't find an account associated with that email."))

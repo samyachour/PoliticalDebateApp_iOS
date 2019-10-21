@@ -21,10 +21,19 @@ class ErrorHandler {
                                                                                         title: error.localizedDescription))
     }
 
-    static func showBasicRetryErrorBanner() {
+    static func showBasicRetryErrorBanner(_ buttonAction: (() -> Void)? = nil) {
+        guard let buttonAction = buttonAction else {
+            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                            title: GeneralError.basic.localizedDescription,
+                                                                                            subtitle: GeneralError.retry.localizedDescription))
+            return
+        }
+
         NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                         title: GeneralError.basic.localizedDescription,
-                                                                                        subtitle: GeneralError.retry.localizedDescription))
+                                                                                        subtitle: GeneralError.retry.localizedDescription,
+                                                                                        buttonConfig: .customTitle(title: GeneralCopies.retryTitle,
+                                                                                                                   action: buttonAction)))
     }
 
     static func showBasicReportErrorBanner(_ title: String = GeneralError.basic.localizedDescription) {

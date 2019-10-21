@@ -263,6 +263,10 @@ extension PointsTableViewController {
             switch response.statusCode {
             case 400:
                 ErrorHandler.showBasicReportErrorBanner()
+            case _ where Constants.retryErrorCodes.contains(response.statusCode):
+                ErrorHandler.showBasicRetryErrorBanner { [weak self] in
+                    self?.viewModel.retrieveAllDebatePoints()
+                }
             default:
                 ErrorHandler.showBasicRetryErrorBanner()
             }
