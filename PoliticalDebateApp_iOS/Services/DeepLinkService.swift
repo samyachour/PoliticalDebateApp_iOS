@@ -17,7 +17,7 @@ struct DeepLinkService {
     private init() {}
 
     enum Constants {
-        static let appNameSpace = "com.PoliticalDebateApp-iOS"
+        static let appNameSpace = "com.PoliticalDebateApp"
         static let primaryKeyKey = "primaryKey"
     }
 
