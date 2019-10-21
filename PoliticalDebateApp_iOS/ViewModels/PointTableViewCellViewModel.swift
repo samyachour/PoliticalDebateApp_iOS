@@ -1,5 +1,5 @@
 //
-//  PointTableViewCellViewModel.swift
+//  SidedPointTableViewCellViewModel.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 8/24/19.
@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-struct PointTableViewCellViewModel {
+struct SidedPointTableViewCellViewModel {
     let point: Point
     let debatePrimaryKey: PrimaryKey
     let hasCompletedPaths: Bool
@@ -24,7 +24,7 @@ struct PointTableViewCellViewModel {
         self.debatePrimaryKey = debatePrimaryKey
         if let seenPoints = seenPoints,
             !seenPoints.isEmpty {
-            hasCompletedPaths = PointTableViewCellViewModel.deriveHasCompletedPaths(point, seenPoints)
+            hasCompletedPaths = SidedPointTableViewCellViewModel.deriveHasCompletedPaths(point, seenPoints)
         } else {
             hasCompletedPaths = false
         }

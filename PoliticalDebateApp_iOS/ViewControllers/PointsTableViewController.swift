@@ -176,7 +176,7 @@ extension PointsTableViewController {
         starredButton.addTarget(self, action: #selector(starredButtonTapped), for: .touchUpInside)
 
         pointsTableView.rx
-            .modelSelected(PointTableViewCellViewModel.self)
+            .modelSelected(SidedPointTableViewCellViewModel.self)
             .subscribe(onNext: { [weak self] pointTableViewCellViewModel in
                 guard let debate = self?.viewModel.debate else {
                     return
@@ -216,7 +216,7 @@ extension PointsTableViewController {
     }
 
     private func installTableViewDataSource() {
-        pointsTableView.register(PointTableViewCell.self, forCellReuseIdentifier: PointTableViewCell.reuseIdentifier)
+        pointsTableView.register(SidedPointTableViewCell.self, forCellReuseIdentifier: SidedPointTableViewCell.reuseIdentifier)
         viewModel.sharedSidedPointsDataSourceRelay
             .subscribe(onNext: { [weak self] (pointsTableViewCellViewModels) in
                 UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
@@ -226,8 +226,8 @@ extension PointsTableViewController {
             }).disposed(by: disposeBag)
 
         viewModel.sharedSidedPointsDataSourceRelay
-            .bind(to: pointsTableView.rx.items(cellIdentifier: PointTableViewCell.reuseIdentifier,
-                                               cellType: PointTableViewCell.self)) { _, viewModel, cell in
+            .bind(to: pointsTableView.rx.items(cellIdentifier: SidedPointTableViewCell.reuseIdentifier,
+                                               cellType: SidedPointTableViewCell.self)) { _, viewModel, cell in
                                                 cell.viewModel = viewModel
             }.disposed(by: disposeBag)
 

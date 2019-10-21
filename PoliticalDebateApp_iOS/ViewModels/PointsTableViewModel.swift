@@ -41,7 +41,7 @@ class PointsTableViewModel: StarrableViewModel {
 
     // MARK: - Datasource
 
-    private let sidedPointsDataSourceRelay = BehaviorRelay<[PointTableViewCellViewModel]>(value: [])
+    private let sidedPointsDataSourceRelay = BehaviorRelay<[SidedPointTableViewCellViewModel]>(value: [])
     lazy var sharedSidedPointsDataSourceRelay = sidedPointsDataSourceRelay
         .skip(1) // empty array emission initialized w/ relay
         .share()
@@ -71,9 +71,9 @@ class PointsTableViewModel: StarrableViewModel {
         }.subscribe(onNext: { [weak self] (points, seenPoints) in
             guard let debatePrimaryKey = self?.debate.primaryKey else { return }
 
-            self?.sidedPointsDataSourceRelay.accept(points.map({ PointTableViewCellViewModel(point: $0,
-                                                                                             debatePrimaryKey: debatePrimaryKey,
-                                                                                             seenPoints: seenPoints) }))
+            self?.sidedPointsDataSourceRelay.accept(points.map({ SidedPointTableViewCellViewModel(point: $0,
+                                                                                                  debatePrimaryKey: debatePrimaryKey,
+                                                                                                  seenPoints: seenPoints) }))
         }).disposed(by: disposeBag)
     }
 

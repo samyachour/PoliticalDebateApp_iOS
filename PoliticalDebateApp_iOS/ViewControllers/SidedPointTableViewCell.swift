@@ -1,5 +1,5 @@
 //
-//  PointTableViewCell.swift
+//  SidedPointTableViewCell.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 8/24/19.
@@ -11,10 +11,10 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class PointTableViewCell: UITableViewCell {
-    static let reuseIdentifier = "PointTableViewCell"
+class SidedPointTableViewCell: UITableViewCell {
+    static let reuseIdentifier = "SidedPointTableViewCell"
 
-    var viewModel: PointTableViewCellViewModel? {
+    var viewModel: SidedPointTableViewCellViewModel? {
         didSet {
             containerView.backgroundColor = viewModel?.backgroundColor
             pointTextView.attributedText = MarkDownFormatter.format(viewModel?.point.shortDescription, with: [.font: GeneralFonts.text,
@@ -56,7 +56,7 @@ class PointTableViewCell: UITableViewCell {
 
     private lazy var containerView: UIView = {
         let containerView = UIView(frame: .zero)
-        containerView.layer.cornerRadius = PointTableViewCell.cornerRadius
+        containerView.layer.cornerRadius = SidedPointTableViewCell.cornerRadius
         return containerView
     }()
 
@@ -90,13 +90,13 @@ class PointTableViewCell: UITableViewCell {
         containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
         containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -containerVerticalInset).isActive = true
 
-        pointTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PointTableViewCell.inset).isActive = true
-        pointTextView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PointTableViewCell.inset).isActive = true
+        pointTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: SidedPointTableViewCell.inset).isActive = true
+        pointTextView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: SidedPointTableViewCell.inset).isActive = true
         pointTextView.trailingAnchor.constraint(lessThanOrEqualTo: checkImageView.leadingAnchor, constant: -2).isActive = true
-        pointTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PointTableViewCell.inset).isActive = true
+        pointTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -SidedPointTableViewCell.inset).isActive = true
 
         checkImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PointTableViewCell.inset - 4).isActive = true
+        checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -SidedPointTableViewCell.inset - 4).isActive = true
         checkImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 
@@ -118,7 +118,7 @@ class PointTableViewCell: UITableViewCell {
 }
 
 // MARK: - UITextViewDelegate
-extension PointTableViewCell: UITextViewDelegate {
+extension SidedPointTableViewCell: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         UIApplication.shared.open(URL)
         return false
