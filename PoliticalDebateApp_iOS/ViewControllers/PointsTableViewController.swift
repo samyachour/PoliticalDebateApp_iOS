@@ -39,20 +39,6 @@ class PointsTableViewController: UIViewController {
         viewModel.refreshSeenPoints()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        switch viewModel.viewState {
-        case .standalone:
-            UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
-                self?.navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
-                self?.navigationController?.navigationBar.layoutIfNeeded()
-            }
-        case .embedded:
-            break
-        }
-    }
-
     // MARK: - Observers & Observables
 
     private let viewModel: PointsTableViewModel

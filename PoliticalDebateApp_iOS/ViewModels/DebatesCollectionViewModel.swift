@@ -87,7 +87,7 @@ class DebatesCollectionViewModel {
                                 // Manual refresh can be ignored since it just uses the latest search and sort values
                                 return searchAndSortValue
             }
-            .debounce(0.3)
+            .debounce(.milliseconds(300))
             .drive(onNext: { [weak self] (searchString, sortSelection) in
                 self?.retrieveDebates(searchString: searchString, sortSelection: sortSelection)
             })

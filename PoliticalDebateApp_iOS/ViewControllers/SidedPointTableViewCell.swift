@@ -21,8 +21,8 @@ class SidedPointTableViewCell: UITableViewCell {
                                                                                                            .foregroundColor: GeneralColors.text],
                                                                     hyperlinks: viewModel?.point.hyperlinks)
             pointTextView.sizeToFit()
-            UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
-                self?.checkImageView.image = (self?.viewModel?.hasCompletedPaths ?? false) ? UIImage.check : nil
+            UIView.animate(withDuration: Constants.standardAnimationDuration) {
+                self.checkImageView.image = (self.viewModel?.hasCompletedPaths ?? false) ? UIImage.check : nil
             }
         }
     }
@@ -107,12 +107,8 @@ class SidedPointTableViewCell: UITableViewCell {
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
 
-        UIView.animate(withDuration: Constants.quickAnimationDuration) { [weak self] in
-            if highlighted {
-                self?.containerView.backgroundColor = GeneralColors.selected
-            } else {
-                self?.containerView.backgroundColor = self?.viewModel?.backgroundColor
-            }
+        UIView.animate(withDuration: Constants.quickAnimationDuration) {
+            self.containerView.backgroundColor = highlighted ? GeneralColors.selected : self.viewModel?.backgroundColor
         }
     }
 }

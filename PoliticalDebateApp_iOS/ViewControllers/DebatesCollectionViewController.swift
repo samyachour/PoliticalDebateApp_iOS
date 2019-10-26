@@ -322,7 +322,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         viewModel.sharedDebatesDataSourceRelay
             .subscribe(onNext: { [weak self] (debateCollectionViewCellViewModels) in
                 self?.debatesRefreshControl.endRefreshing()
-                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
+                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
                     self?.emptyStateLabel.alpha = debateCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
                     self?.debatesCollectionView.alpha = debateCollectionViewCellViewModels.isEmpty ? 0.0 : 1.0
                 })

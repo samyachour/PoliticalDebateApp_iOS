@@ -16,11 +16,11 @@ class DebateCollectionViewCell: UICollectionViewCell {
 
     var viewModel: DebateCollectionViewCellViewModel? {
         didSet {
-            UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
-                if let viewModel = self?.viewModel { self?.starredButton.tintColor = viewModel.starTintColor }
-                self?.debateTitleLabel.text = self?.viewModel?.debate.title
+            UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
+                if let viewModel = self.viewModel { self.starredButton.tintColor = viewModel.starTintColor }
+                self.debateTitleLabel.text = self.viewModel?.debate.title
                 UIView.animate(withDuration: Constants.standardAnimationDuration) {
-                    self?.debateProgressView.setProgress(Float(self?.viewModel?.completedPercentage ?? 0) / 100, animated: true)
+                    self.debateProgressView.setProgress(Float(self.viewModel?.completedPercentage ?? 0) / 100, animated: true)
                 }
             })
         }
@@ -125,12 +125,8 @@ class DebateCollectionViewCell: UICollectionViewCell {
 
     override var isHighlighted: Bool {
         didSet {
-            UIView.animate(withDuration: Constants.quickAnimationDuration) { [weak self] in
-                if self?.isHighlighted ?? false {
-                    self?.tintView.backgroundColor = GeneralColors.selected
-                } else {
-                    self?.tintView.backgroundColor = DebateCollectionViewCell.defaultTintViewColor
-                }
+            UIView.animate(withDuration: Constants.quickAnimationDuration) {
+                self.tintView.backgroundColor = self.isHighlighted ? GeneralColors.selected : DebateCollectionViewCell.defaultTintViewColor
             }
         }
     }

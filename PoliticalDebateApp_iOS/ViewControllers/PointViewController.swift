@@ -35,11 +35,6 @@ class PointViewController: UIViewController {
         super.viewDidAppear(animated)
 
         markAsSeen()
-
-        UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
-            self?.navigationController?.navigationBar.barTintColor = self?.viewModel.point.side?.color
-            self?.navigationController?.navigationBar.layoutIfNeeded()
-        }
     }
 
     // MARK: - Observers & Observables
@@ -215,8 +210,8 @@ extension PointViewController: UIPageViewControllerDataSource, UIPageViewControl
             return
         }
 
-        UIView.animate(withDuration: Constants.standardAnimationDuration) { [weak self] in
-            self?.imagePageControl.currentPage = newIndex
+        UIView.animate(withDuration: Constants.standardAnimationDuration) {
+            self.imagePageControl.currentPage = newIndex
         }
     }
 }
