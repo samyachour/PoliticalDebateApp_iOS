@@ -150,15 +150,15 @@ extension PointsNavigatorViewController: UIPageViewControllerDataSource, UIPageV
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                     return
             }
 
             switch response.statusCode {
             case 404:
-                ErrorHandler.showBasicReportErrorBanner()
+                ErrorHandlerService.showBasicReportErrorBanner()
             default:
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandlerService.showBasicRetryErrorBanner()
             }
         }).disposed(by: disposeBag)
     }

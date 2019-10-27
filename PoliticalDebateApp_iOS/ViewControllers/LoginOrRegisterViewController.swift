@@ -205,7 +205,7 @@ extension LoginOrRegisterViewController {
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                     return
             }
 
@@ -215,11 +215,11 @@ extension LoginOrRegisterViewController {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't find an account associated with those credentials."))
             case _ where Constants.retryErrorCodes.contains(response.statusCode):
-                ErrorHandler.showBasicRetryErrorBanner { [weak self] in
+                ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
                     self?.loginTapped(email: email, password: password)
                 }
             default:
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandlerService.showBasicRetryErrorBanner()
             }
         }.disposed(by: disposeBag)
     }
@@ -242,11 +242,11 @@ extension LoginOrRegisterViewController {
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                     return
             }
 
-            ErrorHandler.emailUpdateError(response)
+            ErrorHandlerService.emailUpdateError(response)
         }.disposed(by: disposeBag)
     }
 
@@ -269,7 +269,7 @@ extension LoginOrRegisterViewController {
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                     return
             }
             switch response.statusCode {
@@ -301,12 +301,12 @@ extension LoginOrRegisterViewController {
                         return
                     }
                 }
-                ErrorHandler.showBasicReportErrorBanner()
+                ErrorHandlerService.showBasicReportErrorBanner()
             case 404:
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't find an account associated with that email."))
             default:
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandlerService.showBasicRetryErrorBanner()
             }
         }).disposed(by: self.disposeBag)
     }

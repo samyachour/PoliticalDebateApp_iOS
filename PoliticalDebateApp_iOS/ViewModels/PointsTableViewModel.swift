@@ -150,7 +150,7 @@ class PointsTableViewModel: StarrableViewModel {
                 guard let sidedPoints = debate.sidedPoints,
                     let contextPoints = debate.contextPoints,
                     !sidedPoints.isEmpty else {
-                        ErrorHandler.showBasicReportErrorBanner()
+                        ErrorHandlerService.showBasicReportErrorBanner()
                         return
                 }
                 self?.sidedPointsRelay.accept(sidedPoints)

@@ -1,5 +1,5 @@
 //
-//  ErrorHandler.swift
+//  ErrorHandlerService.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 7/5/19.
@@ -11,7 +11,9 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class ErrorHandler {
+class ErrorHandlerService {
+
+    private init() {}
 
     // MARK: - Basic errors
 
@@ -97,7 +99,7 @@ class ErrorHandler {
         if let moyaError = error as? MoyaError,
             let response = moyaError.response,
             response.statusCode == 429 {
-            ErrorHandler.showThrottleAlert(with: response)
+            ErrorHandlerService.showThrottleAlert(with: response)
             throw GeneralError.alreadyHandled // so consumer knows
         }
     }
@@ -143,7 +145,7 @@ class ErrorHandler {
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                             title: "An account associated with that email already exists."))
         default:
-            ErrorHandler.showBasicRetryErrorBanner()
+            ErrorHandlerService.showBasicRetryErrorBanner()
         }
     }
 }

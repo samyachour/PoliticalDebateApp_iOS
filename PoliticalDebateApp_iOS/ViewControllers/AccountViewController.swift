@@ -184,7 +184,7 @@ extension AccountViewController {
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                     return
             }
 
@@ -194,12 +194,12 @@ extension AccountViewController {
                                                                                                 title: "Failed to send a verification link.",
                                                                                                 subtitle: "Your current email is invalid."))
             case _ where Constants.retryErrorCodes.contains(response.statusCode):
-                ErrorHandler.showBasicRetryErrorBanner { [weak self] in
+                ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
                     self?.requestVerificationLink()
                 }
 
             default:
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandlerService.showBasicRetryErrorBanner()
             }
         }.disposed(by: disposeBag)
     }
@@ -230,11 +230,11 @@ extension AccountViewController {
                 }
                 guard let moyaError = error as? MoyaError,
                     let response = moyaError.response else {
-                        ErrorHandler.showBasicRetryErrorBanner()
+                        ErrorHandlerService.showBasicRetryErrorBanner()
                         return
                 }
 
-                ErrorHandler.emailUpdateError(response)
+                ErrorHandlerService.emailUpdateError(response)
             }.disposed(by: disposeBag)
         }
         if (!(currentPasswordTextField.text?.isEmpty ?? true) ||
@@ -272,7 +272,7 @@ extension AccountViewController {
                 }
                 guard let moyaError = error as? MoyaError,
                     let response = moyaError.response else {
-                        ErrorHandler.showBasicRetryErrorBanner()
+                        ErrorHandlerService.showBasicRetryErrorBanner()
                         return
                 }
 
@@ -281,7 +281,7 @@ extension AccountViewController {
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Your current password is incorrect."))
                 default:
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                 }
             }.disposed(by: disposeBag)
         }
@@ -317,7 +317,7 @@ extension AccountViewController {
                     return
                 }
 
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandlerService.showBasicRetryErrorBanner()
             }.disposed(by: self.disposeBag)
         }))
         confirmationPopUp.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))

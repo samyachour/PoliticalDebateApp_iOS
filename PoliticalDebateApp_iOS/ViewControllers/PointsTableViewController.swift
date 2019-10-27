@@ -259,19 +259,19 @@ extension PointsTableViewController {
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                     return
             }
 
             switch response.statusCode {
             case 400:
-                ErrorHandler.showBasicReportErrorBanner()
+                ErrorHandlerService.showBasicReportErrorBanner()
             case _ where Constants.retryErrorCodes.contains(response.statusCode):
-                ErrorHandler.showBasicRetryErrorBanner { [weak self] in
+                ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
                     self?.viewModel.retrieveAllDebatePoints()
                 }
             default:
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandlerService.showBasicRetryErrorBanner()
             }
         }).disposed(by: disposeBag)
     }
@@ -287,7 +287,7 @@ extension PointsTableViewController {
                     return
                 }
                 guard error as? MoyaError != nil else {
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                     return
                 }
 
