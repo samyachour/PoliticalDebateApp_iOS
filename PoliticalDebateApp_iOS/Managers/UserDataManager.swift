@@ -17,8 +17,6 @@ class UserDataManager {
 
     private init() {}
 
-    private let disposeBag = DisposeBag()
-
     private let starredNetworkService = NetworkService<StarredAPI>()
     private let progressNetworkService = NetworkService<ProgressAPI>()
 
@@ -59,10 +57,12 @@ class UserDataManager {
         if SessionManager.shared.isActiveRelay.value {
             let starred = unstar ? [] : [primaryKey]
             let unstarred = unstar ? [primaryKey] : []
-            return starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starred, unstarred: unstarred))
-                .do(onSuccess: { (_) in
-                    self.updateStarred(primaryKey, unstar: unstar)
-                }).map { $0 as Response? }
+            let starredNetworkRequest = starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starred, unstarred: unstarred))
+            _ = starredNetworkRequest.subscribe(onSuccess: { _ in
+                self.updateStarred(primaryKey, unstar: unstar)
+            })
+
+            return starredNetworkRequest.map { $0 as Response? }
         } else {
             StarredCoreDataAPI.starOrUnstarDebate(primaryKey, unstar: unstar)
             updateStarred(primaryKey, unstar: unstar)
@@ -99,10 +99,12 @@ class UserDataManager {
         }
 
         if SessionManager.shared.isActiveRelay.value {
-            return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
-                .do(onSuccess: { (_) in
-                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-                }).map { $0 as Response? }
+            let progressNetworkRequest = progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
+
+            _ = progressNetworkRequest.subscribe(onSuccess: { _ in
+                self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+            })
+            return progressNetworkRequest.map { $0 as Response? }
         } else {
             ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
             updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
@@ -125,14 +127,16 @@ class UserDataManager {
             let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey,
                                           completedPercentage: 0, // doesn't get sent to the backend anyway
                                           seenPoints: pointPrimaryKeys)
-            return progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: [debateProgress])))
-                .do(onSuccess: { (_) in
-                    pointPrimaryKeys.forEach { (pointPrimaryKey) in
-                        self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-                    }
-                }).map { $0 as Response? }
+            let batchProgressNetworkRequest = progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: [debateProgress])))
+
+            _ = batchProgressNetworkRequest.subscribe(onSuccess: { _ in
+                pointPrimaryKeys.forEach { pointPrimaryKey in
+                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                }
+            })
+            return batchProgressNetworkRequest.map { $0 as Response? }
         } else {
-            pointPrimaryKeys.forEach { (pointPrimaryKey) in
+            pointPrimaryKeys.forEach { pointPrimaryKey in
                 ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
                 self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
             }
@@ -159,7 +163,13 @@ class UserDataManager {
         }
     }
 
-    // MARK: - Loading user data
+    // MARK: - Saving/Loading user data
+
+    func saveUserData() {
+        guard !SessionManager.shared.isActiveRelay.value else { return }
+
+        CoreDataService.saveContext()
+    }
 
     private let userDataLoadedRelay = BehaviorRelay<Bool>(value: false)
     lazy var sharedUserDataLoadedRelay = userDataLoadedRelay
@@ -184,7 +194,7 @@ class UserDataManager {
         }
 
         if !SessionManager.shared.isActiveRelay.value {
-            CoreDataService.loadPersistentContainer { (error) in
+            CoreDataService.loadPersistentContainer { error in
                 guard error == nil else { return }
 
                 loadUserData()
@@ -197,7 +207,7 @@ class UserDataManager {
 
     private func loadStarred(_ completion: @escaping (_ error: Error?) -> Void) {
         if SessionManager.shared.isActiveRelay.value {
-            starredNetworkService.makeRequest(with: .loadAllStarred)
+            _ = starredNetworkService.makeRequest(with: .loadAllStarred)
                 .map(Starred.self)
                 .subscribe(onSuccess: { starred in
                     self.starred = Set(starred.starredList)
@@ -216,7 +226,7 @@ class UserDataManager {
                                                                                                     bannerWasDismissedAutomatically: {
                                                                                                         completion(UserDataError.loadRemoteStarred)
                     }))
-            }.disposed(by: disposeBag)
+            }
         } else {
             if let localStarred = StarredCoreDataAPI.loadAllStarred() {
                 starred = Set(localStarred.starredList)
@@ -237,12 +247,12 @@ class UserDataManager {
 
     private func loadProgress(_ completion: @escaping (_ error: Error?) -> Void) {
         if SessionManager.shared.isActiveRelay.value {
-            progressNetworkService.makeRequest(with: .loadAllProgress)
+            _ = progressNetworkService.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
-                .subscribe(onSuccess: { (allProgress) in
+                .subscribe(onSuccess: { allProgress in
                     self.allProgress = Dictionary(uniqueKeysWithValues: allProgress.map { ($0.debatePrimaryKey, $0) })
                     completion(nil)
-                }) { (error) in
+                }) { error in
                     if let generalError = error as? GeneralError,
                         generalError == .alreadyHandled {
                         return
@@ -256,7 +266,7 @@ class UserDataManager {
                                                                                                     bannerWasDismissedAutomatically: {
                                                                                                         completion(UserDataError.loadRemoteProgress)
                     }))
-            }.disposed(by: disposeBag)
+            }
         } else {
             if let localProgress = ProgressCoreDataAPI.loadAllProgress() {
                 let localProgressFiltered = localProgress.compactMap { (progress) -> Progress? in
@@ -303,11 +313,11 @@ class UserDataManager {
             return
         }
 
-        starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starredArray, unstarred: [])).subscribe(onSuccess: { (_) in
+        _ = starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starredArray, unstarred: [])).subscribe(onSuccess: { _ in
             // We've successfully sync'd the local data to the backend, now we can clear it
             StarredCoreDataAPI.clearAllStarred()
             completion(true)
-        }) { (error) in
+        }) { error in
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {
                 return
@@ -322,7 +332,7 @@ class UserDataManager {
                                                                                                         self.syncLocalStarredDataToBackend(completion)
                                                                     })))
             completion(false)
-        }.disposed(by: disposeBag)
+        }
     }
 
     private func syncLocalProgressDataToBackend(_ completion: @escaping (Bool) -> Void) {
@@ -332,12 +342,12 @@ class UserDataManager {
             return
         }
 
-        progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: legitimateProgress)))
-            .subscribe(onSuccess: { (_) in
+        _ = progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: legitimateProgress)))
+            .subscribe(onSuccess: { _ in
                 // We've successfully sync'd the local data to the backend, now we can clear it
                 ProgressCoreDataAPI.clearAllProgress()
                 completion(true)
-            }) { (error) in
+            }) { error in
                 if let generalError = error as? GeneralError,
                     generalError == .alreadyHandled {
                     return
@@ -352,7 +362,7 @@ class UserDataManager {
                                                                                                             self.syncLocalProgressDataToBackend(completion)
                                                                         })))
                 completion(false)
-        }.disposed(by: disposeBag)
+        }
     }
 }
 

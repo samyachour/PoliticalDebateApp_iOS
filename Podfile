@@ -11,6 +11,7 @@ target 'PoliticalDebateApp_iOS' do
 
   pod 'RxSwift', :git => 'https://github.com/ReactiveX/RxSwift.git'
   pod 'RxCocoa', :git => 'https://github.com/ReactiveX/RxSwift.git'
+  pod 'RxDataSources'
   pod 'SwiftLint'
   pod 'Moya/RxSwift', '~> 14.0.0-beta.4'
 

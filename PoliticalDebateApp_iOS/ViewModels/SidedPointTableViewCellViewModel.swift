@@ -15,11 +15,15 @@ struct SidedPointTableViewCellViewModel {
     let point: Point
     let debatePrimaryKey: PrimaryKey
     let hasCompletedPaths: Bool
+    let useFullDescription: Bool
     var backgroundColor: UIColor? {
         return point.side?.color
     }
 
-    init(point: Point, debatePrimaryKey: PrimaryKey, seenPoints: [PrimaryKey]?) {
+    init(point: Point,
+         debatePrimaryKey: PrimaryKey,
+         seenPoints: [PrimaryKey]?,
+         useFullDescription: Bool = false) {
         self.point = point
         self.debatePrimaryKey = debatePrimaryKey
         if let seenPoints = seenPoints,
@@ -28,6 +32,7 @@ struct SidedPointTableViewCellViewModel {
         } else {
             hasCompletedPaths = false
         }
+        self.useFullDescription = useFullDescription
     }
 
     // MARK: - Helpers

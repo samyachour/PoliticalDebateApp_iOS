@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (5.0.0-rc.2)
+  - Differentiator (4.0.1)
   - Moya/Core (14.0.0-beta.4):
     - Alamofire (= 5.0.0-rc.2)
   - Moya/RxSwift (14.0.0-beta.4):
@@ -10,6 +11,10 @@ PODS:
   - RxCocoa (5.0.1):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
+  - RxDataSources (4.0.1):
+    - Differentiator (~> 4.0)
+    - RxCocoa (~> 5.0)
+    - RxSwift (~> 5.0)
   - RxRelay (5.0.0):
     - RxSwift (~> 5)
   - RxSwift (5.0.1)
@@ -21,6 +26,7 @@ DEPENDENCIES:
   - Moya/RxSwift (~> 14.0.0-beta.4)
   - RxBlocking
   - RxCocoa (from `https://github.com/ReactiveX/RxSwift.git`)
+  - RxDataSources
   - RxSwift (from `https://github.com/ReactiveX/RxSwift.git`)
   - RxTest
   - SwiftLint
@@ -28,8 +34,10 @@ DEPENDENCIES:
 SPEC REPOS:
   https://cdn.cocoapods.org/:
     - Alamofire
+    - Differentiator
     - Moya
     - RxBlocking
+    - RxDataSources
     - RxRelay
     - RxTest
     - SwiftLint
@@ -50,14 +58,16 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: f9450d3c7f6bea2ad62e7a541c3e9b186c7991d6
+  Differentiator: 886080237d9f87f322641dedbc5be257061b0602
   Moya: 53fa45a72929809e0b8bba44a0a53d8d0827bcfe
   RxBlocking: c67185d26498ea3cbe3e121917c3c16739e43123
   RxCocoa: e741b9749968e8a143e2b787f1dfbff2b63d0a5c
+  RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
   RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
   RxSwift: e2dc62b366a3adf6a0be44ba9f405efd4c94e0c4
   RxTest: 4349afe98f564e0a9bc19063368904622d17d49a
   SwiftLint: 5553187048b900c91aa03552807681bb6b027846
 
-PODFILE CHECKSUM: 4447377a030c8c1c633260ba262d1062403d33c1
+PODFILE CHECKSUM: ab19dcf9c1475d8e959e2023058f229092dae800
 
 COCOAPODS: 1.8.3

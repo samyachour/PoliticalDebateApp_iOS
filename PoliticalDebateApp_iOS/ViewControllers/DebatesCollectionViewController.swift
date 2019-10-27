@@ -254,7 +254,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         // Set up picker options
         Observable.just(SortByOption.allCases.map { $0.stringValue })
-            .bind(to: sortByPickerView.rx.itemTitles) { _, optionLabel in
+            .bind(to: sortByPickerView.rx.itemTitles) { (_, optionLabel) in
                 optionLabel
             }.disposed(by: disposeBag)
 
@@ -284,11 +284,11 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         debatesCollectionView.rx
             .modelSelected(DebateCollectionViewCellViewModel.self)
-            .subscribe(onNext: { [weak self] (debateCollectionViewCellViewModel) in
+            .subscribe(onNext: { [weak self] debateCollectionViewCellViewModel in
                 self?.navigationController?
                     .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debateCollectionViewCellViewModel.debate,
                                                                                                   isStarred: debateCollectionViewCellViewModel.isStarred,
-                                                                                                  viewState: .standalone)),
+                                                                                                  viewState: .standaloneRootPoints)),
                                         animated: true)
         }).disposed(by: disposeBag)
 
@@ -320,7 +320,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     private func installCollectionViewDataSource() {
         debatesCollectionView.register(DebateCollectionViewCell.self, forCellWithReuseIdentifier: DebateCollectionViewCell.reuseIdentifier)
         viewModel.sharedDebatesDataSourceRelay
-            .subscribe(onNext: { [weak self] (debateCollectionViewCellViewModels) in
+            .subscribe(onNext: { [weak self] debateCollectionViewCellViewModels in
                 self?.debatesRefreshControl.endRefreshing()
                 UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
                     self?.emptyStateLabel.alpha = debateCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
@@ -330,7 +330,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         viewModel.sharedDebatesDataSourceRelay
             .bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCollectionViewCell.reuseIdentifier,
-                                                     cellType: DebateCollectionViewCell.self)) { _, viewModel, cell in
+                                                     cellType: DebateCollectionViewCell.self)) { (_, viewModel, cell) in
             cell.viewModel = viewModel
         }.disposed(by: disposeBag)
 

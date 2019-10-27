@@ -230,7 +230,7 @@ extension LoginOrRegisterViewController {
                 EmailAndPasswordValidator.showInvalidPasswordMatchError()
                 return
         }
-        viewModel.register(email: email, password: password).subscribe(onSuccess: { [weak self] (_) in
+        viewModel.register(email: email, password: password).subscribe(onSuccess: { [weak self] _ in
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                             title: "Registration succeeded.",
                                                                                             subtitle: "Please check your email for a verification link."))
@@ -258,7 +258,7 @@ extension LoginOrRegisterViewController {
                 return
         }
 
-        viewModel.forgotPassword(email: emailText, forceSend: forceSend).subscribe(onSuccess: { (_) in
+        viewModel.forgotPassword(email: emailText, forceSend: forceSend).subscribe(onSuccess: { _ in
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                             title: "Please check your email for a password reset link.",
                                                                                             duration: .forever))
@@ -283,7 +283,7 @@ extension LoginOrRegisterViewController {
                                                                Tap 'Force' to try sending the reset link to your unverified email.
                                                            """,
                                                            preferredStyle: .alert)
-                        errorAlert.addAction(UIAlertAction(title: "Force", style: .default, handler: { (_) in
+                        errorAlert.addAction(UIAlertAction(title: "Force", style: .default, handler: { _ in
                             // self already weakified
                             guard let emailText = self?.emailTextField.text,
                                 EmailAndPasswordValidator.isValidEmail(emailText) else {
@@ -315,7 +315,7 @@ extension LoginOrRegisterViewController {
 
         loginOrRegisterButton.addTarget(self, action: #selector(loginOrRegisterButtonTapped), for: .touchUpInside)
 
-        viewModel.loginOrRegisterStateRelay.subscribe(onNext: { [weak self] (newLoginOrRegisterState) in
+        viewModel.loginOrRegisterStateRelay.subscribe(onNext: { [weak self] newLoginOrRegisterState in
             guard let self = self else {
                     return
             }

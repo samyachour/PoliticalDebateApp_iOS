@@ -82,10 +82,10 @@ struct CoreDataService {
     static let persistentContainer = NSPersistentContainer(name: CoreDataConstants.container)
     private static var loadedStores = false
 
-    static func loadPersistentContainer(completionHandler: @escaping (Error?) -> Void) {
+    static func loadPersistentContainer(completion: @escaping (Error?) -> Void) {
         guard !loadedStores else {
             debugLog("Core Data stack has already been intialized")
-            completionHandler(nil)
+            completion(nil)
             return
         }
 
@@ -102,13 +102,13 @@ struct CoreDataService {
 
                 debugLog(error.localizedDescription)
                 CoreDataService.showCoreDataLoadAlert()
-                completionHandler(GeneralError.alreadyHandled)
+                completion(GeneralError.alreadyHandled)
                 return
             }
             debugLog("Core Data stack has been initialized with description: \(storeDescription)")
 
             CoreDataService.loadedStores = true
-            completionHandler(nil) // success
+            completion(nil) // success
         })
     }
 

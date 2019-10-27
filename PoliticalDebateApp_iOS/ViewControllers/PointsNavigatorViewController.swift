@@ -1,5 +1,5 @@
 //
-//  PointViewController.swift
+//  PointsNavigatorViewController.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 8/31/19.
@@ -11,9 +11,9 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class PointViewController: UIViewController {
+class PointsNavigatorViewController: UIViewController {
 
-    required init(viewModel: PointViewModel) {
+    required init(viewModel: PointsNavigatorViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil) // we don't use nibs
     }
@@ -39,7 +39,7 @@ class PointViewController: UIViewController {
 
     // MARK: - Observers & Observables
 
-    private let viewModel: PointViewModel
+    private let viewModel: PointsNavigatorViewModel
     private let disposeBag = DisposeBag()
 
     // MARK: - UI Properties
@@ -83,12 +83,12 @@ class PointViewController: UIViewController {
     }()
 
     private lazy var pointsTableViewController = PointsTableViewController(viewModel: PointsTableViewModel(debate: viewModel.debate,
-                                                                                                           viewState: .embedded,
+                                                                                                           viewState: .embeddedRebuttals,
                                                                                                            embeddedSidedPoints: viewModel.point.rebuttals))
 }
 
 // MARK: - View constraints & binding
-extension PointViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+extension PointsNavigatorViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     // MARK: View constraints
 
@@ -107,15 +107,15 @@ extension PointViewController: UIPageViewControllerDataSource, UIPageViewControl
         imagePageViewController.view.translatesAutoresizingMaskIntoConstraints = false
         pointsTableViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
-        descriptionTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PointViewController.inset).isActive = true
-        descriptionTextView.topAnchor.constraint(equalTo: topLayoutAnchor, constant: PointViewController.inset).isActive = true
-        descriptionTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PointViewController.inset).isActive = true
+        descriptionTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PointsNavigatorViewController.inset).isActive = true
+        descriptionTextView.topAnchor.constraint(equalTo: topLayoutAnchor, constant: PointsNavigatorViewController.inset).isActive = true
+        descriptionTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PointsNavigatorViewController.inset).isActive = true
 
-        imagePageViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PointViewController.inset).isActive = true
-        imagePageViewController.view.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: PointViewController.inset).isActive = true
-        imagePageViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PointViewController.inset).isActive = true
+        imagePageViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PointsNavigatorViewController.inset).isActive = true
+        imagePageViewController.view.topAnchor.constraint(equalTo: descriptionTextView.bottomAnchor, constant: PointsNavigatorViewController.inset).isActive = true
+        imagePageViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PointsNavigatorViewController.inset).isActive = true
         imagePageViewController.view.bottomAnchor.constraint(equalTo: pointsTableViewController.view.topAnchor,
-                                                             constant: -PointViewController.inset).injectPriority(.required - 1).isActive = true
+                                                             constant: -PointsNavigatorViewController.inset).injectPriority(.required - 1).isActive = true
         imagePageViewController.didMove(toParent: self)
 
         pointsTableViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
@@ -132,8 +132,8 @@ extension PointViewController: UIPageViewControllerDataSource, UIPageViewControl
             view.addSubview(imagePageControl)
             imagePageControl.translatesAutoresizingMaskIntoConstraints = false
             imagePageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            imagePageControl.topAnchor.constraint(equalTo: imagePageViewController.view.bottomAnchor, constant: PointViewController.inset).isActive = true
-            imagePageControl.bottomAnchor.constraint(equalTo: pointsTableViewController.view.topAnchor, constant: -PointViewController.inset).isActive = true
+            imagePageControl.topAnchor.constraint(equalTo: imagePageViewController.view.bottomAnchor, constant: PointsNavigatorViewController.inset).isActive = true
+            imagePageControl.bottomAnchor.constraint(equalTo: pointsTableViewController.view.topAnchor, constant: -PointsNavigatorViewController.inset).isActive = true
         }
     }
 
@@ -163,7 +163,7 @@ extension PointViewController: UIPageViewControllerDataSource, UIPageViewControl
     }
 
     private func markAsSeen() {
-        viewModel.markAsSeen()?.subscribe(onError: { (error) in
+        viewModel.markAsSeen()?.subscribe(onError: { error in
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {
                 return
@@ -217,7 +217,7 @@ extension PointViewController: UIPageViewControllerDataSource, UIPageViewControl
 }
 
 // MARK: - UITextViewDelegate
-extension PointViewController: UITextViewDelegate {
+extension PointsNavigatorViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         UIApplication.shared.open(URL)
         return false

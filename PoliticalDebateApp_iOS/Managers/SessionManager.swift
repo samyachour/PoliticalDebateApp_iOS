@@ -109,21 +109,23 @@ class SessionManager {
     }
 
     func login(email: String, password: String) -> Single<Void> {
-        return authAPI.makeRequest(with: .tokenObtain(email: email,
-                                                      password: password))
+        let loginNetworkRequest = authAPI.makeRequest(with: .tokenObtain(email: email,
+                                                                  password: password))
             .map(TokenPair.self)
-            .do(onSuccess: { (tokenPair) in
-                self.refreshToken = tokenPair.refreshTokenString
-                self.accessToken = tokenPair.accessTokenString
 
-                #if !TEST
-                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                                title: "Successfully logged in",
-                                                                                                subtitle: "Syncing your local data to the cloud, please wait..."))
-                UserDataManager.shared.syncUserDataToBackend()
-                #endif
-            })
-            .map({ _ in }) // consumer shouldn't see the tokenPair
+        _ = loginNetworkRequest.subscribe(onSuccess: { tokenPair in
+            self.refreshToken = tokenPair.refreshTokenString
+            self.accessToken = tokenPair.accessTokenString
+
+            #if !TEST
+            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                            title: "Successfully logged in",
+                                                                                            subtitle: "Syncing your local data to the cloud, please wait..."))
+            UserDataManager.shared.syncUserDataToBackend()
+            #endif
+        })
+
+        return loginNetworkRequest.map({ _ in }) // consumer shouldn't see the tokenPair
     }
 
     func logout() {

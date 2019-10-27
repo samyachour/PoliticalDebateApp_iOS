@@ -174,7 +174,7 @@ extension AccountViewController {
     }
 
     private func requestVerificationLink() {
-        viewModel.requestVerificationLink().subscribe(onSuccess: { (_) in
+        viewModel.requestVerificationLink().subscribe(onSuccess: { _ in
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                             title: "Successfully sent verification link."))
         }) { error in
@@ -217,7 +217,7 @@ extension AccountViewController {
                 return
             }
 
-            viewModel.changeEmail(to: newEmail).subscribe(onSuccess: { [weak self] (_) in
+            viewModel.changeEmail(to: newEmail).subscribe(onSuccess: { [weak self] _ in
                 NotificationBannerQueue.shared
                     .enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                       title: "Email change succeeded.",
@@ -259,7 +259,7 @@ extension AccountViewController {
                 return
             }
 
-            viewModel.changePassword(from: currentPassword, to: newPassword).subscribe(onSuccess: { [weak self] (_) in
+            viewModel.changePassword(from: currentPassword, to: newPassword).subscribe(onSuccess: { [weak self] _ in
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                                 title: "Password change succeeded."))
                 self?.currentPasswordTextField.text = nil
@@ -303,10 +303,10 @@ extension AccountViewController {
         let confirmationPopUp = UIAlertController(title: "Are you sure?",
                                                   message: "Deleting your account is an irreversible action.",
                                                   preferredStyle: .alert)
-        confirmationPopUp.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] (_) in
+        confirmationPopUp.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
 
-            self.viewModel.deleteAccount().subscribe(onSuccess: { (_) in
+            self.viewModel.deleteAccount().subscribe(onSuccess: { _ in
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                                 title: "Successfully deleted account."))
                 self.sessionManager.logout()

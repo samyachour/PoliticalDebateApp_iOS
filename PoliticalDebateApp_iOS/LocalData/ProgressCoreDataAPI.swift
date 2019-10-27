@@ -61,7 +61,7 @@ struct ProgressCoreDataAPI {
                 return
         }
 
-        localProgressRecords.forEach { (localProgress) in
+        localProgressRecords.forEach { localProgress in
             CoreDataService.deleteRecord(localProgress)
         }
     }

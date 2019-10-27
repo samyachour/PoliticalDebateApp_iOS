@@ -1,5 +1,5 @@
 //
-//  PointViewModel.swift
+//  PointsNavigatorViewModel.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 8/31/19.
@@ -10,7 +10,7 @@ import Moya
 import RxCocoa
 import RxSwift
 
-class PointViewModel {
+class PointsNavigatorViewModel {
 
     init(point: Point,
          debate: Debate) {

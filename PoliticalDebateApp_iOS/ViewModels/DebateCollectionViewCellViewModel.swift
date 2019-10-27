@@ -15,6 +15,7 @@ class DebateCollectionViewCellViewModel: StarrableViewModel {
     let debate: Debate
     var completedPercentage: Int
     var isStarred: Bool
+    let disposeBag = DisposeBag()
 
     init(debate: Debate, completedPercentage: Int, isStarred: Bool) {
         self.debate = debate

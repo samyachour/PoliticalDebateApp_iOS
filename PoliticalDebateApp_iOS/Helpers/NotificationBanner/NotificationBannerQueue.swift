@@ -66,7 +66,7 @@ class NotificationBannerQueue {
                            animations: {
                             self.showBanner(bannerOnScreen)
                             self.mainWindow?.layoutIfNeeded()
-            }, completion: { (_) in
+            }, completion: { _ in
                 if let dispatchWork = bannerOnScreen.timerDismissWorkItem {
                     DispatchQueue.main.asyncAfter(deadline: .now()+timeOnScreen, execute: dispatchWork)
                 }
@@ -86,7 +86,7 @@ class NotificationBannerQueue {
                            animations: {
                             self.hideBanner(bannerOnScreen)
                             self.mainWindow?.layoutIfNeeded()
-            }) { (_) in
+            }) { _ in
                 if automatic { bannerOnScreen.viewModel.bannerWasDismissedAutomatically() }
                 bannerOnScreen.view.removeFromSuperview()
 

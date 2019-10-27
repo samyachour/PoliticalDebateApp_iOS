@@ -56,7 +56,7 @@ class NetworkAPITests: XCTestCase {
         let testAPI = NetworkService<ProgressAPI>()
         testAPI.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
-            .subscribe(onSuccess: { (progressPoints) in
+            .subscribe(onSuccess: { progressPoints in
                 XCTAssert(progressPoints[0].debatePrimaryKey == 1)
             }, onError: { _ in
                 XCTAssert(false)
@@ -67,7 +67,7 @@ class NetworkAPITests: XCTestCase {
         let testAPI = NetworkService<StarredAPI>()
         testAPI.makeRequest(with: .loadAllStarred)
             .map(Starred.self)
-            .subscribe(onSuccess: { (starred) in
+            .subscribe(onSuccess: { starred in
                 XCTAssert(starred.starredList[0] == 1)
             }, onError: { _ in
                 XCTAssert(false)

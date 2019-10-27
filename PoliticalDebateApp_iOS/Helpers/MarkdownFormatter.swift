@@ -77,7 +77,7 @@ class MarkDownFormatter {
     private static func format(_ attributedString: NSMutableAttributedString, with hyperlinks: [PointHyperlink]) -> NSMutableAttributedString {
        let compatibleSourceString = NSString(string: attributedString.string) // NSAttributedString requires NSRange which only comes from NSString
 
-        hyperlinks.forEach { (pointHyperlink) in
+        hyperlinks.forEach { pointHyperlink in
             let substring = pointHyperlink.substring
             // Only will apply the hyperlink to the first instance of the substring
             let range = compatibleSourceString.range(of: substring, options: .caseInsensitive)

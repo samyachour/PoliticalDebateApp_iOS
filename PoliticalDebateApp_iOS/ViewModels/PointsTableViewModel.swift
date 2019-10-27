@@ -6,13 +6,16 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Differentiator
 import Moya
 import RxCocoa
+import RxDataSources
 import RxSwift
 
 enum PointsTableViewState {
-    case standalone // Listing all debate points in standalone VC
-    case embedded // Embedding table in point VC
+    case standaloneRootPoints
+    case embeddedPointHistory
+    case embeddedRebuttals
 }
 
 class PointsTableViewModel: StarrableViewModel {
@@ -36,7 +39,7 @@ class PointsTableViewModel: StarrableViewModel {
             }).disposed(by: disposeBag)
     }
 
-    private let disposeBag = DisposeBag()
+    let disposeBag = DisposeBag()
     let viewState: PointsTableViewState
 
     // MARK: - Datasource
@@ -69,11 +72,15 @@ class PointsTableViewModel: StarrableViewModel {
 
                 return pointsMatch && seenPointsMatch
         }.subscribe(onNext: { [weak self] (points, seenPoints) in
-            guard let debatePrimaryKey = self?.debate.primaryKey else { return }
+            guard let debatePrimaryKey = self?.debate.primaryKey,
+                let viewState = self?.viewState else {
+                    return
+            }
 
             self?.sidedPointsDataSourceRelay.accept(points.map({ SidedPointTableViewCellViewModel(point: $0,
                                                                                                   debatePrimaryKey: debatePrimaryKey,
-                                                                                                  seenPoints: seenPoints) }))
+                                                                                                  seenPoints: seenPoints,
+                                                                                                  useFullDescription: viewState == .embeddedPointHistory) }))
         }).disposed(by: disposeBag)
     }
 
@@ -87,7 +94,7 @@ class PointsTableViewModel: StarrableViewModel {
                     .take(1).asSingle()
                     .map { loaded in return loaded ? contextPoints : [] }
             })
-            .subscribe(onSuccess: { [weak self] (contextPoints) in
+            .subscribe(onSuccess: { [weak self] contextPoints in
                 guard let self = self else { return }
 
                 // Don't care if this call succeeds or fails
@@ -100,13 +107,17 @@ class PointsTableViewModel: StarrableViewModel {
             }).disposed(by: disposeBag)
     }
 
+    // MARK: - Internal updates
+
+    func fea() {}
+
     // MARK: - API calls
 
     private let debateNetworkService = NetworkService<DebateAPI>()
 
     func retrieveAllDebatePoints() {
         // Only should load all debate points if we're on the main standalone debate points view and don't already have the debate map
-        guard viewState == .standalone && sidedPointsRelay.value.isEmpty else {
+        guard viewState == .standaloneRootPoints && sidedPointsRelay.value.isEmpty else {
             if let embeddedSidedPoints = embeddedSidedPoints {
                 sidedPointsRelay.accept(embeddedSidedPoints)
             }

@@ -54,7 +54,7 @@ struct DeepLinkService {
             .subscribe(onSuccess: { debate in
                 let pointsTableViewModel = PointsTableViewModel(debate: debate,
                                                                 isStarred: UserDataManager.shared.isStarred(debate.primaryKey),
-                                                                viewState: .standalone)
+                                                                viewState: .standaloneRootPoints)
                 let pointsTableViewController = PointsTableViewController(viewModel: pointsTableViewModel)
                 AppDelegate.shared?.mainNavigationController?.pushViewController(pointsTableViewController, animated: true)
             }) { error in

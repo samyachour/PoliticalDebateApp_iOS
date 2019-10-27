@@ -6,8 +6,10 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import Differentiator
 import Moya
 import RxCocoa
+import RxDataSources
 import RxSwift
 import UIKit
 
@@ -103,7 +105,7 @@ extension PointsTableViewController {
 
     private func installViewConstraints() {
         switch viewModel.viewState {
-        case .standalone:
+        case .standaloneRootPoints:
             navigationItem.title = viewModel.debate.shortTitle
             navigationController?.navigationBar.tintColor = GeneralColors.softButton
             navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
@@ -112,7 +114,9 @@ extension PointsTableViewController {
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: starredButton)
             view.backgroundColor = GeneralColors.background
             installLoadingIndicator()
-        case .embedded:
+        case .embeddedPointHistory:
+            view.backgroundColor = .clear
+        case .embeddedRebuttals:
             pointsTableView.alwaysBounceVertical = false
             view.backgroundColor = .clear
         }
@@ -134,7 +138,7 @@ extension PointsTableViewController {
         pointsTableView.alpha = 0.0
 
         switch viewModel.viewState {
-        case .standalone:
+        case .standaloneRootPoints:
             view.addSubview(contextTextViewsStackView)
             contextTextViewsStackView.translatesAutoresizingMaskIntoConstraints = false
             contextTextViewsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PointsTableViewController.elementSpacing).isActive = true
@@ -143,7 +147,8 @@ extension PointsTableViewController {
             contextTextViewsStackView.alpha = 0.0
 
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: contextTextViewsStackView.bottomAnchor, constant: 4)
-        case .embedded:
+        case .embeddedPointHistory,
+             .embeddedRebuttals:
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
         }
     }
@@ -158,11 +163,12 @@ extension PointsTableViewController {
 
     private func updateContentTextViewsStackView(shouldShow: Bool) {
         switch viewModel.viewState {
-        case .standalone where !shouldShow,
-            .embedded:
+        case .standaloneRootPoints where !shouldShow,
+            .embeddedPointHistory,
+            .embeddedRebuttals:
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
             contextTextViewsStackView.removeFromSuperview()
-        case .standalone:
+        case .standaloneRootPoints:
             break
         }
     }
@@ -176,6 +182,18 @@ extension PointsTableViewController {
     // MARK: View binding
 
     private func installViewBinds() {
+        switch viewModel.viewState {
+        case .standaloneRootPoints:
+            installRootTableViewBinds()
+            installContextTextViewsDataSource()
+        case .embeddedPointHistory,
+             .embeddedRebuttals:
+            break
+        }
+        installTableViewDataSource()
+    }
+
+    private func installRootTableViewBinds() {
         starredButton.addTarget(self, action: #selector(starredButtonTapped), for: .touchUpInside)
 
         pointsTableView.rx
@@ -185,26 +203,18 @@ extension PointsTableViewController {
                     return
                 }
 
-                self?.navigationController?.pushViewController(PointViewController(viewModel: PointViewModel(point: pointTableViewCellViewModel.point,
-                                                                                                             debate: debate)),
+                self?.navigationController?.pushViewController(PointsNavigatorViewController(viewModel: PointsNavigatorViewModel(point: pointTableViewCellViewModel.point,
+                                                                                                                                 debate: debate)),
                                                                animated: true)
         }).disposed(by: disposeBag)
-
-        switch viewModel.viewState {
-        case .standalone:
-            installContextTextViewsDataSource()
-        case .embedded:
-            break
-        }
-        installTableViewDataSource()
     }
 
     private func installContextTextViewsDataSource() {
-        viewModel.sharedContextPointsDataSourceRelay.subscribe(onNext: { [weak self] (contextPoints) in
+        viewModel.sharedContextPointsDataSourceRelay.subscribe(onNext: { [weak self] contextPoints in
             self?.updateContentTextViewsStackView(shouldShow: !contextPoints.isEmpty)
             guard !contextPoints.isEmpty else { return }
 
-            let contextTextViews: [UITextView] = contextPoints.map { [weak self] (contextPoint) in
+            let contextTextViews: [UITextView] = contextPoints.map { [weak self] contextPoint in
                 let contextTextView = BasicUIElementFactory.generateDescriptionTextView(MarkDownFormatter.format(contextPoint.description,
                                                                                                                  with: [.font: GeneralFonts.text,
                                                                                                                         .foregroundColor: GeneralColors.text],
@@ -221,7 +231,7 @@ extension PointsTableViewController {
     private func installTableViewDataSource() {
         pointsTableView.register(SidedPointTableViewCell.self, forCellReuseIdentifier: SidedPointTableViewCell.reuseIdentifier)
         viewModel.sharedSidedPointsDataSourceRelay
-            .subscribe(onNext: { [weak self] (pointsTableViewCellViewModels) in
+            .subscribe(onNext: { [weak self] pointsTableViewCellViewModels in
                 UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
                     self?.contextTextViewsStackView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
                     self?.pointsTableView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
@@ -231,7 +241,7 @@ extension PointsTableViewController {
 
         viewModel.sharedSidedPointsDataSourceRelay
             .bind(to: pointsTableView.rx.items(cellIdentifier: SidedPointTableViewCell.reuseIdentifier,
-                                               cellType: SidedPointTableViewCell.self)) { _, viewModel, cell in
+                                               cellType: SidedPointTableViewCell.self)) { (_, viewModel, cell) in
                                                 cell.viewModel = viewModel
             }.disposed(by: disposeBag)
 
