@@ -49,14 +49,6 @@ class PointsNavigatorViewController: UIViewController {
 
     // MARK: - UI Elements
 
-    private lazy var homeButton: UIButton = {
-        let homeButton = UIButton(frame: .zero)
-        homeButton.setImage(UIImage.home, for: .normal)
-        let inset: CGFloat = 8.0
-        homeButton.contentEdgeInsets = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: 0.0)
-        return homeButton
-    }()
-
     private lazy var descriptionTextView = BasicUIElementFactory.generateDescriptionTextView(MarkDownFormatter.format(viewModel.point.description,
                                                                                                                       with: [.font: GeneralFonts.text,
                                                                                                                              .foregroundColor: GeneralColors.text],
@@ -93,7 +85,6 @@ extension PointsNavigatorViewController: UIPageViewControllerDataSource, UIPageV
     // MARK: View constraints
 
     private func installViewConstraints() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: homeButton)
         navigationController?.navigationBar.tintColor = GeneralColors.softButton
         view.backgroundColor = GeneralColors.background
 
@@ -146,20 +137,9 @@ extension PointsNavigatorViewController: UIPageViewControllerDataSource, UIPageV
     // MARK: View binding
 
     private func installViewBinds() {
-        homeButton.addTarget(self, action: #selector(homeButtonTapped), for: .touchUpInside)
         descriptionTextView.delegate = self
         imagePageViewController.dataSource = self
         imagePageViewController.delegate = self
-    }
-
-    @objc private func homeButtonTapped() {
-        guard let mainPointsTableViewController = navigationController?.viewControllers.reversed()
-            .first(where: { (viewController) -> Bool in
-                // Find the nearest most parent VC of main debate points
-                return viewController as? PointsTableViewController != nil
-            }) else { return }
-
-        navigationController?.popToViewController(mainPointsTableViewController, animated: true)
     }
 
     private func markAsSeen() {

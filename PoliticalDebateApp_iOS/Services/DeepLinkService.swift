@@ -48,7 +48,6 @@ struct DeepLinkService {
                 return
         }
 
-        // static class, no need for disposal
         _ = debateNetworkService.makeRequest(with: .debate(primaryKey: primaryKey))
             .map(Debate.self)
             .subscribe(onSuccess: { debate in

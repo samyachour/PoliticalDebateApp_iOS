@@ -107,9 +107,11 @@ class PointsTableViewModel: StarrableViewModel {
             }).disposed(by: disposeBag)
     }
 
-    // MARK: - Internal updates
+    // MARK: Point history updates
 
     func fea() {}
+
+    // MARK: Rebuttals updates
 
     // MARK: - API calls
 
