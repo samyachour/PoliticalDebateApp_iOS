@@ -139,11 +139,11 @@ class ErrorHandlerService {
                 } else if backendErrorMessage.messageString.contains(BackendErrorMessage.unverifiedEmailKeyword) {
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Verification link couldn't be sent to the given email."))
+                } else if backendErrorMessage.messageString.contains(BackendErrorMessage.accountExistsKeyword) {
+                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                    title: "An account associated with that email already exists."))
                 }
             }
-        case 500:
-            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                            title: "An account associated with that email already exists."))
         default:
             ErrorHandlerService.showBasicRetryErrorBanner()
         }
