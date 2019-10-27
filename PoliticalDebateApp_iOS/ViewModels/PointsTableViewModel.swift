@@ -39,7 +39,7 @@ class PointsTableViewModel: StarrableViewModel {
             }).disposed(by: disposeBag)
     }
 
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     let viewState: PointsTableViewState
 
     // MARK: - Datasource

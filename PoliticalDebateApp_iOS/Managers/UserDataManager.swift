@@ -57,12 +57,10 @@ class UserDataManager {
         if SessionManager.shared.isActiveRelay.value {
             let starred = unstar ? [] : [primaryKey]
             let unstarred = unstar ? [primaryKey] : []
-            let starredNetworkRequest = starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starred, unstarred: unstarred))
-            _ = starredNetworkRequest.subscribe(onSuccess: { _ in
-                self.updateStarred(primaryKey, unstar: unstar)
-            })
-
-            return starredNetworkRequest.map { $0 as Response? }
+            return starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starred, unstarred: unstarred))
+                .do(onSuccess: { (_) in
+                    self.updateStarred(primaryKey, unstar: unstar)
+                }).map { $0 as Response? }
         } else {
             StarredCoreDataAPI.starOrUnstarDebate(primaryKey, unstar: unstar)
             updateStarred(primaryKey, unstar: unstar)
@@ -99,12 +97,10 @@ class UserDataManager {
         }
 
         if SessionManager.shared.isActiveRelay.value {
-            let progressNetworkRequest = progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
-
-            _ = progressNetworkRequest.subscribe(onSuccess: { _ in
-                self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-            })
-            return progressNetworkRequest.map { $0 as Response? }
+            return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
+                .do(onSuccess: { (_) in
+                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                }).map { $0 as Response? }
         } else {
             ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
             updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
@@ -127,16 +123,14 @@ class UserDataManager {
             let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey,
                                           completedPercentage: 0, // doesn't get sent to the backend anyway
                                           seenPoints: pointPrimaryKeys)
-            let batchProgressNetworkRequest = progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: [debateProgress])))
-
-            _ = batchProgressNetworkRequest.subscribe(onSuccess: { _ in
-                pointPrimaryKeys.forEach { pointPrimaryKey in
-                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-                }
-            })
-            return batchProgressNetworkRequest.map { $0 as Response? }
+            return progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: [debateProgress])))
+                .do(onSuccess: { (_) in
+                    pointPrimaryKeys.forEach { (pointPrimaryKey) in
+                        self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                    }
+                }).map { $0 as Response? }
         } else {
-            pointPrimaryKeys.forEach { pointPrimaryKey in
+            pointPrimaryKeys.forEach { (pointPrimaryKey) in
                 ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
                 self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
             }
@@ -249,10 +243,10 @@ class UserDataManager {
         if SessionManager.shared.isActiveRelay.value {
             _ = progressNetworkService.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
-                .subscribe(onSuccess: { allProgress in
+                .subscribe(onSuccess: { (allProgress) in
                     self.allProgress = Dictionary(uniqueKeysWithValues: allProgress.map { ($0.debatePrimaryKey, $0) })
                     completion(nil)
-                }) { error in
+                }) { (error) in
                     if let generalError = error as? GeneralError,
                         generalError == .alreadyHandled {
                         return
@@ -343,11 +337,11 @@ class UserDataManager {
         }
 
         _ = progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: legitimateProgress)))
-            .subscribe(onSuccess: { _ in
+            .subscribe(onSuccess: { (_) in
                 // We've successfully sync'd the local data to the backend, now we can clear it
                 ProgressCoreDataAPI.clearAllProgress()
                 completion(true)
-            }) { error in
+            }) { (error) in
                 if let generalError = error as? GeneralError,
                     generalError == .alreadyHandled {
                     return
