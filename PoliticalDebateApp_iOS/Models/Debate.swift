@@ -67,3 +67,10 @@ extension Debate: Decodable {
         debateMap = try container.decodeIfPresent([Point].self, forKey: .debateMap)
     }
 }
+
+extension Debate: Equatable {
+    static func == (lhs: Debate, rhs: Debate) -> Bool {
+        // Our backend ensures if two points share a primary key they must be the same object
+        return lhs.primaryKey == rhs.primaryKey
+    }
+}

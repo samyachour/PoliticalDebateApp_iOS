@@ -8,10 +8,11 @@
 
 import Moya
 import RxCocoa
+import RxDataSources
 import RxSwift
 import UIKit
 
-struct SidedPointTableViewCellViewModel {
+struct SidedPointTableViewCellViewModel: IdentifiableType, Equatable {
     let point: Point
     let debatePrimaryKey: PrimaryKey
     let hasCompletedPaths: Bool
@@ -33,6 +34,19 @@ struct SidedPointTableViewCellViewModel {
             hasCompletedPaths = false
         }
         self.useFullDescription = useFullDescription
+    }
+
+    // MARK: IdentifiableType
+
+    typealias Identity = Int
+    var identity: Int {
+        return point.primaryKey
+    }
+
+    // MARK: Equatable
+
+    static func == (lhs: SidedPointTableViewCellViewModel, rhs: SidedPointTableViewCellViewModel) -> Bool {
+        return lhs.point == rhs.point
     }
 
     // MARK: - Helpers

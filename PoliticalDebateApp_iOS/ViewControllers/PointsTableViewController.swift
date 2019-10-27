@@ -45,6 +45,15 @@ class PointsTableViewController: UIViewController {
 
     private let viewModel: PointsTableViewModel
     private let disposeBag = DisposeBag()
+    private lazy var dataSource: RxTableViewSectionedAnimatedDataSource<PointsTableViewSection> = {
+        return RxTableViewSectionedAnimatedDataSource<PointsTableViewSection>(configureCell: { (_, tableView, indexPath, viewModel) -> UITableViewCell in
+            let cell = tableView.dequeueReusableCell(withIdentifier: SidedPointTableViewCell.reuseIdentifier, for: indexPath)
+            if let sidedPointTableViewCell = cell as? SidedPointTableViewCell {
+                sidedPointTableViewCell.viewModel = viewModel
+            }
+            return cell
+        })
+    }()
 
     // MARK: - UI Properties
 
@@ -240,10 +249,8 @@ extension PointsTableViewController {
             }).disposed(by: disposeBag)
 
         viewModel.sharedSidedPointsDataSourceRelay
-            .bind(to: pointsTableView.rx.items(cellIdentifier: SidedPointTableViewCell.reuseIdentifier,
-                                               cellType: SidedPointTableViewCell.self)) { (_, viewModel, cell) in
-                                                cell.viewModel = viewModel
-            }.disposed(by: disposeBag)
+            .bind(to: pointsTableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
 
         viewModel.pointsRetrievalErrorRelay.subscribe(onNext: { error in
             if let generalError = error as? GeneralError,

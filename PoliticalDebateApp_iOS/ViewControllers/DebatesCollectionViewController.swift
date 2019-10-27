@@ -8,6 +8,7 @@
 
 import Moya
 import RxCocoa
+import RxDataSources
 import RxSwift
 import UIKit
 
@@ -46,6 +47,17 @@ class DebatesCollectionViewController: UIViewController {
 
     private let viewModel: DebatesCollectionViewModel
     private let disposeBag = DisposeBag()
+
+    private lazy var dataSource: RxCollectionViewSectionedAnimatedDataSource<DebatesCollectionViewSection> = {
+        return RxCollectionViewSectionedAnimatedDataSource<DebatesCollectionViewSection>(
+            configureCell: { (_, collectionView, indexPath, viewModel) -> UICollectionViewCell in
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DebateCollectionViewCell.reuseIdentifier, for: indexPath)
+                if let debateCell = cell as? DebateCollectionViewCell {
+                    debateCell.viewModel = viewModel
+                }
+                return cell
+        })
+    }()
 
     private let searchTriggeredRelay = BehaviorRelay<String>(value: DebatesCollectionViewController.defaultSearchString)
     private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
@@ -329,10 +341,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             }).disposed(by: disposeBag)
 
         viewModel.sharedDebatesDataSourceRelay
-            .bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCollectionViewCell.reuseIdentifier,
-                                                     cellType: DebateCollectionViewCell.self)) { (_, viewModel, cell) in
-            cell.viewModel = viewModel
-        }.disposed(by: disposeBag)
+            .bind(to: debatesCollectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
 
         viewModel.debatesRetrievalErrorRelay.subscribe(onNext: { [weak self] error in
             self?.debatesRefreshControl.endRefreshing()

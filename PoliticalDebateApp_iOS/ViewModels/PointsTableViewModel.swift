@@ -18,6 +18,21 @@ enum PointsTableViewState {
     case embeddedRebuttals
 }
 
+struct PointsTableViewSection: AnimatableSectionModelType {
+    var items: [SidedPointTableViewCellViewModel]
+    var header = "" // Only using 1 section
+    var identity: String { return header }
+
+    init(items: [SidedPointTableViewCellViewModel]) {
+        self.items = items
+    }
+
+    init(original: PointsTableViewSection, items: [SidedPointTableViewCellViewModel]) {
+        self = original
+        self.items = items
+    }
+}
+
 class PointsTableViewModel: StarrableViewModel {
 
     init(debate: Debate,
@@ -44,7 +59,7 @@ class PointsTableViewModel: StarrableViewModel {
 
     // MARK: - Datasource
 
-    private let sidedPointsDataSourceRelay = BehaviorRelay<[SidedPointTableViewCellViewModel]>(value: [])
+    private let sidedPointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
     lazy var sharedSidedPointsDataSourceRelay = sidedPointsDataSourceRelay
         .skip(1) // empty array emission initialized w/ relay
         .share()
@@ -73,14 +88,17 @@ class PointsTableViewModel: StarrableViewModel {
                 return pointsMatch && seenPointsMatch
         }.subscribe(onNext: { [weak self] (points, seenPoints) in
             guard let debatePrimaryKey = self?.debate.primaryKey,
-                let viewState = self?.viewState else {
+                let viewState = self?.viewState,
+                let currentSidedPointsDataSourceSection = self?.sidedPointsDataSourceRelay.value.first else {
                     return
             }
 
-            self?.sidedPointsDataSourceRelay.accept(points.map({ SidedPointTableViewCellViewModel(point: $0,
-                                                                                                  debatePrimaryKey: debatePrimaryKey,
-                                                                                                  seenPoints: seenPoints,
-                                                                                                  useFullDescription: viewState == .embeddedPointHistory) }))
+            let newSidedPointCellViewModels = points
+                .map({ SidedPointTableViewCellViewModel(point: $0,
+                                                        debatePrimaryKey: debatePrimaryKey,
+                                                        seenPoints: seenPoints,
+                                                        useFullDescription: viewState == .embeddedPointHistory) })
+            self?.sidedPointsDataSourceRelay.accept([PointsTableViewSection(original: currentSidedPointsDataSourceSection, items: newSidedPointCellViewModels)])
         }).disposed(by: disposeBag)
     }
 

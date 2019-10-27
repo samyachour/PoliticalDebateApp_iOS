@@ -8,7 +8,23 @@
 
 import Moya
 import RxCocoa
+import RxDataSources
 import RxSwift
+
+struct DebatesCollectionViewSection: AnimatableSectionModelType {
+    var items: [DebateCollectionViewCellViewModel]
+    var header = "" // Only using 1 section
+    var identity: String { return header }
+
+    init(items: [DebateCollectionViewCellViewModel]) {
+        self.items = items
+    }
+
+    init(original: DebatesCollectionViewSection, items: [DebateCollectionViewCellViewModel]) {
+        self = original
+        self.items = items
+    }
+}
 
 class DebatesCollectionViewModel {
 
@@ -23,7 +39,7 @@ class DebatesCollectionViewModel {
 
     // MARK: - Datasource
 
-    private let debatesDataSourceRelay = BehaviorRelay<[DebateCollectionViewCellViewModel]>(value: [])
+    private let debatesDataSourceRelay = BehaviorRelay<[DebatesCollectionViewSection]>(value: [DebatesCollectionViewSection(items: [])])
     lazy var sharedDebatesDataSourceRelay = debatesDataSourceRelay
         .skip(1) // empty array emission initialized w/ relay
         .share()
@@ -34,6 +50,7 @@ class DebatesCollectionViewModel {
     // Used to filter the latest debates array through our starred & progress user data
     // and do local sorting if applicable
     private func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
+        guard let currentDebatesDataSourceSection = debatesDataSourceRelay.value.first else { return }
 
         var newDebateCollectionViewCellViewModels = debates.map { debate -> DebateCollectionViewCellViewModel in
             let completedPercentage = UserDataManager.shared.getProgress(for: debate.primaryKey).completedPercentage
@@ -50,21 +67,27 @@ class DebatesCollectionViewModel {
         default:
             break
         }
-        debatesDataSourceRelay.accept(newDebateCollectionViewCellViewModels)
+
+        debatesDataSourceRelay.accept([DebatesCollectionViewSection(original: currentDebatesDataSourceSection, items: newDebateCollectionViewCellViewModels)])
     }
 
     func refreshDebatesWithLocalData() {
-        guard !debatesDataSourceRelay.value.isEmpty else { return } // no point in refreshing 0 debates
-
-        let newDebateCollectionViewCellViewModels = debatesDataSourceRelay.value.map { (debateCollectionViewCellViewModel) -> DebateCollectionViewCellViewModel in
-            let primaryKey = debateCollectionViewCellViewModel.debate.primaryKey
-            debateCollectionViewCellViewModel.completedPercentage = UserDataManager.shared.getProgress(for: primaryKey).completedPercentage
-            debateCollectionViewCellViewModel.isStarred = UserDataManager.shared.isStarred(primaryKey)
-
-            return debateCollectionViewCellViewModel
+        guard let currentDebatesDataSourceSection = debatesDataSourceRelay.value.first,
+            // no point in refreshing 0 debates
+            !currentDebatesDataSourceSection.items.isEmpty else {
+                return
         }
 
-        debatesDataSourceRelay.accept(newDebateCollectionViewCellViewModels)
+        let newDebateCollectionViewCellViewModels = currentDebatesDataSourceSection.items
+            .map { (debateCollectionViewCellViewModel) -> DebateCollectionViewCellViewModel in
+                let primaryKey = debateCollectionViewCellViewModel.debate.primaryKey
+                debateCollectionViewCellViewModel.completedPercentage = UserDataManager.shared.getProgress(for: primaryKey).completedPercentage
+                debateCollectionViewCellViewModel.isStarred = UserDataManager.shared.isStarred(primaryKey)
+
+                return debateCollectionViewCellViewModel
+        }
+
+        debatesDataSourceRelay.accept([DebatesCollectionViewSection(original: currentDebatesDataSourceSection, items: newDebateCollectionViewCellViewModels)])
     }
 
     // MARK: - Input handling
