@@ -331,7 +331,10 @@ extension PointsTableViewController {
 
 extension PointsTableViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        UIApplication.shared.open(URL)
+        guard !DeepLinkService.willHandle(URL) else { return false }
+
+        let webViewController = WKWebViewControllerFactory.generateWKWebViewController(with: URL)
+        navigationController?.pushViewController(webViewController, animated: true)
         return false
     }
 }

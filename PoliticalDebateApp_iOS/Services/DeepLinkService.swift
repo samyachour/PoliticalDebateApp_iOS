@@ -21,12 +21,12 @@ struct DeepLinkService {
         static let primaryKeyKey = "primaryKey"
     }
 
-    static func handle(_ url: URL) {
+    static func willHandle(_ url: URL) -> Bool {
         guard let scheme = url.scheme,
             scheme.localizedCaseInsensitiveCompare(Constants.appNameSpace) == .orderedSame,
             let host = url.host,
             let localHost = UrlHosts(rawValue: host.lowercased()) else {
-                return
+                return false
         }
 
         var parameters: [String: String] = [:]
@@ -38,6 +38,7 @@ struct DeepLinkService {
         case .debate:
             openDebate(with: parameters)
         }
+        return true
     }
 
     private static let debateNetworkService = NetworkService<DebateAPI>()

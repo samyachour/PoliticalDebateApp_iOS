@@ -60,7 +60,7 @@ class PointsNavigatorViewController: UIViewController {
 }
 
 // MARK: - View constraints & binding
-extension PointsNavigatorViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+extension PointsNavigatorViewController {
 
     // MARK: View constraints
 
@@ -127,7 +127,10 @@ extension PointsNavigatorViewController: UIPageViewControllerDataSource, UIPageV
 // MARK: - UITextViewDelegate
 extension PointsNavigatorViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        UIApplication.shared.open(URL)
+        guard !DeepLinkService.willHandle(URL) else { return false }
+
+        let webViewController = WKWebViewControllerFactory.generateWKWebViewController(with: URL)
+        navigationController?.pushViewController(webViewController, animated: true)
         return false
     }
 }

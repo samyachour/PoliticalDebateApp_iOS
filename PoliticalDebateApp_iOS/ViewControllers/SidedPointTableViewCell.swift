@@ -117,7 +117,10 @@ class SidedPointTableViewCell: UITableViewCell {
 // MARK: - UITextViewDelegate
 extension SidedPointTableViewCell: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        UIApplication.shared.open(URL)
+        guard !DeepLinkService.willHandle(URL) else { return false }
+
+        let webViewController = WKWebViewControllerFactory.generateWKWebViewController(with: URL)
+        AppDelegate.shared?.mainNavigationController?.pushViewController(webViewController, animated: true)
         return false
     }
 }

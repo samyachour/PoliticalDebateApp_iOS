@@ -157,6 +157,7 @@
 		2EC7890822D059FE009402F1 /* ErrorHandlerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7890722D059FE009402F1 /* ErrorHandlerService.swift */; };
 		2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
 		2EDEEC5F2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */; };
+		2EDEEC612369414200172D8D /* WKWebViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */; };
 		2EE1A1702311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A16F2311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift */; };
 		2EE1A1722311F1AB00DD8E4A /* SidedPointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1712311F1AB00DD8E4A /* SidedPointTableViewCell.swift */; };
 		2EE1A1742312043100DD8E4A /* UIImage+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */; };
@@ -277,6 +278,7 @@
 		2EC7890722D059FE009402F1 /* ErrorHandlerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandlerService.swift; sourceTree = "<group>"; };
 		2ED2FDA12290CC210093B6A7 /* TokenPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPair.swift; sourceTree = "<group>"; };
 		2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift; sourceTree = "<group>"; };
+		2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewControllerFactory.swift; sourceTree = "<group>"; };
 		2EE1A16F2311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidedPointTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		2EE1A1712311F1AB00DD8E4A /* SidedPointTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidedPointTableViewCell.swift; sourceTree = "<group>"; };
 		2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Custom.swift"; sourceTree = "<group>"; };
@@ -507,6 +509,7 @@
 				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
 				2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */,
 				2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */,
+				2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -925,6 +928,7 @@
 				2E0D84BA22A7952400E4B0E7 /* LoginOrRegisterViewController.swift in Sources */,
 				2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */,
 				2E5EC05322FA783600B41D54 /* DebateCollectionViewCell.swift in Sources */,
+				2EDEEC612369414200172D8D /* WKWebViewControllerFactory.swift in Sources */,
 				2EAF701F2325AE5900398D6B /* StarrableViewModel.swift in Sources */,
 				2E0D848622A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift in Sources */,
 				2EC7890822D059FE009402F1 /* ErrorHandlerService.swift in Sources */,
