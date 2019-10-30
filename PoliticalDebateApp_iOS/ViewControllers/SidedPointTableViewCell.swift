@@ -57,7 +57,7 @@ class SidedPointTableViewCell: UITableViewCell {
 
     private lazy var containerView: UIView = {
         let containerView = UIView(frame: .zero)
-        containerView.layer.cornerRadius = SidedPointTableViewCell.cornerRadius
+        containerView.layer.cornerRadius = Self.cornerRadius
         return containerView
     }()
 
@@ -91,13 +91,13 @@ class SidedPointTableViewCell: UITableViewCell {
         containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
         containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -containerVerticalInset).isActive = true
 
-        pointTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: SidedPointTableViewCell.inset).isActive = true
-        pointTextView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: SidedPointTableViewCell.inset).isActive = true
+        pointTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Self.inset).isActive = true
+        pointTextView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Self.inset).isActive = true
         pointTextView.trailingAnchor.constraint(lessThanOrEqualTo: checkImageView.leadingAnchor, constant: -2).isActive = true
-        pointTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -SidedPointTableViewCell.inset).isActive = true
+        pointTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Self.inset).isActive = true
 
         checkImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -SidedPointTableViewCell.inset - 4).isActive = true
+        checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Self.inset - 4).isActive = true
         checkImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 

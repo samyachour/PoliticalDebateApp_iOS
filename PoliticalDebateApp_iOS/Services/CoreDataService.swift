@@ -83,7 +83,7 @@ struct CoreDataService {
     private static var loadedStores = false
 
     static func loadPersistentContainer(completion: @escaping (Error?) -> Void) {
-        guard !loadedStores else {
+        guard !Self.loadedStores else {
             debugLog("Core Data stack has already been intialized")
             completion(nil)
             return
@@ -107,7 +107,7 @@ struct CoreDataService {
             }
             debugLog("Core Data stack has been initialized with description: \(storeDescription)")
 
-            CoreDataService.loadedStores = true
+            Self.loadedStores = true
             completion(nil) // success
         })
     }

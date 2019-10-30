@@ -17,7 +17,7 @@ class DebatesCollectionViewController: UIViewController {
 
     required init(viewModel: DebatesCollectionViewModel) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil) // we don't use nibs
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -98,7 +98,7 @@ class DebatesCollectionViewController: UIViewController {
         let isPortrait = UIApplication.shared.statusBarOrientation.isPortrait
         let widthDividend: CGFloat = isPortrait ? 2 : 3
         let spaces: CGFloat = isPortrait ? 3 : 4
-        let cellWidthAndHeight = (UIScreen.main.bounds.width - (spaces * DebatesCollectionViewController.cellSpacing))/widthDividend
+        let cellWidthAndHeight = (UIScreen.main.bounds.width - (spaces * Self.cellSpacing))/widthDividend
         return CGSize(width: cellWidthAndHeight, height: cellWidthAndHeight)
     }
     private lazy var currentItemSize = orientedCollectionViewItemSize
@@ -107,8 +107,8 @@ class DebatesCollectionViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         // Not using flow layout delegate
-        layout.minimumLineSpacing = DebatesCollectionViewController.cellSpacing
-        layout.minimumInteritemSpacing = DebatesCollectionViewController.cellSpacing
+        layout.minimumLineSpacing = Self.cellSpacing
+        layout.minimumInteritemSpacing = Self.cellSpacing
         layout.itemSize = currentItemSize
 
         let debatesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -157,7 +157,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
                                                                    .font: GeneralFonts.navBarTitle]
         navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
-        view.backgroundColor = DebatesCollectionViewController.backgroundColor
+        view.backgroundColor = Self.backgroundColor
 
         headerElementsContainer.addSubview(searchTextField)
         headerElementsContainer.addSubview(sortByButton)
@@ -175,16 +175,16 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        headerElementsContainer.backgroundColor = DebatesCollectionViewController.backgroundColor
+        headerElementsContainer.backgroundColor = Self.backgroundColor
         headerElementsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                         constant: DebatesCollectionViewController.headerElementsXDistance).isActive = true
+                                                         constant: Self.headerElementsXDistance).isActive = true
         headerElementsContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
         headerElementsContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                          constant: -DebatesCollectionViewController.headerElementsXDistance).isActive = true
+                                                          constant: -Self.headerElementsXDistance).isActive = true
 
         searchTextField.leadingAnchor.constraint(equalTo: headerElementsContainer.leadingAnchor).isActive = true
         searchTextField.topAnchor.constraint(equalTo: headerElementsContainer.topAnchor,
-                                             constant: DebatesCollectionViewController.headerElementsYDistance).isActive = true
+                                             constant: Self.headerElementsYDistance).isActive = true
         searchTextFieldTrailingAnchor = searchTextField.trailingAnchor.constraint(equalTo: sortByButton.leadingAnchor, constant: -8)
         searchTextFieldTrailingAnchor?.isActive = false
         searchTextField.bottomAnchor.constraint(equalTo: headerElementsContainer.bottomAnchor).isActive = true
@@ -196,19 +196,19 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         sortByButton.setContentHuggingPriority(.required, for: .horizontal)
 
         sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                  constant: DebatesCollectionViewController.headerElementsXDistance).isActive = true
+                                                  constant: Self.headerElementsXDistance).isActive = true
         sortByPickerViewTopAnchor = sortByPickerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8)
         sortByPickerViewTopAnchor?.isActive = false
         sortByPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                   constant: -DebatesCollectionViewController.headerElementsXDistance).isActive = true
+                                                   constant: -Self.headerElementsXDistance).isActive = true
         sortByPickerViewBottomAnchor = sortByPickerView.bottomAnchor.constraint(equalTo: view.topAnchor)
         sortByPickerViewBottomAnchor?.isActive = true
 
         collectionViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                         constant: DebatesCollectionViewController.cellSpacing).isActive = true
+                                                         constant: Self.cellSpacing).isActive = true
         collectionViewContainer.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 2).isActive = true
         collectionViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                          constant: -DebatesCollectionViewController.cellSpacing).isActive = true
+                                                          constant: -Self.cellSpacing).isActive = true
         collectionViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
 
         debatesCollectionView.leadingAnchor.constraint(equalTo: collectionViewContainer.leadingAnchor).isActive = true
@@ -314,7 +314,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     }
 
     @objc private func activateSearch() {
-        searchTriggeredRelay.accept(searchTextField.text ?? DebatesCollectionViewController.defaultSearchString)
+        searchTriggeredRelay.accept(searchTextField.text ?? Self.defaultSearchString)
         hideActiveUIElements()
     }
 

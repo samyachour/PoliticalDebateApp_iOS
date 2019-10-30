@@ -12,9 +12,9 @@ import RxSwift
 
 class PointsNavigatorViewModel {
 
-    init(point: Point,
+    init(rootPoint: Point,
          debate: Debate) {
-        self.point = point
+        self.rootPoint = rootPoint
         self.debate = debate
     }
 
@@ -22,17 +22,7 @@ class PointsNavigatorViewModel {
 
     // MARK: - Datasource
 
-    let point: Point
+    let rootPoint: Point
     let debate: Debate
-
-    // MARK: - API calls
-
-    private let progressNetworkService = NetworkService<ProgressAPI>()
-
-    func markAsSeen() -> Single<Response?>? {
-        return UserDataManager.shared.markProgress(pointPrimaryKey: point.primaryKey,
-                                                   debatePrimaryKey: debate.primaryKey,
-                                                   totalPoints: debate.totalPoints)
-    }
 
 }

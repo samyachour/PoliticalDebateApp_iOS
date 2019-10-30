@@ -57,7 +57,7 @@ class DebateCollectionViewCell: UICollectionViewCell {
     // Needed so we can have a gradient layer but still animate the cell color on hightlighted
     private lazy var tintView: UIView = {
         let tintView = UIView()
-        tintView.backgroundColor = DebateCollectionViewCell.defaultTintViewColor
+        tintView.backgroundColor = Self.defaultTintViewColor
         return tintView
     }()
 
@@ -89,8 +89,8 @@ class DebateCollectionViewCell: UICollectionViewCell {
 
     private func installConstraints() {
         contentView.layer.masksToBounds = true
-        contentView.layer.cornerRadius = DebateCollectionViewCell.cornerRadius
-        contentView.backgroundColor = DebateCollectionViewCell.cellColor
+        contentView.layer.cornerRadius = Self.cornerRadius
+        contentView.backgroundColor = Self.cellColor
         contentView.layer.addSublayer(gradientLayer)
 
         contentView.addSubview(tintView)
@@ -126,7 +126,7 @@ class DebateCollectionViewCell: UICollectionViewCell {
     override var isHighlighted: Bool {
         didSet {
             UIView.animate(withDuration: Constants.quickAnimationDuration) {
-                self.tintView.backgroundColor = self.isHighlighted ? GeneralColors.selected : DebateCollectionViewCell.defaultTintViewColor
+                self.tintView.backgroundColor = self.isHighlighted ? GeneralColors.selected : Self.defaultTintViewColor
             }
         }
     }

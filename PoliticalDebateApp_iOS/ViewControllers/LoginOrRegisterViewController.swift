@@ -16,7 +16,7 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
 
     required init(viewModel: LoginOrRegisterViewModel) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil) // we don't use nibs
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -126,9 +126,9 @@ extension LoginOrRegisterViewController {
         for subview in stackViewContainer.arrangedSubviews where subview as? UITextField != nil {
             subview.translatesAutoresizingMaskIntoConstraints = false
             subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
-                                              constant: -LoginOrRegisterViewController.horizontalEdgeInset).isActive = true
+                                              constant: -Self.horizontalEdgeInset).isActive = true
             subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
-                                             constant: LoginOrRegisterViewController.horizontalEdgeInset).isActive = true
+                                             constant: Self.horizontalEdgeInset).isActive = true
         }
 
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false

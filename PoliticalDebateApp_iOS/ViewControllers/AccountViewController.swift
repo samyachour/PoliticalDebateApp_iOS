@@ -15,7 +15,7 @@ class AccountViewController: UIViewController, KeyboardReactable {
 
     required init(viewModel: AccountViewModel) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil) // we don't use nibs
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -111,9 +111,9 @@ extension AccountViewController {
         for subview in stackViewContainer.arrangedSubviews where subview as? UITextField != nil {
             subview.translatesAutoresizingMaskIntoConstraints = false
             subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
-                                             constant: AccountViewController.horizontalEdgeInset).isActive = true
+                                             constant: Self.horizontalEdgeInset).isActive = true
             subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
-                                              constant: -AccountViewController.horizontalEdgeInset).isActive = true
+                                              constant: -Self.horizontalEdgeInset).isActive = true
         }
 
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false

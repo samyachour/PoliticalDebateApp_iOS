@@ -15,7 +15,7 @@ class PointsNavigatorViewController: UIViewController {
 
     required init(viewModel: PointsNavigatorViewModel) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil) // we don't use nibs
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -31,12 +31,6 @@ class PointsNavigatorViewController: UIViewController {
         installViewConstraints()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        markAsSeen()
-    }
-
     // MARK: - Observers & Observables
 
     private let viewModel: PointsNavigatorViewModel
@@ -44,19 +38,21 @@ class PointsNavigatorViewController: UIViewController {
 
     // MARK: - UI Properties
 
-    private var pointsTableViewHeightAnchor: NSLayoutConstraint?
     private static let inset: CGFloat = 16.0
 
     // MARK: - UI Elements
 
-    private lazy var descriptionTextView = BasicUIElementFactory.generateDescriptionTextView(MarkDownFormatter.format(viewModel.point.description,
-                                                                                                                      with: [.font: GeneralFonts.text,
-                                                                                                                             .foregroundColor: GeneralColors.text],
-                                                                                                                      hyperlinks: viewModel.point.hyperlinks))
+    private lazy var pointHistoryTableViewModel = PointsTableViewModel(debate: viewModel.debate,
+                                                                       viewState: .embeddedPointHistory,
+                                                                       embeddedSidedPoints: [viewModel.rootPoint])
+    private lazy var pointHistoryTableViewController = PointsTableViewController(viewModel: pointHistoryTableViewModel)
 
-    private lazy var pointsTableViewController = PointsTableViewController(viewModel: PointsTableViewModel(debate: viewModel.debate,
-                                                                                                           viewState: .embeddedRebuttals,
-                                                                                                           embeddedSidedPoints: viewModel.point.rebuttals))
+    private lazy var rebuttalsLabel = BasicUIElementFactory.generateHeadingLabel(text: "Rebuttals")
+
+    private lazy var pointRebuttalsTableViewModel = PointsTableViewModel(debate: viewModel.debate,
+                                                                         viewState: .embeddedRebuttals,
+                                                                         embeddedSidedPoints: viewModel.rootPoint.rebuttals)
+    private lazy var pointRebuttalsTableViewController = PointsTableViewController(viewModel: pointRebuttalsTableViewModel)
 }
 
 // MARK: - View constraints & binding
@@ -68,63 +64,49 @@ extension PointsNavigatorViewController {
         navigationController?.navigationBar.tintColor = GeneralColors.softButton
         view.backgroundColor = GeneralColors.background
 
-        view.addSubview(descriptionTextView)
-        addChild(pointsTableViewController)
-        view.addSubview(pointsTableViewController.view)
+        addChild(pointHistoryTableViewController)
+        view.addSubview(pointHistoryTableViewController.view)
+        view.addSubview(rebuttalsLabel)
+        addChild(pointRebuttalsTableViewController)
+        view.addSubview(pointRebuttalsTableViewController.view)
 
-        descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
-        pointsTableViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        pointHistoryTableViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        rebuttalsLabel.translatesAutoresizingMaskIntoConstraints = false
+        pointRebuttalsTableViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
-        descriptionTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PointsNavigatorViewController.inset).isActive = true
-        descriptionTextView.topAnchor.constraint(equalTo: topLayoutAnchor, constant: PointsNavigatorViewController.inset).isActive = true
-        descriptionTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PointsNavigatorViewController.inset).isActive = true
+        pointHistoryTableViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        pointHistoryTableViewController.view.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
+        pointHistoryTableViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        pointHistoryTableViewController.didMove(toParent: self)
 
-        pointsTableViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        pointsTableViewController.view.topAnchor.constraint(greaterThanOrEqualTo: descriptionTextView.bottomAnchor).isActive = true
-        pointsTableViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        pointsTableViewController.view.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
-        // Set the height to the entire screen initially so the tableView.visibleCells property will include
-        // all the cells and we can accurately recompute the necessary height
-        pointsTableViewHeightAnchor = pointsTableViewController.view.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height).injectPriority(.required - 1)
-        pointsTableViewHeightAnchor?.isActive = true
-        pointsTableViewController.didMove(toParent: self)
-    }
+        rebuttalsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        rebuttalsLabel.topAnchor.constraint(equalTo: pointHistoryTableViewController.view.bottomAnchor).isActive = true
+        rebuttalsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+        pointRebuttalsTableViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        pointRebuttalsTableViewController.view.topAnchor.constraint(equalTo: rebuttalsLabel.bottomAnchor).isActive = true
+        pointRebuttalsTableViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        pointRebuttalsTableViewController.view.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
+        pointRebuttalsTableViewController.didMove(toParent: self)
 
-        pointsTableViewHeightAnchor?.constant = pointsTableViewController.pointsTableViewHeight
     }
 
     // MARK: View binding
 
     private func installViewBinds() {
-        descriptionTextView.delegate = self
-    }
+        pointHistoryTableViewModel.observe(newPointSignal: pointRebuttalsTableViewModel.newPointSignal)
+        pointRebuttalsTableViewModel.observe(newRebuttalsSignal: pointHistoryTableViewModel.newRebuttalsSignal)
 
-    private func markAsSeen() {
-        viewModel.markAsSeen()?.subscribe(onError: { error in
-            if let generalError = error as? GeneralError,
-                generalError == .alreadyHandled {
-                return
-            }
-            guard let moyaError = error as? MoyaError,
-                let response = moyaError.response else {
-                    ErrorHandlerService.showBasicRetryErrorBanner()
-                    return
-            }
-
-            switch response.statusCode {
-            case 404:
-                ErrorHandlerService.showBasicReportErrorBanner()
-            default:
-                ErrorHandlerService.showBasicRetryErrorBanner()
+        pointHistoryTableViewModel.newRebuttalsSignal.emit(onNext: { [weak self] newRebuttals in
+            UIView.animate(withDuration: Constants.standardAnimationDuration) {
+                self?.rebuttalsLabel.alpha = newRebuttals.isEmpty ? 0 : 1
             }
         }).disposed(by: disposeBag)
     }
 }
 
 // MARK: - UITextViewDelegate
+
 extension PointsNavigatorViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         guard !DeepLinkService.willHandle(URL) else { return false }
