@@ -26,9 +26,7 @@ class DebateCollectionViewCellViewModel: StarrableViewModel, IdentifiableType, E
     // MARK: IdentifiableType
 
     typealias Identity = Int
-    var identity: Int {
-        return debate.primaryKey
-    }
+    var identity: Int { return debate.primaryKey }
 
     // MARK: Equatable
 

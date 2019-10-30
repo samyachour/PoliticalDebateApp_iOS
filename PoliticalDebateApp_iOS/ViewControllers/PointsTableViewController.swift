@@ -6,7 +6,6 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
-import Differentiator
 import Moya
 import RxCocoa
 import RxDataSources
@@ -38,27 +37,19 @@ class PointsTableViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        viewModel.refreshSeenPoints()
+        viewModel.tableViewReloadRelay.accept(())
     }
 
     // MARK: - Observers & Observables
 
     private let viewModel: PointsTableViewModel
     private let disposeBag = DisposeBag()
-    private lazy var dataSource: RxTableViewSectionedAnimatedDataSource<PointsTableViewSection> = {
-        return RxTableViewSectionedAnimatedDataSource<PointsTableViewSection>(configureCell: { (_, tableView, indexPath, viewModel) -> UITableViewCell in
-            let cell = tableView.dequeueReusableCell(withIdentifier: SidedPointTableViewCell.reuseIdentifier, for: indexPath)
-            if let sidedPointTableViewCell = cell as? SidedPointTableViewCell {
-                sidedPointTableViewCell.viewModel = viewModel
-            }
-            return cell
-        })
-    }()
 
     // MARK: - UI Properties
 
     var pointsTableViewHeight: CGFloat { return pointsTableView.dynamicContentHeight }
     static let elementSpacing: CGFloat = 16.0
+    private var pointsTableViewHeightAnchor: NSLayoutConstraint?
     private var tableViewContainerTopAnchor: NSLayoutConstraint? {
         didSet {
             if let oldValue = oldValue {
@@ -105,13 +96,15 @@ class PointsTableViewController: UIViewController {
         return starredButton
     }()
 
+    private lazy var undoButton = UIBarButtonItem(barButtonSystemItem: .undo, target: self, action: nil)
+
 }
 
-// MARK: - View constraints & binding
 extension PointsTableViewController {
 
-    // MARK: View constraints
+    // MARK: - View constraints
 
+    // swiftlint:disable:next function_body_length
     private func installViewConstraints() {
         switch viewModel.viewState {
         case .standaloneRootPoints:
@@ -124,9 +117,9 @@ extension PointsTableViewController {
             view.backgroundColor = GeneralColors.background
             installLoadingIndicator()
         case .embeddedPointHistory:
-            view.backgroundColor = .clear
+            parent?.navigationItem.rightBarButtonItem = undoButton
+            fallthrough
         case .embeddedRebuttals:
-            pointsTableView.alwaysBounceVertical = false
             view.backgroundColor = .clear
         }
 
@@ -144,7 +137,6 @@ extension PointsTableViewController {
         pointsTableView.topAnchor.constraint(equalTo: tableViewContainer.topAnchor).isActive = true
         pointsTableView.trailingAnchor.constraint(equalTo: tableViewContainer.trailingAnchor).isActive = true
         pointsTableView.bottomAnchor.constraint(equalTo: tableViewContainer.bottomAnchor).isActive = true
-        pointsTableView.alpha = 0.0
 
         switch viewModel.viewState {
         case .standaloneRootPoints:
@@ -156,8 +148,11 @@ extension PointsTableViewController {
             contextTextViewsStackView.alpha = 0.0
 
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: contextTextViewsStackView.bottomAnchor, constant: 4)
-        case .embeddedPointHistory,
-             .embeddedRebuttals:
+        case .embeddedRebuttals:
+            pointsTableViewHeightAnchor = pointsTableView.heightAnchor.constraint(equalToConstant: pointsTableView.dynamicContentHeight)
+            pointsTableViewHeightAnchor?.isActive = true
+            fallthrough
+        case .embeddedPointHistory:
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
         }
     }
@@ -191,66 +186,82 @@ extension PointsTableViewController {
     // MARK: View binding
 
     private func installViewBinds() {
-        switch viewModel.viewState {
-        case .standaloneRootPoints:
-            installRootTableViewBinds()
-            installContextTextViewsDataSource()
-        case .embeddedPointHistory,
-             .embeddedRebuttals:
-            break
-        }
-        installTableViewDataSource()
-    }
-
-    private func installRootTableViewBinds() {
-        starredButton.addTarget(self, action: #selector(starredButtonTapped), for: .touchUpInside)
-
-        pointsTableView.rx
-            .modelSelected(SidedPointTableViewCellViewModel.self)
-            .subscribe(onNext: { [weak self] pointTableViewCellViewModel in
-                guard let debate = self?.viewModel.debate else {
-                    return
-                }
-
-                self?.navigationController?.pushViewController(PointsNavigatorViewController(viewModel: PointsNavigatorViewModel(point: pointTableViewCellViewModel.point,
-                                                                                                                                 debate: debate)),
-                                                               animated: true)
-        }).disposed(by: disposeBag)
-    }
-
-    private func installContextTextViewsDataSource() {
-        viewModel.sharedContextPointsDataSourceRelay.subscribe(onNext: { [weak self] contextPoints in
-            self?.updateContentTextViewsStackView(shouldShow: !contextPoints.isEmpty)
-            guard !contextPoints.isEmpty else { return }
-
-            let contextTextViews: [UITextView] = contextPoints.map { [weak self] contextPoint in
-                let contextTextView = BasicUIElementFactory.generateDescriptionTextView(MarkDownFormatter.format(contextPoint.description,
-                                                                                                                 with: [.font: GeneralFonts.text,
-                                                                                                                        .foregroundColor: GeneralColors.text],
-                                                                                                                 hyperlinks: contextPoint.hyperlinks))
-                guard let self = self else { return contextTextView }
-
-                contextTextView.delegate = self
-                return contextTextView
-            }
-            contextTextViews.forEach { self?.contextTextViewsStackView.addArrangedSubview($0) }
-        }).disposed(by: disposeBag)
-    }
-
-    private func installTableViewDataSource() {
         pointsTableView.register(SidedPointTableViewCell.self, forCellReuseIdentifier: SidedPointTableViewCell.reuseIdentifier)
-        viewModel.sharedSidedPointsDataSourceRelay
-            .subscribe(onNext: { [weak self] pointsTableViewCellViewModels in
-                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
-                    self?.contextTextViewsStackView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
-                    self?.pointsTableView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
-                    self?.loadingIndicator.stopAnimating()
-                })
-            }).disposed(by: disposeBag)
+
+        let dataSource =
+            RxTableViewSectionedAnimatedDataSourceWithReloadSignal<PointsTableViewSection>(configureCell: { (_, tableView, indexPath, viewModel) -> UITableViewCell in
+                let cell = tableView.dequeueReusableCell(withIdentifier: SidedPointTableViewCell.reuseIdentifier, for: indexPath)
+                if let sidedPointTableViewCell = cell as? SidedPointTableViewCell { sidedPointTableViewCell.viewModel = viewModel }
+                return cell
+            })
 
         viewModel.sharedSidedPointsDataSourceRelay
             .bind(to: pointsTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
+
+        switch viewModel.viewState {
+        case .standaloneRootPoints:
+            installRootPointsTableViewBinds()
+            installContextTextViewsDataSource()
+        case .embeddedPointHistory:
+            installEmbeddedPointHistoryTableViewBinds(dataSource: dataSource)
+        case .embeddedRebuttals:
+            installEmbeddedRebuttalsTableViewBinds(dataSource: dataSource)
+        }
+
+        viewModel.observe(indexPathSelected: pointsTableView.rx.itemSelected,
+                          modelSelected: pointsTableView.rx.modelSelected(SidedPointTableViewCellViewModel.self),
+                          undoSelected: undoButton.rx.tap)
+    }
+
+    // MARK: - View binds
+
+    // MARK: Embedded rebuttals binds
+
+    private func installEmbeddedRebuttalsTableViewBinds(dataSource: RxTableViewSectionedAnimatedDataSourceWithReloadSignal<PointsTableViewSection>) {
+        dataSource.dataReloaded.emit(onNext: { [weak self] _ in
+            guard let pointsTableViewHeight = self?.pointsTableView.dynamicContentHeight else { return }
+
+            UIView.animate(withDuration: Constants.standardAnimationDuration * 0.8) {
+                self?.pointsTableViewHeightAnchor?.constant = pointsTableViewHeight
+                self?.pointsTableView.layoutIfNeeded()
+            }
+        }).disposed(by: disposeBag)
+    }
+
+    // MARK: Embedded point history binds
+
+    private func installEmbeddedPointHistoryTableViewBinds(dataSource: RxTableViewSectionedAnimatedDataSourceWithReloadSignal<PointsTableViewSection>) {
+        viewModel.popSelfViewControllerRelay.subscribe { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }.disposed(by: disposeBag)
+
+        dataSource.dataReloaded.emit(onNext: { [weak self] _ in
+            guard let viewModel = self?.viewModel else { return }
+
+            let lastIndexPath = IndexPath(row: viewModel.sidedPointsCount - 1, section: 0)
+            self?.pointsTableView.scrollToRow(at: lastIndexPath,
+                                              at: .bottom,
+                                              animated: true)
+        }).disposed(by: disposeBag)
+    }
+
+    // MARK: Standalone root points binds
+
+    private func installRootPointsTableViewBinds() {
+        starredButton.addTarget(self, action: #selector(starredButtonTapped), for: .touchUpInside)
+
+        viewModel.viewControllerToPushRelay.subscribe(onNext: { [weak self] viewController in
+            self?.navigationController?.pushViewController(viewController, animated: true)
+        }).disposed(by: disposeBag)
+
+        viewModel.sharedSidedPointsDataSourceRelay
+            .subscribe(onNext: { [weak self] pointsTableViewCellViewModels in
+                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
+                    self?.contextTextViewsStackView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
+                    self?.loadingIndicator.stopAnimating()
+                })
+            }).disposed(by: disposeBag)
 
         viewModel.pointsRetrievalErrorRelay.subscribe(onNext: { error in
             if let generalError = error as? GeneralError,
@@ -276,6 +287,25 @@ extension PointsTableViewController {
         }).disposed(by: disposeBag)
     }
 
+    private func installContextTextViewsDataSource() {
+        viewModel.sharedContextPointsDataSourceRelay.subscribe(onNext: { [weak self] contextPoints in
+            self?.updateContentTextViewsStackView(shouldShow: !contextPoints.isEmpty)
+            guard !contextPoints.isEmpty else { return }
+
+            let contextTextViews: [UITextView] = contextPoints.map { [weak self] contextPoint in
+                let contextTextView = BasicUIElementFactory.generateDescriptionTextView(MarkDownFormatter.format(contextPoint.description,
+                                                                                                                 with: [.font: GeneralFonts.text,
+                                                                                                                        .foregroundColor: GeneralColors.text],
+                                                                                                                 hyperlinks: contextPoint.hyperlinks))
+                guard let self = self else { return contextTextView }
+
+                contextTextView.delegate = self
+                return contextTextView
+            }
+            contextTextViews.forEach { self?.contextTextViewsStackView.addArrangedSubview($0) }
+        }).disposed(by: disposeBag)
+    }
+
     @objc private func starredButtonTapped() {
         viewModel.starOrUnstarDebate().subscribe(onSuccess: { [weak self] _ in
             UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
@@ -297,7 +327,8 @@ extension PointsTableViewController {
     }
 }
 
-// MARK: - UITextViewDelegate
+// MARK: UITextViewDelegate
+
 extension PointsTableViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         UIApplication.shared.open(URL)
@@ -306,6 +337,7 @@ extension PointsTableViewController: UITextViewDelegate {
 }
 
 // MARK: UITableView dynamicContentHeight
+
 private extension UITableView {
     var dynamicContentHeight: CGFloat {
         layoutIfNeeded()

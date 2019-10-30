@@ -158,6 +158,7 @@
 		2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
 		2EC7890822D059FE009402F1 /* ErrorHandlerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC7890722D059FE009402F1 /* ErrorHandlerService.swift */; };
 		2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
+		2EDEEC5F2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */; };
 		2EE1A1702311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A16F2311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift */; };
 		2EE1A1722311F1AB00DD8E4A /* SidedPointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1712311F1AB00DD8E4A /* SidedPointTableViewCell.swift */; };
 		2EE1A1742312043100DD8E4A /* UIImage+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */; };
@@ -279,6 +280,7 @@
 		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2EC7890722D059FE009402F1 /* ErrorHandlerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandlerService.swift; sourceTree = "<group>"; };
 		2ED2FDA12290CC210093B6A7 /* TokenPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPair.swift; sourceTree = "<group>"; };
+		2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift; sourceTree = "<group>"; };
 		2EE1A16F2311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidedPointTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		2EE1A1712311F1AB00DD8E4A /* SidedPointTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidedPointTableViewCell.swift; sourceTree = "<group>"; };
 		2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Custom.swift"; sourceTree = "<group>"; };
@@ -510,6 +512,7 @@
 				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
 				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
 				2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */,
+				2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -893,6 +896,7 @@
 				2E30A8E922BF4773007E386A /* SafelyShowAlert.swift in Sources */,
 				2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */,
 				2E967439226BD34E00821A73 /* SessionManager.swift in Sources */,
+				2EDEEC5F2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift in Sources */,
 				2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
 				2E892109230E6ABF00DD9556 /* CurrentEmail.swift in Sources */,
 				2E2E6DC222FC07880048B769 /* UIView+Fade.swift in Sources */,

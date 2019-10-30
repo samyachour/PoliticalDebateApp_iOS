@@ -48,17 +48,6 @@ class DebatesCollectionViewController: UIViewController {
     private let viewModel: DebatesCollectionViewModel
     private let disposeBag = DisposeBag()
 
-    private lazy var dataSource: RxCollectionViewSectionedAnimatedDataSource<DebatesCollectionViewSection> = {
-        return RxCollectionViewSectionedAnimatedDataSource<DebatesCollectionViewSection>(
-            configureCell: { (_, collectionView, indexPath, viewModel) -> UICollectionViewCell in
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DebateCollectionViewCell.reuseIdentifier, for: indexPath)
-                if let debateCell = cell as? DebateCollectionViewCell {
-                    debateCell.viewModel = viewModel
-                }
-                return cell
-        })
-    }()
-
     private let searchTriggeredRelay = BehaviorRelay<String>(value: DebatesCollectionViewController.defaultSearchString)
     private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
     private let manualRefreshRelay = BehaviorRelay<Void>(value: ())
@@ -340,6 +329,12 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                 })
             }).disposed(by: disposeBag)
 
+        let dataSource = RxCollectionViewSectionedAnimatedDataSource<DebatesCollectionViewSection>(
+            configureCell: { (_, collectionView, indexPath, viewModel) -> UICollectionViewCell in
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DebateCollectionViewCell.reuseIdentifier, for: indexPath)
+                if let debateCell = cell as? DebateCollectionViewCell { debateCell.viewModel = viewModel }
+                return cell
+        })
         viewModel.sharedDebatesDataSourceRelay
             .bind(to: debatesCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)

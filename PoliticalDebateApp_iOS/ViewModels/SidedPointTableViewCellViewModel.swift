@@ -39,9 +39,7 @@ struct SidedPointTableViewCellViewModel: IdentifiableType, Equatable {
     // MARK: IdentifiableType
 
     typealias Identity = Int
-    var identity: Int {
-        return point.primaryKey
-    }
+    var identity: Int { return point.primaryKey }
 
     // MARK: Equatable
 

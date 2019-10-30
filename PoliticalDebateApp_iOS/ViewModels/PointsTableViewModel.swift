@@ -6,7 +6,6 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
-import Differentiator
 import Moya
 import RxCocoa
 import RxDataSources
@@ -50,57 +49,63 @@ class PointsTableViewModel: StarrableViewModel {
             .subscribe(onNext: { [weak self] loaded in
                 guard loaded else { return }
 
-                self?.refreshSeenPoints()
+                self?.tableViewReloadRelay.accept(())
             }).disposed(by: disposeBag)
     }
 
     private let disposeBag = DisposeBag()
     let viewState: PointsTableViewState
 
-    // MARK: - Datasource
+    var debate: Debate
+    var isStarred: Bool
+
+    // MARK: - DataSource
+
+    // Private
 
     private let sidedPointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
+    private lazy var sidedPointsRelay = BehaviorRelay<[Point]>(value: debate.sidedPoints ?? [])
+    private var embeddedSidedPoints: [Point]?
+
+    private func subscribeSidedPointsUpdates() {
+        BehaviorRelay
+            .combineLatest(sidedPointsRelay.distinctUntilChanged(),
+                           tableViewReloadRelay,
+                           resultSelector: { (points, _) in return points })
+            .subscribe(onNext: { [weak self] points in
+                guard let debatePrimaryKey = self?.debate.primaryKey,
+                    let viewState = self?.viewState,
+                    let currentSidedPointsDataSourceSection = self?.sidedPointsDataSourceRelay.value.first else {
+                        return
+                }
+
+                let seenPoints = UserDataManager.shared.getProgress(for: debatePrimaryKey).seenPoints
+                let newSidedPointCellViewModels = points
+                    .map({ SidedPointTableViewCellViewModel(point: $0,
+                                                            debatePrimaryKey: debatePrimaryKey,
+                                                            seenPoints: seenPoints,
+                                                            useFullDescription: viewState == .embeddedPointHistory) })
+                self?.sidedPointsDataSourceRelay.accept([PointsTableViewSection(original: currentSidedPointsDataSourceSection,
+                                                                                items: newSidedPointCellViewModels)])
+        }).disposed(by: disposeBag)
+    }
+
+    // Internal
+
     lazy var sharedSidedPointsDataSourceRelay = sidedPointsDataSourceRelay
-        .skip(1) // empty array emission initialized w/ relay
-        .share()
-    private let contextPointsDataSourceRelay = BehaviorRelay<[Point]>(value: [])
-    lazy var sharedContextPointsDataSourceRelay = contextPointsDataSourceRelay
         .skip(1) // empty array emission initialized w/ relay
         .share()
     // When we want to propogate errors, we can't do it through the viewModelRelay
     // or else it will complete and the value will be invalidated
-    let pointsRetrievalErrorRelay = PublishRelay<Error>()
+    lazy var pointsRetrievalErrorRelay = PublishRelay<Error>()
+    lazy var tableViewReloadRelay = BehaviorRelay<Void>(value: ())
+    var sidedPointsCount: Int { return sidedPointsRelay.value.count }
 
-    private lazy var sidedPointsRelay = BehaviorRelay<[Point]>(value: debate.sidedPoints ?? [])
-    private var embeddedSidedPoints: [Point]?
+    // MARK: Standalone dataSource
 
-    private lazy var seenPointsRelay = BehaviorRelay<[PrimaryKey]>(value: UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints)
+    // Private
 
-    var debate: Debate
-    var isStarred: Bool
-
-    private func subscribeSidedPointsUpdates() {
-        BehaviorRelay.combineLatest(sidedPointsRelay, seenPointsRelay) { return ($0, $1) }
-            .distinctUntilChanged { (lhs, rhs) -> Bool in
-                let pointsMatch = lhs.0 == rhs.0
-                let seenPointsMatch = lhs.1 == rhs.1
-
-                return pointsMatch && seenPointsMatch
-        }.subscribe(onNext: { [weak self] (points, seenPoints) in
-            guard let debatePrimaryKey = self?.debate.primaryKey,
-                let viewState = self?.viewState,
-                let currentSidedPointsDataSourceSection = self?.sidedPointsDataSourceRelay.value.first else {
-                    return
-            }
-
-            let newSidedPointCellViewModels = points
-                .map({ SidedPointTableViewCellViewModel(point: $0,
-                                                        debatePrimaryKey: debatePrimaryKey,
-                                                        seenPoints: seenPoints,
-                                                        useFullDescription: viewState == .embeddedPointHistory) })
-            self?.sidedPointsDataSourceRelay.accept([PointsTableViewSection(original: currentSidedPointsDataSourceSection, items: newSidedPointCellViewModels)])
-        }).disposed(by: disposeBag)
-    }
+    private let contextPointsDataSourceRelay = BehaviorRelay<[Point]>(value: [])
 
     private func subscribeToContextPointsUpdates() {
         sharedContextPointsDataSourceRelay
@@ -125,26 +130,139 @@ class PointsTableViewModel: StarrableViewModel {
             }).disposed(by: disposeBag)
     }
 
-    // MARK: Point history updates
+    // Internal
 
-    func fea() {}
+    lazy var sharedContextPointsDataSourceRelay = contextPointsDataSourceRelay
+        .skip(1) // empty array emission initialized w/ relay
+        .share()
 
-    // MARK: Rebuttals updates
+    // MARK: - Points tables synchronization
+
+    // MARK: Adding to point history
+
+    lazy var newPointRelay = PublishRelay<Point>()
+    func observe(newPointRelay: PublishRelay<Point>) {
+        newPointRelay.subscribe(onNext: { [weak self] newPoint in
+            guard let currentSidedPoints = self?.sidedPointsRelay.value else {
+                    return
+            }
+
+            self?.sidedPointsRelay.accept(currentSidedPoints + [newPoint])
+            self?.newRebuttalsRelay.accept(newPoint.rebuttals ?? [])
+            self?.markPointAsSeen(point: newPoint)
+        }).disposed(by: disposeBag)
+    }
+
+    // MARK: Updating rebuttals
+
+    lazy var newRebuttalsRelay = PublishRelay<[Point]>()
+    func observe(newRebuttalsRelay: PublishRelay<[Point]>) {
+        newRebuttalsRelay.bind(to: sidedPointsRelay).disposed(by: disposeBag)
+    }
+
+    // MARK: Handling point selection
+
+    lazy var viewControllerToPushRelay = PublishRelay<UIViewController>()
+    lazy var popSelfViewControllerRelay = PublishRelay<Void>()
+    func observe(indexPathSelected: ControlEvent<IndexPath>,
+                 modelSelected: ControlEvent<SidedPointTableViewCellViewModel>,
+                 undoSelected: ControlEvent<Void>) {
+        switch viewState {
+        case .standaloneRootPoints:
+            modelSelected
+            .subscribe(onNext: { [weak self] pointTableViewCellViewModel in
+                guard let debate = self?.debate else { return }
+
+                self?.viewControllerToPushRelay
+                    .accept(PointsNavigatorViewController(viewModel: PointsNavigatorViewModel(rootPoint: pointTableViewCellViewModel.point,
+                                                                                              debate: debate)))
+            }).disposed(by: disposeBag)
+        case .embeddedPointHistory:
+            indexPathSelected.subscribe(onNext: { [weak self] indexPath in
+                guard let currentPoints = self?.sidedPointsRelay.value,
+                    currentPoints.count > 1,
+                    indexPath.row < currentPoints.endIndex - 1 else {
+                    return
+                }
+
+                let newPoints = currentPoints[0...indexPath.row]
+                self?.sidedPointsRelay.accept(Array(newPoints))
+            }).disposed(by: disposeBag)
+
+            modelSelected.subscribe(onNext: { [weak self] sidedPointTableViewCellViewModel in
+                self?.newRebuttalsRelay.accept(sidedPointTableViewCellViewModel.point.rebuttals ?? [])
+            }).disposed(by: disposeBag)
+
+            undoSelected.subscribe(onNext: { [weak self] _ in
+                guard let currentPoints = self?.sidedPointsRelay.value else { return }
+
+                guard currentPoints.count > 1 else {
+                    self?.popSelfViewControllerRelay.accept(())
+                    return
+                }
+
+                let newPoints = currentPoints[0..<currentPoints.count - 1]
+                self?.newRebuttalsRelay.accept(newPoints.last?.rebuttals ?? [])
+                self?.sidedPointsRelay.accept(Array(newPoints))
+            }).disposed(by: disposeBag)
+        case .embeddedRebuttals:
+            modelSelected.subscribe(onNext: { [weak self] sidedPointTableViewCellViewModel in
+                self?.newPointRelay.accept(sidedPointTableViewCellViewModel.point)
+            }).disposed(by: disposeBag)
+        }
+    }
 
     // MARK: - API calls
 
+    // Private
+
     private let debateNetworkService = NetworkService<DebateAPI>()
 
-    func retrieveAllDebatePoints() {
-        // Only should load all debate points if we're on the main standalone debate points view and don't already have the debate map
-        guard viewState == .standaloneRootPoints && sidedPointsRelay.value.isEmpty else {
-            if let embeddedSidedPoints = embeddedSidedPoints {
-                sidedPointsRelay.accept(embeddedSidedPoints)
-            }
+    private func markPointAsSeen(point: Point?) {
+        guard let point = point else { return }
+
+        UserDataManager.shared.markProgress(pointPrimaryKey: point.primaryKey,
+                                            debatePrimaryKey: debate.primaryKey,
+                                            totalPoints: debate.totalPoints)
+            .subscribe(onError: markPointAsSeenErrorHandler)
+            .disposed(by: disposeBag)
+    }
+
+    private let markPointAsSeenErrorHandler: (Error) -> Void = { error in
+        if let generalError = error as? GeneralError,
+            generalError == .alreadyHandled {
             return
         }
+        guard let moyaError = error as? MoyaError,
+            let response = moyaError.response else {
+                ErrorHandlerService.showBasicRetryErrorBanner()
+                return
+        }
 
-        debateNetworkService.makeRequest(with: .debate(primaryKey: debate.primaryKey))
+        switch response.statusCode {
+        case 404:
+            ErrorHandlerService.showBasicReportErrorBanner()
+        default:
+            ErrorHandlerService.showBasicRetryErrorBanner()
+        }
+    }
+
+    // Internal
+
+    func retrieveAllDebatePoints() {
+        switch viewState {
+        case .embeddedPointHistory:
+            markPointAsSeen(point: embeddedSidedPoints?.first)
+            fallthrough
+        case .embeddedRebuttals:
+            guard let embeddedSidedPoints = embeddedSidedPoints else { return }
+
+            sidedPointsRelay.accept(embeddedSidedPoints)
+        case .standaloneRootPoints:
+            // Only should load all debate points if we don't already have the debate map
+            guard sidedPointsRelay.value.isEmpty else { return }
+
+            debateNetworkService.makeRequest(with: .debate(primaryKey: debate.primaryKey))
             .map(Debate.self)
             .subscribe(onSuccess: { [weak self] debate in
                 guard let sidedPoints = debate.sidedPoints,
@@ -153,14 +271,14 @@ class PointsTableViewModel: StarrableViewModel {
                         ErrorHandlerService.showBasicReportErrorBanner()
                         return
                 }
+
                 self?.sidedPointsRelay.accept(sidedPoints)
                 self?.contextPointsDataSourceRelay.accept(contextPoints)
                 self?.debate = debate
             }) { [weak self] error in
                 self?.pointsRetrievalErrorRelay.accept(error)
             }.disposed(by: disposeBag)
+        }
     }
-
-    func refreshSeenPoints() { seenPointsRelay.accept(UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints) }
 
 }
