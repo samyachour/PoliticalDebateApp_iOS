@@ -135,8 +135,6 @@
 		2EA87A37231DE3CC00FA6CB0 /* SidedPointTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A16F2311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift */; };
 		2EA87A38231DE3EB00FA6CB0 /* PointsNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC682231B3D2200438154 /* PointsNavigatorViewModel.swift */; };
 		2EA87A39231DE3EE00FA6CB0 /* PointsNavigatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC684231B3D2D00438154 /* PointsNavigatorViewController.swift */; };
-		2EA87A3A231DE40300FA6CB0 /* SinglePointImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */; };
-		2EA87A3B231DE40600FA6CB0 /* SinglePointImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */; };
 		2EA87A3D231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */; };
 		2EA87A40231DF31700FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */; };
 		2EAF701B2324E13B00398D6B /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701A2324E13B00398D6B /* UserDefaultsManager.swift */; };
@@ -165,8 +163,6 @@
 		2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */; };
 		2EEEC683231B3D2200438154 /* PointsNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC682231B3D2200438154 /* PointsNavigatorViewModel.swift */; };
 		2EEEC685231B3D2D00438154 /* PointsNavigatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC684231B3D2D00438154 /* PointsNavigatorViewController.swift */; };
-		2EEEC689231CDF4600438154 /* SinglePointImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */; };
-		2EEEC68B231CDFE100438154 /* SinglePointImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */; };
 		2EF1E59B22DC688200C93DFB /* ButtonWithActionClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */; };
 		2EF8D39723543CF7002EFE7C /* LinkResponsiveTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */; };
 		D49C9382E7FE1D928DF01724 /* Pods_PoliticalDebateApp_iOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9AA7F3722C55AFF2E20D376 /* Pods_PoliticalDebateApp_iOSUITests.framework */; };
@@ -287,8 +283,6 @@
 		2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressCoreDataAPI.swift; sourceTree = "<group>"; };
 		2EEEC682231B3D2200438154 /* PointsNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsNavigatorViewModel.swift; sourceTree = "<group>"; };
 		2EEEC684231B3D2D00438154 /* PointsNavigatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsNavigatorViewController.swift; sourceTree = "<group>"; };
-		2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePointImageViewModel.swift; sourceTree = "<group>"; };
-		2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePointImageViewController.swift; sourceTree = "<group>"; };
 		2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonWithActionClosure.swift; sourceTree = "<group>"; };
 		2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkResponsiveTextView.swift; sourceTree = "<group>"; };
 		331D28D94F43ECDFFE6E52DC /* Pods-PoliticalDebateApp_iOSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; path = "Target Support Files/Pods-PoliticalDebateApp_iOSUITests/Pods-PoliticalDebateApp_iOSUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -525,7 +519,6 @@
 				2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */,
 				2E5EC05222FA783600B41D54 /* DebateCollectionViewCell.swift */,
 				2EE1A1712311F1AB00DD8E4A /* SidedPointTableViewCell.swift */,
-				2EEEC68A231CDFE000438154 /* SinglePointImageViewController.swift */,
 				2EEEC684231B3D2D00438154 /* PointsNavigatorViewController.swift */,
 				2E12D7C22309DB000078B0DD /* PointsTableViewController.swift */,
 			);
@@ -539,7 +532,6 @@
 				2E0D84BB22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift */,
 				2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */,
 				2E5EC05622FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift */,
-				2EEEC688231CDF4600438154 /* SinglePointImageViewModel.swift */,
 				2EE1A16F2311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift */,
 				2EEEC682231B3D2200438154 /* PointsNavigatorViewModel.swift */,
 				2E12D7C52309DB310078B0DD /* PointsTableViewModel.swift */,
@@ -887,7 +879,6 @@
 				2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */,
 				2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */,
 				2E96743B226BDA8A00821A73 /* KeychainService.swift in Sources */,
-				2EEEC689231CDF4600438154 /* SinglePointImageViewModel.swift in Sources */,
 				2E23A708226ADA6200B2DCC3 /* NetworkService.swift in Sources */,
 				2EEEC683231B3D2200438154 /* PointsNavigatorViewModel.swift in Sources */,
 				2E2E6DC422FC0B710048B769 /* CAGradientLayer+Init.swift in Sources */,
@@ -918,7 +909,6 @@
 				2E967440226BE91000821A73 /* CoreDataService.swift in Sources */,
 				2E2BB06822F2D66800ED02C0 /* BackendErrorMessage.swift in Sources */,
 				2EE1A1702311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift in Sources */,
-				2EEEC68B231CDFE100438154 /* SinglePointImageViewController.swift in Sources */,
 				2EAF70232327853D00398D6B /* Collection+SafeIndex.swift in Sources */,
 				2E12D7C32309DB000078B0DD /* PointsTableViewController.swift in Sources */,
 				2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */,
@@ -991,9 +981,7 @@
 				2E5EC05022FA737A00B41D54 /* BackendErrorMessage.swift in Sources */,
 				2E5EC04E22FA736E00B41D54 /* BannerOnScreen.swift in Sources */,
 				2E30A91222BF4BED007E386A /* ProgressAPI.swift in Sources */,
-				2EA87A3B231DE40600FA6CB0 /* SinglePointImageViewController.swift in Sources */,
 				2E30A91E22BF4BED007E386A /* DebugLog.swift in Sources */,
-				2EA87A3A231DE40300FA6CB0 /* SinglePointImageViewModel.swift in Sources */,
 				2E30A90422BF4BED007E386A /* Progress.swift in Sources */,
 				2E30A91722BF4BED007E386A /* UIView+SafeAreaLayoutAnchor.swift in Sources */,
 				2E30A90D22BF4BED007E386A /* StarredCoreDataAPI.swift in Sources */,

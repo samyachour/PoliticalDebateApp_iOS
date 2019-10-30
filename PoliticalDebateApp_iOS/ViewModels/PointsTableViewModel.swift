@@ -174,7 +174,7 @@ class PointsTableViewModel: StarrableViewModel {
                 guard let debate = self?.debate else { return }
 
                 self?.viewControllerToPushRelay
-                    .accept(PointsNavigatorViewController(viewModel: PointsNavigatorViewModel(rootPoint: pointTableViewCellViewModel.point,
+                    .accept(PointsNavigatorViewController(viewModel: PointsNavigatorViewModel(point: pointTableViewCellViewModel.point,
                                                                                               debate: debate)))
             }).disposed(by: disposeBag)
         case .embeddedPointHistory:
