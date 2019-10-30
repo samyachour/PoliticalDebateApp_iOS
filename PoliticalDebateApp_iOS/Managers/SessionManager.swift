@@ -37,7 +37,9 @@ class SessionManager {
         return accessToken ?? ""
     }
 
-    let isActiveRelay = BehaviorRelay<Bool>(value: false)
+    private let isActiveRelay = BehaviorRelay<Bool>(value: false)
+    lazy var isActiveDriver = isActiveRelay.asDriver()
+    var isActive: Bool { return isActiveRelay.value }
 
     private var refreshToken: String? {
         didSet {

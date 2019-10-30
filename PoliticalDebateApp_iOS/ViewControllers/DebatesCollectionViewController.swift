@@ -239,9 +239,9 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     private func installViewBinds() {
         searchTextField.delegate = self
 
-        sessionManager.isActiveRelay
+        sessionManager.isActiveDriver
             .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] isActive in
+            .drive(onNext: { [weak self] isActive in
                 if isActive {
                     self?.navigationItem.rightBarButtonItem = self?.accountButton.barButton
                 } else {
@@ -339,7 +339,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             .bind(to: debatesCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
 
-        viewModel.debatesRetrievalErrorRelay.subscribe(onNext: { [weak self] error in
+        viewModel.debatesRetrievalErrorSignal.emit(onNext: { [weak self] error in
             self?.debatesRefreshControl.endRefreshing()
 
             if let generalError = error as? GeneralError,

@@ -219,7 +219,7 @@ extension PointsTableViewController {
     // MARK: Embedded rebuttals binds
 
     private func installEmbeddedRebuttalsTableViewBinds(dataSource: RxTableViewSectionedAnimatedDataSourceWithReloadSignal<PointsTableViewSection>) {
-        dataSource.dataReloaded.emit(onNext: { [weak self] _ in
+        dataSource.dataReloadedSignal.emit(onNext: { [weak self] _ in
             guard let pointsTableViewHeight = self?.pointsTableView.dynamicContentHeight else { return }
 
             UIView.animate(withDuration: Constants.standardAnimationDuration * 0.8) {
@@ -232,11 +232,11 @@ extension PointsTableViewController {
     // MARK: Embedded point history binds
 
     private func installEmbeddedPointHistoryTableViewBinds(dataSource: RxTableViewSectionedAnimatedDataSourceWithReloadSignal<PointsTableViewSection>) {
-        viewModel.popSelfViewControllerRelay.subscribe { [weak self] _ in
+        viewModel.popSelfViewControllerSignal.emit(onNext: { [weak self] _ in
             self?.navigationController?.popViewController(animated: true)
-        }.disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
 
-        dataSource.dataReloaded.emit(onNext: { [weak self] _ in
+        dataSource.dataReloadedSignal.emit(onNext: { [weak self] _ in
             guard let viewModel = self?.viewModel else { return }
 
             let lastIndexPath = IndexPath(row: viewModel.sidedPointsCount - 1, section: 0)
@@ -251,7 +251,7 @@ extension PointsTableViewController {
     private func installRootPointsTableViewBinds() {
         starredButton.addTarget(self, action: #selector(starredButtonTapped), for: .touchUpInside)
 
-        viewModel.viewControllerToPushRelay.subscribe(onNext: { [weak self] viewController in
+        viewModel.viewControllerToPushSignal.emit(onNext: { [weak self] viewController in
             self?.navigationController?.pushViewController(viewController, animated: true)
         }).disposed(by: disposeBag)
 

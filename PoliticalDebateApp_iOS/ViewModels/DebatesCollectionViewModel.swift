@@ -45,7 +45,8 @@ class DebatesCollectionViewModel {
         .share()
     // When we want to propogate errors, we can't do it through the viewModelRelay
     // or else it will complete and the value will be invalidated
-    let debatesRetrievalErrorRelay = PublishRelay<Error>()
+    private let debatesRetrievalErrorRelay = PublishRelay<Error>()
+    lazy var debatesRetrievalErrorSignal = debatesRetrievalErrorRelay.asSignal()
 
     // Used to filter the latest debates array through our starred & progress user data
     // and do local sorting if applicable

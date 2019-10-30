@@ -140,9 +140,11 @@ class PointsTableViewModel: StarrableViewModel {
 
     // MARK: Adding to point history
 
-    lazy var newPointRelay = PublishRelay<Point>()
-    func observe(newPointRelay: PublishRelay<Point>) {
-        newPointRelay.subscribe(onNext: { [weak self] newPoint in
+    private lazy var newPointRelay = PublishRelay<Point>()
+    lazy var newPointSignal = newPointRelay.asSignal()
+
+    func observe(newPointSignal: Signal<Point>) {
+        newPointSignal.emit(onNext: { [weak self] newPoint in
             guard let currentSidedPoints = self?.sidedPointsRelay.value else {
                     return
             }
@@ -155,15 +157,21 @@ class PointsTableViewModel: StarrableViewModel {
 
     // MARK: Updating rebuttals
 
-    lazy var newRebuttalsRelay = PublishRelay<[Point]>()
-    func observe(newRebuttalsRelay: PublishRelay<[Point]>) {
-        newRebuttalsRelay.bind(to: sidedPointsRelay).disposed(by: disposeBag)
+    private lazy var newRebuttalsRelay = PublishRelay<[Point]>()
+    lazy var newRebuttalsSignal = newRebuttalsRelay.asSignal()
+
+    func observe(newRebuttalsSignal: Signal<[Point]>) {
+        newRebuttalsSignal.emit(to: sidedPointsRelay).disposed(by: disposeBag)
     }
 
     // MARK: Handling point selection
 
-    lazy var viewControllerToPushRelay = PublishRelay<UIViewController>()
-    lazy var popSelfViewControllerRelay = PublishRelay<Void>()
+    private lazy var viewControllerToPushRelay = PublishRelay<UIViewController>()
+    private lazy var popSelfViewControllerRelay = PublishRelay<Void>()
+
+    lazy var viewControllerToPushSignal = viewControllerToPushRelay.asSignal()
+    lazy var popSelfViewControllerSignal = popSelfViewControllerRelay.asSignal()
+
     func observe(indexPathSelected: ControlEvent<IndexPath>,
                  modelSelected: ControlEvent<SidedPointTableViewCellViewModel>,
                  undoSelected: ControlEvent<Void>) {

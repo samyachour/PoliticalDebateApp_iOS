@@ -54,7 +54,7 @@ class UserDataManager {
             return .just(nil) // already have this data
         }
 
-        if SessionManager.shared.isActiveRelay.value {
+        if SessionManager.shared.isActive {
             let starred = unstar ? [] : [primaryKey]
             let unstarred = unstar ? [primaryKey] : []
             return starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starred, unstarred: unstarred))
@@ -96,7 +96,7 @@ class UserDataManager {
             return .just(nil) // already have this data
         }
 
-        if SessionManager.shared.isActiveRelay.value {
+        if SessionManager.shared.isActive {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in
                     self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
@@ -119,7 +119,7 @@ class UserDataManager {
             return .just(nil) // already have this data
         }
 
-        if SessionManager.shared.isActiveRelay.value {
+        if SessionManager.shared.isActive {
             let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey,
                                           completedPercentage: 0, // doesn't get sent to the backend anyway
                                           seenPoints: pointPrimaryKeys)
@@ -160,7 +160,7 @@ class UserDataManager {
     // MARK: - Saving/Loading user data
 
     func saveUserData() {
-        guard !SessionManager.shared.isActiveRelay.value else { return }
+        guard !SessionManager.shared.isActive else { return }
 
         CoreDataService.saveContext()
     }
@@ -187,7 +187,7 @@ class UserDataManager {
             }
         }
 
-        if !SessionManager.shared.isActiveRelay.value {
+        if !SessionManager.shared.isActive {
             CoreDataService.loadPersistentContainer { error in
                 guard error == nil else { return }
 
@@ -200,7 +200,7 @@ class UserDataManager {
     }
 
     private func loadStarred(_ completion: @escaping (_ error: Error?) -> Void) {
-        if SessionManager.shared.isActiveRelay.value {
+        if SessionManager.shared.isActive {
             _ = starredNetworkService.makeRequest(with: .loadAllStarred)
                 .map(Starred.self)
                 .subscribe(onSuccess: { starred in
@@ -240,7 +240,7 @@ class UserDataManager {
     }
 
     private func loadProgress(_ completion: @escaping (_ error: Error?) -> Void) {
-        if SessionManager.shared.isActiveRelay.value {
+        if SessionManager.shared.isActive {
             _ = progressNetworkService.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
                 .subscribe(onSuccess: { (allProgress) in

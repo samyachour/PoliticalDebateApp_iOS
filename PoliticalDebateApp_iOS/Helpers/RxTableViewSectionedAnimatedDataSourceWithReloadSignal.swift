@@ -13,7 +13,7 @@ import RxSwift
 // swiftlint:disable:next type_name
 final class RxTableViewSectionedAnimatedDataSourceWithReloadSignal<S: AnimatableSectionModelType>: RxTableViewSectionedAnimatedDataSource<S> {
     private let relay = PublishRelay<Void>()
-    lazy var dataReloaded = relay.asSignal()
+    lazy var dataReloadedSignal = relay.asSignal()
 
     override func tableView(_ tableView: UITableView, observedEvent: Event<[S]>) {
         super.tableView(tableView, observedEvent: observedEvent)
