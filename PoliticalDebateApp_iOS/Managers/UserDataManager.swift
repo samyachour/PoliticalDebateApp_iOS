@@ -23,11 +23,14 @@ class UserDataManager {
     // MARK: - Global state
 
     // Using set/dict for fast lookup
-    private var starred = Set<PrimaryKey>()
-    private var allProgress = [AnyHashable: Progress]()
+    private var starredRelay = BehaviorRelay<Set<PrimaryKey>>(value: .init())
+    private var allProgressRelay = BehaviorRelay<[AnyHashable: Progress]>(value: .init())
 
-    var starredArray: [PrimaryKey] { return Array(starred) }
-    var allProgressArray: [Progress] { return allProgress.map { $0.value } }
+    lazy var starredDriver = starredRelay.asDriver()
+    lazy var allProgressDriver = allProgressRelay.asDriver()
+
+    var starredArray: [PrimaryKey] { return Array(starredRelay.value) }
+    var allProgressArray: [Progress] { return allProgressRelay.value.map { $0.value } }
 
     // MARK: - Setters
 
@@ -37,20 +40,20 @@ class UserDataManager {
     }
 
     private func clearStarred() {
-        starred.removeAll()
+        starredRelay.accept(.init())
     }
 
     private func clearProgress() {
-        allProgress.removeAll()
+        allProgressRelay.accept(.init())
     }
 
     func isStarred(_ debatePrimaryKey: PrimaryKey) -> Bool {
-        return starred.contains(debatePrimaryKey)
+        return starredRelay.value.contains(debatePrimaryKey)
     }
 
     func starOrUnstarDebate(_ primaryKey: PrimaryKey, unstar: Bool) -> Single<Response?> {
-        guard !starred.contains(primaryKey) && !unstar ||
-            starred.contains(primaryKey) && unstar else {
+        guard !starredRelay.value.contains(primaryKey) && !unstar ||
+            starredRelay.value.contains(primaryKey) && unstar else {
             return .just(nil) // already have this data
         }
 
@@ -72,19 +75,23 @@ class UserDataManager {
     }
 
     private func updateStarred(_ primaryKey: PrimaryKey, unstar: Bool = false) {
+        var starred = starredRelay.value
         if unstar {
             starred.remove(primaryKey)
         } else {
             starred.insert(primaryKey)
         }
+        starredRelay.accept(starred)
     }
 
     func getProgress(for debatePrimaryKey: PrimaryKey) -> Progress {
+        var allProgress = allProgressRelay.value
         if let debateProgress = allProgress[debatePrimaryKey] {
             return debateProgress
         } else {
             let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: 0, seenPoints: [])
             allProgress[debatePrimaryKey] = debateProgress
+            allProgressRelay.accept(allProgress)
             return debateProgress
         }
     }
@@ -92,7 +99,7 @@ class UserDataManager {
     func markProgress(pointPrimaryKey: PrimaryKey,
                       debatePrimaryKey: PrimaryKey,
                       totalPoints: Int) -> Single<Response?> {
-        guard !(allProgress[debatePrimaryKey]?.seenPoints.contains(pointPrimaryKey) ?? false) else {
+        guard !(allProgressRelay.value[debatePrimaryKey]?.seenPoints.contains(pointPrimaryKey) ?? false) else {
             return .just(nil) // already have this data
         }
 
@@ -115,8 +122,8 @@ class UserDataManager {
                            debatePrimaryKey: PrimaryKey,
                            totalPoints: Int) -> Single<Response?> {
         guard !pointPrimaryKeys.isEmpty,
-            allProgress[debatePrimaryKey]?.seenPoints.allSatisfy({ !pointPrimaryKeys.contains($0) }) ?? true else {
-            return .just(nil) // already have this data
+            pointPrimaryKeys.allSatisfy({ !(allProgressRelay.value[debatePrimaryKey]?.seenPoints.contains($0) ?? false) }) else {
+                return .just(nil) // already have this data
         }
 
         if SessionManager.shared.isActive {
@@ -144,6 +151,7 @@ class UserDataManager {
     private func updateProgress(pointPrimaryKey: PrimaryKey,
                                 debatePrimaryKey: PrimaryKey,
                                 totalPoints: Int) {
+        var allProgress = allProgressRelay.value
         if let debateProgress = allProgress[debatePrimaryKey],
             !debateProgress.seenPoints.contains(pointPrimaryKey) {
             var seenPoints = debateProgress.seenPoints
@@ -155,6 +163,7 @@ class UserDataManager {
             let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
             allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
         }
+        allProgressRelay.accept(allProgress)
     }
 
     // MARK: - Saving/Loading user data
@@ -204,7 +213,7 @@ class UserDataManager {
             _ = starredNetworkService.makeRequest(with: .loadAllStarred)
                 .map(Starred.self)
                 .subscribe(onSuccess: { starred in
-                    self.starred = Set(starred.starredList)
+                    self.starredRelay.accept(Set(starred.starredList))
                     completion(nil)
                 }) { error in
                     if let generalError = error as? GeneralError,
@@ -223,7 +232,7 @@ class UserDataManager {
             }
         } else {
             if let localStarred = StarredCoreDataAPI.loadAllStarred() {
-                starred = Set(localStarred.starredList)
+                starredRelay.accept(Set(localStarred.starredList))
                 completion(nil)
             } else {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
@@ -244,7 +253,7 @@ class UserDataManager {
             _ = progressNetworkService.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
                 .subscribe(onSuccess: { (allProgress) in
-                    self.allProgress = Dictionary(uniqueKeysWithValues: allProgress.map { ($0.debatePrimaryKey, $0) })
+                    self.allProgressRelay.accept(Dictionary(uniqueKeysWithValues: allProgress.map { ($0.debatePrimaryKey, $0) }))
                     completion(nil)
                 }) { (error) in
                     if let generalError = error as? GeneralError,
@@ -270,7 +279,7 @@ class UserDataManager {
                     }
                     return progress
                 }
-                allProgress = Dictionary(uniqueKeysWithValues: localProgressFiltered.map { ($0.debatePrimaryKey, $0) })
+                allProgressRelay.accept(Dictionary(uniqueKeysWithValues: localProgressFiltered.map { ($0.debatePrimaryKey, $0) }))
                 completion(nil)
             } else {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
@@ -302,7 +311,7 @@ class UserDataManager {
     }
 
     private func syncLocalStarredDataToBackend(_ completion: @escaping (Bool) -> Void) {
-        guard !starred.isEmpty else {
+        guard !starredRelay.value.isEmpty else {
             completion(true)
             return
         }

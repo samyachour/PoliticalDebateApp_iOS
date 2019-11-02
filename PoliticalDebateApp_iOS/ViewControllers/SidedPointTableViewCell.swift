@@ -22,9 +22,7 @@ class SidedPointTableViewCell: UITableViewCell {
                                                                                                            .foregroundColor: GeneralColors.text],
                                                                     hyperlinks: viewModel?.point.hyperlinks)
             pointTextView.sizeToFit()
-            UIView.animate(withDuration: Constants.standardAnimationDuration) {
-                self.checkImageView.image = (self.viewModel?.hasCompletedPaths ?? false) ? UIImage.check : nil
-            }
+            self.subscribeToCheckImageUpdates()
         }
     }
 
@@ -101,8 +99,22 @@ class SidedPointTableViewCell: UITableViewCell {
         checkImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 
+    private func toggleCheckImage(_ on: Bool) {
+        UIView.animate(withDuration: Constants.standardAnimationDuration) {
+            self.checkImageView.image = on ? UIImage.check : nil
+            self.checkImageView.layoutIfNeeded()
+        }
+    }
+
     private func installViewBinds() {
         pointTextView.delegate = self
+    }
+
+    private func subscribeToCheckImageUpdates() {
+        viewModel?.shouldShowCheckImageDriver
+            .drive(onNext: { [weak self] shouldShowCheckImage in
+                self?.toggleCheckImage(shouldShowCheckImage)
+            }).disposed(by: disposeBag)
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {

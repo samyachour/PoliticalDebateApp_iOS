@@ -79,11 +79,9 @@ class PointsTableViewModel: StarrableViewModel {
                         return
                 }
 
-                let seenPoints = UserDataManager.shared.getProgress(for: debatePrimaryKey).seenPoints
                 let newSidedPointCellViewModels = points
                     .map({ SidedPointTableViewCellViewModel(point: $0,
                                                             debatePrimaryKey: debatePrimaryKey,
-                                                            seenPoints: seenPoints,
                                                             useFullDescription: viewState == .embeddedPointHistory) })
                 self?.sidedPointsDataSourceRelay.accept([PointsTableViewSection(original: currentSidedPointsDataSourceSection,
                                                                                 items: newSidedPointCellViewModels)])

@@ -82,6 +82,7 @@ extension PointsNavigatorViewController {
         rebuttalsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         rebuttalsLabel.topAnchor.constraint(equalTo: pointHistoryTableViewController.view.bottomAnchor).isActive = true
         rebuttalsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        rebuttalsLabel.alpha = viewModel.rootPoint.rebuttals?.isEmpty ?? true ? 0 : 1
 
         pointRebuttalsTableViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         pointRebuttalsTableViewController.view.topAnchor.constraint(equalTo: rebuttalsLabel.bottomAnchor).isActive = true
@@ -97,10 +98,16 @@ extension PointsNavigatorViewController {
         pointHistoryTableViewModel.observe(newPointSignal: pointRebuttalsTableViewModel.newPointSignal)
         pointRebuttalsTableViewModel.observe(newRebuttalsSignal: pointHistoryTableViewModel.newRebuttalsSignal)
 
-        pointHistoryTableViewModel.newRebuttalsSignal.emit(onNext: { [weak self] newRebuttals in
-            UIView.animate(withDuration: Constants.standardAnimationDuration) {
-                self?.rebuttalsLabel.alpha = newRebuttals.isEmpty ? 0 : 1
-            }
+        pointHistoryTableViewModel.newRebuttalsSignal
+            .emit(onNext: { [weak self] newRebuttals in
+                // Fading in the label must be delayed
+                // so it doesn't appear at the bottom of the screen
+                let delay = self?.rebuttalsLabel.alpha == 0 ? 0.5 : 0
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                    UIView.animate(withDuration: Constants.standardAnimationDuration) {
+                        self?.rebuttalsLabel.alpha = newRebuttals.isEmpty ? 0 : 1
+                    }
+                }
         }).disposed(by: disposeBag)
     }
 }

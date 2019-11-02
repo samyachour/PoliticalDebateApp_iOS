@@ -12,10 +12,9 @@ import RxDataSources
 import RxSwift
 import UIKit
 
-struct SidedPointTableViewCellViewModel: IdentifiableType, Equatable {
+class SidedPointTableViewCellViewModel: IdentifiableType, Equatable {
     let point: Point
     let debatePrimaryKey: PrimaryKey
-    let hasCompletedPaths: Bool
     let useFullDescription: Bool
     var backgroundColor: UIColor? {
         return point.side?.color
@@ -23,18 +22,24 @@ struct SidedPointTableViewCellViewModel: IdentifiableType, Equatable {
 
     init(point: Point,
          debatePrimaryKey: PrimaryKey,
-         seenPoints: [PrimaryKey]?,
          useFullDescription: Bool = false) {
         self.point = point
         self.debatePrimaryKey = debatePrimaryKey
-        if let seenPoints = seenPoints,
-            !seenPoints.isEmpty {
-            hasCompletedPaths = SidedPointTableViewCellViewModel.deriveHasCompletedPaths(point, seenPoints)
-        } else {
-            hasCompletedPaths = false
-        }
         self.useFullDescription = useFullDescription
     }
+
+    // MARK: Reacting to updates
+
+    // Need to observe global progress state to avoid reloading entire table
+    lazy var shouldShowCheckImageDriver = UserDataManager.shared.allProgressDriver
+        .map({ [weak self] allProgress -> Bool in
+            guard let point = self?.point,
+                let seenPoints = allProgress[self?.debatePrimaryKey]?.seenPoints else {
+                    return false
+            }
+
+            return Self.deriveHasCompletedPaths(point, seenPoints)
+        })
 
     // MARK: IdentifiableType
 
