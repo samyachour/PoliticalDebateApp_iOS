@@ -1,5 +1,5 @@
 //
-//  UserDefaultsManager.swift
+//  UserDefaultsService.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 9/8/19.
@@ -8,17 +8,15 @@
 
 import Foundation
 
-class UserDefaultsManager {
-
-    static let shared = UserDefaultsManager()
+class UserDefaultsService {
 
     private init() {}
 
-    private let userDefaults = UserDefaults.standard
+    private static let userDefaults = UserDefaults.standard
 
     // MARK: - UserDefaults properties
 
-    var hasSeenRegisterInfoAlert: Bool {
+    static var hasSeenRegisterInfoAlert: Bool {
         get { return userDefaults.bool(forKey: UserDefaultsKeys.hasSeenRegisterInfoAlert.rawValue) }
         set { userDefaults.set(newValue, forKey: UserDefaultsKeys.hasSeenRegisterInfoAlert.rawValue) }
     }

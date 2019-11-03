@@ -81,14 +81,14 @@ class PointsTableViewController: UIViewController {
 
     // MARK: - UI Elements
 
-    private let loadingIndicator: UIActivityIndicatorView = {
+    private lazy var loadingIndicator: UIActivityIndicatorView = {
         let loadingIndicator = UIActivityIndicatorView(style: .whiteLarge)
         loadingIndicator.color = .customDarkGray2
         loadingIndicator.hidesWhenStopped = true
         return loadingIndicator
     }()
 
-    private let contextTextViewsStackView: UIStackView = {
+    private lazy var contextTextViewsStackView: UIStackView = {
         let contextTextViewsStackView = UIStackView(frame: .zero)
         contextTextViewsStackView.alignment = .leading
         contextTextViewsStackView.axis = .vertical
@@ -96,9 +96,9 @@ class PointsTableViewController: UIViewController {
         return contextTextViewsStackView
     }()
 
-    private let tableViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
+    private lazy var tableViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
 
-    private let pointsTableView: UITableView = {
+    private lazy var pointsTableView: UITableView = {
         let pointsTableView = UITableView(frame: .zero)
         pointsTableView.separatorStyle = .none
         pointsTableView.backgroundColor = .clear
@@ -205,7 +205,7 @@ extension PointsTableViewController {
     }
 
     private func hideTableViewToRecomputeHeight(animated: Bool = true, showAfter: Bool = false) {
-        UIView.animate(withDuration: animated ? Constants.standardAnimationDuration : 0, animations: {
+        UIView.animate(withDuration: animated ? GeneralConstants.standardAnimationDuration : 0, animations: {
             // Hide
             self.pointsTableViewTopAnchor?.isActive = false
             self.pointsTableViewBottomAnchor?.isActive = false
@@ -221,7 +221,7 @@ extension PointsTableViewController {
     }
 
     private func showTableView() {
-        UIView.animate(withDuration: Constants.standardAnimationDuration) {
+        UIView.animate(withDuration: GeneralConstants.standardAnimationDuration) {
             self.pointsTableViewHiddenTopAnchor?.isActive = false
             self.pointsTableViewTopAnchor?.isActive = true
             self.pointsTableViewBottomAnchor?.isActive = true
@@ -312,7 +312,7 @@ extension PointsTableViewController {
 
         viewModel.sharedSidedPointsDataSourceRelay
             .subscribe(onNext: { [weak self] pointsTableViewCellViewModels in
-                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
+                UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                     self?.contextTextViewsStackView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
                     self?.loadingIndicator.stopAnimating()
                 })
@@ -332,7 +332,7 @@ extension PointsTableViewController {
             switch response.statusCode {
             case 400:
                 ErrorHandlerService.showBasicReportErrorBanner()
-            case _ where Constants.retryErrorCodes.contains(response.statusCode):
+            case _ where GeneralConstants.retryErrorCodes.contains(response.statusCode):
                 ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
                     self?.viewModel.retrieveAllDebatePoints()
                 }
@@ -363,7 +363,7 @@ extension PointsTableViewController {
 
     @objc private func starredButtonTapped() {
         viewModel.starOrUnstarDebate().subscribe(onSuccess: { [weak self] _ in
-            UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
+            UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                 self?.starredButton.tintColor = self?.viewModel.starTintColor
             })
             }, onError: { error in

@@ -10,14 +10,6 @@ import Moya
 import RxCocoa
 import RxSwift
 
-var appBaseURL: String {
-    #if DEBUG
-    return "https://politicaldebateapp-debug.herokuapp.com/api/"
-    #else
-    return "https://politicaldebateapp-prod.herokuapp.com/api/"
-    #endif
-}
-
 private protocol Networkable {
     associatedtype AppAPI: TargetType
 

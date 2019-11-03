@@ -52,20 +52,20 @@ class SessionManager {
     }
 
     // MARK: - Keychain
-    private let tokenEncoding: String.Encoding = .utf8
+    private static let tokenEncoding: String.Encoding = .utf8
 
     func resumeSession() {
         guard let accessTokenData = KeychainService.load(key: AuthAPI.Constants.accessTokenKey),
             let refreshTokenData = KeychainService.load(key: AuthAPI.Constants.refreshTokenKey) else {
                 return
         }
-        accessToken = String(data: accessTokenData, encoding: tokenEncoding)
-        refreshToken = String(data: refreshTokenData, encoding: tokenEncoding)
+        accessToken = String(data: accessTokenData, encoding: Self.tokenEncoding)
+        refreshToken = String(data: refreshTokenData, encoding: Self.tokenEncoding)
     }
 
     // If the user is authenticated, save the token to the user's keychain
     private func saveTokenToKeychain(_ token: String, withKey key: String) {
-        if let tokenData = token.data(using: tokenEncoding) {
+        if let tokenData = token.data(using: Self.tokenEncoding) {
             KeychainService.save(key: key, data: tokenData)
         }
     }
@@ -75,13 +75,12 @@ class SessionManager {
     }
 
     // MARK: - API interface
-    private let authAPI = NetworkService<AuthAPI>()
-    static let unauthorizedStatusCode = 401
+    private lazy var authAPI = NetworkService<AuthAPI>()
 
     let refreshAccessTokenIfNeeded = { (error: Observable<Error>) -> Observable<Void> in
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
-                moyaError.response?.statusCode == SessionManager.unauthorizedStatusCode,
+                moyaError.response?.statusCode == 401,
                 // Make sure this is our first refresh attempt
                 index == 0 else {
                     return .error(error) // Pass the error along

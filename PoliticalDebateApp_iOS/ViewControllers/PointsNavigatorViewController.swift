@@ -104,22 +104,10 @@ extension PointsNavigatorViewController {
                 // so it doesn't appear at the bottom of the screen
                 let delay = self?.rebuttalsLabel.alpha == 0 ? 0.5 : 0
                 DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                    UIView.animate(withDuration: Constants.standardAnimationDuration) {
+                    UIView.animate(withDuration: GeneralConstants.standardAnimationDuration) {
                         self?.rebuttalsLabel.alpha = newRebuttals.isEmpty ? 0 : 1
                     }
                 }
         }).disposed(by: disposeBag)
-    }
-}
-
-// MARK: - UITextViewDelegate
-
-extension PointsNavigatorViewController: UITextViewDelegate {
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        guard !DeepLinkService.willHandle(URL) else { return false }
-
-        let webViewController = WKWebViewControllerFactory.generateWKWebViewController(with: URL)
-        navigationController?.pushViewController(webViewController, animated: true)
-        return false
     }
 }

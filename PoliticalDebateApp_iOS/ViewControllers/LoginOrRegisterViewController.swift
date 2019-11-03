@@ -38,10 +38,6 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
         showInfoAlertIfNeeded()
     }
 
-    // MARK: - Dependencies
-
-    private let userDefaults = UserDefaultsManager.shared
-
     // MARK: - Observers & Observables
 
     private let viewModel: LoginOrRegisterViewModel
@@ -52,7 +48,7 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
     private static let horizontalEdgeInset: CGFloat = 56
     private let fadeTextAnimation: CATransition = { // for cross-dissolving nav bar title
         let fadeTextAnimation = CATransition()
-        fadeTextAnimation.duration = Constants.standardAnimationDuration
+        fadeTextAnimation.duration = GeneralConstants.standardAnimationDuration
         fadeTextAnimation.type = CATransitionType.fade
         return fadeTextAnimation
     }()
@@ -85,27 +81,32 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
 
     private let emailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Email")
 
-    private let emailTextField: UITextField = {
-        let emailTextField = BasicUIElementFactory.generateTextField(placeholder: "Email...")
-        emailTextField.keyboardType = .emailAddress
-        return emailTextField
-    }()
+    private lazy var emailTextField = BasicUIElementFactory.generateTextField(placeholder: "Email...",
+                                                                              keyboardType: .emailAddress,
+                                                                              returnKeyType: UIReturnKeyType.done,
+                                                                              delegate: self)
 
     private let passwordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Password")
 
-    private let passwordTextField = BasicUIElementFactory.generateTextField(placeholder: "Password...", secureTextEntry: true)
+    private lazy var passwordTextField = BasicUIElementFactory.generateTextField(placeholder: "Password...",
+                                                                                 secureTextEntry: true,
+                                                                                 returnKeyType: UIReturnKeyType.done,
+                                                                                 delegate: self)
 
-    private let confirmPasswordTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm password...", secureTextEntry: true)
+    private lazy var confirmPasswordTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm password...",
+                                                                                                     secureTextEntry: true,
+                                                                                                     returnKeyType: UIReturnKeyType.done,
+                                                                                                     delegate: self)
 
-    private let submitButton = BasicUIElementFactory.generateButton(title: "Submit")
+    private lazy var submitButton = BasicUIElementFactory.generateButton(title: "Submit")
 
-    private let forgotPasswordButton = BasicUIElementFactory.generateButton(title: "Forgot password")
+    private lazy var forgotPasswordButton = BasicUIElementFactory.generateButton(title: "Forgot password")
 
-    private let loginOrRegisterButton = BasicUIElementFactory.generateButton()
+    private lazy var loginOrRegisterButton = BasicUIElementFactory.generateButton()
 
-    private let complianceTextView = BasicUIElementFactory.generateComplianceTextView(login: true)
+    private lazy var complianceTextView = BasicUIElementFactory.generateComplianceTextView(login: true)
 
-    private let versionLabel = BasicUIElementFactory.generateVersionLabel()
+    private lazy var versionLabel = BasicUIElementFactory.generateVersionLabel()
 
 }
 
@@ -158,9 +159,9 @@ extension LoginOrRegisterViewController {
     }
 
     private func showInfoAlertIfNeeded() {
-        guard !userDefaults.hasSeenRegisterInfoAlert else { return }
+        guard !UserDefaultsService.hasSeenRegisterInfoAlert else { return }
 
-        userDefaults.hasSeenRegisterInfoAlert = true
+        UserDefaultsService.hasSeenRegisterInfoAlert = true
         showInfoAlert()
     }
 
@@ -214,7 +215,7 @@ extension LoginOrRegisterViewController {
                  404:
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Couldn't find an account associated with those credentials."))
-            case _ where Constants.retryErrorCodes.contains(response.statusCode):
+            case _ where GeneralConstants.retryErrorCodes.contains(response.statusCode):
                 ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
                     self?.loginTapped(email: email, password: password)
                 }
@@ -324,7 +325,7 @@ extension LoginOrRegisterViewController {
             let shouldShowConfirmPasswordField = newState == .register
             let shouldAnimate = newLoginOrRegisterState.animated
 
-            UIView.animate(withDuration: shouldAnimate ? Constants.standardAnimationDuration : 0.0, animations: {
+            UIView.animate(withDuration: shouldAnimate ? GeneralConstants.standardAnimationDuration : 0.0, animations: {
                 if shouldShowConfirmPasswordField { self.infoButton.button.isHidden = !shouldShowConfirmPasswordField }
                 self.infoButton.button.alpha = shouldShowConfirmPasswordField ? 1.0 : 0.0
                 self.confirmPasswordTextField.isHidden = !shouldShowConfirmPasswordField
@@ -335,7 +336,7 @@ extension LoginOrRegisterViewController {
 
             }) { _ in // flag not reliable
                 UIView.transition(with: self.loginOrRegisterButton,
-                                  duration: shouldAnimate ? Constants.standardAnimationDuration : 0.0,
+                                  duration: shouldAnimate ? GeneralConstants.standardAnimationDuration : 0.0,
                                   options: .transitionCrossDissolve,
                                   animations: {
                                     self.loginOrRegisterButton.setTitle(newState.otherState.rawValue, for: .normal)
@@ -354,6 +355,7 @@ extension LoginOrRegisterViewController {
 }
 
 // MARK: - UITextViewDelegate
+
 extension LoginOrRegisterViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         guard !DeepLinkService.willHandle(URL) else { return false }
@@ -361,5 +363,17 @@ extension LoginOrRegisterViewController: UITextViewDelegate {
         let webViewController = WKWebViewControllerFactory.generateWKWebViewController(with: URL)
         navigationController?.pushViewController(webViewController, animated: true)
         return false
+    }
+}
+
+// MARK: - UITextFieldDelegate
+
+extension LoginOrRegisterViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if string == "\n" { // If user clicks enter submit
+            submitButtonTapped()
+            return false
+        }
+        return true
     }
 }

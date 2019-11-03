@@ -52,7 +52,7 @@ class AccountViewController: UIViewController, KeyboardReactable {
 
     // MARK: - UI Elements
 
-    let scrollViewContainer = UIScrollView(frame: .zero) // can't be private to satisfy protocol
+    lazy var scrollViewContainer = UIScrollView(frame: .zero) // can't be private to satisfy protocol
 
     private lazy var stackViewContainer = BasicUIElementFactory.generateStackViewContainer(arrangedSubviews: [changeEmailLabel,
                                                                                                               newEmailTextField,
@@ -66,31 +66,39 @@ class AccountViewController: UIViewController, KeyboardReactable {
                                                                                                               complianceTextView,
                                                                                                               versionLabel])
 
-    private let changeEmailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change email")
+    private lazy var changeEmailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change email")
 
-    private let newEmailTextField: UITextField = {
-        let newEmailTextField = BasicUIElementFactory.generateTextField(placeholder: "New email...")
-        newEmailTextField.keyboardType = .emailAddress
-        return newEmailTextField
-    }()
+    private lazy var newEmailTextField = BasicUIElementFactory.generateTextField(placeholder: "New email...",
+                                                                                 keyboardType: .emailAddress,
+                                                                                 returnKeyType: UIReturnKeyType.done,
+                                                                                 delegate: self)
 
-    private let changePasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change password")
+    private lazy var changePasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change password")
 
-    private let currentPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Current password...", secureTextEntry: true)
+    private lazy var currentPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Current password...",
+                                                                                        secureTextEntry: true,
+                                                                                        returnKeyType: UIReturnKeyType.done,
+                                                                                        delegate: self)
 
-    private let newPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "New password...", secureTextEntry: true)
+    private lazy var newPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "New password...",
+                                                                                    secureTextEntry: true,
+                                                                                    returnKeyType: UIReturnKeyType.done,
+                                                                                    delegate: self)
 
-    private let confirmNewPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm new password...", secureTextEntry: true)
+    private lazy var confirmNewPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm new password...",
+                                                                                           secureTextEntry: true,
+                                                                                           returnKeyType: UIReturnKeyType.done,
+                                                                                           delegate: self)
 
-    private let submitChangesButton = BasicUIElementFactory.generateButton(title: "Submit changes")
+    private lazy var submitChangesButton = BasicUIElementFactory.generateButton(title: "Submit changes")
 
-    private let logOutButton = BasicUIElementFactory.generateButton(title: "Log out")
+    private lazy var logOutButton = BasicUIElementFactory.generateButton(title: "Log out")
 
-    private let deleteAccountButton = BasicUIElementFactory.generateButton(title: "Delete account")
+    private lazy var deleteAccountButton = BasicUIElementFactory.generateButton(title: "Delete account")
 
-    private let complianceTextView = BasicUIElementFactory.generateComplianceTextView(login: false)
+    private lazy var complianceTextView = BasicUIElementFactory.generateComplianceTextView(login: false)
 
-    private let versionLabel = BasicUIElementFactory.generateVersionLabel()
+    private lazy var versionLabel = BasicUIElementFactory.generateVersionLabel()
 
 }
 
@@ -148,7 +156,7 @@ extension AccountViewController {
             .subscribe(onSuccess: { [weak self] currentEmail in
                 if let changeEmailLabel = self?.changeEmailLabel,
                     let currentChangeEmailLabelText = changeEmailLabel.text {
-                    UIView.transition(with: changeEmailLabel, duration: Constants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
+                    UIView.transition(with: changeEmailLabel, duration: GeneralConstants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
                         changeEmailLabel.text = "\(currentChangeEmailLabelText) (\(currentEmail.email))"
                     }, completion: nil)
                 }
@@ -193,7 +201,7 @@ extension AccountViewController {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Failed to send a verification link.",
                                                                                                 subtitle: "Your current email is invalid."))
-            case _ where Constants.retryErrorCodes.contains(response.statusCode):
+            case _ where GeneralConstants.retryErrorCodes.contains(response.statusCode):
                 ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
                     self?.requestVerificationLink()
                 }
@@ -328,6 +336,7 @@ extension AccountViewController {
 }
 
 // MARK: - UITextViewDelegate
+
 extension AccountViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         guard !DeepLinkService.willHandle(URL) else { return false }
@@ -335,5 +344,17 @@ extension AccountViewController: UITextViewDelegate {
         let webViewController = WKWebViewControllerFactory.generateWKWebViewController(with: URL)
         navigationController?.pushViewController(webViewController, animated: true)
         return false
+    }
+}
+
+// MARK: - UITextFieldDelegate
+
+extension AccountViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if string == "\n" { // If user clicks enter submit
+            submitChangesButtonTapped()
+            return false
+        }
+        return true
     }
 }

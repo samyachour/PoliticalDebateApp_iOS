@@ -121,23 +121,22 @@ class UserDataManager {
     func markBatchProgress(pointPrimaryKeys: [PrimaryKey],
                            debatePrimaryKey: PrimaryKey,
                            totalPoints: Int) -> Single<Response?> {
-        guard !pointPrimaryKeys.isEmpty,
-            pointPrimaryKeys.allSatisfy({ !(allProgressRelay.value[debatePrimaryKey]?.seenPoints.contains($0) ?? false) }) else {
-                return .just(nil) // already have this data
-        }
+        let newPointPrimaryKeys = pointPrimaryKeys
+            .filter({ !(allProgressRelay.value[debatePrimaryKey]?.seenPoints.contains($0) ?? false) })
+        guard !newPointPrimaryKeys.isEmpty else { return .just(nil) } // already have this data
 
         if SessionManager.shared.isActive {
             let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey,
                                           completedPercentage: 0, // doesn't get sent to the backend anyway
-                                          seenPoints: pointPrimaryKeys)
+                                          seenPoints: newPointPrimaryKeys)
             return progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: [debateProgress])))
                 .do(onSuccess: { (_) in
-                    pointPrimaryKeys.forEach { (pointPrimaryKey) in
+                    newPointPrimaryKeys.forEach { (pointPrimaryKey) in
                         self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
                     }
                 }).map { $0 as Response? }
         } else {
-            pointPrimaryKeys.forEach { (pointPrimaryKey) in
+            newPointPrimaryKeys.forEach { (pointPrimaryKey) in
                 ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
                 self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
             }

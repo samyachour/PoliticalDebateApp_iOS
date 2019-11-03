@@ -51,12 +51,12 @@ class ErrorHandlerService {
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
                 let errorCode = moyaError.response?.statusCode,
-                Constants.retryErrorCodes.contains(errorCode),
-                index <= Constants.maxAttemptCount else {
+                GeneralConstants.retryErrorCodes.contains(errorCode),
+                index <= GeneralConstants.maxAttemptCount else {
                     return .error(error) // Pass the error along
             }
 
-            Thread.sleep(forTimeInterval: Constants.timeBetweenRetries)
+            Thread.sleep(forTimeInterval: GeneralConstants.timeBetweenRetries)
             return .just(())
         }
     }

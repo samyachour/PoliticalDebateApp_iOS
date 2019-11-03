@@ -1,5 +1,5 @@
 //
-//  Constants.swift
+//  GeneralConstants.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 4/19/19.
@@ -8,13 +8,20 @@
 
 import UIKit
 
-enum Constants {
+enum GeneralConstants {
     static let standardAnimationDuration = 0.4
     static let quickAnimationDuration = 0.1
     static let minimumPasswordLength = 6 // dictated by backend
     static let retryErrorCodes = [408, 502, 503, 504]
     static let maxAttemptCount = 3
     static let timeBetweenRetries = 1.0
+    static let appBaseURL: String = {
+        #if DEBUG
+        return "https://politicaldebateapp-debug.herokuapp.com/api/"
+        #else
+        return "https://politicaldebateapp-prod.herokuapp.com/api/"
+        #endif
+    }()
 }
 
 enum GeneralColors {

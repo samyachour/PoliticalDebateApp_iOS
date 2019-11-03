@@ -76,23 +76,25 @@ class DebatesCollectionViewController: UIViewController {
 
     // MARK: - UI Elements
 
-    private let loginButton = BasicUIElementFactory.generateBarButton(title: "Log in")
+    private lazy var loginButton = BasicUIElementFactory.generateBarButton(title: "Log in")
 
-    private let accountButton = BasicUIElementFactory.generateBarButton(title: "Account")
+    private lazy var accountButton = BasicUIElementFactory.generateBarButton(title: "Account")
 
-    private let headerElementsContainer = UIView(frame: .zero)
+    private lazy var headerElementsContainer = UIView(frame: .zero)
 
-    private let sortByButton = BasicUIElementFactory.generateButton(title: DebatesCollectionViewController.sortByDefaultlabel, titleColor: GeneralColors.softButton)
+    private lazy var sortByButton = BasicUIElementFactory.generateButton(title: DebatesCollectionViewController.sortByDefaultlabel,
+                                                                         titleColor: GeneralColors.softButton)
 
-    private let sortByPickerView: UIPickerView = {
+    private lazy var sortByPickerView: UIPickerView = {
         let sortByPickerView = UIPickerView()
         sortByPickerView.backgroundColor = GeneralColors.background
         return sortByPickerView
     }()
 
-    private let searchTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Search...", returnKeyType: .search)
+    private lazy var searchTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Search...",
+                                                                                            returnKeyType: .search)
 
-    private let collectionViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
+    private lazy var collectionViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
 
     private var orientedCollectionViewItemSize: CGSize {
         let isPortrait = UIApplication.shared.statusBarOrientation.isPortrait
@@ -119,9 +121,9 @@ class DebatesCollectionViewController: UIViewController {
         return debatesCollectionView
     }()
 
-    private let debatesRefreshControl = UIRefreshControl()
+    private lazy var debatesRefreshControl = UIRefreshControl()
 
-    private let emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No debates to show.")
+    private lazy var emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No debates to show.")
 
 }
 
@@ -130,7 +132,7 @@ extension DebatesCollectionViewController: UITextFieldDelegate {
     // Expand the text field
     func textFieldDidBeginEditing(_ textField: UITextField) {
         animationBlocksRelay.accept { [weak self] in
-            UIView.animate(withDuration: Constants.standardAnimationDuration, delay: 0.0, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, delay: 0.0, options: .curveEaseInOut, animations: {
                 self?.searchTextFieldTrailingAnchor?.isActive = true
                 self?.view.layoutIfNeeded()
             }, completion: nil)
@@ -323,7 +325,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         viewModel.sharedDebatesDataSourceRelay
             .subscribe(onNext: { [weak self] debateCollectionViewCellViewModels in
                 self?.debatesRefreshControl.endRefreshing()
-                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
+                UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                     self?.emptyStateLabel.alpha = debateCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
                     self?.debatesCollectionView.alpha = debateCollectionViewCellViewModels.isEmpty ? 0.0 : 1.0
                 })
@@ -355,7 +357,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             switch response.statusCode {
             case 400:
                 ErrorHandlerService.showBasicReportErrorBanner()
-            case _ where Constants.retryErrorCodes.contains(response.statusCode):
+            case _ where GeneralConstants.retryErrorCodes.contains(response.statusCode):
                 ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
                     self?.manualRefreshRelay.accept(())
                 }
@@ -378,7 +380,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         }
         if searchTextField.text?.isEmpty ?? true { // Shrink the text field if it's empty
             animationBlocksRelay.accept { [weak self] in
-                UIView.animate(withDuration: Constants.standardAnimationDuration,
+                UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
                                delay: 0.0,
                                options: .curveEaseInOut,
                                animations: {
@@ -392,7 +394,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     private func updateSortBySelection(_ pickerChoice: SortByOption) {
         animationBlocksRelay.accept { [weak self] in
             guard let sortByButton = self?.sortByButton else { return }
-            UIView.transition(with: sortByButton, duration: Constants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
+            UIView.transition(with: sortByButton, duration: GeneralConstants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
                 self?.sortByButton.setTitle(pickerChoice.stringValue,
                                             for: .normal)
                 self?.sortByButton.setTitleColor(pickerChoice.selectionColor, for: .normal)

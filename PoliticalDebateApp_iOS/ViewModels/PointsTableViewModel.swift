@@ -106,6 +106,8 @@ class PointsTableViewModel: StarrableViewModel {
     private let contextPointsDataSourceRelay = BehaviorRelay<[Point]>(value: [])
 
     private func subscribeToContextPointsUpdates() {
+        guard viewState == .standaloneRootPoints else { return }
+
         sharedContextPointsDataSourceRelay
             .take(1).asSingle()
             .flatMap({ (contextPoints) -> Single<[Point]> in
@@ -118,12 +120,11 @@ class PointsTableViewModel: StarrableViewModel {
             .subscribe(onSuccess: { [weak self] contextPoints in
                 guard let self = self else { return }
 
-                // Don't care if this call succeeds or fails
                 UserDataManager.shared
                     .markBatchProgress(pointPrimaryKeys: contextPoints.map { $0.primaryKey },
                                        debatePrimaryKey: self.debate.primaryKey,
                                        totalPoints: self.debate.totalPoints)
-                    .subscribe()
+                    .subscribe() // Don't care if this call succeeds or fails
                     .disposed(by: self.disposeBag)
             }).disposed(by: disposeBag)
     }

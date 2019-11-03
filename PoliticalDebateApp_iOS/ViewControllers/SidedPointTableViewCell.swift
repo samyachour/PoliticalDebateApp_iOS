@@ -100,7 +100,7 @@ class SidedPointTableViewCell: UITableViewCell {
     }
 
     private func toggleCheckImage(_ on: Bool) {
-        UIView.animate(withDuration: Constants.standardAnimationDuration) {
+        UIView.animate(withDuration: GeneralConstants.standardAnimationDuration) {
             self.checkImageView.image = on ? UIImage.check : nil
             self.checkImageView.layoutIfNeeded()
         }
@@ -120,13 +120,14 @@ class SidedPointTableViewCell: UITableViewCell {
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
 
-        UIView.animate(withDuration: Constants.quickAnimationDuration) {
+        UIView.animate(withDuration: GeneralConstants.quickAnimationDuration) {
             self.containerView.backgroundColor = highlighted ? GeneralColors.selected : self.viewModel?.backgroundColor
         }
     }
 }
 
 // MARK: - UITextViewDelegate
+
 extension SidedPointTableViewCell: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         guard !DeepLinkService.willHandle(URL) else { return false }
