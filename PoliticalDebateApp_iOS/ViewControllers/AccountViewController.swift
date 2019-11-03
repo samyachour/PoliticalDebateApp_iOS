@@ -70,24 +70,24 @@ class AccountViewController: UIViewController, KeyboardReactable {
 
     private lazy var newEmailTextField = BasicUIElementFactory.generateTextField(placeholder: "New email...",
                                                                                  keyboardType: .emailAddress,
-                                                                                 returnKeyType: UIReturnKeyType.done,
+                                                                                 returnKeyType: .go,
                                                                                  delegate: self)
 
     private lazy var changePasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change password")
 
     private lazy var currentPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Current password...",
                                                                                         secureTextEntry: true,
-                                                                                        returnKeyType: UIReturnKeyType.done,
+                                                                                        returnKeyType: .go,
                                                                                         delegate: self)
 
     private lazy var newPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "New password...",
                                                                                     secureTextEntry: true,
-                                                                                    returnKeyType: UIReturnKeyType.done,
+                                                                                    returnKeyType: .go,
                                                                                     delegate: self)
 
     private lazy var confirmNewPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm new password...",
                                                                                            secureTextEntry: true,
-                                                                                           returnKeyType: UIReturnKeyType.done,
+                                                                                           returnKeyType: .go,
                                                                                            delegate: self)
 
     private lazy var submitChangesButton = BasicUIElementFactory.generateButton(title: "Submit changes")

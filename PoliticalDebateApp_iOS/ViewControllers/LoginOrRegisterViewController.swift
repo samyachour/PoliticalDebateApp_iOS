@@ -83,19 +83,19 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
 
     private lazy var emailTextField = BasicUIElementFactory.generateTextField(placeholder: "Email...",
                                                                               keyboardType: .emailAddress,
-                                                                              returnKeyType: UIReturnKeyType.done,
+                                                                              returnKeyType: .go,
                                                                               delegate: self)
 
     private let passwordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Password")
 
     private lazy var passwordTextField = BasicUIElementFactory.generateTextField(placeholder: "Password...",
                                                                                  secureTextEntry: true,
-                                                                                 returnKeyType: UIReturnKeyType.done,
+                                                                                 returnKeyType: .go,
                                                                                  delegate: self)
 
     private lazy var confirmPasswordTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm password...",
                                                                                                      secureTextEntry: true,
-                                                                                                     returnKeyType: UIReturnKeyType.done,
+                                                                                                     returnKeyType: .go,
                                                                                                      delegate: self)
 
     private lazy var submitButton = BasicUIElementFactory.generateButton(title: "Submit")
