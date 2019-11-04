@@ -242,7 +242,6 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         searchTextField.delegate = self
 
         sessionManager.isActiveDriver
-            .distinctUntilChanged()
             .drive(onNext: { [weak self] isActive in
                 if isActive {
                     self?.navigationItem.rightBarButtonItem = self?.accountButton.barButton
@@ -266,14 +265,14 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             self?.sortSelectionRelay.accept(SortByOption(rawValue: item.row) ?? SortByOption.defaultValue)
         }).disposed(by: disposeBag)
 
-        let sharedSortSelectionRelay = sortSelectionRelay.asDriver().asSharedSequence()
+        let sortSelectionDriver = sortSelectionRelay.asDriver()
 
-        sharedSortSelectionRelay.drive(onNext: { [weak self] pickerChoice in
+        sortSelectionDriver.drive(onNext: { [weak self] pickerChoice in
             self?.updateSortBySelection(pickerChoice)
         }).disposed(by: disposeBag)
 
         viewModel.subscribeToManualDebateUpdates(searchTriggeredRelay.asDriver(),
-                                                 sharedSortSelectionRelay,
+                                                 sortSelectionDriver,
                                                  manualRefreshRelay.asDriver())
 
         animationBlocksRelay.subscribe(onNext: { animationBlock in
@@ -322,8 +321,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
     private func installCollectionViewDataSource() {
         debatesCollectionView.register(DebateCollectionViewCell.self, forCellWithReuseIdentifier: DebateCollectionViewCell.reuseIdentifier)
-        viewModel.sharedDebatesDataSourceRelay
-            .subscribe(onNext: { [weak self] debateCollectionViewCellViewModels in
+        viewModel.debatesDataSourceDriver
+            .drive(onNext: { [weak self] debateCollectionViewCellViewModels in
                 self?.debatesRefreshControl.endRefreshing()
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                     self?.emptyStateLabel.alpha = debateCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
@@ -337,8 +336,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                 if let debateCell = cell as? DebateCollectionViewCell { debateCell.viewModel = viewModel }
                 return cell
         })
-        viewModel.sharedDebatesDataSourceRelay
-            .bind(to: debatesCollectionView.rx.items(dataSource: dataSource))
+        viewModel.debatesDataSourceDriver
+            .drive(debatesCollectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
 
         viewModel.debatesRetrievalErrorSignal.emit(onNext: { [weak self] error in
@@ -394,11 +393,16 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     private func updateSortBySelection(_ pickerChoice: SortByOption) {
         animationBlocksRelay.accept { [weak self] in
             guard let sortByButton = self?.sortByButton else { return }
-            UIView.transition(with: sortByButton, duration: GeneralConstants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
-                self?.sortByButton.setTitle(pickerChoice.stringValue,
-                                            for: .normal)
-                self?.sortByButton.setTitleColor(pickerChoice.selectionColor, for: .normal)
-            }, completion: nil)
+
+            UIView.transition(with: sortByButton,
+                              duration: GeneralConstants.standardAnimationDuration,
+                              options: .transitionCrossDissolve,
+                              animations: {
+                                self?.sortByButton.setTitle(pickerChoice.stringValue,
+                                                            for: .normal)
+                                self?.sortByButton.setTitleColor(pickerChoice.selectionColor, for: .normal)
+            },
+                              completion: nil)
         }
     }
 
@@ -426,6 +430,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 }
 
 // MARK: - Device rotation
+
 extension DebatesCollectionViewController {
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { [weak self] _ in

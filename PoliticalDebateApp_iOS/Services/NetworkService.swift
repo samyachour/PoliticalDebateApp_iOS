@@ -31,7 +31,7 @@ struct NetworkService<T>: Networkable where T: CustomTargetType & AccessTokenAut
         #else
         let request = provider.rx.request(appAPI)
             .filter(statusCode: appAPI.validSuccessCode)
-            .do(onError: ErrorHandlerService.checkForThrottleError)
+            .catchError(ErrorHandlerService.checkForThrottleError)
             .retryWhen(ErrorHandlerService.checkForConnectivityError)
             .retryWhen(ErrorHandlerService.shouldRetryRequest)
 

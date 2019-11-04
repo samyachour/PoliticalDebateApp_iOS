@@ -28,7 +28,7 @@ class LoginOrRegisterViewModel {
 
     // MARK: - Dependencies
 
-    private let authNetworkService = NetworkService<AuthAPI>()
+    private lazy var authNetworkService = NetworkService<AuthAPI>()
 
     // MARK: - Observables
 

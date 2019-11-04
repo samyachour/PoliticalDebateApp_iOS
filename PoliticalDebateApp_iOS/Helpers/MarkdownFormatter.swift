@@ -11,6 +11,11 @@ import UIKit
 
 class MarkDownFormatter {
 
+    private enum Constants {
+        static let boldKey = "**"
+        static let italicsKey = "*"
+    }
+
     static func format(_ sourceString: String?,
                        with regularAttributes: [NSAttributedString.Key: Any],
                        hyperlinks: [PointHyperlink]? = nil) -> NSMutableAttributedString? {
@@ -20,18 +25,15 @@ class MarkDownFormatter {
         }
 
         var attributedString = NSMutableAttributedString(string: sourceString, attributes: regularAttributes)
-        attributedString = format(attributedString, between: MarkDownFormatter.boldKey,
+        attributedString = format(attributedString, between: Constants.boldKey,
                                   formattedAttributes: [NSAttributedString.Key.font: UIFont.primaryBold(regularFontSize)])
-        attributedString = format(attributedString, between: MarkDownFormatter.italicsKey,
+        attributedString = format(attributedString, between: Constants.italicsKey,
                                   formattedAttributes: [NSAttributedString.Key.font: UIFont.primaryLightItalic(regularFontSize)])
         if let hyperlinks = hyperlinks {
             attributedString = format(attributedString, with: hyperlinks)
         }
         return attributedString
     }
-
-    private static let boldKey = "**"
-    private static let italicsKey = "*"
 
     private static func format(_ attributedString: NSMutableAttributedString,
                                between key: String,

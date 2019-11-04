@@ -29,24 +29,24 @@ struct DebatesCollectionViewSection: AnimatableSectionModelType {
 class DebatesCollectionViewModel {
 
     init() {
-        UserDataManager.shared.sharedUserDataLoadedRelay
-            .subscribe(onNext: { [weak self] loaded in
+        UserDataManager.shared.userDataLoadedDriver
+            .drive(onNext: { [weak self] loaded in
                 guard loaded else { return }
 
                 self?.refreshDebatesWithLocalData()
             }).disposed(by: disposeBag)
     }
 
+    private let disposeBag = DisposeBag()
+
     // MARK: - Datasource
 
-    private let debatesDataSourceRelay = BehaviorRelay<[DebatesCollectionViewSection]>(value: [DebatesCollectionViewSection(items: [])])
-    lazy var sharedDebatesDataSourceRelay = debatesDataSourceRelay
-        .skip(1) // empty array emission initialized w/ relay
-        .share()
+    // Private
+
+    private lazy var debatesDataSourceRelay = BehaviorRelay<[DebatesCollectionViewSection]>(value: [DebatesCollectionViewSection(items: [])])
     // When we want to propogate errors, we can't do it through the viewModelRelay
     // or else it will complete and the value will be invalidated
-    private let debatesRetrievalErrorRelay = PublishRelay<Error>()
-    lazy var debatesRetrievalErrorSignal = debatesRetrievalErrorRelay.asSignal()
+    private lazy var debatesRetrievalErrorRelay = PublishRelay<Error>()
 
     // Used to filter the latest debates array through our starred & progress user data
     // and do local sorting if applicable
@@ -72,6 +72,11 @@ class DebatesCollectionViewModel {
         debatesDataSourceRelay.accept([DebatesCollectionViewSection(original: currentDebatesDataSourceSection, items: newDebateCollectionViewCellViewModels)])
     }
 
+    // Internal
+
+    lazy var debatesDataSourceDriver = debatesDataSourceRelay.asDriver().skip(1) // empty array emission initialized w/ relay
+    lazy var debatesRetrievalErrorSignal = debatesRetrievalErrorRelay.asSignal()
+
     func refreshDebatesWithLocalData() {
         guard let currentDebatesDataSourceSection = debatesDataSourceRelay.value.first,
             // no point in refreshing 0 debates
@@ -92,8 +97,6 @@ class DebatesCollectionViewModel {
     }
 
     // MARK: - Input handling
-
-    private let disposeBag = DisposeBag()
 
     func subscribeToManualDebateUpdates(_ searchTriggeredDriver: Driver<String>,
                                         _ sortSelectionDriver: Driver<SortByOption>,

@@ -12,6 +12,9 @@ import UIKit
 class NotificationBannerQueue {
 
     static let shared = NotificationBannerQueue()
+
+    private init() {}
+
     typealias NotificationBannerID = UUID
 
     @discardableResult func enqueueBanner(using viewModel: NotificationBannerViewModel) -> NotificationBannerID? {

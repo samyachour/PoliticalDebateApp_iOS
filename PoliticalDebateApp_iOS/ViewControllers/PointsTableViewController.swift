@@ -34,12 +34,6 @@ class PointsTableViewController: UIViewController {
         viewModel.retrieveAllDebatePoints()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        viewModel.tableViewReloadRelay.accept(())
-    }
-
     private var firstViewDidAppear = true
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -62,6 +56,8 @@ class PointsTableViewController: UIViewController {
     private let disposeBag = DisposeBag()
 
     // MARK: - UI Properties
+
+    var hasLaidOutSubviews = false
 
     static let elementSpacing: CGFloat = 16.0
 
@@ -170,11 +166,9 @@ extension PointsTableViewController {
 
             tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: contextTextViewsStackView.bottomAnchor, constant: 4)
         case .embeddedRebuttals:
-            // Set the height to the entire screen initially so the tableView.visibleCells property will include
-            // all the cells and we can accurately recompute the necessary height
+            // Set the height to the entire screen as a backup so when we move the table offscreen
+            // it will expand and visibleCells will include all the tableView cells
             pointsTableView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height).injectPriority(.required - 1).isActive = true
-            tableViewContainerHeightAnchor = tableViewContainer.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height)
-            tableViewContainerHeightAnchor?.isActive = true
             pointsTableViewHiddenTopAnchor = pointsTableView.topAnchor.constraint(equalTo: tableViewContainer.bottomAnchor)
             pointsTableViewHiddenTopAnchor?.isActive = false
             hideTableViewToRecomputeHeight(animated: false)
@@ -220,12 +214,22 @@ extension PointsTableViewController {
         })
     }
 
+    private func updateTableViewContainerHeight() {
+        let pointsTableViewContentHeight = pointsTableView.dynamicContentHeight
+        if tableViewContainerHeightAnchor == nil {
+            tableViewContainerHeightAnchor = tableViewContainer.heightAnchor.constraint(equalToConstant: pointsTableViewContentHeight)
+            tableViewContainerHeightAnchor?.isActive = true
+        } else {
+            tableViewContainerHeightAnchor?.constant = pointsTableViewContentHeight
+        }
+    }
+
     private func showTableView() {
         UIView.animate(withDuration: GeneralConstants.standardAnimationDuration) {
             self.pointsTableViewHiddenTopAnchor?.isActive = false
             self.pointsTableViewTopAnchor?.isActive = true
             self.pointsTableViewBottomAnchor?.isActive = true
-            self.tableViewContainerHeightAnchor?.constant = self.pointsTableView.dynamicContentHeight
+            self.updateTableViewContainerHeight()
             self.view.layoutIfNeeded()
             self.view.superview?.layoutIfNeeded()
         }
@@ -233,14 +237,9 @@ extension PointsTableViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        hasLaidOutSubviews = true
 
         tableViewContainer.fadeView(style: .vertical, percentage: 0.03)
-        let pointsTableViewDynamicHeight = pointsTableView.dynamicContentHeight
-        guard pointsTableViewDynamicHeight != tableViewContainerHeightAnchor?.constant else {
-                return
-        }
-
-        tableViewContainerHeightAnchor?.constant = pointsTableViewDynamicHeight
     }
 
     // MARK: View binding
@@ -255,8 +254,8 @@ extension PointsTableViewController {
                 return cell
             })
 
-        viewModel.sharedSidedPointsDataSourceRelay
-            .bind(to: pointsTableView.rx.items(dataSource: dataSource))
+        viewModel.sidedPointsDataSourceDriver
+            .drive(pointsTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
 
         switch viewModel.viewState {
@@ -279,7 +278,7 @@ extension PointsTableViewController {
     // MARK: Embedded rebuttals binds
 
     private func installEmbeddedRebuttalsTableViewBinds(dataSource: RxTableViewSectionedAnimatedDataSourceWithReloadSignal<PointsTableViewSection>) {
-        viewModel.sharedSidedPointsDataSourceRelay.subscribe(onNext: { [weak self] _ in
+        viewModel.sidedPointsDataSourceDriver.drive(onNext: { [weak self] _ in
             self?.hideTableViewToRecomputeHeight(showAfter: true)
         }).disposed(by: disposeBag)
     }
@@ -292,7 +291,10 @@ extension PointsTableViewController {
         }).disposed(by: disposeBag)
 
         dataSource.dataReloadedSignal.emit(onNext: { [weak self] _ in
-            guard let viewModel = self?.viewModel else { return }
+            guard let viewModel = self?.viewModel,
+                self?.hasLaidOutSubviews == true else {
+                    return
+            }
 
             let lastIndexPath = IndexPath(row: viewModel.sidedPointsCount - 1, section: 0)
             self?.pointsTableView.scrollToRow(at: lastIndexPath,
@@ -310,15 +312,15 @@ extension PointsTableViewController {
             self?.navigationController?.pushViewController(viewController, animated: true)
         }).disposed(by: disposeBag)
 
-        viewModel.sharedSidedPointsDataSourceRelay
-            .subscribe(onNext: { [weak self] pointsTableViewCellViewModels in
+        viewModel.sidedPointsDataSourceDriver
+            .drive(onNext: { [weak self] pointsTableViewCellViewModels in
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                     self?.contextTextViewsStackView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
                     self?.loadingIndicator.stopAnimating()
                 })
             }).disposed(by: disposeBag)
 
-        viewModel.pointsRetrievalErrorRelay.subscribe(onNext: { error in
+        viewModel.pointsRetrievalErrorSignal.emit(onNext: { error in
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {
                 return
@@ -343,7 +345,7 @@ extension PointsTableViewController {
     }
 
     private func installContextTextViewsDataSource() {
-        viewModel.sharedContextPointsDataSourceRelay.subscribe(onNext: { [weak self] contextPoints in
+        viewModel.contextPointsDataSourceDriver.drive(onNext: { [weak self] contextPoints in
             self?.updateContentTextViewsStackView(shouldShow: !contextPoints.isEmpty)
             guard !contextPoints.isEmpty else { return }
 

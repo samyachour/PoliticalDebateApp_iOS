@@ -44,13 +44,6 @@ class PointsTableViewModel: StarrableViewModel {
         self.embeddedSidedPoints = embeddedSidedPoints
         subscribeSidedPointsUpdates()
         subscribeToContextPointsUpdates()
-
-        UserDataManager.shared.sharedUserDataLoadedRelay
-            .subscribe(onNext: { [weak self] loaded in
-                guard loaded else { return }
-
-                self?.tableViewReloadRelay.accept(())
-            }).disposed(by: disposeBag)
     }
 
     private let disposeBag = DisposeBag()
@@ -63,15 +56,14 @@ class PointsTableViewModel: StarrableViewModel {
 
     // Private
 
-    private let sidedPointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
     private lazy var sidedPointsRelay = BehaviorRelay<[Point]>(value: debate.sidedPoints ?? [])
     private var embeddedSidedPoints: [Point]?
+    private let sidedPointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
+    private lazy var pointsRetrievalErrorRelay = PublishRelay<Error>()
 
     private func subscribeSidedPointsUpdates() {
-        BehaviorRelay
-            .combineLatest(sidedPointsRelay.distinctUntilChanged(),
-                           tableViewReloadRelay,
-                           resultSelector: { (points, _) in return points })
+        sidedPointsRelay
+            .distinctUntilChanged()
             .subscribe(onNext: { [weak self] points in
                 guard let debatePrimaryKey = self?.debate.primaryKey,
                     let viewState = self?.viewState,
@@ -90,31 +82,27 @@ class PointsTableViewModel: StarrableViewModel {
 
     // Internal
 
-    lazy var sharedSidedPointsDataSourceRelay = sidedPointsDataSourceRelay
-        .skip(1) // empty array emission initialized w/ relay
-        .share()
+    lazy var sidedPointsDataSourceDriver = sidedPointsDataSourceRelay.asDriver().skip(1) // empty array emission initialized w/ relay
+    lazy var pointsRetrievalErrorSignal = pointsRetrievalErrorRelay.asSignal()
     // When we want to propogate errors, we can't do it through the viewModelRelay
     // or else it will complete and the value will be invalidated
-    lazy var pointsRetrievalErrorRelay = PublishRelay<Error>()
-    lazy var tableViewReloadRelay = BehaviorRelay<Void>(value: ())
     var sidedPointsCount: Int { return sidedPointsRelay.value.count }
 
     // MARK: Standalone dataSource
 
     // Private
 
-    private let contextPointsDataSourceRelay = BehaviorRelay<[Point]>(value: [])
+    private lazy var contextPointsDataSourceRelay = BehaviorRelay<[Point]>(value: [])
+    private lazy var contextPointsDataSourceSingle = contextPointsDataSourceRelay.skip(1).take(1).asSingle()
 
     private func subscribeToContextPointsUpdates() {
         guard viewState == .standaloneRootPoints else { return }
 
-        sharedContextPointsDataSourceRelay
-            .take(1).asSingle()
+        contextPointsDataSourceSingle
             .flatMap({ (contextPoints) -> Single<[Point]> in
                 guard !UserDataManager.shared.userDataLoaded else { return .just(contextPoints) }
 
-                return UserDataManager.shared.sharedUserDataLoadedRelay
-                    .take(1).asSingle()
+                return UserDataManager.shared.userDataLoadedSingle
                     .map { loaded in return loaded ? contextPoints : [] }
             })
             .subscribe(onSuccess: { [weak self] contextPoints in
@@ -131,15 +119,18 @@ class PointsTableViewModel: StarrableViewModel {
 
     // Internal
 
-    lazy var sharedContextPointsDataSourceRelay = contextPointsDataSourceRelay
-        .skip(1) // empty array emission initialized w/ relay
-        .share()
+    lazy var contextPointsDataSourceDriver = contextPointsDataSourceRelay.asDriver().skip(1) // empty array emission initialized w/ relay
 
     // MARK: - Points tables synchronization
 
     // MARK: Adding to point history
 
+    // Private
+
     private lazy var newPointRelay = PublishRelay<Point>()
+
+    // Internal
+
     lazy var newPointSignal = newPointRelay.asSignal()
 
     func observe(newPointSignal: Signal<Point>) {
@@ -156,7 +147,12 @@ class PointsTableViewModel: StarrableViewModel {
 
     // MARK: Updating rebuttals
 
+    // Private
+
     private lazy var newRebuttalsRelay = PublishRelay<[Point]>()
+
+    // Internal
+
     lazy var newRebuttalsSignal = newRebuttalsRelay.asSignal()
 
     func observe(newRebuttalsSignal: Signal<[Point]>) {
@@ -165,8 +161,12 @@ class PointsTableViewModel: StarrableViewModel {
 
     // MARK: Handling point selection
 
+    // Private
+
     private lazy var viewControllerToPushRelay = PublishRelay<UIViewController>()
     private lazy var popSelfViewControllerRelay = PublishRelay<Void>()
+
+    // Internal
 
     lazy var viewControllerToPushSignal = viewControllerToPushRelay.asSignal()
     lazy var popSelfViewControllerSignal = popSelfViewControllerRelay.asSignal()
@@ -223,7 +223,7 @@ class PointsTableViewModel: StarrableViewModel {
 
     // Private
 
-    private let debateNetworkService = NetworkService<DebateAPI>()
+    private lazy var debateNetworkService = NetworkService<DebateAPI>()
 
     private func markPointAsSeen(point: Point?) {
         guard let point = point else { return }
@@ -235,7 +235,7 @@ class PointsTableViewModel: StarrableViewModel {
             .disposed(by: disposeBag)
     }
 
-    private let markPointAsSeenErrorHandler: (Error) -> Void = { error in
+    private lazy var markPointAsSeenErrorHandler: (Error) -> Void = { error in
         if let generalError = error as? GeneralError,
             generalError == .alreadyHandled {
             return

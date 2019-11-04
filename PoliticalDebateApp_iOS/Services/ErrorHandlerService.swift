@@ -17,12 +17,6 @@ class ErrorHandlerService {
 
     // MARK: - Basic errors
 
-    // For observable onError closures
-    static let handleErrorAlertClosure: (Error) -> Void = { error in
-        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                        title: error.localizedDescription))
-    }
-
     static func showBasicRetryErrorBanner(_ buttonAction: (() -> Void)? = nil) {
         guard let buttonAction = buttonAction else {
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
@@ -65,43 +59,38 @@ class ErrorHandlerService {
 
     static let checkForConnectivityError = { (error: Observable<Error>) -> Observable<Void> in
         error.enumerated().flatMap { (_, error) -> Observable<Void> in
-            guard let moyaError = error as? MoyaError else {
+            guard let moyaError = error as? MoyaError,
+                moyaError.errorCode == 6 else {
                     return .error(error) // Pass the error along
             }
 
-            switch moyaError {
-            case .underlying(let error, _): // Access underlying swift error, see MoyaError.swift
-                if (error as NSError).domain == NSURLErrorDomain {
-                    return Observable<Void>.create({ observer in
-                        NotificationBannerQueue.shared
-                            .enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                              title: GeneralError.connectivity.localizedDescription,
-                                                                              buttonConfig: NotificationBannerViewModel.ButtonConfiguration
-                                                                                .customTitle(title: GeneralCopies.retryTitle, action: {
-                                                                                    observer.onNext(())
-                                                                                }),
-                                                                              bannerWasDismissedAutomatically: {
-                                                                                observer.onError(GeneralError.alreadyHandled)
-                            }))
-                        return Disposables.create()
-                    })
-                }
-                return .error(error)
-            default:
-                return .error(error)
-            }
+            return Observable<Void>.create({ observer in
+                NotificationBannerQueue.shared
+                    .enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                      title: GeneralError.connectivity.localizedDescription,
+                                                                      buttonConfig: NotificationBannerViewModel.ButtonConfiguration
+                                                                        .customTitle(title: GeneralCopies.retryTitle, action: {
+                                                                            observer.onNext(())
+                                                                        }),
+                                                                      bannerWasDismissedAutomatically: {
+                                                                        observer.onError(GeneralError.alreadyHandled)
+                    }))
+                return Disposables.create()
+            })
         }
     }
 
     // MARK: - Throttle errors
 
-    static let checkForThrottleError = { (error: Error) -> Void in
-        if let moyaError = error as? MoyaError,
+    static let checkForThrottleError = { (error: Error) -> Single<Response> in
+        guard let moyaError = error as? MoyaError,
             let response = moyaError.response,
-            response.statusCode == 429 {
-            ErrorHandlerService.showThrottleAlert(with: response)
-            throw GeneralError.alreadyHandled // so consumer knows
+            response.statusCode == 429 else {
+                return .error(error) // Pass the error along
         }
+
+        ErrorHandlerService.showThrottleAlert(with: response)
+        return .error(GeneralError.alreadyHandled) // so consumer knows
     }
 
     private static func showThrottleAlert(with response: Response) {

@@ -13,7 +13,6 @@ class ButtonWithActionClosure: UIButton {
 
     required init(action: (() -> Void)? = nil) {
         self.action = action
-
         super.init(frame: .zero)
 
         self.addTarget(self, action: #selector(buttonClicked(_:)), for: .primaryActionTriggered)

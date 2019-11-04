@@ -46,6 +46,7 @@ struct DeepLinkService {
     static func openDebate(with parameters: [String: String]) {
         guard let primaryKeyString = parameters[Constants.primaryKeyKey],
             let primaryKey = Int(primaryKeyString) else {
+                ErrorHandlerService.showBasicReportErrorBanner()
                 return
         }
 

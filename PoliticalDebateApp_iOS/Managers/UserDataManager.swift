@@ -174,9 +174,8 @@ class UserDataManager {
     }
 
     private let userDataLoadedRelay = BehaviorRelay<Bool>(value: false)
-    lazy var sharedUserDataLoadedRelay = userDataLoadedRelay
-        .skip(1)
-        .share(replay: 1, scope: .whileConnected)
+    lazy var userDataLoadedDriver = userDataLoadedRelay.asDriver().skip(1)
+    lazy var userDataLoadedSingle = userDataLoadedRelay.skip(1).take(1).asSingle()
     var userDataLoaded: Bool { return userDataLoadedRelay.value }
 
     func loadUserData() {

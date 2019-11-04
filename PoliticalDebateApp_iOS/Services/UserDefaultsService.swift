@@ -8,7 +8,7 @@
 
 import Foundation
 
-class UserDefaultsService {
+struct UserDefaultsService {
 
     private init() {}
 
