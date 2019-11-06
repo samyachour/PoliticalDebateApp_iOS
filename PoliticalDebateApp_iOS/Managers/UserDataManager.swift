@@ -22,9 +22,13 @@ class UserDataManager {
 
     // MARK: - Global state
 
+    // Private
+
     // Using set/dict for fast lookup
     private var starredRelay = BehaviorRelay<Set<PrimaryKey>>(value: .init())
     private var allProgressRelay = BehaviorRelay<[AnyHashable: Progress]>(value: .init())
+
+    // Internal
 
     lazy var starredDriver = starredRelay.asDriver()
     lazy var allProgressDriver = allProgressRelay.asDriver()
@@ -34,16 +38,41 @@ class UserDataManager {
 
     // MARK: - Setters
 
+    // Private
+
+    private func updateStarred(_ primaryKey: PrimaryKey, unstar: Bool = false) {
+        var starred = starredRelay.value
+        if unstar {
+            starred.remove(primaryKey)
+        } else {
+            starred.insert(primaryKey)
+        }
+        starredRelay.accept(starred)
+    }
+
+    private func updateProgress(pointPrimaryKey: PrimaryKey,
+                                debatePrimaryKey: PrimaryKey,
+                                totalPoints: Int) {
+        var allProgress = allProgressRelay.value
+        if let debateProgress = allProgress[debatePrimaryKey],
+            !debateProgress.seenPoints.contains(pointPrimaryKey) {
+            var seenPoints = debateProgress.seenPoints
+            seenPoints.append(pointPrimaryKey)
+            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
+        } else {
+            let seenPoints = [pointPrimaryKey]
+            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
+        }
+        allProgressRelay.accept(allProgress)
+    }
+
+
+    // Internal
+
     func clearUserData() {
-        clearStarred()
-        clearProgress()
-    }
-
-    private func clearStarred() {
         starredRelay.accept(.init())
-    }
-
-    private func clearProgress() {
         allProgressRelay.accept(.init())
     }
 
@@ -72,16 +101,6 @@ class UserDataManager {
                 return Disposables.create()
             }
         }
-    }
-
-    private func updateStarred(_ primaryKey: PrimaryKey, unstar: Bool = false) {
-        var starred = starredRelay.value
-        if unstar {
-            starred.remove(primaryKey)
-        } else {
-            starred.insert(primaryKey)
-        }
-        starredRelay.accept(starred)
     }
 
     func getProgress(for debatePrimaryKey: PrimaryKey) -> Progress {
@@ -147,63 +166,11 @@ class UserDataManager {
         }
     }
 
-    private func updateProgress(pointPrimaryKey: PrimaryKey,
-                                debatePrimaryKey: PrimaryKey,
-                                totalPoints: Int) {
-        var allProgress = allProgressRelay.value
-        if let debateProgress = allProgress[debatePrimaryKey],
-            !debateProgress.seenPoints.contains(pointPrimaryKey) {
-            var seenPoints = debateProgress.seenPoints
-            seenPoints.append(pointPrimaryKey)
-            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
-            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
-        } else {
-            let seenPoints = [pointPrimaryKey]
-            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
-            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
-        }
-        allProgressRelay.accept(allProgress)
-    }
-
     // MARK: - Saving/Loading user data
 
-    func saveUserData() {
-        guard !SessionManager.shared.isActive else { return }
+    // Private
 
-        CoreDataService.saveContext()
-    }
-
-    private let userDataLoadedRelay = BehaviorRelay<Bool>(value: false)
-    lazy var userDataLoadedSingle: Single<Bool> = userDataLoadedRelay.take(1).asSingle()
-    var userDataLoaded: Bool { return userDataLoadedRelay.value }
-
-    func loadUserData() {
-
-        let loadUserData = {
-            self.loadStarred { starredError in
-                // Called after completion in case loadStarred refreshes the access token
-                self.loadProgress { progressError in
-                    guard starredError == nil && progressError == nil else {
-                        self.userDataLoadedRelay.accept(false)
-                        return
-                    }
-
-                    self.userDataLoadedRelay.accept(true)
-                }
-            }
-        }
-
-        if !SessionManager.shared.isActive {
-            CoreDataService.loadPersistentContainer { error in
-                guard error == nil else { return }
-
-                loadUserData()
-            }
-        } else {
-            loadUserData()
-        }
-
-    }
+    private lazy var userDataLoadedRelay = BehaviorRelay<Bool>(value: false)
 
     private func loadStarred(_ completion: @escaping (_ error: Error?) -> Void) {
         if SessionManager.shared.isActive {
@@ -292,20 +259,48 @@ class UserDataManager {
         }
     }
 
-    // MARK: - Synchronizing local data w/ backend
+    // Internal
 
-    func syncUserDataToBackend() {
-        syncLocalStarredDataToBackend { starredSuccess in
-            self.syncLocalProgressDataToBackend { progressSuccess in
-                if starredSuccess && progressSuccess {
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                                    title: "Successfully synced your local data to the cloud."))
+    lazy var userDataLoadedSingle: Single<Bool> = userDataLoadedRelay.take(1).asSingle()
+    var userDataLoaded: Bool { return userDataLoadedRelay.value }
+
+    func loadUserData() {
+
+        let loadUserData = {
+            self.loadStarred { starredError in
+                // Called after completion in case loadStarred refreshes the access token
+                self.loadProgress { progressError in
+                    guard starredError == nil && progressError == nil else {
+                        self.userDataLoadedRelay.accept(false)
+                        return
+                    }
+
+                    self.userDataLoadedRelay.accept(true)
                 }
-                // Need to make sure we've posted to the backend before retrieving the latest user data from it
-                self.loadUserData() // Backend syncing is typically called after the user is newly authenticated
             }
         }
+
+        if !SessionManager.shared.isActive {
+            CoreDataService.loadPersistentContainer { error in
+                guard error == nil else { return }
+
+                loadUserData()
+            }
+        } else {
+            loadUserData()
+        }
+
     }
+
+    func saveUserData() {
+        guard !SessionManager.shared.isActive else { return }
+
+        CoreDataService.saveContext()
+    }
+
+    // MARK: - Synchronizing local data w/ backend
+
+    // Private
 
     private func syncLocalStarredDataToBackend(_ completion: @escaping (Bool) -> Void) {
         guard !starredRelay.value.isEmpty else {
@@ -364,6 +359,22 @@ class UserDataManager {
                 completion(false)
         }
     }
+
+    // Internal
+
+    func syncUserDataToBackend() {
+        syncLocalStarredDataToBackend { starredSuccess in
+            self.syncLocalProgressDataToBackend { progressSuccess in
+                if starredSuccess && progressSuccess {
+                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                                    title: "Successfully synced your local data to the cloud."))
+                }
+                // Need to make sure we've posted to the backend before retrieving the latest user data from it
+                self.loadUserData() // Backend syncing is typically called after the user is newly authenticated
+            }
+        }
+    }
+
 }
 
 enum UserDataError: Error {
