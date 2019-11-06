@@ -23,8 +23,6 @@ struct NetworkService<T>: Networkable where T: CustomTargetType & AccessTokenAut
         AccessTokenPlugin { SessionManager.shared.publicAccessToken }
         ])
 
-    private let maxAttemptCount: UInt = 3
-
     func makeRequest(with appAPI: T) -> Single<Response> {
         #if TEST
         return makeTestRequest(with: appAPI)

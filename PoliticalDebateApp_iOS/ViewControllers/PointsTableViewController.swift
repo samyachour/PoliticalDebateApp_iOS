@@ -111,7 +111,13 @@ class PointsTableViewController: UIViewController {
         return starredButton
     }()
 
-    private lazy var undoButton = UIBarButtonItem(barButtonSystemItem: .undo, target: self, action: nil)
+    private lazy var undoButton: UIButton = {
+        let undoButton = UIButton(frame: .zero)
+        undoButton.setImage(UIImage.undoArrow, for: .normal)
+        let inset: CGFloat = 8.0
+        undoButton.contentEdgeInsets = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: 0)
+        return undoButton
+    }()
 
 }
 
@@ -132,7 +138,7 @@ extension PointsTableViewController {
             view.backgroundColor = GeneralColors.background
             installLoadingIndicator()
         case .embeddedPointHistory:
-            parent?.navigationItem.rightBarButtonItem = undoButton
+            parent?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: undoButton)
             fallthrough
         case .embeddedRebuttals:
             view.backgroundColor = .clear
@@ -225,14 +231,25 @@ extension PointsTableViewController {
     }
 
     private func showTableView() {
-        UIView.animate(withDuration: GeneralConstants.standardAnimationDuration) {
-            self.pointsTableViewHiddenTopAnchor?.isActive = false
-            self.pointsTableViewTopAnchor?.isActive = true
-            self.pointsTableViewBottomAnchor?.isActive = true
-            self.updateTableViewContainerHeight()
-            self.view.layoutIfNeeded()
-            self.view.superview?.layoutIfNeeded()
-        }
+        UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
+                       animations: {
+                        self.pointsTableViewHiddenTopAnchor?.isActive = false
+                        self.pointsTableViewTopAnchor?.isActive = true
+                        self.pointsTableViewBottomAnchor?.isActive = true
+                        self.updateTableViewContainerHeight()
+                        self.view.layoutIfNeeded()
+                        self.view.superview?.layoutIfNeeded()
+        },
+                       completion: { _ in
+                        self.viewModel.completedShowingTableViewRelay.accept(())
+        })
+    }
+
+    private func scrollToLastCell() {
+        let lastIndexPath = IndexPath(row: viewModel.sidedPointsCount - 1, section: 0)
+        pointsTableView.scrollToRow(at: lastIndexPath,
+                                    at: .bottom,
+                                    animated: true)
     }
 
     override func viewDidLayoutSubviews() {
@@ -290,16 +307,11 @@ extension PointsTableViewController {
             self?.navigationController?.popViewController(animated: true)
         }).disposed(by: disposeBag)
 
-        dataSource.dataReloadedSignal.emit(onNext: { [weak self] _ in
-            guard let viewModel = self?.viewModel,
-                self?.hasLaidOutSubviews == true else {
-                    return
-            }
+        Signal.merge(dataSource.dataReloadedSignal, viewModel.completedShowingTableViewSignal)
+            .emit(onNext: { [weak self] _ in
+                guard self?.hasLaidOutSubviews == true else { return }
 
-            let lastIndexPath = IndexPath(row: viewModel.sidedPointsCount - 1, section: 0)
-            self?.pointsTableView.scrollToRow(at: lastIndexPath,
-                                              at: .bottom,
-                                              animated: true)
+                self?.scrollToLastCell()
         }).disposed(by: disposeBag)
     }
 

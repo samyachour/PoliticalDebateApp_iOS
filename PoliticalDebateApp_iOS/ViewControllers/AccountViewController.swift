@@ -52,7 +52,7 @@ class AccountViewController: UIViewController, KeyboardReactable {
 
     // MARK: - UI Elements
 
-    lazy var scrollViewContainer = UIScrollView(frame: .zero) // can't be private to satisfy protocol
+    lazy var scrollViewContainer = UIScrollView(frame: .zero) // can't be private so as to satisfy the KeyboardReactable protocol
 
     private lazy var stackViewContainer = BasicUIElementFactory.generateStackViewContainer(arrangedSubviews: [changeEmailLabel,
                                                                                                               newEmailTextField,

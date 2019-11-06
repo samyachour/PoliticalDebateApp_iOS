@@ -60,7 +60,6 @@ extension Point: Decodable {
 
 extension Point: Equatable {
     static func == (lhs: Point, rhs: Point) -> Bool {
-        // Our backend ensures if two points share a primary key they must be the same object
         return lhs.primaryKey == rhs.primaryKey
     }
 }

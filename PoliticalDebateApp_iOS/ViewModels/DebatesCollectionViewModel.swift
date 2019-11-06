@@ -28,15 +28,6 @@ struct DebatesCollectionViewSection: AnimatableSectionModelType {
 
 class DebatesCollectionViewModel {
 
-    init() {
-        UserDataManager.shared.userDataLoadedDriver
-            .drive(onNext: { [weak self] loaded in
-                guard loaded else { return }
-
-                self?.refreshDebatesWithLocalData()
-            }).disposed(by: disposeBag)
-    }
-
     private let disposeBag = DisposeBag()
 
     // MARK: - Datasource
@@ -44,12 +35,12 @@ class DebatesCollectionViewModel {
     // Private
 
     private lazy var debatesDataSourceRelay = BehaviorRelay<[DebatesCollectionViewSection]>(value: [DebatesCollectionViewSection(items: [])])
-    // When we want to propogate errors, we can't do it through the viewModelRelay
-    // or else it will complete and the value will be invalidated
+    /// When we want to propogate errors, we can't do it through the viewModelRelay
+    /// or else it will complete and the value will be invalidated
     private lazy var debatesRetrievalErrorRelay = PublishRelay<Error>()
 
-    // Used to filter the latest debates array through our starred & progress user data
-    // and do local sorting if applicable
+    /// Used to filter the latest debates array through our starred & progress user data
+    /// and do local sorting if applicable
     private func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
         guard let currentDebatesDataSourceSection = debatesDataSourceRelay.value.first else { return }
 
@@ -128,6 +119,12 @@ class DebatesCollectionViewModel {
     private func retrieveDebates(searchString: String, sortSelection: SortByOption) {
         debateNetworkService.makeRequest(with: .debateFilter(searchString: searchString, filter: sortSelection))
             .map([Debate].self)
+            .flatMap({ debates -> Single<[Debate]> in
+                guard !UserDataManager.shared.userDataLoaded else { return .just(debates) }
+
+                return UserDataManager.shared.userDataLoadedSingle
+                    .map { _ in return debates } // don't care if user data loaded successfully, but want to wait anyway in case it did
+            })
             .subscribe(onSuccess: { [weak self] debates in
                 self?.acceptNewDebates(debates, sortSelection: sortSelection)
             }) { [weak self] error in

@@ -58,7 +58,9 @@ class PointsTableViewModel: StarrableViewModel {
 
     private lazy var sidedPointsRelay = BehaviorRelay<[Point]>(value: debate.sidedPoints ?? [])
     private var embeddedSidedPoints: [Point]?
-    private let sidedPointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
+    private lazy var sidedPointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
+    /// When we want to propogate errors, we can't do it through the viewModelRelay
+    /// or else it will complete and the value will be invalidated
     private lazy var pointsRetrievalErrorRelay = PublishRelay<Error>()
 
     private func subscribeSidedPointsUpdates() {
@@ -84,8 +86,6 @@ class PointsTableViewModel: StarrableViewModel {
 
     lazy var sidedPointsDataSourceDriver = sidedPointsDataSourceRelay.asDriver().skip(1) // empty array emission initialized w/ relay
     lazy var pointsRetrievalErrorSignal = pointsRetrievalErrorRelay.asSignal()
-    // When we want to propogate errors, we can't do it through the viewModelRelay
-    // or else it will complete and the value will be invalidated
     var sidedPointsCount: Int { return sidedPointsRelay.value.count }
 
     // MARK: Standalone dataSource
@@ -217,6 +217,21 @@ class PointsTableViewModel: StarrableViewModel {
                 self?.newPointRelay.accept(sidedPointTableViewCellViewModel.point)
             }).disposed(by: disposeBag)
         }
+    }
+
+    // MARK: Showing hidden bottom cells
+
+    // Internal
+
+    /// Meant to emit when the embeddedRebuttals tableView finishes showing onscreen
+    /// Therefore this acts as a producer for embeddedRebuttals and consumer for embeddedPointHistory
+    lazy var completedShowingTableViewRelay = PublishRelay<Void>()
+    lazy var completedShowingTableViewSignal = completedShowingTableViewRelay.asSignal()
+
+    func observe(completedShowingTableViewSignal: Signal<Void>) {
+        completedShowingTableViewSignal
+            .emit(to: completedShowingTableViewRelay)
+            .disposed(by: disposeBag)
     }
 
     // MARK: - API calls

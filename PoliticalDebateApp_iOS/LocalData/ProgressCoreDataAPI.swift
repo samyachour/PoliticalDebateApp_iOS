@@ -68,7 +68,7 @@ struct ProgressCoreDataAPI {
 
     // MARK: - Helpers
 
-    // Handle the logic of loading data if it exists and creating+loading if it doesn't
+    /// Handle the logic of loading data if it exists and creating+loading if it doesn't
     private static func loadProgressAndAssociatedDebate(_ debatePrimaryKey: PrimaryKey) -> (LocalProgress, LocalDebate) {
         // Explicit type for generic method
         let localDebateRecords: [LocalDebate]? = CoreDataService

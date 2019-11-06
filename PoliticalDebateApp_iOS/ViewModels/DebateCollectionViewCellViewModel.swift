@@ -31,6 +31,8 @@ class DebateCollectionViewCellViewModel: StarrableViewModel, IdentifiableType, E
     // MARK: Equatable
 
     static func == (lhs: DebateCollectionViewCellViewModel, rhs: DebateCollectionViewCellViewModel) -> Bool {
-        return lhs.debate == rhs.debate
+        return lhs.debate == rhs.debate &&
+            lhs.completedPercentage == rhs.completedPercentage &&
+            lhs.isStarred == rhs.isStarred
     }
 }

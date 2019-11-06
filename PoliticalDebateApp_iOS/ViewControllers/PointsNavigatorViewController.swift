@@ -108,6 +108,7 @@ extension PointsNavigatorViewController {
 
     private func installViewBinds() {
         pointHistoryTableViewModel.observe(newPointSignal: pointRebuttalsTableViewModel.newPointSignal)
+        pointHistoryTableViewModel.observe(completedShowingTableViewSignal: pointRebuttalsTableViewModel.completedShowingTableViewSignal)
         pointRebuttalsTableViewModel.observe(newRebuttalsSignal: pointHistoryTableViewModel.newRebuttalsSignal)
 
         pointHistoryTableViewModel.newRebuttalsSignal

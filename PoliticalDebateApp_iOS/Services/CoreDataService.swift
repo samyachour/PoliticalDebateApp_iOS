@@ -65,7 +65,7 @@ struct CoreDataService {
 
     // MARK: - Loading and saving context
 
-    // So separate tasks can share objects across the same context and run synchronously on the same private background queue
+    /// So separate tasks can share objects across the same context and run synchronously on the same private background queue
     private static let context = CoreDataService.persistentContainer.newBackgroundContext()
 
     static func saveContext() {

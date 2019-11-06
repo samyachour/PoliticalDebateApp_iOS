@@ -52,10 +52,9 @@ class DebatesCollectionViewController: UIViewController {
     private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
     private let manualRefreshRelay = BehaviorRelay<Void>(value: ())
 
-    // On this screen we are constantly running multiple animations at once
-    // There is a problem when animation blocks are not called serially
-    // They start to overlap and the parameters (duration, options, etc.) bleed into each other
-    // To prevent this we enforce synchronization with a relay
+    /// On this screen we are constantly running multiple animations at once and there is a problem when animation blocks are not called serially:
+    /// They start to overlap and the parameters (duration, options, etc.) bleed into each other.
+    /// To prevent this we enforce synchronization with a relay.
     private var animationBlocksRelay = PublishRelay<() -> Void>()
 
     // MARK: - UI Properties

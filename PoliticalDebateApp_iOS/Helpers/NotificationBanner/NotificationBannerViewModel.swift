@@ -126,8 +126,8 @@ struct NotificationBannerViewModel {
 }
 
 extension NotificationBannerViewModel: Equatable {
-    // Banners w/ the same text and color but different durations or button/icon configs are still too similar
     static func == (lhs: NotificationBannerViewModel, rhs: NotificationBannerViewModel) -> Bool {
+        // Banners w/ the same text and color but different durations or button/icon configs are still too similar
         return lhs.foregroundColor == rhs.foregroundColor &&
             lhs.backgroundColor == rhs.backgroundColor &&
             lhs.title == rhs.title &&
