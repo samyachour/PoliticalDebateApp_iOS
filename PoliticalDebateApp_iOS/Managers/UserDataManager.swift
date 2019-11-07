@@ -68,7 +68,6 @@ class UserDataManager {
         allProgressRelay.accept(allProgress)
     }
 
-
     // Internal
 
     func clearUserData() {
@@ -171,6 +170,8 @@ class UserDataManager {
     // Private
 
     private lazy var userDataLoadedRelay = BehaviorRelay<(firstEmission: Bool, loaded: Bool)>(value: (true, false))
+    /// Always skip the first emission
+    private var skipCount: Int { return userDataLoadedRelay.value.firstEmission ? 1 : 0 }
 
     private func loadStarred(_ completion: @escaping (_ error: Error?) -> Void) {
         if SessionManager.shared.isActive {
@@ -261,12 +262,10 @@ class UserDataManager {
 
     // Internal
 
-    lazy var userDataLoadedSingle: Single<Bool> = {
-        let userDataLoaded = userDataLoadedRelay.value
-        guard userDataLoaded.firstEmission else { return .just(userDataLoaded.loaded) }
-
-        return userDataLoadedRelay.skip(1).take(1).map({ return $1 }).asSingle()
-    }()
+    /// Emits the first time the client loads the user's data
+    lazy var userDataLoadedSingle = userDataLoadedRelay.skip(skipCount).take(1).asSingle().map({ return $1 })
+    /// Don't care about the first loading of user data, only the ones after
+    lazy var userDataLoadedDriver = userDataLoadedRelay.asDriver().skip(skipCount + 1).map({ return $1 })
 
     func loadUserData() {
 

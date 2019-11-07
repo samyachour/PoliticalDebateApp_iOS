@@ -6,11 +6,13 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
+import RxSwift
 import UIKit
 
 enum GeneralConstants {
     static let standardAnimationDuration = 0.4
     static let quickAnimationDuration = 0.1
+    static let standardDebounceDuration = RxTimeInterval.milliseconds(500)
     static let minimumPasswordLength = 6 // dictated by backend
     static let retryErrorCodes = [408, 502, 503, 504]
     static let unauthorizedErrorCode = 401

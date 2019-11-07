@@ -28,6 +28,22 @@ struct DebatesCollectionViewSection: AnimatableSectionModelType {
 
 class DebatesCollectionViewModel {
 
+    init() {
+        UserDataManager.shared.userDataLoadedDriver
+            .drive(onNext: { [weak self] loaded in
+                guard loaded else { return }
+
+                self?.triggerRefreshDebatesWithLocalData()
+            }).disposed(by: disposeBag)
+
+        refreshDebatesWithLocalDataRelay
+            .asSignal()
+            .debounce(GeneralConstants.standardDebounceDuration)
+            .emit(onNext: { [weak self] _ in
+                self?.refreshDebatesWithLocalData()
+            }).disposed(by: disposeBag)
+    }
+
     private let disposeBag = DisposeBag()
 
     // MARK: - Datasource
@@ -38,6 +54,7 @@ class DebatesCollectionViewModel {
     /// When we want to propogate errors, we can't do it through the viewModelRelay
     /// or else it will complete and the value will be invalidated
     private lazy var debatesRetrievalErrorRelay = PublishRelay<Error>()
+    private lazy var refreshDebatesWithLocalDataRelay = PublishRelay<Void>()
 
     /// Used to filter the latest debates array through our starred & progress user data
     /// and do local sorting if applicable
@@ -63,12 +80,7 @@ class DebatesCollectionViewModel {
         debatesDataSourceRelay.accept([DebatesCollectionViewSection(original: currentDebatesDataSourceSection, items: newDebateCollectionViewCellViewModels)])
     }
 
-    // Internal
-
-    lazy var debatesDataSourceDriver = debatesDataSourceRelay.asDriver().skip(1) // empty array emission initialized w/ relay
-    lazy var debatesRetrievalErrorSignal = debatesRetrievalErrorRelay.asSignal()
-
-    func refreshDebatesWithLocalData() {
+    private func refreshDebatesWithLocalData() {
         guard let currentDebatesDataSourceSection = debatesDataSourceRelay.value.first,
             // no point in refreshing 0 debates
             !currentDebatesDataSourceSection.items.isEmpty else {
@@ -76,16 +88,24 @@ class DebatesCollectionViewModel {
         }
 
         let newDebateCollectionViewCellViewModels = currentDebatesDataSourceSection.items
-            .map { (debateCollectionViewCellViewModel) -> DebateCollectionViewCellViewModel in
+            .map { debateCollectionViewCellViewModel -> DebateCollectionViewCellViewModel in
                 let primaryKey = debateCollectionViewCellViewModel.debate.primaryKey
-                debateCollectionViewCellViewModel.completedPercentage = UserDataManager.shared.getProgress(for: primaryKey).completedPercentage
-                debateCollectionViewCellViewModel.isStarred = UserDataManager.shared.isStarred(primaryKey)
 
-                return debateCollectionViewCellViewModel
+                // New instances so we don't modify the currentDebatesDataSource objects by reference
+                return DebateCollectionViewCellViewModel(debate: debateCollectionViewCellViewModel.debate,
+                                                         completedPercentage:  UserDataManager.shared.getProgress(for: primaryKey).completedPercentage,
+                                                         isStarred: UserDataManager.shared.isStarred(primaryKey))
         }
 
         debatesDataSourceRelay.accept([DebatesCollectionViewSection(original: currentDebatesDataSourceSection, items: newDebateCollectionViewCellViewModels)])
     }
+
+    // Internal
+
+    lazy var debatesDataSourceDriver = debatesDataSourceRelay.asDriver().skip(1) // empty array emission initialized w/ relay
+    lazy var debatesRetrievalErrorSignal = debatesRetrievalErrorRelay.asSignal()
+
+    func triggerRefreshDebatesWithLocalData() { refreshDebatesWithLocalDataRelay.accept(()) }
 
     // MARK: - Input handling
 
@@ -105,7 +125,6 @@ class DebatesCollectionViewModel {
                                 // Manual refresh can be ignored since it just uses the latest search and sort values
                                 return searchAndSortValue
             }
-            .debounce(.milliseconds(300))
             .drive(onNext: { [weak self] (searchString, sortSelection) in
                 self?.retrieveDebates(searchString: searchString, sortSelection: sortSelection)
             })

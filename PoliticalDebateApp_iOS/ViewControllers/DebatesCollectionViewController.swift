@@ -36,7 +36,7 @@ class DebatesCollectionViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        viewModel.refreshDebatesWithLocalData()
+        viewModel.triggerRefreshDebatesWithLocalData()
     }
 
     // MARK: - Dependencies
@@ -321,11 +321,11 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     private func installCollectionViewDataSource() {
         debatesCollectionView.register(DebateCollectionViewCell.self, forCellWithReuseIdentifier: DebateCollectionViewCell.reuseIdentifier)
         viewModel.debatesDataSourceDriver
-            .drive(onNext: { [weak self] debateCollectionViewCellViewModels in
+            .drive(onNext: { [weak self] debateCollectionViewSections in
                 self?.debatesRefreshControl.endRefreshing()
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
-                    self?.emptyStateLabel.alpha = debateCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
-                    self?.debatesCollectionView.alpha = debateCollectionViewCellViewModels.isEmpty ? 0.0 : 1.0
+                    self?.emptyStateLabel.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 1.0 : 0.0
+                    self?.debatesCollectionView.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 0.0 : 1.0
                 })
             }).disposed(by: disposeBag)
 
