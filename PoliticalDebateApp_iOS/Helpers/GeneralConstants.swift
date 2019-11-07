@@ -27,12 +27,15 @@ enum GeneralConstants {
 
 enum GeneralColors {
     static let navBarTint = UIColor.customLightGreen1
+    static let navBarButton = UIColor.customDarkGray1
     static let softButton = UIColor.customDarkGray1
     static let hardButton = UIColor.customDarkGray2
     static let background = UIColor.customOffWhite1
     static let navBarTitle = UIColor.black
     static let text = UIColor.black
     static let selected = UIColor.customOffWhite2
+    static let starredTint = UIColor.customLightGreen2
+    static let unstarredTint = UIColor.customLightGray1
 }
 
 enum GeneralFonts {
