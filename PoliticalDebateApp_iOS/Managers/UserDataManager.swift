@@ -264,7 +264,7 @@ class UserDataManager {
 
     /// Emits the first time the client loads the user's data
     lazy var userDataLoadedSingle = userDataLoadedRelay.skip(skipCount).take(1).asSingle().map({ return $1 })
-    /// Don't care about the first loading of user data, only the ones after
+    /// Emits every time after the intiial loading of user data
     lazy var userDataLoadedDriver = userDataLoadedRelay.asDriver().skip(skipCount + 1).map({ return $1 })
 
     func loadUserData() {

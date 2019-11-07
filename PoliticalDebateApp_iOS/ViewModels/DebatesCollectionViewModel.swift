@@ -56,18 +56,20 @@ class DebatesCollectionViewModel {
     private lazy var debatesRetrievalErrorRelay = PublishRelay<Error>()
     private lazy var refreshDebatesWithLocalDataRelay = PublishRelay<Void>()
 
+    private lazy var createNewDebateCellViewModels: (Debate) -> DebateCollectionViewCellViewModel = { debate in
+        // Always new instances so we don't modify objects of the array we're mapping
+        return DebateCollectionViewCellViewModel(debate: debate,
+                                                 completedPercentage: UserDataManager.shared.getProgress(for: debate.primaryKey).completedPercentage,
+                                                 isStarred: UserDataManager.shared.isStarred(debate.primaryKey))
+    }
+
     /// Used to filter the latest debates array through our starred & progress user data
     /// and do local sorting if applicable
     private func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
         guard let currentDebatesDataSourceSection = debatesDataSourceRelay.value.first else { return }
 
-        var newDebateCollectionViewCellViewModels = debates.map { debate -> DebateCollectionViewCellViewModel in
-            let completedPercentage = UserDataManager.shared.getProgress(for: debate.primaryKey).completedPercentage
-            let isStarred = UserDataManager.shared.isStarred(debate.primaryKey)
-            return DebateCollectionViewCellViewModel(debate: debate,
-                                                     completedPercentage: completedPercentage,
-                                                     isStarred: isStarred)
-        }
+        var newDebateCollectionViewCellViewModels = debates.map(createNewDebateCellViewModels)
+
         switch sortSelection {
         case .progressAscending:
             newDebateCollectionViewCellViewModels.sort { $0.completedPercentage < $1.completedPercentage }
@@ -88,14 +90,8 @@ class DebatesCollectionViewModel {
         }
 
         let newDebateCollectionViewCellViewModels = currentDebatesDataSourceSection.items
-            .map { debateCollectionViewCellViewModel -> DebateCollectionViewCellViewModel in
-                let primaryKey = debateCollectionViewCellViewModel.debate.primaryKey
-
-                // New instances so we don't modify the currentDebatesDataSource objects by reference
-                return DebateCollectionViewCellViewModel(debate: debateCollectionViewCellViewModel.debate,
-                                                         completedPercentage:  UserDataManager.shared.getProgress(for: primaryKey).completedPercentage,
-                                                         isStarred: UserDataManager.shared.isStarred(primaryKey))
-        }
+            .map({ $0.debate })
+            .map(createNewDebateCellViewModels)
 
         debatesDataSourceRelay.accept([DebatesCollectionViewSection(original: currentDebatesDataSourceSection, items: newDebateCollectionViewCellViewModels)])
     }
