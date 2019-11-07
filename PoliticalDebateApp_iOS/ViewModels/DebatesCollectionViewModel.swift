@@ -120,8 +120,6 @@ class DebatesCollectionViewModel {
         debateNetworkService.makeRequest(with: .debateFilter(searchString: searchString, filter: sortSelection))
             .map([Debate].self)
             .flatMap({ debates -> Single<[Debate]> in
-                guard !UserDataManager.shared.userDataLoaded else { return .just(debates) }
-
                 return UserDataManager.shared.userDataLoadedSingle
                     .map { _ in return debates } // don't care if user data loaded successfully, but want to wait anyway in case it did
             })

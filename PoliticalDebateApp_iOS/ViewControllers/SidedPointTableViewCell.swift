@@ -19,7 +19,7 @@ class SidedPointTableViewCell: UITableViewCell {
             containerView.backgroundColor = viewModel?.backgroundColor
             let description = (viewModel?.useFullDescription ?? false) ? viewModel?.point.description : viewModel?.point.shortDescription
             pointTextView.attributedText = MarkDownFormatter.format(description, with: [.font: GeneralFonts.text,
-                                                                                                           .foregroundColor: GeneralColors.text],
+                                                                                        .foregroundColor: GeneralColors.text],
                                                                     hyperlinks: viewModel?.point.hyperlinks)
             pointTextView.sizeToFit()
             self.subscribeToCheckImageUpdates()

@@ -170,7 +170,7 @@ class UserDataManager {
 
     // Private
 
-    private lazy var userDataLoadedRelay = BehaviorRelay<Bool>(value: false)
+    private lazy var userDataLoadedRelay = BehaviorRelay<(firstEmission: Bool, loaded: Bool)>(value: (true, false))
 
     private func loadStarred(_ completion: @escaping (_ error: Error?) -> Void) {
         if SessionManager.shared.isActive {
@@ -261,8 +261,12 @@ class UserDataManager {
 
     // Internal
 
-    lazy var userDataLoadedSingle: Single<Bool> = userDataLoadedRelay.take(1).asSingle()
-    var userDataLoaded: Bool { return userDataLoadedRelay.value }
+    lazy var userDataLoadedSingle: Single<Bool> = {
+        let userDataLoaded = userDataLoadedRelay.value
+        guard userDataLoaded.firstEmission else { return .just(userDataLoaded.loaded) }
+
+        return userDataLoadedRelay.skip(1).take(1).map({ return $1 }).asSingle()
+    }()
 
     func loadUserData() {
 
@@ -271,11 +275,11 @@ class UserDataManager {
                 // Called after completion in case loadStarred refreshes the access token
                 self.loadProgress { progressError in
                     guard starredError == nil && progressError == nil else {
-                        self.userDataLoadedRelay.accept(false)
+                        self.userDataLoadedRelay.accept((false, false))
                         return
                     }
 
-                    self.userDataLoadedRelay.accept(true)
+                    self.userDataLoadedRelay.accept((false, true))
                 }
             }
         }

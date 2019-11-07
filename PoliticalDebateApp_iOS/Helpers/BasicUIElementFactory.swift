@@ -15,7 +15,7 @@ class BasicUIElementFactory {
     static func generateBarButton(title: String) -> (button: UIButton, barButton: UIBarButtonItem) {
         let basicBarButton = UIButton(frame: .zero)
         basicBarButton.setTitle(title, for: .normal)
-        basicBarButton.setTitleColor(GeneralColors.softButton, for: .normal)
+        basicBarButton.setTitleColor(GeneralColors.navBarButton, for: .normal)
         basicBarButton.titleLabel?.font = .primaryRegular(16.0)
         return (basicBarButton, UIBarButtonItem(customView: basicBarButton))
     }

@@ -100,8 +100,6 @@ class PointsTableViewModel: StarrableViewModel {
 
         contextPointsDataSourceSingle
             .flatMap({ (contextPoints) -> Single<[Point]> in
-                guard !UserDataManager.shared.userDataLoaded else { return .just(contextPoints) }
-
                 return UserDataManager.shared.userDataLoadedSingle
                     .map { loaded in return loaded ? contextPoints : [] }
             })
@@ -223,8 +221,7 @@ class PointsTableViewModel: StarrableViewModel {
 
     // Internal
 
-    /// Meant to emit when the embeddedRebuttals tableView finishes showing onscreen
-    /// Therefore this acts as a producer for embeddedRebuttals and consumer for embeddedPointHistory
+    /// This acts as a producer for embeddedRebuttals and consumer for embeddedPointHistory
     lazy var completedShowingTableViewRelay = PublishRelay<Void>()
     lazy var completedShowingTableViewSignal = completedShowingTableViewRelay.asSignal()
 

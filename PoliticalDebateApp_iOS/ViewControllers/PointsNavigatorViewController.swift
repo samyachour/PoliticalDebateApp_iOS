@@ -61,7 +61,7 @@ extension PointsNavigatorViewController {
     // MARK: View constraints
 
     private func installViewConstraints() {
-        navigationController?.navigationBar.tintColor = GeneralColors.softButton
+        navigationController?.navigationBar.tintColor = GeneralColors.navBarButton
         view.backgroundColor = GeneralColors.background
 
         addChild(pointHistoryTableViewController)

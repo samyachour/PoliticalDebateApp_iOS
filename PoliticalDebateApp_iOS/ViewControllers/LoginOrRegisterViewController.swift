@@ -115,7 +115,7 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
 extension LoginOrRegisterViewController {
 
     private func installViewConstraints() {
-        navigationController?.navigationBar.tintColor = GeneralColors.softButton
+        navigationController?.navigationBar.tintColor = GeneralColors.navBarButton
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
                                                                    .font: GeneralFonts.navBarTitle]
         navigationItem.rightBarButtonItem = infoButton.barButton

@@ -130,7 +130,7 @@ extension PointsTableViewController {
         switch viewModel.viewState {
         case .standaloneRootPoints:
             navigationItem.title = viewModel.debate.shortTitle
-            navigationController?.navigationBar.tintColor = GeneralColors.softButton
+            navigationController?.navigationBar.tintColor = GeneralColors.navBarButton
             navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
                                                                        .font: GeneralFonts.navBarTitle]
             starredButton.tintColor = viewModel.starTintColor
