@@ -266,7 +266,8 @@ class UserDataManager {
         let userDataLoaded = userDataLoadedRelay.value
         guard userDataLoaded.firstEmission else { return .just(userDataLoaded.loaded) }
 
-        return userDataLoadedRelay.skip(1).take(1).asSingle().map({ return $1 })
+        return userDataLoadedRelay.filter({ !$0.firstEmission })
+            .take(1).asSingle().map({ return $1 })
     }
     /// Emits every time after the intiial loading of user data
     lazy var userDataLoadedDriver: Driver<Bool> = {

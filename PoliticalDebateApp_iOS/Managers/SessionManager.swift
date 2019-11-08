@@ -100,7 +100,7 @@ class SessionManager {
         return .error(GeneralError.alreadyHandled) // so consumer knows
     }
 
-    private lazy var handleRefreshTokenError: (Error) -> Observable<Void> = { error -> Observable<Void> in
+    private func handleRefreshTokenError(error: Error) -> Observable<Void> {
         if let generalError = error as? GeneralError,
             generalError == .alreadyHandled {
             return .error(error)
@@ -112,12 +112,12 @@ class SessionManager {
                 return .error(error)
         }
 
-        return self.refreshTokenHasExpired()
+        return refreshTokenHasExpired()
     }
 
     // Internal
 
-    lazy var refreshAccessTokenIfNeeded = { (error: Observable<Error>) -> Observable<Void> in
+    func refreshAccessTokenIfNeeded(error: Observable<Error>) -> Observable<Void> {
         error.enumerated().flatMap { (index, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
                 moyaError.response?.statusCode == GeneralConstants.unauthorizedErrorCode,

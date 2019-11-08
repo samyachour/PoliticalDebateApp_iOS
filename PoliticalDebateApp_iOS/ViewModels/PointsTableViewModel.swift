@@ -93,7 +93,7 @@ class PointsTableViewModel: StarrableViewModel {
     // Private
 
     private lazy var contextPointsDataSourceRelay = BehaviorRelay<[Point]>(value: [])
-    private lazy var contextPointsDataSourceSingle = contextPointsDataSourceRelay.skip(1).take(1).asSingle()
+    private lazy var contextPointsDataSourceSingle = contextPointsDataSourceRelay.skip(1).take(1).asSingle() // empty array emission initialized w/ relay
 
     private func subscribeToContextPointsUpdates() {
         guard viewState == .standaloneRootPoints else { return }
@@ -247,7 +247,7 @@ class PointsTableViewModel: StarrableViewModel {
             .disposed(by: disposeBag)
     }
 
-    private lazy var markPointAsSeenErrorHandler: (Error) -> Void = { error in
+    private func markPointAsSeenErrorHandler(error: Error) {
         if let generalError = error as? GeneralError,
             generalError == .alreadyHandled {
             return

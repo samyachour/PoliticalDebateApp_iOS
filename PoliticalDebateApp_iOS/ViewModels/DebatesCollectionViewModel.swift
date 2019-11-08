@@ -56,7 +56,7 @@ class DebatesCollectionViewModel {
     private lazy var debatesRetrievalErrorRelay = PublishRelay<Error>()
     private lazy var refreshDebatesWithLocalDataRelay = PublishRelay<Void>()
 
-    private lazy var createNewDebateCellViewModels: (Debate) -> DebateCollectionViewCellViewModel = { debate in
+    private func createNewDebateCellViewModel(debate: Debate) -> DebateCollectionViewCellViewModel {
         // Always new instances so we don't modify objects of the array we're mapping
         return DebateCollectionViewCellViewModel(debate: debate,
                                                  completedPercentage: UserDataManager.shared.getProgress(for: debate.primaryKey).completedPercentage,
@@ -68,7 +68,7 @@ class DebatesCollectionViewModel {
     private func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
         guard let currentDebatesDataSourceSection = debatesDataSourceRelay.value.first else { return }
 
-        var newDebateCollectionViewCellViewModels = debates.map(createNewDebateCellViewModels)
+        var newDebateCollectionViewCellViewModels = debates.map(createNewDebateCellViewModel)
 
         switch sortSelection {
         case .progressAscending:
@@ -91,7 +91,7 @@ class DebatesCollectionViewModel {
 
         let newDebateCollectionViewCellViewModels = currentDebatesDataSourceSection.items
             .map({ $0.debate })
-            .map(createNewDebateCellViewModels)
+            .map(createNewDebateCellViewModel)
 
         debatesDataSourceRelay.accept([DebatesCollectionViewSection(original: currentDebatesDataSourceSection, items: newDebateCollectionViewCellViewModels)])
     }
