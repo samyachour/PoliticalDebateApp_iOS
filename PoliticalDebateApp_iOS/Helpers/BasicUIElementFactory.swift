@@ -53,6 +53,7 @@ class BasicUIElementFactory {
         basicHeadingLabel.textColor = GeneralColors.text
         basicHeadingLabel.font = GeneralFonts.text
         basicHeadingLabel.textAlignment = NSTextAlignment.center
+        basicHeadingLabel.numberOfLines = 0
         return basicHeadingLabel
     }
 

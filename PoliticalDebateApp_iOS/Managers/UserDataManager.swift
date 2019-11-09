@@ -190,7 +190,7 @@ class UserDataManager {
                                                                                                                                action: {
                                                                                                                                 self.loadStarred { error in completion(error) }
                                                                                                     }),
-                                                                                                    bannerWasDismissedAutomatically: {
+                                                                                                    bannerWasIgnored: {
                                                                                                         completion(UserDataError.loadRemoteStarred)
                     }))
             }
@@ -205,7 +205,7 @@ class UserDataManager {
                                                                                                                            action: {
                                                                                                                             self.loadStarred { error in completion(error) }
                                                                                                 }),
-                                                                                                bannerWasDismissedAutomatically: {
+                                                                                                bannerWasIgnored: {
                                                                                                     completion(UserDataError.loadLocalStarred)
                 }))
             }
@@ -230,7 +230,7 @@ class UserDataManager {
                                                                                                                                action: {
                                                                                                                                self.loadProgress { error in completion(error) }
                                                                                                     }),
-                                                                                                    bannerWasDismissedAutomatically: {
+                                                                                                    bannerWasIgnored: {
                                                                                                         completion(UserDataError.loadRemoteProgress)
                     }))
             }
@@ -252,7 +252,7 @@ class UserDataManager {
                                                                                                                            action: {
                                                                                                                             self.loadProgress { error in completion(error) }
                                                                                                 }),
-                                                                                                bannerWasDismissedAutomatically: {
+                                                                                                bannerWasIgnored: {
                                                                                                     completion(UserDataError.loadLocalProgress)
                 }))
             }

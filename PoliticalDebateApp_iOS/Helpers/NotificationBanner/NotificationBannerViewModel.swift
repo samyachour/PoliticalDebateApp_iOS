@@ -18,7 +18,7 @@ struct NotificationBannerViewModel {
          buttonConfig: ButtonConfiguration? = nil,
          iconConfig: IconConfiguration? = nil,
          bannerCanBeDismissed: Bool? = nil,
-         bannerWasDismissedAutomatically: (() -> Void)? = nil) {
+         bannerWasIgnored: (() -> Void)? = nil) {
         self.title = title
         self.subtitle = subtitle
         self.duration = duration ?? style.defaultDuration
@@ -27,7 +27,7 @@ struct NotificationBannerViewModel {
         self.buttonConfig = buttonConfig ?? style.defaultButtonConfig
         self.iconConfig = iconConfig ?? style.defaultIconConfig
         self.bannerCanBeDismissed = bannerCanBeDismissed ?? style.defaultBannerCanBeDismissed
-        self.bannerWasDismissedAutomatically = bannerWasDismissedAutomatically ?? style.defaultBannerWasDismissedAutomatically
+        self.bannerWasIgnored = bannerWasIgnored ?? style.defaultBannerWasIgnored
     }
 
     let title: String
@@ -38,7 +38,7 @@ struct NotificationBannerViewModel {
     let buttonConfig: ButtonConfiguration
     let iconConfig: IconConfiguration
     let bannerCanBeDismissed: Bool
-    let bannerWasDismissedAutomatically: (() -> Void)
+    let bannerWasIgnored: (() -> Void)
     let identifier = UUID()
 
     enum NotificationBannerStyle: Int {
@@ -81,7 +81,7 @@ struct NotificationBannerViewModel {
             case .info,
                  .success,
                  .error:
-                return .customTitle(title: "Dismiss", action: nil)
+                return .defaultValue
             }
         }
 
@@ -103,7 +103,7 @@ struct NotificationBannerViewModel {
             }
         }
 
-        var defaultBannerWasDismissedAutomatically: () -> Void {
+        var defaultBannerWasIgnored: () -> Void {
             return { return } // empty closure
         }
     }
@@ -117,6 +117,7 @@ struct NotificationBannerViewModel {
     enum ButtonConfiguration {
         case customTitle(title: String, action: (()->Void)?)
         case customImage(image: UIImage, action: (()->Void)?)
+        case defaultValue
     }
 
     enum IconConfiguration {

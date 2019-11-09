@@ -72,7 +72,7 @@ class ErrorHandlerService {
                                                                         .customTitle(title: GeneralCopies.retryTitle, action: {
                                                                             observer.onNext(())
                                                                         }),
-                                                                      bannerWasDismissedAutomatically: {
+                                                                      bannerWasIgnored: {
                                                                         observer.onError(GeneralError.alreadyHandled)
                     }))
                 return Disposables.create()

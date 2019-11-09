@@ -24,11 +24,11 @@ class NotificationBannerQueue {
         return viewModel.identifier
     }
 
-    func removeBannerFromQueue(by bannerID: NotificationBannerID) {
+    func removeBannerFromQueue(by bannerID: NotificationBannerID, ignored: Bool) {
         DispatchQueue.main.async {
             if let currentBannerOnScreen = self.currentBannerOnScreen {
                 if bannerID == currentBannerOnScreen.viewModel.identifier {
-                    self.dismiss(currentBannerOnScreen, automatic: false)
+                    self.dismiss(currentBannerOnScreen, ignored: ignored)
                 } else if let index = self.bannersToShow.firstIndex(where: { $0.identifier == bannerID }) {
                     self.bannersToShow.remove(at: index)
                 }
@@ -61,6 +61,7 @@ class NotificationBannerQueue {
 
         DispatchQueue.main.async {
             self.installBannerViewConstraint(bannerOnScreen)
+            self.installBannerViewGesture(bannerOnScreen)
             self.mainWindow?.layoutIfNeeded()
 
             UIView.animate(withDuration: 0.35,
@@ -77,7 +78,8 @@ class NotificationBannerQueue {
         }
     }
 
-    private func dismiss(_ bannerOnScreen: BannerOnScreen, automatic: Bool = true) {
+    // ignored indicates user purposefully dismissed or ignored banner (and it dismissed itself)
+    private func dismiss(_ bannerOnScreen: BannerOnScreen, ignored: Bool = true) {
         bannerOnScreen.timerDismissWorkItem?.cancel()
 
         mainWindow?.layoutIfNeeded()
@@ -90,7 +92,7 @@ class NotificationBannerQueue {
                             self.hideBanner(bannerOnScreen)
                             self.mainWindow?.layoutIfNeeded()
             }) { _ in
-                if automatic { bannerOnScreen.viewModel.bannerWasDismissedAutomatically() }
+                if ignored { bannerOnScreen.viewModel.bannerWasIgnored() }
                 bannerOnScreen.view.removeFromSuperview()
 
                 self.currentBannerOnScreen = nil
@@ -112,6 +114,21 @@ class NotificationBannerQueue {
             bannerOnScreen.bottomAnchor = bannerOnScreen.view.bottomAnchor.constraint(equalTo: mainWindow.topAnchor)
             hideBanner(bannerOnScreen)
         }
+    }
+
+    private func installBannerViewGesture(_ bannerOnScreen: BannerOnScreen) {
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeToDismiss))
+        swipeGesture.direction = .up
+        bannerOnScreen.view.addGestureRecognizer(swipeGesture)
+    }
+
+    @objc private func handleSwipeToDismiss(gesture: UISwipeGestureRecognizer) {
+        guard let currentBannerOnScreen = currentBannerOnScreen,
+            currentBannerOnScreen.viewModel.bannerCanBeDismissed else {
+                return
+        }
+
+        dismiss(currentBannerOnScreen)
     }
 
     private func showBanner(_ bannerOnScreen: BannerOnScreen) {
@@ -158,6 +175,9 @@ class NotificationBannerQueue {
             case .customImage(let image, _):
                 button = buildButton(viewModel)
                 button?.setImage(image, for: .normal)
+            case .defaultValue:
+                button = buildButton(viewModel)
+                button?.setTitle(GeneralCopies.dismissTitle, for: .normal)
             }
             return button
         }()
@@ -189,6 +209,10 @@ class NotificationBannerQueue {
              .customImage(_, let action):
             button = ButtonWithActionClosure(action: { [weak self] in
                 action?()
+                self?.dismissAction(ignored: false) // user interacted with custom button as opposed to dismissing the banner to ignore it
+            })
+        case .defaultValue:
+            button = ButtonWithActionClosure(action: { [weak self] in
                 self?.dismissAction()
             })
         }
@@ -200,9 +224,9 @@ class NotificationBannerQueue {
         return button
     }
 
-    private func dismissAction() {
+    private func dismissAction(ignored: Bool = true) {
         if let currentBannerOnScreen = currentBannerOnScreen { // only the dismiss button on the top-most banner is tappable
-            removeBannerFromQueue(by: currentBannerOnScreen.viewModel.identifier)
+            removeBannerFromQueue(by: currentBannerOnScreen.viewModel.identifier, ignored: ignored)
         }
     }
 

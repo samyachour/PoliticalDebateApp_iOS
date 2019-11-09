@@ -50,6 +50,7 @@ enum GeneralCopies {
     static let errorAlertTitle = "There was a problem"
     static let successAlertTitle = "Success"
     static let retryTitle = "Retry"
+    static let dismissTitle = "Dismiss"
 }
 
 enum GeneralError: Error {
