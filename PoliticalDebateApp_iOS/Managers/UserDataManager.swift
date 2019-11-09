@@ -315,7 +315,7 @@ class UserDataManager {
 
     private func syncLocalStarredDataToBackend(_ completion: @escaping (Bool) -> Void) {
         guard !starredRelay.value.isEmpty else {
-            completion(true)
+            completion(false)
             return
         }
 
@@ -344,7 +344,7 @@ class UserDataManager {
     private func syncLocalProgressDataToBackend(_ completion: @escaping (Bool) -> Void) {
         let legitimateProgress = allProgressArray.filter({ !($0.seenPoints).isEmpty })
         guard !legitimateProgress.isEmpty else {
-            completion(true)
+            completion(false)
             return
         }
 
