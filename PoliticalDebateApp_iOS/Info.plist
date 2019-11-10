@@ -23,7 +23,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.PoliticalDebateApp-iOS</string>
+				<string>com.PoliticalDebateApp</string>
 			</array>
 		</dict>
 	</array>

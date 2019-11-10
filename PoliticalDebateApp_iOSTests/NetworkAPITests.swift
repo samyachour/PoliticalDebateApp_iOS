@@ -34,7 +34,6 @@ class NetworkAPITests: XCTestCase {
                 XCTAssert(debate.sidedPoints?[0].shortDescription == "Test point 1")
                 XCTAssert(debate.sidedPoints?[0].description == "This is a longer description of test point 1.")
                 XCTAssert(debate.sidedPoints?[0].side == .pro)
-                XCTAssert(debate.sidedPoints?[0].images[0].source == "Test source")
                 XCTAssert(debate.sidedPoints?[0].rebuttals?[0].primaryKey == 1)
             }, onError: { err in
                 XCTAssert(false)
@@ -56,7 +55,7 @@ class NetworkAPITests: XCTestCase {
         let testAPI = NetworkService<ProgressAPI>()
         testAPI.makeRequest(with: .loadAllProgress)
             .map([Progress].self)
-            .subscribe(onSuccess: { (progressPoints) in
+            .subscribe(onSuccess: { progressPoints in
                 XCTAssert(progressPoints[0].debatePrimaryKey == 1)
             }, onError: { _ in
                 XCTAssert(false)
@@ -67,7 +66,7 @@ class NetworkAPITests: XCTestCase {
         let testAPI = NetworkService<StarredAPI>()
         testAPI.makeRequest(with: .loadAllStarred)
             .map(Starred.self)
-            .subscribe(onSuccess: { (starred) in
+            .subscribe(onSuccess: { starred in
                 XCTAssert(starred.starredList[0] == 1)
             }, onError: { _ in
                 XCTAssert(false)
@@ -89,9 +88,9 @@ class NetworkAPITests: XCTestCase {
     func testLogin() {
         SessionManager.shared.login(email: "test1@mail.com", password: "testing")
             .subscribe(onSuccess: { _ in
-                XCTAssert(SessionManager.shared.isActiveRelay.value)
+                XCTAssert(SessionManager.shared.isActive)
                 SessionManager.shared.resumeSession() // load tokens from keychain
-                XCTAssert(SessionManager.shared.isActiveRelay.value)
+                XCTAssert(SessionManager.shared.isActive)
             }) { _ in
                 XCTAssert(false)
         }.disposed(by: disposeBag)
@@ -100,11 +99,11 @@ class NetworkAPITests: XCTestCase {
     func testLogout() {
         SessionManager.shared.login(email: "test1@mail.com", password: "testing")
             .subscribe(onSuccess: { _ in
-                XCTAssert(SessionManager.shared.isActiveRelay.value)
+                XCTAssert(SessionManager.shared.isActive)
                 SessionManager.shared.logout()
-                XCTAssert(!SessionManager.shared.isActiveRelay.value)
+                XCTAssert(!SessionManager.shared.isActive)
                 SessionManager.shared.resumeSession() // try to load tokens from keychain
-                XCTAssert(!SessionManager.shared.isActiveRelay.value)
+                XCTAssert(!SessionManager.shared.isActive)
             }) { _ in
                 XCTAssert(false)
             }.disposed(by: disposeBag)

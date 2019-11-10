@@ -10,14 +10,6 @@ import Moya
 import RxCocoa
 import RxSwift
 
-var appBaseURL: String {
-    #if DEBUG
-    return "https://politicaldebateapp-debug.herokuapp.com/api/"
-    #else
-    return "https://politicaldebateapp-prod.herokuapp.com/api/"
-    #endif
-}
-
 private protocol Networkable {
     associatedtype AppAPI: TargetType
 
@@ -31,17 +23,15 @@ struct NetworkService<T>: Networkable where T: CustomTargetType & AccessTokenAut
         AccessTokenPlugin { SessionManager.shared.publicAccessToken }
         ])
 
-    private let maxAttemptCount: UInt = 3
-
     func makeRequest(with appAPI: T) -> Single<Response> {
         #if TEST
         return makeTestRequest(with: appAPI)
         #else
         let request = provider.rx.request(appAPI)
             .filter(statusCode: appAPI.validSuccessCode)
-            .do(onError: ErrorHandler.checkForThrottleError)
-            .retryWhen(ErrorHandler.checkForConnectivityError)
-            .retryWhen(ErrorHandler.shouldRetryRequest)
+            .catchError(ErrorHandlerService.checkForThrottleError)
+            .retryWhen(ErrorHandlerService.checkForConnectivityError)
+            .retryWhen(ErrorHandlerService.shouldRetryRequest)
 
         switch appAPI.authorizationType {
         case .none:

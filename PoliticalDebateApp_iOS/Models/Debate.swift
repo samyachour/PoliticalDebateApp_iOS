@@ -67,3 +67,9 @@ extension Debate: Decodable {
         debateMap = try container.decodeIfPresent([Point].self, forKey: .debateMap)
     }
 }
+
+extension Debate: Equatable {
+    static func == (lhs: Debate, rhs: Debate) -> Bool {
+        return lhs.primaryKey == rhs.primaryKey
+    }
+}

@@ -23,7 +23,7 @@ extension KeyboardReactable where Self: UIViewController {
         let latestYOffsetRelay = BehaviorRelay<CGFloat>(value: 0.0) // store offset to undo when keyboard hides
 
         Observable.merge([keyboardWillShowProducer, keyboardWillHideProducer])
-            .withLatestFrom(latestYOffsetRelay, resultSelector: { notification, latestYOffsetValue in (notification, latestYOffsetValue)})
+            .withLatestFrom(latestYOffsetRelay, resultSelector: { (notification, latestYOffsetValue) in (notification, latestYOffsetValue)})
             .subscribe(onNext: { [weak self] (notification, latestYOffsetValue) in
                 guard self?.view.window != nil else { // make sure view is onscreen
                         return
@@ -52,7 +52,7 @@ extension KeyboardReactable where Self: UIViewController {
     func installHideKeyboardTapGesture() {
         let tapGesture = UITapGestureRecognizer()
         view.addGestureRecognizer(tapGesture)
-        tapGesture.rx.event.subscribe { [weak self] (_) in
+        tapGesture.rx.event.subscribe { [weak self] _ in
             self?.activeTextField?.resignFirstResponder()
         }.disposed(by: disposeBag)
     }

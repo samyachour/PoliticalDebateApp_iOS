@@ -53,7 +53,7 @@ struct StarredCoreDataAPI {
 
     // MARK: - Helpers
 
-    // Handle the logic of loading data if it exists and creating+loading if it doesn't
+    /// Handle the logic of loading data if it exists and creating+loading if it doesn't
     private static func loadStarredDebates() -> LocalStarred {
         // Explicit type for generic method
         let localStarredRecords: [LocalStarred]? = CoreDataService.fetchRecordsForEntity(CoreDataConstants.starredEntity,

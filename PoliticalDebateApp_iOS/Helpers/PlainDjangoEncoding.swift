@@ -8,9 +8,9 @@
 
 import Alamofire
 
-// Custom encoding that does not add unnecessary characters like '?=' to the URL parameters
-// Needed because Django has very clean url parameter encoding, e.g. 'api/v1/debate/1'
-// Alamofire custom URL encoding automatically assumes parameters need to be encoded further e.g. 'debate/?=1'
+/// Custom encoding that does not add unnecessary characters like '?=' to the URL parameters.
+/// Needed because Django has very clean url parameter encoding, e.g. 'api/v1/debate/1'.
+/// Alamofire custom URL encoding automatically assumes parameters need to be encoded further e.g. 'debate/?=1'.
 struct PlainDjangoEncoding: ParameterEncoding {
 
     func encode(_ urlRequest: URLRequestConvertible, with parameters: Parameters?) throws -> URLRequest {

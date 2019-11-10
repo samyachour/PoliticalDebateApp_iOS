@@ -21,7 +21,7 @@ extension StarredAPI: CustomTargetType {
     }
 
     var baseURL: URL {
-        guard let url = URL(string: appBaseURL) else { fatalError("baseURL could not be configured.") }
+        guard let url = URL(string: GeneralConstants.appBaseURL) else { fatalError("baseURL could not be configured.") }
         return url
     }
 

@@ -19,7 +19,7 @@ class EmailAndPasswordValidator {
     }
 
     static func isValidPassword(_ password: String) -> Bool {
-        return password.count >= Constants.minimumPasswordLength
+        return password.count >= GeneralConstants.minimumPasswordLength
     }
 
     static func showInvalidEmailError() {
@@ -30,7 +30,7 @@ class EmailAndPasswordValidator {
     static func showInvalidPasswordError() {
         NotificationBannerQueue.shared
             .enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                              title: "Password must be at least \(Constants.minimumPasswordLength) characters."))
+                                                              title: "Password must be at least \(GeneralConstants.minimumPasswordLength) characters."))
     }
 
     static func showInvalidPasswordMatchError() {

@@ -16,12 +16,12 @@ class DebateCollectionViewCell: UICollectionViewCell {
 
     var viewModel: DebateCollectionViewCellViewModel? {
         didSet {
-            UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
-                if let viewModel = self?.viewModel { self?.starredButton.tintColor = viewModel.starTintColor }
-                self?.debateTitleLabel.text = self?.viewModel?.debate.title
-                UIView.animate(withDuration: Constants.standardAnimationDuration) {
-                    self?.debateProgressView.setProgress(Float(self?.viewModel?.completedPercentage ?? 0) / 100, animated: true)
-                }
+            UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
+                self.debateTitleLabel.text = self.viewModel?.debate.title
+                guard let viewModel = self.viewModel else { return }
+
+                self.starredButton.tintColor = viewModel.starTintColor
+                self.debateProgressView.setProgress(Float(viewModel.completedPercentage) / 100, animated: true)
             })
         }
     }
@@ -57,7 +57,7 @@ class DebateCollectionViewCell: UICollectionViewCell {
     // Needed so we can have a gradient layer but still animate the cell color on hightlighted
     private lazy var tintView: UIView = {
         let tintView = UIView()
-        tintView.backgroundColor = DebateCollectionViewCell.defaultTintViewColor
+        tintView.backgroundColor = Self.defaultTintViewColor
         return tintView
     }()
 
@@ -83,14 +83,17 @@ class DebateCollectionViewCell: UICollectionViewCell {
         return debateProgressView
     }()
 
-    private let gradientLayer = CAGradientLayer(start: .topLeft, end: .bottomRight, colors: [.white, DebateCollectionViewCell.cellColor], type: .axial)
+    private lazy var gradientLayer = CAGradientLayer(start: .topLeft,
+                                                     end: .bottomRight,
+                                                     colors: [.white, DebateCollectionViewCell.cellColor],
+                                                     type: .axial)
 
     // MARK: - View constraints & Binding
 
     private func installConstraints() {
         contentView.layer.masksToBounds = true
-        contentView.layer.cornerRadius = DebateCollectionViewCell.cornerRadius
-        contentView.backgroundColor = DebateCollectionViewCell.cellColor
+        contentView.layer.cornerRadius = Self.cornerRadius
+        contentView.backgroundColor = Self.cellColor
         contentView.layer.addSublayer(gradientLayer)
 
         contentView.addSubview(tintView)
@@ -125,12 +128,8 @@ class DebateCollectionViewCell: UICollectionViewCell {
 
     override var isHighlighted: Bool {
         didSet {
-            UIView.animate(withDuration: Constants.quickAnimationDuration) { [weak self] in
-                if self?.isHighlighted ?? false {
-                    self?.tintView.backgroundColor = GeneralColors.selected
-                } else {
-                    self?.tintView.backgroundColor = DebateCollectionViewCell.defaultTintViewColor
-                }
+            UIView.animate(withDuration: GeneralConstants.quickAnimationDuration) {
+                self.tintView.backgroundColor = self.isHighlighted ? GeneralColors.selected : Self.defaultTintViewColor
             }
         }
     }
@@ -148,7 +147,7 @@ class DebateCollectionViewCell: UICollectionViewCell {
 
     @objc private func starredButtonTapped() {
         viewModel?.starOrUnstarDebate().subscribe(onSuccess: { [weak self] _ in
-            UIView.animate(withDuration: Constants.standardAnimationDuration, animations: {
+            UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                 self?.starredButton.tintColor = self?.viewModel?.starTintColor
             })
         }, onError: { error in
@@ -157,7 +156,7 @@ class DebateCollectionViewCell: UICollectionViewCell {
                 return
             }
             guard error as? MoyaError != nil else {
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandlerService.showBasicRetryErrorBanner()
                 return
             }
 

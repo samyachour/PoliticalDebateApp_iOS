@@ -16,6 +16,7 @@ struct BackendErrorMessage {
     static let invalidEmailKeyword = "invalid"
     static let unverifiedEmailKeyword = "verify"
     static let alreadyUsingEmailKeyword = "already"
+    static let accountExistsKeyword = "exists"
 }
 
 extension BackendErrorMessage: Decodable {
