@@ -318,19 +318,22 @@ class UserDataManager {
 
     // Private
 
-    private func syncLocalStarredDataToBackend(_ completion: @escaping (Bool) -> Void) {
+    private func syncLocalStarredDataToBackend(_ completion: @escaping () -> Void) {
         guard !starredRelay.value.isEmpty else {
-            completion(false)
+            completion()
             return
         }
 
         _ = starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starredArray, unstarred: [])).subscribe(onSuccess: { _ in
             // We've successfully sync'd the local data to the backend, now we can clear it
             StarredCoreDataAPI.clearAllStarred()
-            completion(true)
+            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                            title: "Successfully synced your local starred data to the cloud."))
+            completion()
         }) { error in
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {
+                completion()
                 return
             }
             NotificationBannerQueue.shared
@@ -342,14 +345,17 @@ class UserDataManager {
                                                                                                      action: {
                                                                                                         self.syncLocalStarredDataToBackend(completion)
                                                                     })))
-            completion(false)
+            completion()
         }
     }
 
-    private func syncLocalProgressDataToBackend(_ completion: @escaping (Bool) -> Void) {
-        let legitimateProgress = allProgressArray.filter({ !($0.seenPoints).isEmpty })
+    private var legitimateProgress: [Progress] {
+        return allProgressArray.filter({ !$0.seenPoints.isEmpty })
+    }
+
+    private func syncLocalProgressDataToBackend(_ completion: @escaping () -> Void) {
         guard !legitimateProgress.isEmpty else {
-            completion(false)
+            completion()
             return
         }
 
@@ -357,10 +363,13 @@ class UserDataManager {
             .subscribe(onSuccess: { (_) in
                 // We've successfully sync'd the local data to the backend, now we can clear it
                 ProgressCoreDataAPI.clearAllProgress()
-                completion(true)
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                                title: "Successfully synced your local progress data to the cloud."))
+                completion()
             }) { (error) in
                 if let generalError = error as? GeneralError,
                     generalError == .alreadyHandled {
+                    completion()
                     return
                 }
                 NotificationBannerQueue.shared
@@ -372,21 +381,21 @@ class UserDataManager {
                                                                                                          action: {
                                                                                                             self.syncLocalProgressDataToBackend(completion)
                                                                         })))
-                completion(false)
+                completion()
         }
     }
 
     // Internal
 
+    var hasLocalDataToSync: Bool {
+        return !legitimateProgress.isEmpty || !starredRelay.value.isEmpty
+    }
+
     func syncUserDataToBackend() {
-        syncLocalStarredDataToBackend { starredSuccess in
-            self.syncLocalProgressDataToBackend { progressSuccess in
-                if starredSuccess && progressSuccess {
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                                    title: "Successfully synced your local data to the cloud."))
-                }
+        syncLocalStarredDataToBackend {
+            self.syncLocalProgressDataToBackend {
                 // Need to make sure we've posted to the backend before retrieving the latest user data from it
-                self.loadUserData() // Backend syncing is typically called after the user is newly authenticated
+                self.loadUserData()
             }
         }
     }
