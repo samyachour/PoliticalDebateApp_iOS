@@ -15,10 +15,9 @@ struct Debate {
     let title: String
     let shortTitle: String
     let lastUpdated: Date?
-    let totalPoints: Int
-    private let debateMap: [Point]?
-    var contextPoints: [Point]? {
-        return debateMap?.filter({ (point) -> Bool in
+    let debateMap: [Point]
+    var contextPoints: [Point] {
+        return debateMap.filter({ (point) -> Bool in
             switch point.side {
             case .pro,
                  .con:
@@ -30,8 +29,8 @@ struct Debate {
             }
         })
     }
-    var sidedPoints: [Point]? {
-        return debateMap?.filter({ (point) -> Bool in
+    var sidedPoints: [Point] {
+        return debateMap.filter({ (point) -> Bool in
             switch point.side {
             case .pro,
                  .con:
@@ -42,6 +41,33 @@ struct Debate {
                 return false
             }
         })
+    }
+    // Recursively generated array of all point objects
+    private var allPoints: [Point] {
+        return getAllPoints()
+    }
+    var allPointsPrimaryKeys: [PrimaryKey] {
+        return allPoints.map({ $0.primaryKey })
+    }
+    var totalPoints: Int {
+        return allPoints.count
+    }
+
+    private func getAllPoints(_ point: Point? = nil) -> [Point] {
+        guard let point = point else {
+            return debateMap.reduce([]) { (allPoints, point) -> [Point] in
+                return allPoints + getAllPoints(point).filter({ !allPoints.contains($0) }) // avoid duplicates
+            }
+        }
+
+        guard let rebuttals = point.rebuttals,
+            !rebuttals.isEmpty else {
+                return [point]
+        }
+
+        return rebuttals.reduce([point]) { (allPoints, point) -> [Point] in
+            return allPoints + getAllPoints(point).filter({ !allPoints.contains($0) }) // avoid duplicates
+        }
     }
 }
 
@@ -51,7 +77,6 @@ extension Debate: Decodable {
         case title
         case shortTitle = "short_title"
         case lastUpdated = "last_updated"
-        case totalPoints = "total_points"
         case debateMap = "debate_map"
     }
 
@@ -62,9 +87,7 @@ extension Debate: Decodable {
         shortTitle = try container.decode(String.self, forKey: .shortTitle)
         title = try container.decode(String.self, forKey: .title)
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()
-        totalPoints = try container.decode(Int.self, forKey: .totalPoints)
-        // We don't get the debate points with the search call
-        debateMap = try container.decodeIfPresent([Point].self, forKey: .debateMap)
+        debateMap = try container.decode([Point].self, forKey: .debateMap)
     }
 }
 

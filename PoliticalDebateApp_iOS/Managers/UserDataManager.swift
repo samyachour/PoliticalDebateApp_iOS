@@ -51,19 +51,16 @@ class UserDataManager {
     }
 
     private func updateProgress(pointPrimaryKey: PrimaryKey,
-                                debatePrimaryKey: PrimaryKey,
-                                totalPoints: Int) {
+                                debatePrimaryKey: PrimaryKey) {
         var allProgress = allProgressRelay.value
         if let debateProgress = allProgress[debatePrimaryKey],
             !debateProgress.seenPoints.contains(pointPrimaryKey) {
             var seenPoints = debateProgress.seenPoints
             seenPoints.append(pointPrimaryKey)
-            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
-            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: seenPoints)
         } else {
             let seenPoints = [pointPrimaryKey]
-            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
-            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: seenPoints)
         }
         allProgressRelay.accept(allProgress)
     }
@@ -107,7 +104,7 @@ class UserDataManager {
         if let debateProgress = allProgress[debatePrimaryKey] {
             return debateProgress
         } else {
-            let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: 0, seenPoints: [])
+            let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: [])
             allProgress[debatePrimaryKey] = debateProgress
             allProgressRelay.accept(allProgress)
             return debateProgress
@@ -115,8 +112,7 @@ class UserDataManager {
     }
 
     func markProgress(pointPrimaryKey: PrimaryKey,
-                      debatePrimaryKey: PrimaryKey,
-                      totalPoints: Int) -> Single<Response?> {
+                      debatePrimaryKey: PrimaryKey) -> Single<Response?> {
         guard !(allProgressRelay.value[debatePrimaryKey]?.seenPoints.contains(pointPrimaryKey) ?? false) else {
             return .just(nil) // already have this data
         }
@@ -124,11 +120,11 @@ class UserDataManager {
         if SessionManager.shared.isActive {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in
-                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
                 }).map { $0 as Response? }
         } else {
-            ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-            updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+            ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
+            updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
             return Single.create {
                 $0(.success(nil))
                 return Disposables.create()
@@ -137,31 +133,40 @@ class UserDataManager {
     }
 
     func markBatchProgress(pointPrimaryKeys: [PrimaryKey],
-                           debatePrimaryKey: PrimaryKey,
-                           totalPoints: Int) -> Single<Response?> {
+                           debatePrimaryKey: PrimaryKey) -> Single<Response?> {
         let newPointPrimaryKeys = pointPrimaryKeys
             .filter({ !(allProgressRelay.value[debatePrimaryKey]?.seenPoints.contains($0) ?? false) })
         guard !newPointPrimaryKeys.isEmpty else { return .just(nil) } // already have this data
 
         if SessionManager.shared.isActive {
             let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey,
-                                          completedPercentage: 0, // doesn't get sent to the backend anyway
                                           seenPoints: newPointPrimaryKeys)
             return progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: [debateProgress])))
                 .do(onSuccess: { (_) in
                     newPointPrimaryKeys.forEach { (pointPrimaryKey) in
-                        self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                        self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
                     }
                 }).map { $0 as Response? }
         } else {
             newPointPrimaryKeys.forEach { (pointPrimaryKey) in
-                ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-                self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
+                self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
             }
             return Single.create {
                 $0(.success(nil))
                 return Disposables.create()
             }
+        }
+    }
+
+    /// Remove local points that don't exist on the backend anymore
+    func removeStaleLocalPoints(from debate: Debate) {
+        let localSeenPoints = getProgress(for: debate.primaryKey).seenPoints
+        let allDebatePointsPrimaryKeys = debate.allPointsPrimaryKeys
+        localSeenPoints.filter { primaryKey -> Bool in
+            return !allDebatePointsPrimaryKeys.contains(primaryKey)
+        }.forEach { primaryKey in
+            ProgressCoreDataAPI.removePoint(primaryKey)
         }
     }
 

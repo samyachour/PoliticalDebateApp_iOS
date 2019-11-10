@@ -42,6 +42,26 @@ class PointsTableViewModel: StarrableViewModel {
         self.isStarred = isStarred
         self.viewState = viewState
         self.embeddedSidedPoints = embeddedSidedPoints
+
+        switch viewState {
+        case .embeddedPointHistory:
+            guard let embeddedSidedPoints = embeddedSidedPoints else {
+                fatalError("Should have embedded side points for history table")
+            }
+
+            sidedPointsRelay = .init(value: embeddedSidedPoints)
+            markPointAsSeen(point: embeddedSidedPoints.first)
+        case .embeddedRebuttals:
+            guard let embeddedSidedPoints = embeddedSidedPoints else {
+                fatalError("Should have embedded side points for rebuttals table")
+            }
+
+            sidedPointsRelay = .init(value: embeddedSidedPoints)
+        case .standaloneRootPoints:
+            sidedPointsRelay = .init(value: debate.sidedPoints)
+            contextPointsDataSourceRelay = .init(value: debate.contextPoints)
+        }
+
         subscribeSidedPointsUpdates()
         subscribeToContextPointsUpdates()
     }
@@ -56,12 +76,9 @@ class PointsTableViewModel: StarrableViewModel {
 
     // Private
 
-    private lazy var sidedPointsRelay = BehaviorRelay<[Point]>(value: debate.sidedPoints ?? [])
+    private let sidedPointsRelay: BehaviorRelay<[Point]>
     private var embeddedSidedPoints: [Point]?
     private lazy var sidedPointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
-    /// When we want to propogate errors, we can't do it through the viewModelRelay
-    /// or else it will complete and the value will be invalidated
-    private lazy var pointsRetrievalErrorRelay = PublishRelay<Error>()
 
     private func subscribeSidedPointsUpdates() {
         sidedPointsRelay
@@ -84,21 +101,20 @@ class PointsTableViewModel: StarrableViewModel {
 
     // Internal
 
-    lazy var sidedPointsDataSourceDriver = sidedPointsDataSourceRelay.asDriver().skip(1) // empty array emission initialized w/ relay
-    lazy var pointsRetrievalErrorSignal = pointsRetrievalErrorRelay.asSignal()
+    lazy var sidedPointsDataSourceDriver = sidedPointsDataSourceRelay.asDriver()
     var sidedPointsCount: Int { return sidedPointsRelay.value.count }
 
     // MARK: Standalone dataSource
 
     // Private
 
-    private lazy var contextPointsDataSourceRelay = BehaviorRelay<[Point]>(value: [])
-    private lazy var contextPointsDataSourceSingle = contextPointsDataSourceRelay.skip(1).take(1).asSingle() // empty array emission initialized w/ relay
+    private var contextPointsDataSourceRelay: BehaviorRelay<[Point]>?
+    private lazy var contextPointsDataSourceSingle = contextPointsDataSourceRelay?.take(1).asSingle()
 
     private func subscribeToContextPointsUpdates() {
         guard viewState == .standaloneRootPoints else { return }
 
-        contextPointsDataSourceSingle
+        contextPointsDataSourceSingle?
             .flatMap({ (contextPoints) -> Single<[Point]> in
                 return UserDataManager.shared.userDataLoadedSingle
                     .map { loaded in return loaded ? contextPoints : [] }
@@ -108,8 +124,7 @@ class PointsTableViewModel: StarrableViewModel {
 
                 UserDataManager.shared
                     .markBatchProgress(pointPrimaryKeys: contextPoints.map { $0.primaryKey },
-                                       debatePrimaryKey: self.debate.primaryKey,
-                                       totalPoints: self.debate.totalPoints)
+                                       debatePrimaryKey: self.debate.primaryKey)
                     .subscribe() // Don't care if this call succeeds or fails
                     .disposed(by: self.disposeBag)
             }).disposed(by: disposeBag)
@@ -117,7 +132,8 @@ class PointsTableViewModel: StarrableViewModel {
 
     // Internal
 
-    lazy var contextPointsDataSourceDriver = contextPointsDataSourceRelay.asDriver().skip(1) // empty array emission initialized w/ relay
+    lazy var contextPointsDataSourceDriver = contextPointsDataSourceRelay?.asDriver()
+    var shouldShowContextPointsView: Bool { return contextPointsDataSourceRelay?.value.isEmpty == false }
 
     // MARK: - Points tables synchronization
 
@@ -235,14 +251,11 @@ class PointsTableViewModel: StarrableViewModel {
 
     // Private
 
-    private lazy var debateNetworkService = NetworkService<DebateAPI>()
-
     private func markPointAsSeen(point: Point?) {
         guard let point = point else { return }
 
         UserDataManager.shared.markProgress(pointPrimaryKey: point.primaryKey,
-                                            debatePrimaryKey: debate.primaryKey,
-                                            totalPoints: debate.totalPoints)
+                                            debatePrimaryKey: debate.primaryKey)
             .subscribe(onError: markPointAsSeenErrorHandler)
             .disposed(by: disposeBag)
     }
@@ -263,40 +276,6 @@ class PointsTableViewModel: StarrableViewModel {
             ErrorHandlerService.showBasicReportErrorBanner()
         default:
             ErrorHandlerService.showBasicRetryErrorBanner()
-        }
-    }
-
-    // Internal
-
-    func retrieveAllDebatePoints() {
-        switch viewState {
-        case .embeddedPointHistory:
-            markPointAsSeen(point: embeddedSidedPoints?.first)
-            fallthrough
-        case .embeddedRebuttals:
-            guard let embeddedSidedPoints = embeddedSidedPoints else { return }
-
-            sidedPointsRelay.accept(embeddedSidedPoints)
-        case .standaloneRootPoints:
-            // Only should load all debate points if we don't already have the debate map
-            guard sidedPointsRelay.value.isEmpty else { return }
-
-            debateNetworkService.makeRequest(with: .debate(primaryKey: debate.primaryKey))
-            .map(Debate.self)
-            .subscribe(onSuccess: { [weak self] debate in
-                guard let sidedPoints = debate.sidedPoints,
-                    let contextPoints = debate.contextPoints,
-                    !sidedPoints.isEmpty else {
-                        ErrorHandlerService.showBasicReportErrorBanner()
-                        return
-                }
-
-                self?.sidedPointsRelay.accept(sidedPoints)
-                self?.contextPointsDataSourceRelay.accept(contextPoints)
-                self?.debate = debate
-            }) { [weak self] error in
-                self?.pointsRetrievalErrorRelay.accept(error)
-            }.disposed(by: disposeBag)
         }
     }
 

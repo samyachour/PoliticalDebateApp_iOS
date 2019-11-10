@@ -17,12 +17,12 @@ struct StarredCoreDataAPI {
     static func starOrUnstarDebate(_ debatePrimaryKey: PrimaryKey, unstar: Bool = false) {
         defer { CoreDataService.saveContext() }
 
-        let localStarred = StarredCoreDataAPI.loadStarredDebates()
+        let localStarred = Self.loadStarredDebates()
 
         // Explicit type for generic method
         let localDebateRecords: [LocalDebate]? = CoreDataService
             .fetchRecordsForEntity(CoreDataConstants.debateEntity,
-                                   with: StarredCoreDataAPI.debatePrimaryKeyPredicate(debatePrimaryKey),
+                                   with: Self.debatePrimaryKeyPredicate(debatePrimaryKey),
                                    unique: true)
         let localDebate: LocalDebate = localDebateRecords?.first ?? CoreDataService.createRecord()
         localDebate.primaryKey = Int32(debatePrimaryKey)
@@ -39,7 +39,7 @@ struct StarredCoreDataAPI {
     static func loadAllStarred() -> Starred? {
         defer { CoreDataService.saveContext() }
 
-        let localStarred = StarredCoreDataAPI.loadStarredDebates()
+        let localStarred = Self.loadStarredDebates()
 
         return Starred(from: localStarred)
     }
@@ -47,7 +47,7 @@ struct StarredCoreDataAPI {
     static func clearAllStarred() {
         defer { CoreDataService.saveContext() }
 
-        let localStarred = StarredCoreDataAPI.loadStarredDebates()
+        let localStarred = Self.loadStarredDebates()
         CoreDataService.deleteRecord(localStarred)
     }
 
@@ -66,10 +66,10 @@ struct StarredCoreDataAPI {
 
     // MARK: - Predicates
 
-    private static let debatePrimaryKeyPredicate = { (debatePrimaryKey: PrimaryKey) -> NSPredicate in
-        NSPredicate(format: "%K = %@",
-                    CoreDataConstants.primaryKeyAttribute,
-                    NSNumber(value: debatePrimaryKey))
+    private static func debatePrimaryKeyPredicate(_ debatePrimaryKey: PrimaryKey) -> NSPredicate {
+        return NSPredicate(format: "%K = %@",
+                           CoreDataConstants.primaryKeyAttribute,
+                           NSNumber(value: debatePrimaryKey))
     }
 
 }

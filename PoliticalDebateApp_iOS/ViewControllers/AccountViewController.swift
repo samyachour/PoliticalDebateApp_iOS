@@ -36,13 +36,10 @@ class AccountViewController: UIViewController, KeyboardReactable {
     private let viewModel: AccountViewModel
     let disposeBag = DisposeBag() // can't be private to satisfy protocol
 
-    // MARK: - Dependencies
-
-    private let sessionManager = SessionManager.shared
-
     // MARK: - UI Properties
 
-    private static let horizontalEdgeInset: CGFloat = 56
+    private static let containerHorizontalInset: CGFloat = 8.0
+    private static let textFieldHorizontalInset: CGFloat = 56
     var activeTextField: UITextField? { // can't be private to satisfy protocol
         for textField in [newEmailTextField, currentPasswordTextField, newPasswordTextField, confirmNewPasswordTextField] where textField.isFirstResponder {
             return textField
@@ -119,17 +116,17 @@ extension AccountViewController {
         for subview in stackViewContainer.arrangedSubviews where subview as? UITextField != nil {
             subview.translatesAutoresizingMaskIntoConstraints = false
             subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
-                                             constant: Self.horizontalEdgeInset).isActive = true
+                                             constant: Self.textFieldHorizontalInset).isActive = true
             subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
-                                              constant: -Self.horizontalEdgeInset).isActive = true
+                                              constant: -Self.textFieldHorizontalInset).isActive = true
         }
 
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false
         stackViewContainer.translatesAutoresizingMaskIntoConstraints = false
 
-        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Self.containerHorizontalInset).isActive = true
         scrollViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
-        scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Self.containerHorizontalInset).isActive = true
         scrollViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
 
         stackViewContainer.leadingAnchor.constraint(equalTo: scrollViewContainer.leadingAnchor).isActive = true
@@ -301,7 +298,7 @@ extension AccountViewController {
     }
 
     @objc private func logOutButtonTapped() {
-        sessionManager.logout()
+        SessionManager.shared.logout()
         NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                         title: "Successfully logged out"))
         navigationController?.popViewController(animated: true)
@@ -317,7 +314,7 @@ extension AccountViewController {
             self.viewModel.deleteAccount().subscribe(onSuccess: { _ in
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                                 title: "Successfully deleted account."))
-                self.sessionManager.logout()
+                SessionManager.shared.logout()
                 self.navigationController?.popViewController(animated: true)
             }) { error in
                 if let generalError = error as? GeneralError,
