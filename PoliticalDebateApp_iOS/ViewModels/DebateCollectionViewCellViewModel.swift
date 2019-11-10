@@ -33,6 +33,7 @@ class DebateCollectionViewCellViewModel: StarrableViewModel, IdentifiableType, E
     static func == (lhs: DebateCollectionViewCellViewModel, rhs: DebateCollectionViewCellViewModel) -> Bool {
         return lhs.debate == rhs.debate &&
             lhs.completedPercentage == rhs.completedPercentage &&
-            lhs.isStarred == rhs.isStarred
+            lhs.isStarred == rhs.isStarred &&
+            lhs.debate.title == rhs.debate.title
     }
 }
