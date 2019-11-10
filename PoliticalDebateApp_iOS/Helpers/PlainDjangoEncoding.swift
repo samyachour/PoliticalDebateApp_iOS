@@ -8,9 +8,9 @@
 
 import Alamofire
 
-// Custom encoding that does not add unnecessary characters like '?=' to the URL parameters
-// Needed because Django has very clean url parameter encoding, e.g. 'api/v1/debate/1'
-// Alamofire custom URL encoding automatically assumes parameters need to be encoded further e.g. 'debate/?=1'
+/// Custom encoding that does not add unnecessary characters like '?=' to the URL parameters.
+/// Needed because Django has very clean url parameter encoding, e.g. 'api/v1/debate/1'.
+/// Alamofire custom URL encoding automatically assumes parameters need to be encoded further e.g. 'debate/?=1'.
 struct PlainDjangoEncoding: ParameterEncoding {
 
     func encode(_ urlRequest: URLRequestConvertible, with parameters: Parameters?) throws -> URLRequest {
@@ -22,10 +22,7 @@ struct PlainDjangoEncoding: ParameterEncoding {
             parameters.values.count == 1,
             urlRequest.httpMethod == "GET"
         else {
-            throw AFError.parameterEncodingFailed(
-                reason: AFError.ParameterEncodingFailureReason.propertyListEncodingFailed(
-                    error: PlainDjangoEncodingError.invalidParameterNumber
-            ))
+            throw AFError.parameterEncodingFailed(reason: .customEncodingFailed(error: PlainDjangoEncodingError.invalidParameterNumber))
         }
 
         guard let url = urlRequest.url else {
@@ -38,10 +35,7 @@ struct PlainDjangoEncoding: ParameterEncoding {
         } else if let param = parameters.values.first as? Int {
             urlRequest.url = URL.init(string: url.absoluteString + String(param))
         } else {
-            throw AFError.parameterEncodingFailed(
-                reason: AFError.ParameterEncodingFailureReason.propertyListEncodingFailed(
-                    error: PlainDjangoEncodingError.invalidParameterType
-            ))
+            throw AFError.parameterEncodingFailed(reason: .customEncodingFailed(error: PlainDjangoEncodingError.invalidParameterType))
         }
         return urlRequest
     }

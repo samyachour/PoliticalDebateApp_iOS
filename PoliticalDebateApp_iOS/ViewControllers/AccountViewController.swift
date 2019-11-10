@@ -15,7 +15,7 @@ class AccountViewController: UIViewController, KeyboardReactable {
 
     required init(viewModel: AccountViewModel) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil) // we don't use nibs
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -52,7 +52,7 @@ class AccountViewController: UIViewController, KeyboardReactable {
 
     // MARK: - UI Elements
 
-    let scrollViewContainer = UIScrollView(frame: .zero) // can't be private to satisfy protocol
+    lazy var scrollViewContainer = UIScrollView(frame: .zero) // can't be private so as to satisfy the KeyboardReactable protocol
 
     private lazy var stackViewContainer = BasicUIElementFactory.generateStackViewContainer(arrangedSubviews: [changeEmailLabel,
                                                                                                               newEmailTextField,
@@ -66,41 +66,49 @@ class AccountViewController: UIViewController, KeyboardReactable {
                                                                                                               complianceTextView,
                                                                                                               versionLabel])
 
-    private let changeEmailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change email")
+    private lazy var changeEmailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change email")
 
-    private let newEmailTextField: UITextField = {
-        let newEmailTextField = BasicUIElementFactory.generateTextField(placeholder: "New email...")
-        newEmailTextField.keyboardType = .emailAddress
-        return newEmailTextField
-    }()
+    private lazy var newEmailTextField = BasicUIElementFactory.generateTextField(placeholder: "New email...",
+                                                                                 keyboardType: .emailAddress,
+                                                                                 returnKeyType: .go,
+                                                                                 delegate: self)
 
-    private let changePasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change password")
+    private lazy var changePasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change password")
 
-    private let currentPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Current password...", secureTextEntry: true)
+    private lazy var currentPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Current password...",
+                                                                                        secureTextEntry: true,
+                                                                                        returnKeyType: .go,
+                                                                                        delegate: self)
 
-    private let newPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "New password...", secureTextEntry: true)
+    private lazy var newPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "New password...",
+                                                                                    secureTextEntry: true,
+                                                                                    returnKeyType: .go,
+                                                                                    delegate: self)
 
-    private let confirmNewPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm new password...", secureTextEntry: true)
+    private lazy var confirmNewPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Confirm new password...",
+                                                                                           secureTextEntry: true,
+                                                                                           returnKeyType: .go,
+                                                                                           delegate: self)
 
-    private let submitChangesButton = BasicUIElementFactory.generateButton(title: "Submit changes")
+    private lazy var submitChangesButton = BasicUIElementFactory.generateButton(title: "Submit changes")
 
-    private let logOutButton = BasicUIElementFactory.generateButton(title: "Log out")
+    private lazy var logOutButton = BasicUIElementFactory.generateButton(title: "Log out")
 
-    private let deleteAccountButton = BasicUIElementFactory.generateButton(title: "Delete account")
+    private lazy var deleteAccountButton = BasicUIElementFactory.generateButton(title: "Delete account")
 
-    private let complianceTextView = BasicUIElementFactory.generateComplianceTextView(login: false)
+    private lazy var complianceTextView = BasicUIElementFactory.generateComplianceTextView(login: false)
 
-    private let versionLabel = BasicUIElementFactory.generateVersionLabel()
+    private lazy var versionLabel = BasicUIElementFactory.generateVersionLabel()
 
 }
 
 // MARK: - View constraints & binding
 
-extension AccountViewController: UITextViewDelegate {
+extension AccountViewController {
 
     private func installViewConstraints() {
         navigationItem.title = "Account"
-        navigationController?.navigationBar.tintColor = GeneralColors.softButton
+        navigationController?.navigationBar.tintColor = GeneralColors.navBarButton
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
                                                                    .font: GeneralFonts.navBarTitle]
         view.backgroundColor = GeneralColors.background
@@ -111,9 +119,9 @@ extension AccountViewController: UITextViewDelegate {
         for subview in stackViewContainer.arrangedSubviews where subview as? UITextField != nil {
             subview.translatesAutoresizingMaskIntoConstraints = false
             subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
-                                             constant: AccountViewController.horizontalEdgeInset).isActive = true
+                                             constant: Self.horizontalEdgeInset).isActive = true
             subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
-                                              constant: -AccountViewController.horizontalEdgeInset).isActive = true
+                                              constant: -Self.horizontalEdgeInset).isActive = true
         }
 
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -148,7 +156,7 @@ extension AccountViewController: UITextViewDelegate {
             .subscribe(onSuccess: { [weak self] currentEmail in
                 if let changeEmailLabel = self?.changeEmailLabel,
                     let currentChangeEmailLabelText = changeEmailLabel.text {
-                    UIView.transition(with: changeEmailLabel, duration: Constants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
+                    UIView.transition(with: changeEmailLabel, duration: GeneralConstants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
                         changeEmailLabel.text = "\(currentChangeEmailLabelText) (\(currentEmail.email))"
                     }, completion: nil)
                 }
@@ -174,7 +182,7 @@ extension AccountViewController: UITextViewDelegate {
     }
 
     private func requestVerificationLink() {
-        viewModel.requestVerificationLink().subscribe(onSuccess: { (_) in
+        viewModel.requestVerificationLink().subscribe(onSuccess: { _ in
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                             title: "Successfully sent verification link."))
         }) { error in
@@ -184,7 +192,7 @@ extension AccountViewController: UITextViewDelegate {
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                     return
             }
 
@@ -193,8 +201,13 @@ extension AccountViewController: UITextViewDelegate {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Failed to send a verification link.",
                                                                                                 subtitle: "Your current email is invalid."))
+            case _ where GeneralConstants.retryErrorCodes.contains(response.statusCode):
+                ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
+                    self?.requestVerificationLink()
+                }
+
             default:
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandlerService.showBasicRetryErrorBanner()
             }
         }.disposed(by: disposeBag)
     }
@@ -212,7 +225,7 @@ extension AccountViewController: UITextViewDelegate {
                 return
             }
 
-            viewModel.changeEmail(to: newEmail).subscribe(onSuccess: { [weak self] (_) in
+            viewModel.changeEmail(to: newEmail).subscribe(onSuccess: { [weak self] _ in
                 NotificationBannerQueue.shared
                     .enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                       title: "Email change succeeded.",
@@ -225,11 +238,11 @@ extension AccountViewController: UITextViewDelegate {
                 }
                 guard let moyaError = error as? MoyaError,
                     let response = moyaError.response else {
-                        ErrorHandler.showBasicRetryErrorBanner()
+                        ErrorHandlerService.showBasicRetryErrorBanner()
                         return
                 }
 
-                ErrorHandler.emailUpdateError(response)
+                ErrorHandlerService.emailUpdateError(response)
             }.disposed(by: disposeBag)
         }
         if (!(currentPasswordTextField.text?.isEmpty ?? true) ||
@@ -254,7 +267,7 @@ extension AccountViewController: UITextViewDelegate {
                 return
             }
 
-            viewModel.changePassword(from: currentPassword, to: newPassword).subscribe(onSuccess: { [weak self] (_) in
+            viewModel.changePassword(from: currentPassword, to: newPassword).subscribe(onSuccess: { [weak self] _ in
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                                 title: "Password change succeeded."))
                 self?.currentPasswordTextField.text = nil
@@ -267,7 +280,7 @@ extension AccountViewController: UITextViewDelegate {
                 }
                 guard let moyaError = error as? MoyaError,
                     let response = moyaError.response else {
-                        ErrorHandler.showBasicRetryErrorBanner()
+                        ErrorHandlerService.showBasicRetryErrorBanner()
                         return
                 }
 
@@ -276,7 +289,7 @@ extension AccountViewController: UITextViewDelegate {
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Your current password is incorrect."))
                 default:
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                 }
             }.disposed(by: disposeBag)
         }
@@ -298,10 +311,10 @@ extension AccountViewController: UITextViewDelegate {
         let confirmationPopUp = UIAlertController(title: "Are you sure?",
                                                   message: "Deleting your account is an irreversible action.",
                                                   preferredStyle: .alert)
-        confirmationPopUp.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] (_) in
+        confirmationPopUp.addAction(UIAlertAction(title: "Yes", style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
 
-            self.viewModel.deleteAccount().subscribe(onSuccess: { (_) in
+            self.viewModel.deleteAccount().subscribe(onSuccess: { _ in
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                                 title: "Successfully deleted account."))
                 self.sessionManager.logout()
@@ -312,7 +325,7 @@ extension AccountViewController: UITextViewDelegate {
                     return
                 }
 
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandlerService.showBasicRetryErrorBanner()
             }.disposed(by: self.disposeBag)
         }))
         confirmationPopUp.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
@@ -320,11 +333,28 @@ extension AccountViewController: UITextViewDelegate {
         self.present(confirmationPopUp, animated: true)
     }
 
-    // MARK: UITextViewDelegate
+}
 
+// MARK: - UITextViewDelegate
+
+extension AccountViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        UIApplication.shared.open(URL)
+        guard !DeepLinkService.willHandle(URL) else { return false }
+
+        let webViewController = WKWebViewControllerFactory.generateWKWebViewController(with: URL)
+        navigationController?.pushViewController(webViewController, animated: true)
         return false
     }
+}
 
+// MARK: - UITextFieldDelegate
+
+extension AccountViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if string == "\n" { // If user clicks enter submit
+            submitChangesButtonTapped()
+            return false
+        }
+        return true
+    }
 }

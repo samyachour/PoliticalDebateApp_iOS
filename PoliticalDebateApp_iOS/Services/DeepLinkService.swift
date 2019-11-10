@@ -17,16 +17,16 @@ struct DeepLinkService {
     private init() {}
 
     enum Constants {
-        static let appNameSpace = "com.PoliticalDebateApp-iOS"
+        static let appNameSpace = "com.PoliticalDebateApp"
         static let primaryKeyKey = "primaryKey"
     }
 
-    static func handle(_ url: URL) {
+    static func willHandle(_ url: URL) -> Bool {
         guard let scheme = url.scheme,
             scheme.localizedCaseInsensitiveCompare(Constants.appNameSpace) == .orderedSame,
             let host = url.host,
             let localHost = UrlHosts(rawValue: host.lowercased()) else {
-                return
+                return false
         }
 
         var parameters: [String: String] = [:]
@@ -38,6 +38,7 @@ struct DeepLinkService {
         case .debate:
             openDebate(with: parameters)
         }
+        return true
     }
 
     private static let debateNetworkService = NetworkService<DebateAPI>()
@@ -45,16 +46,16 @@ struct DeepLinkService {
     static func openDebate(with parameters: [String: String]) {
         guard let primaryKeyString = parameters[Constants.primaryKeyKey],
             let primaryKey = Int(primaryKeyString) else {
+                ErrorHandlerService.showBasicReportErrorBanner()
                 return
         }
 
-        // static class, no need for disposal
         _ = debateNetworkService.makeRequest(with: .debate(primaryKey: primaryKey))
             .map(Debate.self)
             .subscribe(onSuccess: { debate in
                 let pointsTableViewModel = PointsTableViewModel(debate: debate,
                                                                 isStarred: UserDataManager.shared.isStarred(debate.primaryKey),
-                                                                viewState: .standalone)
+                                                                viewState: .standaloneRootPoints)
                 let pointsTableViewController = PointsTableViewController(viewModel: pointsTableViewModel)
                 AppDelegate.shared?.mainNavigationController?.pushViewController(pointsTableViewController, animated: true)
             }) { error in

@@ -8,14 +8,14 @@
 
 import UIKit
 
-// Several of our screens (e.g. Login/Register & Account ViewControllers) use the same boilerplate UI elements
+/// Several of our screens (e.g. Login/Register & Account ViewControllers) use the same boilerplate UI elements
 class BasicUIElementFactory {
 
     // Need to be able to add target to UIButton but use UIBarButtonItem in nav bar
     static func generateBarButton(title: String) -> (button: UIButton, barButton: UIBarButtonItem) {
         let basicBarButton = UIButton(frame: .zero)
         basicBarButton.setTitle(title, for: .normal)
-        basicBarButton.setTitleColor(GeneralColors.softButton, for: .normal)
+        basicBarButton.setTitleColor(GeneralColors.navBarButton, for: .normal)
         basicBarButton.titleLabel?.font = .primaryRegular(16.0)
         return (basicBarButton, UIBarButtonItem(customView: basicBarButton))
     }
@@ -28,7 +28,11 @@ class BasicUIElementFactory {
         return forgotPasswordButton
     }
 
-    static func generateTextField(placeholder: String, secureTextEntry: Bool = false, returnKeyType: UIReturnKeyType = .default) -> UITextField {
+    static func generateTextField(placeholder: String,
+                                  secureTextEntry: Bool = false,
+                                  keyboardType: UIKeyboardType = .default,
+                                  returnKeyType: UIReturnKeyType = .default,
+                                  delegate: UITextFieldDelegate? = nil) -> UITextField {
         let basicTextField = UITextField(frame: .zero)
         basicTextField.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                                   attributes: [
@@ -39,6 +43,7 @@ class BasicUIElementFactory {
         basicTextField.borderStyle = .roundedRect
         basicTextField.isSecureTextEntry = secureTextEntry
         basicTextField.returnKeyType = returnKeyType
+        basicTextField.delegate = delegate
         return basicTextField
     }
 
@@ -48,6 +53,7 @@ class BasicUIElementFactory {
         basicHeadingLabel.textColor = GeneralColors.text
         basicHeadingLabel.font = GeneralFonts.text
         basicHeadingLabel.textAlignment = NSTextAlignment.center
+        basicHeadingLabel.numberOfLines = 0
         return basicHeadingLabel
     }
 
@@ -111,6 +117,18 @@ class BasicUIElementFactory {
             versionLabel.text = "Version \(version)"
         }
         return versionLabel
+    }
+
+    static func generateDescriptionTextView(_ attributedText: NSAttributedString? = nil) -> UITextView {
+        let descriptionTextView = LinkResponsiveTextView(frame: .zero)
+        descriptionTextView.isEditable = false
+        descriptionTextView.dataDetectorTypes = .link
+        descriptionTextView.isUserInteractionEnabled = true
+        descriptionTextView.isScrollEnabled = false
+        descriptionTextView.backgroundColor = .clear
+        descriptionTextView.attributedText = attributedText
+        descriptionTextView.sizeToFit()
+        return descriptionTextView
     }
 
 }

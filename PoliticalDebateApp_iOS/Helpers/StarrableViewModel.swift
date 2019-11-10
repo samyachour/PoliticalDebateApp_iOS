@@ -21,7 +21,7 @@ protocol StarrableViewModel: AnyObject {
 
 extension StarrableViewModel {
     var starTintColor: UIColor {
-        return isStarred ? .customLightGreen2 : .customLightGray1
+        return isStarred ? GeneralColors.starredTint : GeneralColors.unstarredTint
     }
 
     func starOrUnstarDebate() -> Single<Response?> {

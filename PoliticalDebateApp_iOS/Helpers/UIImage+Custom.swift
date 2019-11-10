@@ -11,5 +11,5 @@ import UIKit
 extension UIImage {
     static let star = UIImage(named: "Star")
     static let check = UIImage(named: "Check")
-    static let home = UIImage(named: "Home")
+    static let undoArrow = UIImage(named: "UndoArrow")
 }

@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         SessionManager.shared.resumeSession()
+        UserDataManager.shared.loadUserData()
 
         window = UIWindow(frame: UIScreen.main.bounds)
 
@@ -63,12 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
-        CoreDataService.saveContext()
-    }
-
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        DeepLinkService.handle(url)
-        return true
+        UserDataManager.shared.saveUserData()
     }
 
 }

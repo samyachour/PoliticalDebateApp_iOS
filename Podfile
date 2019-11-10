@@ -9,16 +9,17 @@ target 'PoliticalDebateApp_iOS' do
 
   # Pods for PoliticalDebateApp_iOS
 
-  pod 'RxSwift', '~> 4'
-  pod 'RxCocoa', '~> 4'
+  pod 'RxSwift', :git => 'https://github.com/ReactiveX/RxSwift.git'
+  pod 'RxCocoa', :git => 'https://github.com/ReactiveX/RxSwift.git'
+  pod 'RxDataSources'
   pod 'SwiftLint'
-  pod 'Moya/RxSwift', '~> 13.0'
+  pod 'Moya/RxSwift', '~> 14.0.0-beta.4'
 
   target 'PoliticalDebateApp_iOSTests' do
     inherit! :search_paths
     # Pods for testing
-    pod 'RxBlocking', '~> 4'
-    pod 'RxTest', '~> 4'
+    pod 'RxBlocking'
+    pod 'RxTest'
   end
 
   target 'PoliticalDebateApp_iOSUITests' do

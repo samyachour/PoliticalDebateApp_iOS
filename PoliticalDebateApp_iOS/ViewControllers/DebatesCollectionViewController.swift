@@ -8,6 +8,7 @@
 
 import Moya
 import RxCocoa
+import RxDataSources
 import RxSwift
 import UIKit
 
@@ -16,7 +17,7 @@ class DebatesCollectionViewController: UIViewController {
 
     required init(viewModel: DebatesCollectionViewModel) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil) // we don't use nibs
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -30,16 +31,12 @@ class DebatesCollectionViewController: UIViewController {
 
         installViewConstraints()
         installViewBinds()
-
-        UserDataManager.shared.loadUserData { [weak self] in
-            self?.viewModel.refreshDebatesWithLocalData()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        viewModel.refreshDebatesWithLocalData()
+        viewModel.triggerRefreshDebatesWithLocalData()
     }
 
     // MARK: - Dependencies
@@ -55,10 +52,9 @@ class DebatesCollectionViewController: UIViewController {
     private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
     private let manualRefreshRelay = BehaviorRelay<Void>(value: ())
 
-    // On this screen we are constantly running multiple animations at once
-    // There is a problem when animation blocks are not called serially
-    // They start to overlap and the parameters (duration, options, etc.) bleed into each other
-    // To prevent this we enforce synchronization with a relay
+    /// On this screen we are constantly running multiple animations at once and there is a problem when animation blocks are not called serially:
+    /// They start to overlap and the parameters (duration, options, etc.) bleed into each other.
+    /// To prevent this we enforce synchronization with a relay.
     private var animationBlocksRelay = PublishRelay<() -> Void>()
 
     // MARK: - UI Properties
@@ -79,29 +75,31 @@ class DebatesCollectionViewController: UIViewController {
 
     // MARK: - UI Elements
 
-    private let loginButton = BasicUIElementFactory.generateBarButton(title: "Log in")
+    private lazy var loginButton = BasicUIElementFactory.generateBarButton(title: "Log in")
 
-    private let accountButton = BasicUIElementFactory.generateBarButton(title: "Account")
+    private lazy var accountButton = BasicUIElementFactory.generateBarButton(title: "Account")
 
-    private let headerElementsContainer = UIView(frame: .zero)
+    private lazy var headerElementsContainer = UIView(frame: .zero)
 
-    private let sortByButton = BasicUIElementFactory.generateButton(title: DebatesCollectionViewController.sortByDefaultlabel, titleColor: GeneralColors.softButton)
+    private lazy var sortByButton = BasicUIElementFactory.generateButton(title: DebatesCollectionViewController.sortByDefaultlabel,
+                                                                         titleColor: GeneralColors.softButton)
 
-    private let sortByPickerView: UIPickerView = {
+    private lazy var sortByPickerView: UIPickerView = {
         let sortByPickerView = UIPickerView()
         sortByPickerView.backgroundColor = GeneralColors.background
         return sortByPickerView
     }()
 
-    private let searchTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Search...", returnKeyType: .search)
+    private lazy var searchTextField: UITextField = BasicUIElementFactory.generateTextField(placeholder: "Search...",
+                                                                                            returnKeyType: .search)
 
-    private let collectionViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
+    private lazy var collectionViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
 
     private var orientedCollectionViewItemSize: CGSize {
         let isPortrait = UIApplication.shared.statusBarOrientation.isPortrait
         let widthDividend: CGFloat = isPortrait ? 2 : 3
         let spaces: CGFloat = isPortrait ? 3 : 4
-        let cellWidthAndHeight = (UIScreen.main.bounds.width - (spaces * DebatesCollectionViewController.cellSpacing))/widthDividend
+        let cellWidthAndHeight = (UIScreen.main.bounds.width - (spaces * Self.cellSpacing))/widthDividend
         return CGSize(width: cellWidthAndHeight, height: cellWidthAndHeight)
     }
     private lazy var currentItemSize = orientedCollectionViewItemSize
@@ -110,8 +108,8 @@ class DebatesCollectionViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         // Not using flow layout delegate
-        layout.minimumLineSpacing = DebatesCollectionViewController.cellSpacing
-        layout.minimumInteritemSpacing = DebatesCollectionViewController.cellSpacing
+        layout.minimumLineSpacing = Self.cellSpacing
+        layout.minimumInteritemSpacing = Self.cellSpacing
         layout.itemSize = currentItemSize
 
         let debatesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -122,9 +120,9 @@ class DebatesCollectionViewController: UIViewController {
         return debatesCollectionView
     }()
 
-    private let debatesRefreshControl = UIRefreshControl()
+    private lazy var debatesRefreshControl = UIRefreshControl()
 
-    private let emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No debates to show.")
+    private lazy var emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No debates to show.")
 
 }
 
@@ -133,7 +131,7 @@ extension DebatesCollectionViewController: UITextFieldDelegate {
     // Expand the text field
     func textFieldDidBeginEditing(_ textField: UITextField) {
         animationBlocksRelay.accept { [weak self] in
-            UIView.animate(withDuration: Constants.standardAnimationDuration, delay: 0.0, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, delay: 0.0, options: .curveEaseInOut, animations: {
                 self?.searchTextFieldTrailingAnchor?.isActive = true
                 self?.view.layoutIfNeeded()
             }, completion: nil)
@@ -160,7 +158,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: GeneralColors.navBarTitle,
                                                                    .font: GeneralFonts.navBarTitle]
         navigationController?.navigationBar.barTintColor = GeneralColors.navBarTint
-        view.backgroundColor = DebatesCollectionViewController.backgroundColor
+        view.backgroundColor = Self.backgroundColor
 
         headerElementsContainer.addSubview(searchTextField)
         headerElementsContainer.addSubview(sortByButton)
@@ -178,16 +176,16 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        headerElementsContainer.backgroundColor = DebatesCollectionViewController.backgroundColor
+        headerElementsContainer.backgroundColor = Self.backgroundColor
         headerElementsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                         constant: DebatesCollectionViewController.headerElementsXDistance).isActive = true
+                                                         constant: Self.headerElementsXDistance).isActive = true
         headerElementsContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
         headerElementsContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                          constant: -DebatesCollectionViewController.headerElementsXDistance).isActive = true
+                                                          constant: -Self.headerElementsXDistance).isActive = true
 
         searchTextField.leadingAnchor.constraint(equalTo: headerElementsContainer.leadingAnchor).isActive = true
         searchTextField.topAnchor.constraint(equalTo: headerElementsContainer.topAnchor,
-                                             constant: DebatesCollectionViewController.headerElementsYDistance).isActive = true
+                                             constant: Self.headerElementsYDistance).isActive = true
         searchTextFieldTrailingAnchor = searchTextField.trailingAnchor.constraint(equalTo: sortByButton.leadingAnchor, constant: -8)
         searchTextFieldTrailingAnchor?.isActive = false
         searchTextField.bottomAnchor.constraint(equalTo: headerElementsContainer.bottomAnchor).isActive = true
@@ -199,19 +197,19 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         sortByButton.setContentHuggingPriority(.required, for: .horizontal)
 
         sortByPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                  constant: DebatesCollectionViewController.headerElementsXDistance).isActive = true
+                                                  constant: Self.headerElementsXDistance).isActive = true
         sortByPickerViewTopAnchor = sortByPickerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: -8)
         sortByPickerViewTopAnchor?.isActive = false
         sortByPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                   constant: -DebatesCollectionViewController.headerElementsXDistance).isActive = true
+                                                   constant: -Self.headerElementsXDistance).isActive = true
         sortByPickerViewBottomAnchor = sortByPickerView.bottomAnchor.constraint(equalTo: view.topAnchor)
         sortByPickerViewBottomAnchor?.isActive = true
 
         collectionViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
-                                                         constant: DebatesCollectionViewController.cellSpacing).isActive = true
+                                                         constant: Self.cellSpacing).isActive = true
         collectionViewContainer.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 2).isActive = true
         collectionViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-                                                          constant: -DebatesCollectionViewController.cellSpacing).isActive = true
+                                                          constant: -Self.cellSpacing).isActive = true
         collectionViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
 
         debatesCollectionView.leadingAnchor.constraint(equalTo: collectionViewContainer.leadingAnchor).isActive = true
@@ -242,9 +240,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     private func installViewBinds() {
         searchTextField.delegate = self
 
-        sessionManager.isActiveRelay
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] isActive in
+        sessionManager.isActiveDriver
+            .drive(onNext: { [weak self] isActive in
                 if isActive {
                     self?.navigationItem.rightBarButtonItem = self?.accountButton.barButton
                 } else {
@@ -258,7 +255,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         // Set up picker options
         Observable.just(SortByOption.allCases.map { $0.stringValue })
-            .bind(to: sortByPickerView.rx.itemTitles) { _, optionLabel in
+            .bind(to: sortByPickerView.rx.itemTitles) { (_, optionLabel) in
                 optionLabel
             }.disposed(by: disposeBag)
 
@@ -267,14 +264,14 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             self?.sortSelectionRelay.accept(SortByOption(rawValue: item.row) ?? SortByOption.defaultValue)
         }).disposed(by: disposeBag)
 
-        let sharedSortSelectionRelay = sortSelectionRelay.asDriver().asSharedSequence()
+        let sortSelectionDriver = sortSelectionRelay.asDriver()
 
-        sharedSortSelectionRelay.drive(onNext: { [weak self] pickerChoice in
+        sortSelectionDriver.drive(onNext: { [weak self] pickerChoice in
             self?.updateSortBySelection(pickerChoice)
         }).disposed(by: disposeBag)
 
         viewModel.subscribeToManualDebateUpdates(searchTriggeredRelay.asDriver(),
-                                                 sharedSortSelectionRelay,
+                                                 sortSelectionDriver,
                                                  manualRefreshRelay.asDriver())
 
         animationBlocksRelay.subscribe(onNext: { animationBlock in
@@ -288,11 +285,11 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         debatesCollectionView.rx
             .modelSelected(DebateCollectionViewCellViewModel.self)
-            .subscribe(onNext: { [weak self] (debateCollectionViewCellViewModel) in
+            .subscribe(onNext: { [weak self] debateCollectionViewCellViewModel in
                 self?.navigationController?
                     .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debateCollectionViewCellViewModel.debate,
                                                                                                   isStarred: debateCollectionViewCellViewModel.isStarred,
-                                                                                                  viewState: .standalone)),
+                                                                                                  viewState: .standaloneRootPoints)),
                                         animated: true)
         }).disposed(by: disposeBag)
 
@@ -317,28 +314,32 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     }
 
     @objc private func activateSearch() {
-        searchTriggeredRelay.accept(searchTextField.text ?? DebatesCollectionViewController.defaultSearchString)
+        searchTriggeredRelay.accept(searchTextField.text ?? Self.defaultSearchString)
         hideActiveUIElements()
     }
 
     private func installCollectionViewDataSource() {
         debatesCollectionView.register(DebateCollectionViewCell.self, forCellWithReuseIdentifier: DebateCollectionViewCell.reuseIdentifier)
-        viewModel.sharedDebatesDataSourceRelay
-            .subscribe(onNext: { [weak self] (debateCollectionViewCellViewModels) in
+        viewModel.debatesDataSourceDriver
+            .drive(onNext: { [weak self] debateCollectionViewSections in
                 self?.debatesRefreshControl.endRefreshing()
-                UIView.animate(withDuration: Constants.standardAnimationDuration, animations: { [weak self] in
-                    self?.emptyStateLabel.alpha = debateCollectionViewCellViewModels.isEmpty ? 1.0 : 0.0
-                    self?.debatesCollectionView.alpha = debateCollectionViewCellViewModels.isEmpty ? 0.0 : 1.0
+                UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
+                    self?.emptyStateLabel.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 1.0 : 0.0
+                    self?.debatesCollectionView.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 0.0 : 1.0
                 })
             }).disposed(by: disposeBag)
 
-        viewModel.sharedDebatesDataSourceRelay
-            .bind(to: debatesCollectionView.rx.items(cellIdentifier: DebateCollectionViewCell.reuseIdentifier,
-                                                     cellType: DebateCollectionViewCell.self)) { _, viewModel, cell in
-            cell.viewModel = viewModel
-        }.disposed(by: disposeBag)
+        let dataSource = RxCollectionViewSectionedAnimatedDataSource<DebatesCollectionViewSection>(
+            configureCell: { (_, collectionView, indexPath, viewModel) -> UICollectionViewCell in
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DebateCollectionViewCell.reuseIdentifier, for: indexPath)
+                if let debateCell = cell as? DebateCollectionViewCell { debateCell.viewModel = viewModel }
+                return cell
+        })
+        viewModel.debatesDataSourceDriver
+            .drive(debatesCollectionView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
 
-        viewModel.debatesRetrievalErrorRelay.subscribe(onNext: { [weak self] error in
+        viewModel.debatesRetrievalErrorSignal.emit(onNext: { [weak self] error in
             self?.debatesRefreshControl.endRefreshing()
 
             if let generalError = error as? GeneralError,
@@ -347,15 +348,19 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             }
             guard let moyaError = error as? MoyaError,
                 let response = moyaError.response else {
-                    ErrorHandler.showBasicRetryErrorBanner()
+                    ErrorHandlerService.showBasicRetryErrorBanner()
                     return
             }
 
             switch response.statusCode {
             case 400:
-                ErrorHandler.showBasicReportErrorBanner()
+                ErrorHandlerService.showBasicReportErrorBanner()
+            case _ where GeneralConstants.retryErrorCodes.contains(response.statusCode):
+                ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
+                    self?.manualRefreshRelay.accept(())
+                }
             default:
-                ErrorHandler.showBasicRetryErrorBanner()
+                ErrorHandlerService.showBasicRetryErrorBanner()
             }
         }).disposed(by: disposeBag)
     }
@@ -373,7 +378,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         }
         if searchTextField.text?.isEmpty ?? true { // Shrink the text field if it's empty
             animationBlocksRelay.accept { [weak self] in
-                UIView.animate(withDuration: Constants.standardAnimationDuration,
+                UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
                                delay: 0.0,
                                options: .curveEaseInOut,
                                animations: {
@@ -387,11 +392,16 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     private func updateSortBySelection(_ pickerChoice: SortByOption) {
         animationBlocksRelay.accept { [weak self] in
             guard let sortByButton = self?.sortByButton else { return }
-            UIView.transition(with: sortByButton, duration: Constants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
-                self?.sortByButton.setTitle(pickerChoice.stringValue,
-                                            for: .normal)
-                self?.sortByButton.setTitleColor(pickerChoice.selectionColor, for: .normal)
-            }, completion: nil)
+
+            UIView.transition(with: sortByButton,
+                              duration: GeneralConstants.standardAnimationDuration,
+                              options: .transitionCrossDissolve,
+                              animations: {
+                                self?.sortByButton.setTitle(pickerChoice.stringValue,
+                                                            for: .normal)
+                                self?.sortByButton.setTitleColor(pickerChoice.selectionColor, for: .normal)
+            },
+                              completion: nil)
         }
     }
 
@@ -419,6 +429,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 }
 
 // MARK: - Device rotation
+
 extension DebatesCollectionViewController {
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { [weak self] _ in

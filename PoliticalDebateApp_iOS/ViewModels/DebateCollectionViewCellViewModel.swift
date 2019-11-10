@@ -8,10 +8,11 @@
 
 import Moya
 import RxCocoa
+import RxDataSources
 import RxSwift
 import UIKit
 
-class DebateCollectionViewCellViewModel: StarrableViewModel {
+class DebateCollectionViewCellViewModel: StarrableViewModel, IdentifiableType, Equatable {
     let debate: Debate
     var completedPercentage: Int
     var isStarred: Bool
@@ -20,5 +21,19 @@ class DebateCollectionViewCellViewModel: StarrableViewModel {
         self.debate = debate
         self.completedPercentage = completedPercentage
         self.isStarred = isStarred
+    }
+
+    // MARK: IdentifiableType
+
+    typealias Identity = Int
+    var identity: Int { return debate.primaryKey }
+
+    // MARK: Equatable
+
+    static func == (lhs: DebateCollectionViewCellViewModel, rhs: DebateCollectionViewCellViewModel) -> Bool {
+        return lhs.debate == rhs.debate &&
+            lhs.completedPercentage == rhs.completedPercentage &&
+            lhs.isStarred == rhs.isStarred &&
+            lhs.debate.title == rhs.debate.title
     }
 }
