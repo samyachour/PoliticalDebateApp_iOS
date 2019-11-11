@@ -16,6 +16,7 @@ enum GeneralConstants {
     static let minimumPasswordLength = 6 // dictated by backend
     static let retryErrorCodes = [408, 502, 503, 504]
     static let unauthorizedErrorCode = 401
+    static let customErrorCode = 400
     static let maxAttemptCount = 3
     static let timeBetweenRetries = 1.0
     static let appBaseURL: String = {

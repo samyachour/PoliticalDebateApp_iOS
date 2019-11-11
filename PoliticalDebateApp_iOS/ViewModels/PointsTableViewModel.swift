@@ -13,8 +13,18 @@ import RxSwift
 
 enum PointsTableViewState {
     case standaloneRootPoints
-    case embeddedPointHistory
-    case embeddedRebuttals
+    case embeddedPointHistory(embeddedSidedPoints: [Point])
+    case embeddedRebuttals(embeddedSidedPoints: [Point])
+
+    var shouldCellsUseFullDescription: Bool {
+        switch self {
+        case .embeddedPointHistory:
+            return true
+        case .embeddedRebuttals,
+             .standaloneRootPoints:
+            return false
+        }
+    }
 }
 
 struct PointsTableViewSection: AnimatableSectionModelType {
@@ -36,34 +46,24 @@ class PointsTableViewModel: StarrableViewModel {
 
     init(debate: Debate,
          isStarred: Bool = false,
-         viewState: PointsTableViewState,
-         embeddedSidedPoints: [Point]? = nil) {
+         viewState: PointsTableViewState) {
         self.debate = debate
         self.isStarred = isStarred
         self.viewState = viewState
-        self.embeddedSidedPoints = embeddedSidedPoints
 
         switch viewState {
-        case .embeddedPointHistory:
-            guard let embeddedSidedPoints = embeddedSidedPoints else {
-                fatalError("Should have embedded side points for history table")
-            }
-
+        case .embeddedPointHistory(let embeddedSidedPoints):
             sidedPointsRelay = .init(value: embeddedSidedPoints)
             markPointAsSeen(point: embeddedSidedPoints.first)
-        case .embeddedRebuttals:
-            guard let embeddedSidedPoints = embeddedSidedPoints else {
-                fatalError("Should have embedded side points for rebuttals table")
-            }
-
+        case .embeddedRebuttals(let embeddedSidedPoints):
             sidedPointsRelay = .init(value: embeddedSidedPoints)
         case .standaloneRootPoints:
             sidedPointsRelay = .init(value: debate.sidedPoints)
             contextPointsDataSourceRelay = .init(value: debate.contextPoints)
+            subscribeToContextPointsUpdates()
         }
 
         subscribeSidedPointsUpdates()
-        subscribeToContextPointsUpdates()
     }
 
     private let disposeBag = DisposeBag()
@@ -77,7 +77,6 @@ class PointsTableViewModel: StarrableViewModel {
     // Private
 
     private let sidedPointsRelay: BehaviorRelay<[Point]>
-    private var embeddedSidedPoints: [Point]?
     private lazy var sidedPointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
 
     private func subscribeSidedPointsUpdates() {
@@ -93,7 +92,7 @@ class PointsTableViewModel: StarrableViewModel {
                 let newSidedPointCellViewModels = points
                     .map({ SidedPointTableViewCellViewModel(point: $0,
                                                             debatePrimaryKey: debatePrimaryKey,
-                                                            useFullDescription: viewState == .embeddedPointHistory) })
+                                                            useFullDescription: viewState.shouldCellsUseFullDescription) })
                 self?.sidedPointsDataSourceRelay.accept([PointsTableViewSection(original: currentSidedPointsDataSourceSection,
                                                                                 items: newSidedPointCellViewModels)])
         }).disposed(by: disposeBag)
@@ -112,8 +111,6 @@ class PointsTableViewModel: StarrableViewModel {
     private lazy var contextPointsDataSourceSingle = contextPointsDataSourceRelay?.take(1).asSingle()
 
     private func subscribeToContextPointsUpdates() {
-        guard viewState == .standaloneRootPoints else { return }
-
         contextPointsDataSourceSingle?
             .flatMap({ (contextPoints) -> Single<[Point]> in
                 return UserDataManager.shared.userDataLoadedSingle

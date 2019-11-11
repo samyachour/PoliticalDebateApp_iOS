@@ -281,7 +281,7 @@ extension AccountViewController {
                 }
 
                 switch response.statusCode {
-                case BackendErrorMessage.customErrorCode:
+                case GeneralConstants.customErrorCode:
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Your current password is incorrect."))
                 default:

@@ -274,7 +274,7 @@ extension LoginOrRegisterViewController {
                     return
             }
             switch response.statusCode {
-            case BackendErrorMessage.customErrorCode:
+            case GeneralConstants.customErrorCode:
                 if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
                     if backendErrorMessage.messageString.contains(BackendErrorMessage.unverifiedEmailKeyword) {
                         let errorAlert = UIAlertController(title: GeneralCopies.errorAlertTitle,

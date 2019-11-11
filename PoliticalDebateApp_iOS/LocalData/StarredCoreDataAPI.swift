@@ -22,7 +22,7 @@ struct StarredCoreDataAPI {
         // Explicit type for generic method
         let localDebateRecords: [LocalDebate]? = CoreDataService
             .fetchRecordsForEntity(CoreDataConstants.debateEntity,
-                                   with: Self.debatePrimaryKeyPredicate(debatePrimaryKey),
+                                   with: Self.generatePrimaryKeyPredicate(debatePrimaryKey),
                                    unique: true)
         let localDebate: LocalDebate = localDebateRecords?.first ?? CoreDataService.createRecord()
         localDebate.primaryKey = Int32(debatePrimaryKey)
@@ -66,10 +66,10 @@ struct StarredCoreDataAPI {
 
     // MARK: - Predicates
 
-    private static func debatePrimaryKeyPredicate(_ debatePrimaryKey: PrimaryKey) -> NSPredicate {
+    private static func generatePrimaryKeyPredicate(_ primaryKey: PrimaryKey) -> NSPredicate {
         return NSPredicate(format: "%K = %@",
                            CoreDataConstants.primaryKeyAttribute,
-                           NSNumber(value: debatePrimaryKey))
+                           NSNumber(value: primaryKey))
     }
 
 }
