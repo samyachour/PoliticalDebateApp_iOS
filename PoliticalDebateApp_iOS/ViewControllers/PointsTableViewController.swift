@@ -30,8 +30,6 @@ class PointsTableViewController: UIViewController {
 
         installViewBinds()
         installViewConstraints()
-
-        viewModel.retrieveAllDebatePoints()
     }
 
     private var firstViewDidAppear = true
@@ -65,24 +63,8 @@ class PointsTableViewController: UIViewController {
     private var pointsTableViewTopAnchor: NSLayoutConstraint?
     private var pointsTableViewHiddenTopAnchor: NSLayoutConstraint?
     private var pointsTableViewBottomAnchor: NSLayoutConstraint?
-    private var tableViewContainerTopAnchor: NSLayoutConstraint? {
-        didSet {
-            if let oldValue = oldValue {
-                oldValue.isActive = false
-                tableViewContainer.removeConstraint(oldValue)
-            }
-            tableViewContainerTopAnchor?.isActive = true
-        }
-    }
 
     // MARK: - UI Elements
-
-    private lazy var loadingIndicator: UIActivityIndicatorView = {
-        let loadingIndicator = UIActivityIndicatorView(style: .whiteLarge)
-        loadingIndicator.color = .customDarkGray2
-        loadingIndicator.hidesWhenStopped = true
-        return loadingIndicator
-    }()
 
     private lazy var contextTextViewsStackView: UIStackView = {
         let contextTextViewsStackView = UIStackView(frame: .zero)
@@ -136,7 +118,6 @@ extension PointsTableViewController {
             starredButton.tintColor = viewModel.starTintColor
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: starredButton)
             view.backgroundColor = GeneralColors.background
-            installLoadingIndicator()
         case .embeddedPointHistory:
             parent?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: undoButton)
             fallthrough
@@ -162,15 +143,14 @@ extension PointsTableViewController {
         pointsTableViewBottomAnchor?.isActive = true
 
         switch viewModel.viewState {
-        case .standaloneRootPoints:
+        case .standaloneRootPoints where viewModel.shouldShowContextPointsView:
             view.addSubview(contextTextViewsStackView)
             contextTextViewsStackView.translatesAutoresizingMaskIntoConstraints = false
             contextTextViewsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Self.elementSpacing).isActive = true
             contextTextViewsStackView.topAnchor.constraint(equalTo: topLayoutAnchor, constant: Self.elementSpacing).isActive = true
             contextTextViewsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Self.elementSpacing).isActive = true
-            contextTextViewsStackView.alpha = 0.0
 
-            tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: contextTextViewsStackView.bottomAnchor, constant: 4)
+            tableViewContainer.topAnchor.constraint(equalTo: contextTextViewsStackView.bottomAnchor, constant: 4).isActive = true
         case .embeddedRebuttals:
             // Set the height to the entire screen as a backup so when we move the table offscreen
             // it will expand and visibleCells will include all the tableView cells
@@ -179,28 +159,9 @@ extension PointsTableViewController {
             pointsTableViewHiddenTopAnchor?.isActive = false
             hideTableViewToRecomputeHeight(animated: false)
             fallthrough
-        case .embeddedPointHistory:
-            tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
-        }
-    }
-
-    private func installLoadingIndicator() {
-        view.addSubview(loadingIndicator)
-        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
-        loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        loadingIndicator.startAnimating()
-    }
-
-    private func updateContentTextViewsStackView(shouldShow: Bool) {
-        switch viewModel.viewState {
-        case .standaloneRootPoints where !shouldShow,
-            .embeddedPointHistory,
-            .embeddedRebuttals:
-            tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
-            contextTextViewsStackView.removeFromSuperview()
-        case .standaloneRootPoints:
-            break
+        case .standaloneRootPoints,
+             .embeddedPointHistory:
+            tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
         }
     }
 
@@ -323,42 +284,10 @@ extension PointsTableViewController {
         viewModel.viewControllerToPushSignal.emit(onNext: { [weak self] viewController in
             self?.navigationController?.pushViewController(viewController, animated: true)
         }).disposed(by: disposeBag)
-
-        viewModel.sidedPointsDataSourceDriver
-            .drive(onNext: { [weak self] pointsTableViewCellViewModels in
-                UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
-                    self?.contextTextViewsStackView.alpha = pointsTableViewCellViewModels.isEmpty ? 0.0 : 1.0
-                    self?.loadingIndicator.stopAnimating()
-                })
-            }).disposed(by: disposeBag)
-
-        viewModel.pointsRetrievalErrorSignal.emit(onNext: { error in
-            if let generalError = error as? GeneralError,
-                generalError == .alreadyHandled {
-                return
-            }
-            guard let moyaError = error as? MoyaError,
-                let response = moyaError.response else {
-                    ErrorHandlerService.showBasicRetryErrorBanner()
-                    return
-            }
-
-            switch response.statusCode {
-            case 400:
-                ErrorHandlerService.showBasicReportErrorBanner()
-            case _ where GeneralConstants.retryErrorCodes.contains(response.statusCode):
-                ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
-                    self?.viewModel.retrieveAllDebatePoints()
-                }
-            default:
-                ErrorHandlerService.showBasicRetryErrorBanner()
-            }
-        }).disposed(by: disposeBag)
     }
 
     private func installContextTextViewsDataSource() {
-        viewModel.contextPointsDataSourceDriver.drive(onNext: { [weak self] contextPoints in
-            self?.updateContentTextViewsStackView(shouldShow: !contextPoints.isEmpty)
+        viewModel.contextPointsDataSourceDriver?.drive(onNext: { [weak self] contextPoints in
             guard !contextPoints.isEmpty else { return }
 
             let contextTextViews: [UITextView] = contextPoints.map { [weak self] contextPoint in

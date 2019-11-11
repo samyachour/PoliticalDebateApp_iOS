@@ -51,19 +51,16 @@ class UserDataManager {
     }
 
     private func updateProgress(pointPrimaryKey: PrimaryKey,
-                                debatePrimaryKey: PrimaryKey,
-                                totalPoints: Int) {
+                                debatePrimaryKey: PrimaryKey) {
         var allProgress = allProgressRelay.value
         if let debateProgress = allProgress[debatePrimaryKey],
             !debateProgress.seenPoints.contains(pointPrimaryKey) {
             var seenPoints = debateProgress.seenPoints
             seenPoints.append(pointPrimaryKey)
-            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
-            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: seenPoints)
         } else {
             let seenPoints = [pointPrimaryKey]
-            let completedPercentage = (Float(seenPoints.count) / Float(totalPoints)) * 100
-            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: Int(completedPercentage), seenPoints: seenPoints)
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: seenPoints)
         }
         allProgressRelay.accept(allProgress)
     }
@@ -107,7 +104,7 @@ class UserDataManager {
         if let debateProgress = allProgress[debatePrimaryKey] {
             return debateProgress
         } else {
-            let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey, completedPercentage: 0, seenPoints: [])
+            let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: [])
             allProgress[debatePrimaryKey] = debateProgress
             allProgressRelay.accept(allProgress)
             return debateProgress
@@ -115,8 +112,7 @@ class UserDataManager {
     }
 
     func markProgress(pointPrimaryKey: PrimaryKey,
-                      debatePrimaryKey: PrimaryKey,
-                      totalPoints: Int) -> Single<Response?> {
+                      debatePrimaryKey: PrimaryKey) -> Single<Response?> {
         guard !(allProgressRelay.value[debatePrimaryKey]?.seenPoints.contains(pointPrimaryKey) ?? false) else {
             return .just(nil) // already have this data
         }
@@ -124,11 +120,11 @@ class UserDataManager {
         if SessionManager.shared.isActive {
             return progressNetworkService.makeRequest(with: .saveProgress(debatePrimaryKey: debatePrimaryKey, pointPrimaryKey: pointPrimaryKey))
                 .do(onSuccess: { (_) in
-                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                    self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
                 }).map { $0 as Response? }
         } else {
-            ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-            updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+            ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
+            updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
             return Single.create {
                 $0(.success(nil))
                 return Disposables.create()
@@ -137,26 +133,24 @@ class UserDataManager {
     }
 
     func markBatchProgress(pointPrimaryKeys: [PrimaryKey],
-                           debatePrimaryKey: PrimaryKey,
-                           totalPoints: Int) -> Single<Response?> {
+                           debatePrimaryKey: PrimaryKey) -> Single<Response?> {
         let newPointPrimaryKeys = pointPrimaryKeys
             .filter({ !(allProgressRelay.value[debatePrimaryKey]?.seenPoints.contains($0) ?? false) })
         guard !newPointPrimaryKeys.isEmpty else { return .just(nil) } // already have this data
 
         if SessionManager.shared.isActive {
             let debateProgress = Progress(debatePrimaryKey: debatePrimaryKey,
-                                          completedPercentage: 0, // doesn't get sent to the backend anyway
                                           seenPoints: newPointPrimaryKeys)
             return progressNetworkService.makeRequest(with: .saveBatchProgress(batchProgress: BatchProgress(allDebatePoints: [debateProgress])))
                 .do(onSuccess: { (_) in
                     newPointPrimaryKeys.forEach { (pointPrimaryKey) in
-                        self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                        self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
                     }
                 }).map { $0 as Response? }
         } else {
             newPointPrimaryKeys.forEach { (pointPrimaryKey) in
-                ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
-                self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey, totalPoints: totalPoints)
+                ProgressCoreDataAPI.saveProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
+                self.updateProgress(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey)
             }
             return Single.create {
                 $0(.success(nil))
@@ -165,12 +159,22 @@ class UserDataManager {
         }
     }
 
+    /// Remove local points that don't exist on the backend anymore
+    func removeStaleLocalPoints(from debate: Debate) {
+        let localSeenPoints = getProgress(for: debate.primaryKey).seenPoints
+        let allDebatePointsPrimaryKeys = debate.allPointsPrimaryKeys
+        localSeenPoints.filter { primaryKey -> Bool in
+            return !allDebatePointsPrimaryKeys.contains(primaryKey)
+        }.forEach { primaryKey in
+            ProgressCoreDataAPI.removePoint(primaryKey)
+        }
+    }
+
     // MARK: - Saving/Loading user data
 
     // Private
 
     private lazy var userDataLoadedRelay = BehaviorRelay<(firstEmission: Bool, loaded: Bool)>(value: (true, false))
-    /// Always skip the first emission
 
     private func loadStarred(_ completion: @escaping (_ error: Error?) -> Void) {
         if SessionManager.shared.isActive {
@@ -271,8 +275,8 @@ class UserDataManager {
     }
     /// Emits every time after the intiial loading of user data
     lazy var userDataLoadedDriver: Driver<Bool> = {
-        let skipCount = userDataLoadedRelay.value.firstEmission ? 2 : 1
-        return userDataLoadedRelay.asDriver().skip(skipCount).map({ return $1 })
+        return userDataLoadedRelay.asDriver().filter({ !$0.firstEmission })
+            .skip(1).map({ return $1 })
     }()
 
     func loadUserData() {
@@ -313,19 +317,22 @@ class UserDataManager {
 
     // Private
 
-    private func syncLocalStarredDataToBackend(_ completion: @escaping (Bool) -> Void) {
+    private func syncLocalStarredDataToBackend(_ completion: @escaping () -> Void) {
         guard !starredRelay.value.isEmpty else {
-            completion(false)
+            completion()
             return
         }
 
         _ = starredNetworkService.makeRequest(with: .starOrUnstarDebates(starred: starredArray, unstarred: [])).subscribe(onSuccess: { _ in
             // We've successfully sync'd the local data to the backend, now we can clear it
             StarredCoreDataAPI.clearAllStarred()
-            completion(true)
+            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                            title: "Successfully synced your local starred data to the cloud."))
+            completion()
         }) { error in
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {
+                completion()
                 return
             }
             NotificationBannerQueue.shared
@@ -337,14 +344,17 @@ class UserDataManager {
                                                                                                      action: {
                                                                                                         self.syncLocalStarredDataToBackend(completion)
                                                                     })))
-            completion(false)
+            completion()
         }
     }
 
-    private func syncLocalProgressDataToBackend(_ completion: @escaping (Bool) -> Void) {
-        let legitimateProgress = allProgressArray.filter({ !($0.seenPoints).isEmpty })
+    private var legitimateProgress: [Progress] {
+        return allProgressArray.filter({ !$0.seenPoints.isEmpty })
+    }
+
+    private func syncLocalProgressDataToBackend(_ completion: @escaping () -> Void) {
         guard !legitimateProgress.isEmpty else {
-            completion(false)
+            completion()
             return
         }
 
@@ -352,10 +362,13 @@ class UserDataManager {
             .subscribe(onSuccess: { (_) in
                 // We've successfully sync'd the local data to the backend, now we can clear it
                 ProgressCoreDataAPI.clearAllProgress()
-                completion(true)
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
+                                                                                                title: "Successfully synced your local progress data to the cloud."))
+                completion()
             }) { (error) in
                 if let generalError = error as? GeneralError,
                     generalError == .alreadyHandled {
+                    completion()
                     return
                 }
                 NotificationBannerQueue.shared
@@ -367,21 +380,21 @@ class UserDataManager {
                                                                                                          action: {
                                                                                                             self.syncLocalProgressDataToBackend(completion)
                                                                         })))
-                completion(false)
+                completion()
         }
     }
 
     // Internal
 
+    var hasLocalDataToSync: Bool {
+        return !legitimateProgress.isEmpty || !starredRelay.value.isEmpty
+    }
+
     func syncUserDataToBackend() {
-        syncLocalStarredDataToBackend { starredSuccess in
-            self.syncLocalProgressDataToBackend { progressSuccess in
-                if starredSuccess && progressSuccess {
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                                    title: "Successfully synced your local data to the cloud."))
-                }
+        syncLocalStarredDataToBackend {
+            self.syncLocalProgressDataToBackend {
                 // Need to make sure we've posted to the backend before retrieving the latest user data from it
-                self.loadUserData() // Backend syncing is typically called after the user is newly authenticated
+                self.loadUserData()
             }
         }
     }

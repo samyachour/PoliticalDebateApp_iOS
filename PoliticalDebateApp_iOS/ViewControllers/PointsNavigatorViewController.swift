@@ -43,15 +43,13 @@ class PointsNavigatorViewController: UIViewController {
     // MARK: - UI Elements
 
     private lazy var pointHistoryTableViewModel = PointsTableViewModel(debate: viewModel.debate,
-                                                                       viewState: .embeddedPointHistory,
-                                                                       embeddedSidedPoints: [viewModel.rootPoint])
+                                                                       viewState: .embeddedPointHistory(embeddedSidedPoints: [viewModel.rootPoint]))
     private lazy var pointHistoryTableViewController = PointsTableViewController(viewModel: pointHistoryTableViewModel)
 
     private lazy var rebuttalsLabel = BasicUIElementFactory.generateHeadingLabel(text: "Rebuttals")
 
     private lazy var pointRebuttalsTableViewModel = PointsTableViewModel(debate: viewModel.debate,
-                                                                         viewState: .embeddedRebuttals,
-                                                                         embeddedSidedPoints: viewModel.rootPoint.rebuttals)
+                                                                         viewState: .embeddedRebuttals(embeddedSidedPoints: viewModel.rootPoint.rebuttals ?? []))
     private lazy var pointRebuttalsTableViewController = PointsTableViewController(viewModel: pointRebuttalsTableViewModel)
 }
 

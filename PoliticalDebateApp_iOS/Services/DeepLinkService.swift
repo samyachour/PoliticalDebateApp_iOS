@@ -43,7 +43,7 @@ struct DeepLinkService {
 
     private static let debateNetworkService = NetworkService<DebateAPI>()
 
-    static func openDebate(with parameters: [String: String]) {
+    private static func openDebate(with parameters: [String: String]) {
         guard let primaryKeyString = parameters[Constants.primaryKeyKey],
             let primaryKey = Int(primaryKeyString) else {
                 ErrorHandlerService.showBasicReportErrorBanner()

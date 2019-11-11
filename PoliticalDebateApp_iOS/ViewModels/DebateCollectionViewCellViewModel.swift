@@ -34,6 +34,7 @@ class DebateCollectionViewCellViewModel: StarrableViewModel, IdentifiableType, E
         return lhs.debate == rhs.debate &&
             lhs.completedPercentage == rhs.completedPercentage &&
             lhs.isStarred == rhs.isStarred &&
-            lhs.debate.title == rhs.debate.title
+            lhs.debate.title == rhs.debate.title &&
+            lhs.debate.allPointsPrimaryKeys == rhs.debate.allPointsPrimaryKeys
     }
 }

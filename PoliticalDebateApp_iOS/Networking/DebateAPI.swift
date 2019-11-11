@@ -126,7 +126,7 @@ extension SortByOption {
              .progressDescending,
              .noProgress:
             return UserDataManager.shared.allProgressArray
-                .filter { $0.completedPercentage > 0 }
+                .filter { !$0.seenPoints.isEmpty }
                 .map { $0.debatePrimaryKey }
         default:
             return nil

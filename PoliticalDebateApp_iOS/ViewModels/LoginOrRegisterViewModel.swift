@@ -26,11 +26,9 @@ enum LoginOrRegisterState: String { // raw value for labels
 
 class LoginOrRegisterViewModel {
 
-    // MARK: - Dependencies
+    // MARK: - Observables
 
     private lazy var authNetworkService = NetworkService<AuthAPI>()
-
-    // MARK: - Observables
 
     var loginOrRegisterStateRelay = BehaviorRelay<(state: LoginOrRegisterState, animated: Bool)>(value: (.login, false))
 
