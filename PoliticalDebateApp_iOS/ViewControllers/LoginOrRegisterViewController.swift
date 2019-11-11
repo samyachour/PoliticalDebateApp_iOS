@@ -45,7 +45,6 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
 
     // MARK: - UI Properties
 
-    private static let containerHorizontalInset: CGFloat = 8.0
     private static let textFieldHorizontalInset: CGFloat = 56
     private let fadeTextAnimation: CATransition = { // for cross-dissolving nav bar title
         let fadeTextAnimation = CATransition()
@@ -136,9 +135,9 @@ extension LoginOrRegisterViewController {
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false
         stackViewContainer.translatesAutoresizingMaskIntoConstraints = false
 
-        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Self.containerHorizontalInset).isActive = true
+        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
-        scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Self.containerHorizontalInset).isActive = true
+        scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         scrollViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
 
         stackViewContainer.leadingAnchor.constraint(equalTo: scrollViewContainer.leadingAnchor).isActive = true

@@ -38,7 +38,6 @@ class AccountViewController: UIViewController, KeyboardReactable {
 
     // MARK: - UI Properties
 
-    private static let containerHorizontalInset: CGFloat = 8.0
     private static let textFieldHorizontalInset: CGFloat = 56
     var activeTextField: UITextField? { // can't be private to satisfy protocol
         for textField in [newEmailTextField, currentPasswordTextField, newPasswordTextField, confirmNewPasswordTextField] where textField.isFirstResponder {
@@ -124,9 +123,9 @@ extension AccountViewController {
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false
         stackViewContainer.translatesAutoresizingMaskIntoConstraints = false
 
-        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Self.containerHorizontalInset).isActive = true
+        scrollViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
-        scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Self.containerHorizontalInset).isActive = true
+        scrollViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         scrollViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
 
         stackViewContainer.leadingAnchor.constraint(equalTo: scrollViewContainer.leadingAnchor).isActive = true
