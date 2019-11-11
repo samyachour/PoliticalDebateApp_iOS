@@ -146,9 +146,10 @@ class SessionManager {
                 self.accessToken = tokenPair.accessTokenString
 
                 #if !TEST
+                let subtitle = UserDataManager.shared.hasLocalDataToSync ? "Syncing your local data to the cloud, please wait..." : nil
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                                 title: "Successfully logged in",
-                                                                                                subtitle: "Syncing your local data to the cloud, please wait..."))
+                                                                                                subtitle: subtitle))
                 UserDataManager.shared.syncUserDataToBackend()
                 #endif
             })

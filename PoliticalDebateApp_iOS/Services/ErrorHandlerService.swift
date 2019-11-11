@@ -41,8 +41,8 @@ class ErrorHandlerService {
     // MARK: - Server errors
 
     // Retry w/ constant backoff closure
-    static let shouldRetryRequest = { (error: Observable<Error>) -> Observable<Void> in
-        error.enumerated().flatMap { (index, error) -> Observable<Void> in
+    static func shouldRetryRequest(error: Observable<Error>) -> Observable<Void> {
+        return error.enumerated().flatMap { (index, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
                 let errorCode = moyaError.response?.statusCode,
                 GeneralConstants.retryErrorCodes.contains(errorCode),
@@ -57,8 +57,8 @@ class ErrorHandlerService {
 
     // MARK: - Connectivity errors
 
-    static let checkForConnectivityError = { (error: Observable<Error>) -> Observable<Void> in
-        error.enumerated().flatMap { (_, error) -> Observable<Void> in
+    static func checkForConnectivityError(error: Observable<Error>) -> Observable<Void> {
+        return error.enumerated().flatMap { (_, error) -> Observable<Void> in
             guard let moyaError = error as? MoyaError,
                 moyaError.errorCode == 6 else {
                     return .error(error) // Pass the error along
@@ -82,7 +82,7 @@ class ErrorHandlerService {
 
     // MARK: - Throttle errors
 
-    static let checkForThrottleError = { (error: Error) -> Single<Response> in
+    static func checkForThrottleError(error: Error) -> Single<Response> {
         guard let moyaError = error as? MoyaError,
             let response = moyaError.response,
             response.statusCode == 429 else {
@@ -120,7 +120,7 @@ class ErrorHandlerService {
 
     static func emailUpdateError(_ response: Response) {
         switch response.statusCode {
-        case BackendErrorMessage.customErrorCode:
+        case GeneralConstants.customErrorCode:
             if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
                 if backendErrorMessage.messageString.contains(BackendErrorMessage.alreadyUsingEmailKeyword) {
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,

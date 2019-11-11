@@ -45,7 +45,7 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
 
     // MARK: - UI Properties
 
-    private static let horizontalEdgeInset: CGFloat = 56
+    private static let textFieldHorizontalInset: CGFloat = 56
     private let fadeTextAnimation: CATransition = { // for cross-dissolving nav bar title
         let fadeTextAnimation = CATransition()
         fadeTextAnimation.duration = GeneralConstants.standardAnimationDuration
@@ -127,9 +127,9 @@ extension LoginOrRegisterViewController {
         for subview in stackViewContainer.arrangedSubviews where subview as? UITextField != nil {
             subview.translatesAutoresizingMaskIntoConstraints = false
             subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
-                                              constant: -Self.horizontalEdgeInset).isActive = true
+                                              constant: -Self.textFieldHorizontalInset).isActive = true
             subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
-                                             constant: Self.horizontalEdgeInset).isActive = true
+                                             constant: Self.textFieldHorizontalInset).isActive = true
         }
 
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -274,7 +274,7 @@ extension LoginOrRegisterViewController {
                     return
             }
             switch response.statusCode {
-            case BackendErrorMessage.customErrorCode:
+            case GeneralConstants.customErrorCode:
                 if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
                     if backendErrorMessage.messageString.contains(BackendErrorMessage.unverifiedEmailKeyword) {
                         let errorAlert = UIAlertController(title: GeneralCopies.errorAlertTitle,

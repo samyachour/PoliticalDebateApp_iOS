@@ -11,11 +11,10 @@ import RxCocoa
 import RxSwift
 
 class AccountViewModel {
-    // MARK: - Dependencies
-
-    private lazy var authNetworkService = NetworkService<AuthAPI>()
 
     // MARK: - API Requests
+
+    private lazy var authNetworkService = NetworkService<AuthAPI>()
 
     func changeEmail(to newEmail: String) -> Single<Response> {
         return authNetworkService.makeRequest(with: .changeEmail(newEmail: newEmail))

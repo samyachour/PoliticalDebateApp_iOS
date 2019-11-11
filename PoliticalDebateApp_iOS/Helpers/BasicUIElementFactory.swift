@@ -57,17 +57,19 @@ class BasicUIElementFactory {
         return basicHeadingLabel
     }
 
-    static func generateStackViewContainer(arrangedSubviews: [UIView], spacing: CGFloat = 32) -> UIStackView {
+    static func generateStackViewContainer(arrangedSubviews: [UIView],
+                                           verticalSpacing: CGFloat = 32,
+                                           horizontalSpacing: CGFloat = 8) -> UIStackView {
         let stackViewContainer = UIStackView(arrangedSubviews: arrangedSubviews)
         stackViewContainer.alignment = .center
         stackViewContainer.distribution = .fill
         stackViewContainer.axis = .vertical
-        stackViewContainer.spacing = spacing
+        stackViewContainer.spacing = verticalSpacing
         stackViewContainer.isLayoutMarginsRelativeArrangement = true
-        stackViewContainer.layoutMargins = UIEdgeInsets(top: spacing,
-                                                        left: 0,
-                                                        bottom: spacing,
-                                                        right: 0)
+        stackViewContainer.layoutMargins = UIEdgeInsets(top: verticalSpacing,
+                                                        left: horizontalSpacing,
+                                                        bottom: verticalSpacing,
+                                                        right: horizontalSpacing)
         return stackViewContainer
     }
 

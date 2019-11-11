@@ -15,33 +15,31 @@ struct Debate {
     let title: String
     let shortTitle: String
     let lastUpdated: Date?
+
+    let rootPoints: [Point]
+    let contextPoints: [Point]
+    let sidedPoints: [Point]
+
+    let allPoints: [Point]
+    let allPointsPrimaryKeys: [PrimaryKey]
     let totalPoints: Int
-    private let debateMap: [Point]?
-    var contextPoints: [Point]? {
-        return debateMap?.filter({ (point) -> Bool in
-            switch point.side {
-            case .pro,
-                 .con:
-                return false
-            case .context:
-                return true
-            case .none:
-                return false
+
+    private static func getAllPoints(from rootPoints: [Point] = [],
+                                     with point: Point? = nil) -> [Point] {
+        guard let point = point else {
+            return rootPoints.reduce([]) { (allPoints, point) -> [Point] in
+                return allPoints + getAllPoints(with: point).filter({ !allPoints.contains($0) }) // avoid duplicates
             }
-        })
-    }
-    var sidedPoints: [Point]? {
-        return debateMap?.filter({ (point) -> Bool in
-            switch point.side {
-            case .pro,
-                 .con:
-                return true
-            case .context:
-                return false
-            case .none:
-                return false
-            }
-        })
+        }
+
+        guard let rebuttals = point.rebuttals,
+            !rebuttals.isEmpty else {
+                return [point]
+        }
+
+        return rebuttals.reduce([point]) { (allPoints, point) -> [Point] in
+            return allPoints + getAllPoints(with: point).filter({ !allPoints.contains($0) }) // avoid duplicates
+        }
     }
 }
 
@@ -51,8 +49,7 @@ extension Debate: Decodable {
         case title
         case shortTitle = "short_title"
         case lastUpdated = "last_updated"
-        case totalPoints = "total_points"
-        case debateMap = "debate_map"
+        case rootPoints = "debate_map"
     }
 
     init(from decoder: Decoder) throws {
@@ -62,10 +59,35 @@ extension Debate: Decodable {
         shortTitle = try container.decode(String.self, forKey: .shortTitle)
         title = try container.decode(String.self, forKey: .title)
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()
-        totalPoints = try container.decode(Int.self, forKey: .totalPoints)
-        // We don't get the debate points with the search call
-        debateMap = try container.decodeIfPresent([Point].self, forKey: .debateMap)
+        rootPoints = try container.decode([Point].self, forKey: .rootPoints)
+
+        allPoints = Self.getAllPoints(from: rootPoints)
+        allPointsPrimaryKeys = allPoints.map({ $0.primaryKey })
+        totalPoints = allPointsPrimaryKeys.count
+
+        contextPoints = rootPoints.filter({ point -> Bool in
+            switch point.side {
+            case .pro,
+                 .con,
+                 .none:
+                return false
+            case .context:
+                return true
+            }
+        })
+        sidedPoints = rootPoints.filter({ point -> Bool in
+            switch point.side {
+            case .pro,
+                 .con:
+                return true
+            case .context,
+                 .none:
+                return false
+            }
+        })
+
     }
+
 }
 
 extension Debate: Equatable {

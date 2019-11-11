@@ -14,14 +14,14 @@ struct ProgressCoreDataAPI {
 
     // MARK: - CRUD operations
 
-    static func saveProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey, totalPoints: Int) {
+    static func saveProgress(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey) {
         defer { CoreDataService.saveContext() }
 
-        let (localProgress, _) = ProgressCoreDataAPI.loadProgressAndAssociatedDebate(debatePrimaryKey)
+        let (localProgress, _) = Self.loadProgressAndAssociatedDebate(debatePrimaryKey)
 
         let localPointRecords: [LocalPoint]? = CoreDataService
             .fetchRecordsForEntity(CoreDataConstants.pointEntity,
-                                   with: ProgressCoreDataAPI.pointLabelPredicate(pointPrimaryKey, debatePrimaryKey),
+                                   with: Self.generatePointLabelPredicate(pointPrimaryKey: pointPrimaryKey, debatePrimaryKey: debatePrimaryKey),
                                    unique: true)
 
         // Never saved this point before
@@ -31,10 +31,6 @@ struct ProgressCoreDataAPI {
             localPoint.progress = localProgress // to one
 
             localProgress.addToSeenPoints(localPoint) // to many
-            if let completedCount = localProgress.seenPoints?.allObjects.count {
-                let completedPercentage = (Float(completedCount) / Float(totalPoints)) * 100
-                localProgress.completedPercentage = Int16(completedPercentage)
-            }
         }
     }
 
@@ -66,6 +62,20 @@ struct ProgressCoreDataAPI {
         }
     }
 
+    static func removePoint(_ pointPrimaryKey: PrimaryKey) {
+        defer { CoreDataService.saveContext() }
+
+        // Explicit type for generic method
+        guard let localPointRecords: [LocalPoint] = CoreDataService
+            .fetchRecordsForEntity(CoreDataConstants.pointEntity, with: generatePrimaryKeyPredicate(pointPrimaryKey), unique: true) else {
+                return
+        }
+
+        guard let localPoint = localPointRecords.first else { fatalError("Must know point exists to remove it") }
+
+        CoreDataService.deleteRecord(localPoint)
+    }
+
     // MARK: - Helpers
 
     /// Handle the logic of loading data if it exists and creating+loading if it doesn't
@@ -73,7 +83,7 @@ struct ProgressCoreDataAPI {
         // Explicit type for generic method
         let localDebateRecords: [LocalDebate]? = CoreDataService
             .fetchRecordsForEntity(CoreDataConstants.debateEntity,
-                                   with: ProgressCoreDataAPI.debatePrimaryKeyPredicate(debatePrimaryKey),
+                                   with: Self.generatePrimaryKeyPredicate(debatePrimaryKey),
                                    unique: true)
         let localDebate: LocalDebate = localDebateRecords?.first ?? CoreDataService.createRecord()
         localDebate.primaryKey = Int32(debatePrimaryKey)
@@ -89,18 +99,19 @@ struct ProgressCoreDataAPI {
 
     // MARK: - Predicates
 
-    private static let debatePrimaryKeyPredicate = { (debatePrimaryKey: PrimaryKey) -> NSPredicate in
-        NSPredicate(format: "%K = %@",
-                    CoreDataConstants.primaryKeyAttribute,
-                    NSNumber(value: Int32(debatePrimaryKey)))
+    private static func generatePrimaryKeyPredicate(_ primaryKey: PrimaryKey) -> NSPredicate {
+        return NSPredicate(format: "%K = %@",
+                           CoreDataConstants.primaryKeyAttribute,
+                           NSNumber(value: Int32(primaryKey)))
     }
-    private static let pointLabelPredicate = { (pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey) -> NSPredicate in
-        NSPredicate(format: "%K = %@ AND %K.%K.%K = %@",
-                    CoreDataConstants.primaryKeyAttribute,
-                    NSNumber(value: Int32(pointPrimaryKey)),
-                    CoreDataConstants.progressRelationshipAttribute,
-                    CoreDataConstants.debateRelationshipAttribute,
-                    CoreDataConstants.primaryKeyAttribute,
-                    NSNumber(value: Int32(debatePrimaryKey)))
+
+    private static func generatePointLabelPredicate(pointPrimaryKey: PrimaryKey, debatePrimaryKey: PrimaryKey) -> NSPredicate {
+        return NSPredicate(format: "%K = %@ AND %K.%K.%K = %@",
+                           CoreDataConstants.primaryKeyAttribute,
+                           NSNumber(value: Int32(pointPrimaryKey)),
+                           CoreDataConstants.progressRelationshipAttribute,
+                           CoreDataConstants.debateRelationshipAttribute,
+                           CoreDataConstants.primaryKeyAttribute,
+                           NSNumber(value: Int32(debatePrimaryKey)))
     }
 }

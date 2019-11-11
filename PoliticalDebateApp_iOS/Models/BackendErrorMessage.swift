@@ -10,8 +10,6 @@
 struct BackendErrorMessage {
     let messageString: String
 
-    static let customErrorCode = 400
-
     // Key words to discern between multiple custom errors from the same endpoint
     static let invalidEmailKeyword = "invalid"
     static let unverifiedEmailKeyword = "verify"

@@ -36,13 +36,9 @@ class AccountViewController: UIViewController, KeyboardReactable {
     private let viewModel: AccountViewModel
     let disposeBag = DisposeBag() // can't be private to satisfy protocol
 
-    // MARK: - Dependencies
-
-    private let sessionManager = SessionManager.shared
-
     // MARK: - UI Properties
 
-    private static let horizontalEdgeInset: CGFloat = 56
+    private static let textFieldHorizontalInset: CGFloat = 56
     var activeTextField: UITextField? { // can't be private to satisfy protocol
         for textField in [newEmailTextField, currentPasswordTextField, newPasswordTextField, confirmNewPasswordTextField] where textField.isFirstResponder {
             return textField
@@ -119,9 +115,9 @@ extension AccountViewController {
         for subview in stackViewContainer.arrangedSubviews where subview as? UITextField != nil {
             subview.translatesAutoresizingMaskIntoConstraints = false
             subview.leadingAnchor.constraint(equalTo: stackViewContainer.leadingAnchor,
-                                             constant: Self.horizontalEdgeInset).isActive = true
+                                             constant: Self.textFieldHorizontalInset).isActive = true
             subview.trailingAnchor.constraint(equalTo: stackViewContainer.trailingAnchor,
-                                              constant: -Self.horizontalEdgeInset).isActive = true
+                                              constant: -Self.textFieldHorizontalInset).isActive = true
         }
 
         scrollViewContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -285,7 +281,7 @@ extension AccountViewController {
                 }
 
                 switch response.statusCode {
-                case BackendErrorMessage.customErrorCode:
+                case GeneralConstants.customErrorCode:
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Your current password is incorrect."))
                 default:
@@ -301,7 +297,7 @@ extension AccountViewController {
     }
 
     @objc private func logOutButtonTapped() {
-        sessionManager.logout()
+        SessionManager.shared.logout()
         NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                         title: "Successfully logged out"))
         navigationController?.popViewController(animated: true)
@@ -317,7 +313,7 @@ extension AccountViewController {
             self.viewModel.deleteAccount().subscribe(onSuccess: { _ in
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                                 title: "Successfully deleted account."))
-                self.sessionManager.logout()
+                SessionManager.shared.logout()
                 self.navigationController?.popViewController(animated: true)
             }) { error in
                 if let generalError = error as? GeneralError,

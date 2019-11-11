@@ -57,9 +57,11 @@ class DebatesCollectionViewModel {
     private lazy var refreshDebatesWithLocalDataRelay = PublishRelay<Void>()
 
     private func createNewDebateCellViewModel(debate: Debate) -> DebateCollectionViewCellViewModel {
+        UserDataManager.shared.removeStaleLocalPoints(from: debate)
+        let completedPercentage = Int((Float(UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints.count) / Float(debate.totalPoints)) * 100)
         // Always new instances so we don't modify objects of the array we're mapping
         return DebateCollectionViewCellViewModel(debate: debate,
-                                                 completedPercentage: UserDataManager.shared.getProgress(for: debate.primaryKey).completedPercentage,
+                                                 completedPercentage: completedPercentage,
                                                  isStarred: UserDataManager.shared.isStarred(debate.primaryKey))
     }
 

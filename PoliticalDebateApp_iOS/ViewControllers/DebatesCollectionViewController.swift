@@ -39,10 +39,6 @@ class DebatesCollectionViewController: UIViewController {
         viewModel.triggerRefreshDebatesWithLocalData()
     }
 
-    // MARK: - Dependencies
-
-    private let sessionManager = SessionManager.shared
-
     // MARK: - Observers & Observables
 
     private let viewModel: DebatesCollectionViewModel
@@ -240,7 +236,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     private func installViewBinds() {
         searchTextField.delegate = self
 
-        sessionManager.isActiveDriver
+        SessionManager.shared.isActiveDriver
             .drive(onNext: { [weak self] isActive in
                 if isActive {
                     self?.navigationItem.rightBarButtonItem = self?.accountButton.barButton
