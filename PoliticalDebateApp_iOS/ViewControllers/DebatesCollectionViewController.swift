@@ -374,6 +374,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         viewModel.debatesRetrievalErrorSignal.emit(onNext: { [weak self] error in
             self?.debatesRefreshControl.endRefreshing()
+            self?.loadingIndicatorRelay.accept(false)
 
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {
