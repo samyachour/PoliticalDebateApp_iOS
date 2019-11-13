@@ -51,7 +51,9 @@ class DebatesCollectionViewController: UIViewController {
     /// On this screen we are constantly running multiple animations at once and there is a problem when animation blocks are not called serially:
     /// They start to overlap and the parameters (duration, options, etc.) bleed into each other.
     /// To prevent this we enforce synchronization with a relay.
-    private var animationBlocksRelay = PublishRelay<() -> Void>()
+    private lazy var animationBlocksRelay = PublishRelay<() -> Void>()
+
+    private lazy var loadingIndicatorRelay = BehaviorRelay<Bool>(value: true)
 
     // MARK: - UI Properties
 
@@ -118,6 +120,13 @@ class DebatesCollectionViewController: UIViewController {
 
     private lazy var debatesRefreshControl = UIRefreshControl()
 
+    private lazy var loadingIndicator: UIActivityIndicatorView = {
+        let loadingIndicator = UIActivityIndicatorView(style: .whiteLarge)
+        loadingIndicator.color = .customDarkGray2
+        loadingIndicator.hidesWhenStopped = true
+        return loadingIndicator
+    }()
+
     private lazy var emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No debates to show.")
 
 }
@@ -163,6 +172,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         collectionViewContainer.addSubview(emptyStateLabel)
         collectionViewContainer.addSubview(debatesCollectionView)
         view.addSubview(headerElementsContainer)
+        view.addSubview(loadingIndicator)
 
         headerElementsContainer.translatesAutoresizingMaskIntoConstraints = false
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -171,6 +181,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
         debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
+        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
 
         headerElementsContainer.backgroundColor = Self.backgroundColor
         headerElementsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
@@ -216,6 +227,9 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         emptyStateLabel.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
         emptyStateLabel.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
+
+        loadingIndicator.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
+        loadingIndicator.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
     }
 
     override func viewDidLayoutSubviews() {
@@ -266,13 +280,35 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             self?.updateSortBySelection(pickerChoice)
         }).disposed(by: disposeBag)
 
-        viewModel.subscribeToManualDebateUpdates(searchTriggeredRelay.asDriver(),
+        let searchTriggeredDriver = searchTriggeredRelay.asDriver()
+
+        Driver<Void>.merge(sortSelectionDriver.map({ _ in }),
+                           searchTriggeredDriver.map({ _ in }))
+            .drive(onNext: { [weak self] _ in
+                self?.loadingIndicatorRelay.accept(true)
+                UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
+                               animations: { self?.emptyStateLabel.alpha = 0.0 })
+            })
+            .disposed(by: disposeBag)
+
+        viewModel.subscribeToManualDebateUpdates(searchTriggeredDriver,
                                                  sortSelectionDriver,
                                                  manualRefreshRelay.asDriver())
 
         animationBlocksRelay.subscribe(onNext: { animationBlock in
             animationBlock()
         }).disposed(by: disposeBag)
+
+        loadingIndicatorRelay.asDriver()
+            .debounce(GeneralConstants.shortDebounceDuration)
+            .distinctUntilChanged()
+            .drive(onNext: { [weak self] show in
+                // Need to start animating before showing, and stop after hiding
+                if show { self?.loadingIndicator.startAnimating() }
+                UIView.animate(withDuration: GeneralConstants.shortAnimationDuration,
+                               animations: { self?.loadingIndicator.alpha = show ? 1 : 0 },
+                               completion: { _ in if !show { self?.loadingIndicator.stopAnimating() }})
+            }).disposed(by: disposeBag)
 
         debatesRefreshControl.addTarget(self, action: #selector(userPulledToRefresh), for: .valueChanged)
         debatesCollectionView.refreshControl = debatesRefreshControl
@@ -319,6 +355,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         viewModel.debatesDataSourceDriver
             .drive(onNext: { [weak self] debateCollectionViewSections in
                 self?.debatesRefreshControl.endRefreshing()
+                self?.loadingIndicatorRelay.accept(false)
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                     self?.emptyStateLabel.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 1.0 : 0.0
                     self?.debatesCollectionView.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 0.0 : 1.0

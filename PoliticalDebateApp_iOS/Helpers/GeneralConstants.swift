@@ -11,8 +11,10 @@ import UIKit
 
 enum GeneralConstants {
     static let standardAnimationDuration = 0.4
+    static let shortAnimationDuration = 0.2
     static let quickAnimationDuration = 0.1
     static let standardDebounceDuration = RxTimeInterval.milliseconds(500)
+    static let shortDebounceDuration = RxTimeInterval.milliseconds(200)
     static let minimumPasswordLength = 6 // dictated by backend
     static let retryErrorCodes = [408, 502, 503, 504]
     static let unauthorizedErrorCode = 401
