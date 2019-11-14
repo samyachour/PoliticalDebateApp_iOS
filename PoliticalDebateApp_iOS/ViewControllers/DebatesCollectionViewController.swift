@@ -299,9 +299,11 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             })
             .disposed(by: disposeBag)
 
+        let manualRefreshDriver = manualRefreshRelay.asDriver()
+
         viewModel.subscribeToManualDebateUpdates(searchTriggeredDriver,
                                                  sortSelectionDriver,
-                                                 manualRefreshRelay.asDriver())
+                                                 manualRefreshDriver)
 
         animationBlocksRelay.subscribe(onNext: { animationBlock in
             animationBlock()
@@ -322,15 +324,23 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         debatesCollectionView.refreshControl = debatesRefreshControl
 
         retryButton.rx.tap.bind(to: manualRefreshRelay).disposed(by: disposeBag)
+        Driver<Void>.merge(sortSelectionDriver.map({ _ in }), searchTriggeredDriver.map({ _ in }), manualRefreshDriver)
+            .map({ return false }).drive(showRetryButtonRelay)
+            .disposed(by: disposeBag)
         retryButton.rx.tap.map({ return true }).bind(to: showLoadingIndicatorRelay).disposed(by: disposeBag)
-        retryButton.rx.tap.map({ return false }).bind(to: showRetryButtonRelay).disposed(by: disposeBag)
-        showRetryButtonRelay.asDriver().distinctUntilChanged()
-            .drive(onNext: { [weak self] show in
-                           // Need to unhide before showing, and hide after
-                           if show { self?.retryButton.isHidden = false }
-                           UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
-                                          animations: { self?.retryButton.alpha = show ? 1 : 0 },
-                                          completion: { _ in if !show { self?.retryButton.isHidden = true }})
+
+        Driver.combineLatest(showRetryButtonRelay.asDriver(), viewModel.debatesDataSourceDriver.startWith([]))
+            .distinctUntilChanged({ (lhs, rhs) -> Bool in return lhs.0 == rhs.0 }) // only care when the showing retry button value changes
+            .drive(onNext: { [weak self] (show, debateCollectionViewSections) in
+                // Make sure we don't already have debates on screen before showing
+                guard !(show && debateCollectionViewSections.first?.items.isEmpty == false) else { return }
+
+                // Need to unhide before showing and hide after
+                if show { self?.retryButton.isHidden = false }
+                UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
+                               animations: { self?.retryButton.alpha = show ? 1 : 0 },
+                               completion: { _ in if !show { self?.retryButton.isHidden = true }})
+
             }).disposed(by: disposeBag)
 
         debatesCollectionView.delegate = self
