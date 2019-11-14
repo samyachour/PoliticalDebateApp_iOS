@@ -20,11 +20,13 @@ class BasicUIElementFactory {
         return (basicBarButton, UIBarButtonItem(customView: basicBarButton))
     }
 
-    static func generateButton(title: String? = nil, titleColor: UIColor = GeneralColors.hardButton) -> UIButton {
+    static func generateButton(title: String? = nil,
+                               titleColor: UIColor = GeneralColors.hardButton,
+                               font: UIFont = GeneralFonts.button) -> UIButton {
         let forgotPasswordButton = UIButton(frame: .zero)
         forgotPasswordButton.setTitle(title, for: .normal)
         forgotPasswordButton.setTitleColor(titleColor, for: .normal)
-        forgotPasswordButton.titleLabel?.font = GeneralFonts.button
+        forgotPasswordButton.titleLabel?.font = font
         return forgotPasswordButton
     }
 

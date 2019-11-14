@@ -53,7 +53,8 @@ class DebatesCollectionViewController: UIViewController {
     /// To prevent this we enforce synchronization with a relay.
     private lazy var animationBlocksRelay = PublishRelay<() -> Void>()
 
-    private lazy var loadingIndicatorRelay = BehaviorRelay<Bool>(value: true)
+    private lazy var showLoadingIndicatorRelay = BehaviorRelay<Bool>(value: true)
+    private lazy var showRetryButtonRelay = BehaviorRelay<Bool>(value: false)
 
     // MARK: - UI Properties
 
@@ -129,6 +130,8 @@ class DebatesCollectionViewController: UIViewController {
 
     private lazy var emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No debates to show.")
 
+    private lazy var retryButton = BasicUIElementFactory.generateButton(title: GeneralCopies.retryTitle, font: UIFont.primaryRegular(24))
+
 }
 
 extension DebatesCollectionViewController: UITextFieldDelegate {
@@ -173,6 +176,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         collectionViewContainer.addSubview(debatesCollectionView)
         view.addSubview(headerElementsContainer)
         view.addSubview(loadingIndicator)
+        view.addSubview(retryButton)
 
         headerElementsContainer.translatesAutoresizingMaskIntoConstraints = false
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -182,6 +186,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
         loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
+        retryButton.translatesAutoresizingMaskIntoConstraints = false
 
         headerElementsContainer.backgroundColor = Self.backgroundColor
         headerElementsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
@@ -230,6 +235,9 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         loadingIndicator.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
         loadingIndicator.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
+
+        retryButton.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
+        retryButton.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
     }
 
     override func viewDidLayoutSubviews() {
@@ -285,7 +293,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         Driver<Void>.merge(sortSelectionDriver.map({ _ in }),
                            searchTriggeredDriver.map({ _ in }))
             .drive(onNext: { [weak self] _ in
-                self?.loadingIndicatorRelay.accept(true)
+                self?.showLoadingIndicatorRelay.accept(true)
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
                                animations: { self?.emptyStateLabel.alpha = 0.0 })
             })
@@ -299,7 +307,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             animationBlock()
         }).disposed(by: disposeBag)
 
-        loadingIndicatorRelay.asDriver()
+        showLoadingIndicatorRelay.asDriver()
             .debounce(GeneralConstants.shortDebounceDuration)
             .distinctUntilChanged()
             .drive(onNext: { [weak self] show in
@@ -312,6 +320,18 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         debatesRefreshControl.addTarget(self, action: #selector(userPulledToRefresh), for: .valueChanged)
         debatesCollectionView.refreshControl = debatesRefreshControl
+
+        retryButton.rx.tap.bind(to: manualRefreshRelay).disposed(by: disposeBag)
+        retryButton.rx.tap.map({ return true }).bind(to: showLoadingIndicatorRelay).disposed(by: disposeBag)
+        retryButton.rx.tap.map({ return false }).bind(to: showRetryButtonRelay).disposed(by: disposeBag)
+        showRetryButtonRelay.asDriver().distinctUntilChanged()
+            .drive(onNext: { [weak self] show in
+                           // Need to unhide before showing, and hide after
+                           if show { self?.retryButton.isHidden = false }
+                           UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
+                                          animations: { self?.retryButton.alpha = show ? 1 : 0 },
+                                          completion: { _ in if !show { self?.retryButton.isHidden = true }})
+            }).disposed(by: disposeBag)
 
         debatesCollectionView.delegate = self
 
@@ -355,7 +375,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         viewModel.debatesDataSourceDriver
             .drive(onNext: { [weak self] debateCollectionViewSections in
                 self?.debatesRefreshControl.endRefreshing()
-                self?.loadingIndicatorRelay.accept(false)
+                self?.showLoadingIndicatorRelay.accept(false)
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                     self?.emptyStateLabel.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 1.0 : 0.0
                     self?.debatesCollectionView.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 0.0 : 1.0
@@ -374,7 +394,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         viewModel.debatesRetrievalErrorSignal.emit(onNext: { [weak self] error in
             self?.debatesRefreshControl.endRefreshing()
-            self?.loadingIndicatorRelay.accept(false)
+            self?.showLoadingIndicatorRelay.accept(false)
+            self?.showRetryButtonRelay.accept(true)
 
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {
