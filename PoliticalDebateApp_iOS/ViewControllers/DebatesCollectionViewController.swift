@@ -12,9 +12,9 @@ import RxDataSources
 import RxSwift
 import UIKit
 
-// swiftlint:disable:next file_length
+// swiftlint:disable file_length
 
-// Acts as our home view as well
+/// Root home view listing all debates
 class DebatesCollectionViewController: UIViewController {
 
     required init(viewModel: DebatesCollectionViewModel) {

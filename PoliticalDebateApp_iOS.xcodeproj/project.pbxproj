@@ -102,6 +102,12 @@
 		2E36796722A4B280008190FE /* Starred.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E36796622A4B280008190FE /* Starred.swift */; };
 		2E3A0C8A22D707BC00087B2A /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3A0C8922D707BC00087B2A /* Point.swift */; };
 		2E3A0C8B22D7087D00087B2A /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3A0C8922D707BC00087B2A /* Point.swift */; };
+		2E3EBCE42381ECBD003C474F /* WKWebViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */; };
+		2E3EBCE52381ECC8003C474F /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */; };
+		2E3EBCE62381ECCD003C474F /* LinkResponsiveTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */; };
+		2E3EBCE72381ECE1003C474F /* StarrableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */; };
+		2E3EBCEB2381EDF0003C474F /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */; };
+		2E3EBCEC2381EED9003C474F /* Collection+SafeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */; };
 		2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* String+Date.swift */; };
 		2E5C5F45226B0DFD0007BCAF /* PlainDjangoEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */; };
 		2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F56226B29A30007BCAF /* StubAccess.swift */; };
@@ -419,7 +425,7 @@
 				2E96743C226BDFEA00821A73 /* Services */,
 				2EEDE91322BEE985000A4F2B /* LocalData */,
 				2E23A6FB226ACDDD00B2DCC3 /* Networking */,
-				2E23A6FE226ACDF600B2DCC3 /* Helpers */,
+				2E3EBCE32381EC97003C474F /* Utils */,
 				2E0D848B22A70B7D00E4B0E7 /* Resources */,
 				2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */,
 				2E23A6CE226AC7B300B2DCC3 /* LaunchScreen.storyboard */,
@@ -482,37 +488,6 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		2E23A6FE226ACDF600B2DCC3 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				2E287CB822DC487F000A4CF2 /* NotificationBanner */,
-				2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */,
-				2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */,
-				2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */,
-				2E23A712226AE36600B2DCC3 /* GeneralConstants.swift */,
-				2E5C5F42226B08220007BCAF /* String+Date.swift */,
-				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
-				2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */,
-				2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */,
-				2EBE46C522BBD5180087BC56 /* DebugLog.swift */,
-				2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */,
-				2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */,
-				2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */,
-				2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */,
-				2E2E6DC122FC07880048B769 /* UIView+Fade.swift */,
-				2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */,
-				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
-				2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */,
-				2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */,
-				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
-				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
-				2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */,
-				2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */,
-				2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
 		2E23A6FF226ACDFD00B2DCC3 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -541,7 +516,7 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
-		2E287CB822DC487F000A4CF2 /* NotificationBanner */ = {
+		2E287CB822DC487F000A4CF2 /* NotificationBanners */ = {
 			isa = PBXGroup;
 			children = (
 				2EF1E59A22DC688200C93DFB /* ButtonWithActionClosure.swift */,
@@ -550,7 +525,46 @@
 				2E287CB922DC4A7A000A4CF2 /* BannerOnScreen.swift */,
 				2E287CBC22DC4A7B000A4CF2 /* NotificationBannerQueue.swift */,
 			);
-			path = NotificationBanner;
+			path = NotificationBanners;
+			sourceTree = "<group>";
+		};
+		2E3EBCE32381EC97003C474F /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				2E3EBCEA2381EDAF003C474F /* Constants */,
+				2E287CB822DC487F000A4CF2 /* NotificationBanners */,
+				2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */,
+				2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */,
+				2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */,
+				2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */,
+				2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */,
+				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
+				2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */,
+				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
+				2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */,
+				2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */,
+				2EBE46C522BBD5180087BC56 /* DebugLog.swift */,
+				2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */,
+				2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */,
+				2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */,
+				2E5C5F42226B08220007BCAF /* String+Date.swift */,
+				2E2E6DC122FC07880048B769 /* UIView+Fade.swift */,
+				2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */,
+				2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */,
+				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		2E3EBCEA2381EDAF003C474F /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A712226AE36600B2DCC3 /* GeneralConstants.swift */,
+				2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */,
+				2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */,
+				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
+			);
+			path = Constants;
 			sourceTree = "<group>";
 		};
 		2E96743C226BDFEA00821A73 /* Services */ = {
@@ -954,6 +968,7 @@
 				2EA87A40231DF31700FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */,
 				2E30A91A22BF4BED007E386A /* String+Date.swift in Sources */,
 				2E5EC04822FA732900B41D54 /* BasicUIElementFactory.swift in Sources */,
+				2E3EBCE62381ECCD003C474F /* LinkResponsiveTextView.swift in Sources */,
 				2E5EC04A22FA734D00B41D54 /* EmailAndPasswordValidator.swift in Sources */,
 				2E30A90022BF4BED007E386A /* LoginOrRegisterViewController.swift in Sources */,
 				2E30A91B22BF4BED007E386A /* PlainDjangoEncoding.swift in Sources */,
@@ -979,10 +994,12 @@
 				2E30A91822BF4BED007E386A /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */,
 				2E5EC04922FA734100B41D54 /* KeyboardReactableProtocol.swift in Sources */,
 				2E30A90122BF4BED007E386A /* AccountViewController.swift in Sources */,
+				2E3EBCEC2381EED9003C474F /* Collection+SafeIndex.swift in Sources */,
 				2E30A90322BF4BED007E386A /* TokenPair.swift in Sources */,
 				2E12D7C42309DB000078B0DD /* PointsTableViewController.swift in Sources */,
 				2E30A90622BF4BED007E386A /* SessionManager.swift in Sources */,
 				2E5EC05022FA737A00B41D54 /* BackendErrorMessage.swift in Sources */,
+				2E3EBCEB2381EDF0003C474F /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift in Sources */,
 				2E5EC04E22FA736E00B41D54 /* BannerOnScreen.swift in Sources */,
 				2E30A91222BF4BED007E386A /* ProgressAPI.swift in Sources */,
 				2E30A91E22BF4BED007E386A /* DebugLog.swift in Sources */,
@@ -998,15 +1015,18 @@
 				2E2E6DC62300D1140048B769 /* DebateCollectionViewCellViewModel.swift in Sources */,
 				2E30A90A22BF4BED007E386A /* KeychainService.swift in Sources */,
 				2E30A8FF22BF4BED007E386A /* DebatesCollectionViewController.swift in Sources */,
+				2E3EBCE72381ECE1003C474F /* StarrableViewModel.swift in Sources */,
 				2E30A8FC22BF4BED007E386A /* DebatesCollectionViewModel.swift in Sources */,
 				2E12D7C72309DB310078B0DD /* PointsTableViewModel.swift in Sources */,
 				2E30A90E22BF4BED007E386A /* DebateAPI.swift in Sources */,
 				2EA87A35231DE39300FA6CB0 /* UIImage+Custom.swift in Sources */,
+				2E3EBCE52381ECC8003C474F /* MarkdownFormatter.swift in Sources */,
 				2E5EC04C22FA735700B41D54 /* NotificationBannerViewModel.swift in Sources */,
 				2E30A92422BFE25A007E386A /* PoliticalDebateApp_iOS.xcdatamodeld in Sources */,
 				2E30A90222BF4BED007E386A /* Debate.swift in Sources */,
 				2E5EC04B22FA735200B41D54 /* NotificationBannerQueue.swift in Sources */,
 				2E5C5F59226B2A0C0007BCAF /* StubAccess.swift in Sources */,
+				2E3EBCE42381ECBD003C474F /* WKWebViewControllerFactory.swift in Sources */,
 				2EA87A38231DE3EB00FA6CB0 /* PointsNavigatorViewModel.swift in Sources */,
 				2E5EC05122FA738E00B41D54 /* NotificationBannerView.swift in Sources */,
 				2E2E6DC72300D1190048B769 /* UIView+Fade.swift in Sources */,
