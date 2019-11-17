@@ -117,8 +117,9 @@ class BasicUIElementFactory {
         versionLabel.font = .primaryLight(16.0)
         versionLabel.textColor = .customDarkGray1
         if let infoDict = Bundle.main.infoDictionary,
-            let version = infoDict["CFBundleShortVersionString"] as? String {
-            versionLabel.text = "Version \(version)"
+            let version = infoDict["CFBundleShortVersionString"] as? String,
+            let build = infoDict["CFBundleVersion"] as? String {
+            versionLabel.text = "Version \(version) (\(build))"
         }
         return versionLabel
     }

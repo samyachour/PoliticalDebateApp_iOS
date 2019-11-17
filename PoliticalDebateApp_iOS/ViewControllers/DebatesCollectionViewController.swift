@@ -12,6 +12,8 @@ import RxDataSources
 import RxSwift
 import UIKit
 
+// swiftlint:disable:next file_length
+
 // Acts as our home view as well
 class DebatesCollectionViewController: UIViewController {
 
