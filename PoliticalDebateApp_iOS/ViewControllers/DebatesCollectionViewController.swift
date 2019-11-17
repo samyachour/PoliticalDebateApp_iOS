@@ -240,6 +240,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         retryButton.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
         retryButton.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
+        retryButton.alpha = 0
     }
 
     override func viewDidLayoutSubviews() {
