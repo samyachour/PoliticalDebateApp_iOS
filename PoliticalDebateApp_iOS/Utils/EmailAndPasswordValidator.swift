@@ -8,7 +8,9 @@
 
 import Foundation
 
-class EmailAndPasswordValidator {
+struct EmailAndPasswordValidator {
+
+    private init() {}
 
     static func isValidEmail(_ email: String) -> Bool {
         let handlePart = "[A-Z0-9a-z]([A-Z0-9a-z._%+-]{0,30}[A-Z0-9a-z])?"

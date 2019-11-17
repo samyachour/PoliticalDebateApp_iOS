@@ -537,7 +537,21 @@
 				2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */,
 				2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */,
 				2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */,
-				2E3EBCED2381EFFF003C474F /* Helpers */,
+				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
+				2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */,
+				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
+				2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */,
+				2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */,
+				2EBE46C522BBD5180087BC56 /* DebugLog.swift */,
+				2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */,
+				2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */,
+				2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */,
+				2E2E6DC122FC07880048B769 /* UIView+Fade.swift */,
+				2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */,
+				2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */,
+				2E5C5F42226B08220007BCAF /* String+Date.swift */,
+				2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */,
+				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -551,28 +565,6 @@
 				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
 			);
 			path = Constants;
-			sourceTree = "<group>";
-		};
-		2E3EBCED2381EFFF003C474F /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */,
-				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
-				2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */,
-				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
-				2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */,
-				2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */,
-				2EBE46C522BBD5180087BC56 /* DebugLog.swift */,
-				2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */,
-				2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */,
-				2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */,
-				2E5C5F42226B08220007BCAF /* String+Date.swift */,
-				2E2E6DC122FC07880048B769 /* UIView+Fade.swift */,
-				2E2E6DC322FC0B710048B769 /* CAGradientLayer+Init.swift */,
-				2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */,
-				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
-			);
-			path = Helpers;
 			sourceTree = "<group>";
 		};
 		2E96743C226BDFEA00821A73 /* Services */ = {

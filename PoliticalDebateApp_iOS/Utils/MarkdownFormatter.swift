@@ -9,7 +9,9 @@
 import Foundation
 import UIKit
 
-class MarkDownFormatter {
+struct MarkDownFormatter {
+
+    private init() {}
 
     private enum Constants {
         static let boldKey = "**"
