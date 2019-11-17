@@ -537,6 +537,25 @@
 				2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */,
 				2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */,
 				2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */,
+				2E3EBCED2381EFFF003C474F /* Helpers */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		2E3EBCEA2381EDAF003C474F /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A712226AE36600B2DCC3 /* GeneralConstants.swift */,
+				2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */,
+				2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */,
+				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		2E3EBCED2381EFFF003C474F /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
 				2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */,
 				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
 				2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */,
@@ -553,18 +572,7 @@
 				2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */,
 				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
 			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
-		2E3EBCEA2381EDAF003C474F /* Constants */ = {
-			isa = PBXGroup;
-			children = (
-				2E23A712226AE36600B2DCC3 /* GeneralConstants.swift */,
-				2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */,
-				2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */,
-				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
-			);
-			path = Constants;
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		2E96743C226BDFEA00821A73 /* Services */ = {
