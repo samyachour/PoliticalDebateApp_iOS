@@ -531,7 +531,7 @@
 		2E3EBCE32381EC97003C474F /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				2E3EBCEA2381EDAF003C474F /* Constants */,
+				2E9C975723820FB400361094 /* Constants */,
 				2E287CB822DC487F000A4CF2 /* NotificationBanners */,
 				2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */,
 				2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */,
@@ -556,17 +556,6 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		2E3EBCEA2381EDAF003C474F /* Constants */ = {
-			isa = PBXGroup;
-			children = (
-				2E23A712226AE36600B2DCC3 /* GeneralConstants.swift */,
-				2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */,
-				2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */,
-				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
-			);
-			path = Constants;
-			sourceTree = "<group>";
-		};
 		2E96743C226BDFEA00821A73 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -578,6 +567,17 @@
 				2EAF701A2324E13B00398D6B /* UserDefaultsService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		2E9C975723820FB400361094 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				2E23A712226AE36600B2DCC3 /* GeneralConstants.swift */,
+				2E0D848922A7057300E4B0E7 /* UIColor+Custom.swift */,
+				2E0D848722A7054A00E4B0E7 /* UIFont+Custom.swift */,
+				2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */,
+			);
+			path = Constants;
 			sourceTree = "<group>";
 		};
 		2EAF704C2329EE3200398D6B /* Roboto */ = {
