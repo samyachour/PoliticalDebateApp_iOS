@@ -80,7 +80,7 @@ struct BasicUIElementFactory {
     static func generateEmptyStateLabel(text: String) -> UILabel {
         let emptyStateLabel = UILabel(frame: .zero)
         emptyStateLabel.text = text
-        emptyStateLabel.textColor = .customDarkGray1
+        emptyStateLabel.textColor = GeneralColors.lightLabel
         emptyStateLabel.font = .primaryRegular(24.0)
         emptyStateLabel.textAlignment = NSTextAlignment.center
         emptyStateLabel.alpha = 0.0
@@ -96,7 +96,7 @@ struct BasicUIElementFactory {
         complianceTextView.backgroundColor = .clear
 
         let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.primaryRegular(14.0),
-                                                         .foregroundColor: UIColor.customDarkGray1]
+                                                         .foregroundColor: GeneralColors.lightLabel]
         let privacyPolicyString = "Privacy Policy"
         let termsAndConditionsString = "Terms and Conditions"
         let complianceString = login ? "By continuing, you agree to the Political Debate app's \(privacyPolicyString) and \(termsAndConditionsString)." :
@@ -117,7 +117,7 @@ struct BasicUIElementFactory {
         let versionLabel = UILabel(frame: .zero)
         versionLabel.textAlignment = .center
         versionLabel.font = .primaryLight(16.0)
-        versionLabel.textColor = .customDarkGray1
+        versionLabel.textColor = GeneralColors.lightLabel
         if let infoDict = Bundle.main.infoDictionary,
             let version = infoDict["CFBundleShortVersionString"] as? String,
             let build = infoDict["CFBundleVersion"] as? String {
