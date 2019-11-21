@@ -8,6 +8,8 @@
 
 import UIKit
 
+// swiftlint:disable force_unwrap
+
 /// NOTE: Try printing UIFont.familyNames and then UIFont.fontNames(forFamilyname: "Family name") to see available file names
 extension UIFont {
     static let standardSize: CGFloat = 18.0
