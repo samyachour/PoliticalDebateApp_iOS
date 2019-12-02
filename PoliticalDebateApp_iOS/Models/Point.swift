@@ -24,6 +24,16 @@ enum Side: String {
             return .clear
         }
     }
+
+    var isContext: Bool {
+        switch self {
+        case .context:
+            return true
+        case .lib,
+             .con:
+            return false
+        }
+    }
 }
 
 struct Point {

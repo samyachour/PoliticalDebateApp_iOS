@@ -134,8 +134,8 @@
 		2E967440226BE91000821A73 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E96743F226BE91000821A73 /* CoreDataService.swift */; };
 		2E967442226BE91C00821A73 /* UserDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E967441226BE91C00821A73 /* UserDataManager.swift */; };
 		2EA3D1A2228D35AC00019324 /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA3D1A1228D35AC00019324 /* AuthAPI.swift */; };
-		2EA87A36231DE39700FA6CB0 /* SidedPointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1712311F1AB00DD8E4A /* SidedPointTableViewCell.swift */; };
-		2EA87A37231DE3CC00FA6CB0 /* SidedPointTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A16F2311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift */; };
+		2EA87A36231DE39700FA6CB0 /* PointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */; };
+		2EA87A37231DE3CC00FA6CB0 /* PointTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A16F2311F19C00DD8E4A /* PointTableViewCellViewModel.swift */; };
 		2EA87A38231DE3EB00FA6CB0 /* PointsNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC682231B3D2200438154 /* PointsNavigatorViewModel.swift */; };
 		2EA87A39231DE3EE00FA6CB0 /* PointsNavigatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC684231B3D2D00438154 /* PointsNavigatorViewController.swift */; };
 		2EA87A3D231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */; };
@@ -161,8 +161,8 @@
 		2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2FDA12290CC210093B6A7 /* TokenPair.swift */; };
 		2EDEEC5F2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */; };
 		2EDEEC612369414200172D8D /* WKWebViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */; };
-		2EE1A1702311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A16F2311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift */; };
-		2EE1A1722311F1AB00DD8E4A /* SidedPointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1712311F1AB00DD8E4A /* SidedPointTableViewCell.swift */; };
+		2EE1A1702311F19C00DD8E4A /* PointTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A16F2311F19C00DD8E4A /* PointTableViewCellViewModel.swift */; };
+		2EE1A1722311F1AB00DD8E4A /* PointTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */; };
 		2EE1A1742312043100DD8E4A /* UIImage+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */; };
 		2EEDE91222BEE980000A4F2B /* ProgressCoreDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */; };
 		2EEEC683231B3D2200438154 /* PointsNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEEC682231B3D2200438154 /* PointsNavigatorViewModel.swift */; };
@@ -282,8 +282,8 @@
 		2ED2FDA12290CC210093B6A7 /* TokenPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPair.swift; sourceTree = "<group>"; };
 		2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift; sourceTree = "<group>"; };
 		2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebViewControllerFactory.swift; sourceTree = "<group>"; };
-		2EE1A16F2311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidedPointTableViewCellViewModel.swift; sourceTree = "<group>"; };
-		2EE1A1712311F1AB00DD8E4A /* SidedPointTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidedPointTableViewCell.swift; sourceTree = "<group>"; };
+		2EE1A16F2311F19C00DD8E4A /* PointTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointTableViewCellViewModel.swift; sourceTree = "<group>"; };
+		2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointTableViewCell.swift; sourceTree = "<group>"; };
 		2EE1A1732312043100DD8E4A /* UIImage+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Custom.swift"; sourceTree = "<group>"; };
 		2EEDE91122BEE980000A4F2B /* ProgressCoreDataAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressCoreDataAPI.swift; sourceTree = "<group>"; };
 		2EEEC682231B3D2200438154 /* PointsNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsNavigatorViewModel.swift; sourceTree = "<group>"; };
@@ -496,7 +496,7 @@
 				2E0D84B922A7952400E4B0E7 /* LoginOrRegisterViewController.swift */,
 				2E0D84BD22A7953A00E4B0E7 /* AccountViewController.swift */,
 				2E5EC05222FA783600B41D54 /* DebateCollectionViewCell.swift */,
-				2EE1A1712311F1AB00DD8E4A /* SidedPointTableViewCell.swift */,
+				2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */,
 				2EEEC684231B3D2D00438154 /* PointsNavigatorViewController.swift */,
 				2E12D7C22309DB000078B0DD /* PointsTableViewController.swift */,
 			);
@@ -510,7 +510,7 @@
 				2E0D84BB22A7952F00E4B0E7 /* LoginOrRegisterViewModel.swift */,
 				2E0D84BF22A7954300E4B0E7 /* AccountViewModel.swift */,
 				2E5EC05622FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift */,
-				2EE1A16F2311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift */,
+				2EE1A16F2311F19C00DD8E4A /* PointTableViewCellViewModel.swift */,
 				2EEEC682231B3D2200438154 /* PointsNavigatorViewModel.swift */,
 				2E12D7C52309DB310078B0DD /* PointsTableViewModel.swift */,
 			);
@@ -922,13 +922,13 @@
 				2E287CBE22DC4A7B000A4CF2 /* NotificationBannerView.swift in Sources */,
 				2E967440226BE91000821A73 /* CoreDataService.swift in Sources */,
 				2E2BB06822F2D66800ED02C0 /* BackendErrorMessage.swift in Sources */,
-				2EE1A1702311F19C00DD8E4A /* SidedPointTableViewCellViewModel.swift in Sources */,
+				2EE1A1702311F19C00DD8E4A /* PointTableViewCellViewModel.swift in Sources */,
 				2EAF70232327853D00398D6B /* Collection+SafeIndex.swift in Sources */,
 				2E12D7C32309DB000078B0DD /* PointsTableViewController.swift in Sources */,
 				2E0D84BE22A7953A00E4B0E7 /* AccountViewController.swift in Sources */,
 				2E69094722A4931100DF486A /* ProgressAPI.swift in Sources */,
 				2E6FD0E02336D75400196643 /* DeepLinkService.swift in Sources */,
-				2EE1A1722311F1AB00DD8E4A /* SidedPointTableViewCell.swift in Sources */,
+				2EE1A1722311F1AB00DD8E4A /* PointTableViewCell.swift in Sources */,
 				2E5EC05722FA7BF600B41D54 /* DebateCollectionViewCellViewModel.swift in Sources */,
 				2E0D848A22A7057300E4B0E7 /* UIColor+Custom.swift in Sources */,
 				2EAF701B2324E13B00398D6B /* UserDefaultsService.swift in Sources */,
@@ -976,9 +976,9 @@
 				2E30A8FE22BF4BED007E386A /* AccountViewModel.swift in Sources */,
 				2E23A6DB226AC7B400B2DCC3 /* NetworkAPITests.swift in Sources */,
 				2E5EC04F22FA737600B41D54 /* ButtonWithActionClosure.swift in Sources */,
-				2EA87A36231DE39700FA6CB0 /* SidedPointTableViewCell.swift in Sources */,
+				2EA87A36231DE39700FA6CB0 /* PointTableViewCell.swift in Sources */,
 				2E30A90922BF4BED007E386A /* NetworkService.swift in Sources */,
-				2EA87A37231DE3CC00FA6CB0 /* SidedPointTableViewCellViewModel.swift in Sources */,
+				2EA87A37231DE3CC00FA6CB0 /* PointTableViewCellViewModel.swift in Sources */,
 				2E30A90722BF4BED007E386A /* UserDataManager.swift in Sources */,
 				2EA87A39231DE3EE00FA6CB0 /* PointsNavigatorViewController.swift in Sources */,
 				2E30A92522BFE33F007E386A /* CoreDataService.swift in Sources */,

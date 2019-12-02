@@ -40,38 +40,34 @@ struct MarkDownFormatter {
     private static func format(_ attributedString: NSMutableAttributedString,
                                between key: String,
                                formattedAttributes: [NSAttributedString.Key: Any]) -> NSMutableAttributedString {
-        let compatibleSourceString = NSString(string: attributedString.string) // NSAttributedString requires NSRange which only comes from NSString
+        var compatibleSourceString = NSString(string: attributedString.string) // NSAttributedString requires NSRange which only comes from NSString
 
         var range1: NSRange
-        var newStartIndex1: Int
         var range2: NSRange
-        var newStartIndex2 = 0
+        var newStartIndex: Int
 
         while true {
-            range1 = compatibleSourceString.range(of: key,
-                                                  range: NSRange(location: newStartIndex2,
-                                                                 length: compatibleSourceString.length - newStartIndex2))
-            newStartIndex1 = range1.location + range1.length
+            range1 = compatibleSourceString.range(of: key)
+            newStartIndex = range1.location + range1.length
             guard range1.location != NSNotFound else { break }
 
             range2 = compatibleSourceString.range(of: key,
-                                                  range: NSRange(location: newStartIndex1,
-                                                                 length: compatibleSourceString.length - newStartIndex1))
-            newStartIndex2 = range2.location + range2.length
+                                                  range: NSRange(location: newStartIndex,
+                                                                 length: compatibleSourceString.length - newStartIndex))
             guard range2.location != NSNotFound else { break }
 
             attributedString.addAttributes(formattedAttributes,
-                                           range: NSRange(location: newStartIndex1,
-                                                          length: range2.location - newStartIndex1))
+                                           range: NSRange(location: newStartIndex,
+                                                          length: range2.location - newStartIndex))
 
             attributedString.replaceCharacters(in: range1, with: "")
             attributedString.replaceCharacters(in: NSRange(location: range2.location - range1.length,
                                                            length: range2.length),
                                                with: "")
-            compatibleSourceString.replacingCharacters(in: range1, with: "")
-            compatibleSourceString.replacingCharacters(in: NSRange(location: range2.location - range1.length,
-                                                                   length: range2.length),
-                                                       with: "")
+            compatibleSourceString = compatibleSourceString.replacingCharacters(in: range1, with: "") as NSString
+            compatibleSourceString = compatibleSourceString.replacingCharacters(in: NSRange(location: range2.location - range1.length,
+                                                                                            length: range2.length),
+                                                                                with: "") as NSString
 
         }
 

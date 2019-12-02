@@ -304,6 +304,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         let manualRefreshDriver = manualRefreshRelay.asDriver()
 
+        manualRefreshDriver.map({ return false }).drive(showLoadingIndicatorRelay).disposed(by: disposeBag)
+
         viewModel.subscribeToManualDebateUpdates(searchTriggeredDriver,
                                                  sortSelectionDriver,
                                                  manualRefreshDriver)

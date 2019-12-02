@@ -32,22 +32,6 @@ class PointsTableViewController: UIViewController {
         installViewConstraints()
     }
 
-    private var firstViewDidAppear = true
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        guard firstViewDidAppear else { return }
-
-        firstViewDidAppear = false
-        switch viewModel.viewState {
-        case .embeddedRebuttals:
-            showTableView()
-        case .embeddedPointHistory,
-             .standaloneRootPoints:
-            break
-        }
-    }
-
     // MARK: - Observers & Observables
 
     private let viewModel: PointsTableViewModel
@@ -60,19 +44,9 @@ class PointsTableViewController: UIViewController {
     static let elementSpacing: CGFloat = 16.0
 
     private var tableViewContainerHeightAnchor: NSLayoutConstraint?
-    private var pointsTableViewTopAnchor: NSLayoutConstraint?
-    private var pointsTableViewHiddenTopAnchor: NSLayoutConstraint?
     private var pointsTableViewBottomAnchor: NSLayoutConstraint?
 
     // MARK: - UI Elements
-
-    private lazy var contextTextViewsStackView: UIStackView = {
-        let contextTextViewsStackView = UIStackView(frame: .zero)
-        contextTextViewsStackView.alignment = .leading
-        contextTextViewsStackView.axis = .vertical
-        contextTextViewsStackView.spacing = PointsTableViewController.elementSpacing
-        return contextTextViewsStackView
-    }()
 
     private lazy var tableViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
 
@@ -107,7 +81,6 @@ extension PointsTableViewController {
 
     // MARK: - View constraints
 
-    // swiftlint:disable:next function_body_length
     private func installViewConstraints() {
         switch viewModel.viewState {
         case .standaloneRootPoints:
@@ -132,82 +105,59 @@ extension PointsTableViewController {
         pointsTableView.translatesAutoresizingMaskIntoConstraints = false
 
         tableViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
         tableViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         tableViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
 
         pointsTableView.leadingAnchor.constraint(equalTo: tableViewContainer.leadingAnchor).isActive = true
-        pointsTableViewTopAnchor = pointsTableView.topAnchor.constraint(equalTo: tableViewContainer.topAnchor)
-        pointsTableViewTopAnchor?.isActive = true
+        pointsTableView.topAnchor.constraint(equalTo: tableViewContainer.topAnchor).isActive = true
         pointsTableView.trailingAnchor.constraint(equalTo: tableViewContainer.trailingAnchor).isActive = true
         pointsTableViewBottomAnchor = pointsTableView.bottomAnchor.constraint(equalTo: tableViewContainer.bottomAnchor)
         pointsTableViewBottomAnchor?.isActive = true
 
         switch viewModel.viewState {
-        case .standaloneRootPoints where viewModel.shouldShowContextPointsView:
-            view.addSubview(contextTextViewsStackView)
-            contextTextViewsStackView.translatesAutoresizingMaskIntoConstraints = false
-            contextTextViewsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Self.elementSpacing).isActive = true
-            contextTextViewsStackView.topAnchor.constraint(equalTo: topLayoutAnchor, constant: Self.elementSpacing).isActive = true
-            contextTextViewsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Self.elementSpacing).isActive = true
-
-            tableViewContainer.topAnchor.constraint(equalTo: contextTextViewsStackView.bottomAnchor, constant: 4).isActive = true
         case .embeddedRebuttals:
-            // Set the height to the entire screen as a backup so when we move the table offscreen
-            // it will expand and visibleCells will include all the tableView cells
-            pointsTableView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height).injectPriority(.required - 1).isActive = true
-            pointsTableViewHiddenTopAnchor = pointsTableView.topAnchor.constraint(equalTo: tableViewContainer.bottomAnchor)
-            pointsTableViewHiddenTopAnchor?.isActive = false
-            hideTableViewToRecomputeHeight(animated: false)
-            fallthrough
-        case .standaloneRootPoints,
-             .embeddedPointHistory:
-            tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
+            // Set the height to the entire screen at a lower priority so when we disable the bottom anchor it will expand to that size
+            // and we can recompute based on visible cell height
+            pointsTableView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height).injectPriority(.required - 2).isActive = true
+            recomputeTableViewHeight(animated: false)
+        case .embeddedPointHistory:
+            updateTableViewContainerHeight(justLastCell: true)
+        case .standaloneRootPoints:
+            break
         }
     }
 
-    private func hideTableViewToRecomputeHeight(animated: Bool = true, showAfter: Bool = false) {
-        UIView.animate(withDuration: animated ? GeneralConstants.standardAnimationDuration : 0, animations: {
-            // Hide
-            self.pointsTableViewTopAnchor?.isActive = false
-            self.pointsTableViewBottomAnchor?.isActive = false
-            self.pointsTableViewHiddenTopAnchor?.isActive = true
-            self.view.layoutIfNeeded()
-        }, completion: { [weak self] _ in
-            guard showAfter else { return }
+    private func recomputeTableViewHeight(animated: Bool = true) {
+        self.pointsTableViewBottomAnchor?.isActive = false
+        self.view.layoutIfNeeded()
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                self?.showTableView()
-            }
-        })
+        UIView.animate(withDuration: animated ? GeneralConstants.standardAnimationDuration : 0,
+                       animations: {
+                        self.updateTableViewContainerHeight()
+                        self.pointsTableViewBottomAnchor?.isActive = true
+                        self.view.layoutIfNeeded()
+                        self.view.superview?.layoutIfNeeded()
+                },
+                       completion: { _ in
+                        self.viewModel.completedRecomputingTableViewHeightRelay.accept(())
+                })
     }
 
-    private func updateTableViewContainerHeight() {
-        let pointsTableViewContentHeight = pointsTableView.dynamicContentHeight
+    private func updateTableViewContainerHeight(justLastCell: Bool = false) {
+        let pointsTableViewContentHeight = justLastCell ? pointsTableView.dynamicLastCellContentHeight : pointsTableView.dynamicContentHeight
         if tableViewContainerHeightAnchor == nil {
-            tableViewContainerHeightAnchor = tableViewContainer.heightAnchor.constraint(equalToConstant: pointsTableViewContentHeight)
+            tableViewContainerHeightAnchor = justLastCell ?
+                tableViewContainer.heightAnchor.constraint(greaterThanOrEqualToConstant: pointsTableViewContentHeight) :
+                tableViewContainer.heightAnchor.constraint(equalToConstant: pointsTableViewContentHeight).injectPriority(.required - 1)
             tableViewContainerHeightAnchor?.isActive = true
         } else {
             tableViewContainerHeightAnchor?.constant = pointsTableViewContentHeight
         }
     }
 
-    private func showTableView() {
-        UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
-                       animations: {
-                        self.pointsTableViewHiddenTopAnchor?.isActive = false
-                        self.pointsTableViewTopAnchor?.isActive = true
-                        self.pointsTableViewBottomAnchor?.isActive = true
-                        self.updateTableViewContainerHeight()
-                        self.view.layoutIfNeeded()
-                        self.view.superview?.layoutIfNeeded()
-        },
-                       completion: { _ in
-                        self.viewModel.completedShowingTableViewRelay.accept(())
-        })
-    }
-
     private func scrollToLastCell() {
-        let lastIndexPath = IndexPath(row: viewModel.sidedPointsCount - 1, section: 0)
+        let lastIndexPath = IndexPath(row: viewModel.pointsCount - 1, section: 0)
         pointsTableView.scrollToRow(at: lastIndexPath,
                                     at: .bottom,
                                     animated: true)
@@ -223,23 +173,22 @@ extension PointsTableViewController {
     // MARK: View binding
 
     private func installViewBinds() {
-        pointsTableView.register(SidedPointTableViewCell.self, forCellReuseIdentifier: SidedPointTableViewCell.reuseIdentifier)
+        pointsTableView.register(PointTableViewCell.self, forCellReuseIdentifier: PointTableViewCell.reuseIdentifier)
 
         let dataSource =
             RxTableViewSectionedAnimatedDataSourceWithReloadSignal<PointsTableViewSection>(configureCell: { (_, tableView, indexPath, viewModel) -> UITableViewCell in
-                let cell = tableView.dequeueReusableCell(withIdentifier: SidedPointTableViewCell.reuseIdentifier, for: indexPath)
-                if let sidedPointTableViewCell = cell as? SidedPointTableViewCell { sidedPointTableViewCell.viewModel = viewModel }
+                let cell = tableView.dequeueReusableCell(withIdentifier: PointTableViewCell.reuseIdentifier, for: indexPath)
+                if let pointTableViewCell = cell as? PointTableViewCell { pointTableViewCell.viewModel = viewModel }
                 return cell
             })
 
-        viewModel.sidedPointsDataSourceDriver
+        viewModel.pointsDataSourceDriver
             .drive(pointsTableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
 
         switch viewModel.viewState {
         case .standaloneRootPoints:
             installRootPointsTableViewBinds()
-            installContextTextViewsDataSource()
         case .embeddedPointHistory:
             installEmbeddedPointHistoryTableViewBinds(dataSource: dataSource)
         case .embeddedRebuttals:
@@ -247,7 +196,7 @@ extension PointsTableViewController {
         }
 
         viewModel.observe(indexPathSelected: pointsTableView.rx.itemSelected,
-                          modelSelected: pointsTableView.rx.modelSelected(SidedPointTableViewCellViewModel.self),
+                          modelSelected: pointsTableView.rx.modelSelected(PointTableViewCellViewModel.self),
                           undoSelected: undoButton.rx.tap)
     }
 
@@ -256,8 +205,8 @@ extension PointsTableViewController {
     // MARK: Embedded rebuttals binds
 
     private func installEmbeddedRebuttalsTableViewBinds(dataSource: RxTableViewSectionedAnimatedDataSourceWithReloadSignal<PointsTableViewSection>) {
-        viewModel.sidedPointsDataSourceDriver.drive(onNext: { [weak self] _ in
-            self?.hideTableViewToRecomputeHeight(showAfter: true)
+        viewModel.pointsDataSourceDriver.drive(onNext: { [weak self] _ in
+            self?.recomputeTableViewHeight()
         }).disposed(by: disposeBag)
     }
 
@@ -268,11 +217,12 @@ extension PointsTableViewController {
             self?.navigationController?.popViewController(animated: true)
         }).disposed(by: disposeBag)
 
-        Signal.merge(dataSource.dataReloadedSignal, viewModel.completedShowingTableViewSignal)
+        Signal.merge(dataSource.dataReloadedSignal, viewModel.completedRecomputingTableViewHeightSignal)
             .emit(onNext: { [weak self] _ in
                 guard self?.hasLaidOutSubviews == true else { return }
 
                 self?.scrollToLastCell()
+                self?.updateTableViewContainerHeight(justLastCell: true)
         }).disposed(by: disposeBag)
     }
 
@@ -283,24 +233,6 @@ extension PointsTableViewController {
 
         viewModel.viewControllerToPushSignal.emit(onNext: { [weak self] viewController in
             self?.navigationController?.pushViewController(viewController, animated: true)
-        }).disposed(by: disposeBag)
-    }
-
-    private func installContextTextViewsDataSource() {
-        viewModel.contextPointsDataSourceDriver?.drive(onNext: { [weak self] contextPoints in
-            guard !contextPoints.isEmpty else { return }
-
-            let contextTextViews: [UITextView] = contextPoints.map { [weak self] contextPoint in
-                let contextTextView = BasicUIElementFactory.generateDescriptionTextView(MarkDownFormatter.format(contextPoint.description,
-                                                                                                                 with: [.font: GeneralFonts.text,
-                                                                                                                        .foregroundColor: GeneralColors.text],
-                                                                                                                 hyperlinks: contextPoint.hyperlinks))
-                guard let self = self else { return contextTextView }
-
-                contextTextView.delegate = self
-                return contextTextView
-            }
-            contextTextViews.forEach { self?.contextTextViewsStackView.addArrangedSubview($0) }
         }).disposed(by: disposeBag)
     }
 
@@ -347,5 +279,12 @@ private extension UITableView {
         return verticalInsets + visibleCells.reduce(0.0, { (result, cell) -> CGFloat in
             return result + cell.frame.height
         })
+    }
+
+    var dynamicLastCellContentHeight: CGFloat {
+        guard !visibleCells.isEmpty else { return 0.0 }
+
+        let verticalInsets = contentInset.top + contentInset.bottom
+        return verticalInsets + (visibleCells.last?.frame.height ?? 0)
     }
 }
