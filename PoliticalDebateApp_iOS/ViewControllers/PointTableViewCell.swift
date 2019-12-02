@@ -1,5 +1,5 @@
 //
-//  SidedPointTableViewCell.swift
+//  PointTableViewCell.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 8/24/19.
@@ -11,10 +11,10 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class SidedPointTableViewCell: UITableViewCell {
-    static let reuseIdentifier = "SidedPointTableViewCell"
+class PointTableViewCell: UITableViewCell {
+    static let reuseIdentifier = "PointTableViewCell"
 
-    var viewModel: SidedPointTableViewCellViewModel? {
+    var viewModel: PointTableViewCellViewModel? {
         didSet {
             containerView.backgroundColor = viewModel?.backgroundColor
             let description = (viewModel?.useFullDescription ?? false) ? viewModel?.point.description : viewModel?.point.shortDescription
@@ -22,7 +22,8 @@ class SidedPointTableViewCell: UITableViewCell {
                                                                                         .foregroundColor: GeneralColors.text],
                                                                     hyperlinks: viewModel?.point.hyperlinks)
             pointTextView.sizeToFit()
-            self.subscribeToCheckImageUpdates()
+            reloadConstraints()
+            subscribeToCheckImageUpdates()
         }
     }
 
@@ -48,8 +49,21 @@ class SidedPointTableViewCell: UITableViewCell {
 
     // MARK: - UI Properties
 
+    private var isContext: Bool { viewModel?.point.side?.isContext == true }
     private static let cornerRadius: CGFloat = 26.0
     private static let inset: CGFloat = 10.0
+    private var horizontalInset: CGFloat { isContext ? 0 : Self.inset }
+    private var verticalInset: CGFloat { isContext ? 0 : Self.inset }
+    private var containerVerticalInset: CGFloat { isContext ? 0 : 8.0 }
+
+    // MARK: Stored constraints
+
+    private var containerViewTopAnchor: NSLayoutConstraint?
+    private var containerViewBottomAnchor: NSLayoutConstraint?
+    private var textViewLeadingAnchor: NSLayoutConstraint?
+    private var textViewTopAnchor: NSLayoutConstraint?
+    private var textViewBottomAnchor: NSLayoutConstraint?
+    private var imageViewTrailingAnchor: NSLayoutConstraint?
 
     // MARK: - UI Elements
 
@@ -83,23 +97,43 @@ class SidedPointTableViewCell: UITableViewCell {
         pointTextView.translatesAutoresizingMaskIntoConstraints = false
         checkImageView.translatesAutoresizingMaskIntoConstraints = false
 
-        let containerVerticalInset: CGFloat = 8.0
         containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: PointsTableViewController.elementSpacing).isActive = true
-        containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: containerVerticalInset).isActive = true
-        containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PointsTableViewController.elementSpacing).isActive = true
-        containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -containerVerticalInset).isActive = true
+        containerViewTopAnchor = containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: containerVerticalInset)
+        containerViewTopAnchor?.isActive = true
+        containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PointsTableViewController.elementSpacing)
+            // Necessary to avoid conflicting with UIView-Encapsulated-Layout-Width
+            .injectPriority(.required - 1).isActive = true
+        containerViewBottomAnchor = containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -containerVerticalInset)
+        containerViewBottomAnchor?.isActive = true
 
-        pointTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Self.inset).isActive = true
-        pointTextView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Self.inset).isActive = true
+        textViewLeadingAnchor = pointTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: horizontalInset)
+        textViewLeadingAnchor?.isActive = true
+        textViewTopAnchor = pointTextView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: verticalInset)
+        textViewTopAnchor?.isActive = true
         pointTextView.trailingAnchor.constraint(lessThanOrEqualTo: checkImageView.leadingAnchor, constant: -2).isActive = true
-        pointTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Self.inset).isActive = true
+        textViewBottomAnchor = pointTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -verticalInset)
+        textViewBottomAnchor?.isActive = true
 
         checkImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Self.inset - 4).isActive = true
+        imageViewTrailingAnchor = checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -horizontalInset - 4)
+        imageViewTrailingAnchor?.isActive = true
         checkImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 
+    // Constraints for sided and context points are different so we need to reload them when the viewModel changes
+    private func reloadConstraints() {
+        containerViewTopAnchor?.constant = containerVerticalInset
+        containerViewBottomAnchor?.constant = -containerVerticalInset
+        textViewLeadingAnchor?.constant = horizontalInset
+        textViewTopAnchor?.constant = verticalInset
+        textViewBottomAnchor?.constant = -verticalInset
+        imageViewTrailingAnchor?.constant = -horizontalInset
+    }
+
     private func toggleCheckImage(_ on: Bool) {
+        // Make sure we aren't adding a check image to a context point
+        guard !(on && isContext) else { return }
+
         UIView.animate(withDuration: GeneralConstants.standardAnimationDuration) {
             self.checkImageView.image = on ? UIImage.check : nil
             self.checkImageView.layoutIfNeeded()
@@ -111,6 +145,7 @@ class SidedPointTableViewCell: UITableViewCell {
     }
 
     private func subscribeToCheckImageUpdates() {
+        toggleCheckImage(false) // reset
         viewModel?.shouldShowCheckImageDriver
             .drive(onNext: { [weak self] shouldShowCheckImage in
                 self?.toggleCheckImage(shouldShowCheckImage)
@@ -120,15 +155,29 @@ class SidedPointTableViewCell: UITableViewCell {
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
 
+        guard !isContext else { return }
+
         UIView.animate(withDuration: GeneralConstants.quickAnimationDuration) {
             self.containerView.backgroundColor = highlighted ? GeneralColors.selected : self.viewModel?.backgroundColor
         }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        // Sometimes the cell truncates the last line of the textView
+        // If that's the case we force recompute the frame height
+        let size = pointTextView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        guard pointTextView.frame.size.height != size.height else { return }
+
+        pointTextView.frame.size.height = size.height
+        contentView.layoutIfNeeded()
     }
 }
 
 // MARK: - UITextViewDelegate
 
-extension SidedPointTableViewCell: UITextViewDelegate {
+extension PointTableViewCell: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         guard !DeepLinkService.willHandle(URL) else { return false }
 

@@ -9,7 +9,9 @@
 import UIKit
 
 /// Several of our screens (e.g. Login/Register & Account ViewControllers) use the same boilerplate UI elements
-class BasicUIElementFactory {
+struct BasicUIElementFactory {
+
+    private init() {}
 
     // Need to be able to add target to UIButton but use UIBarButtonItem in nav bar
     static func generateBarButton(title: String) -> (button: UIButton, barButton: UIBarButtonItem) {
@@ -20,11 +22,13 @@ class BasicUIElementFactory {
         return (basicBarButton, UIBarButtonItem(customView: basicBarButton))
     }
 
-    static func generateButton(title: String? = nil, titleColor: UIColor = GeneralColors.hardButton) -> UIButton {
+    static func generateButton(title: String? = nil,
+                               titleColor: UIColor = GeneralColors.hardButton,
+                               font: UIFont = GeneralFonts.button) -> UIButton {
         let forgotPasswordButton = UIButton(frame: .zero)
         forgotPasswordButton.setTitle(title, for: .normal)
         forgotPasswordButton.setTitleColor(titleColor, for: .normal)
-        forgotPasswordButton.titleLabel?.font = GeneralFonts.button
+        forgotPasswordButton.titleLabel?.font = font
         return forgotPasswordButton
     }
 
@@ -76,7 +80,7 @@ class BasicUIElementFactory {
     static func generateEmptyStateLabel(text: String) -> UILabel {
         let emptyStateLabel = UILabel(frame: .zero)
         emptyStateLabel.text = text
-        emptyStateLabel.textColor = .customDarkGray1
+        emptyStateLabel.textColor = GeneralColors.lightLabel
         emptyStateLabel.font = .primaryRegular(24.0)
         emptyStateLabel.textAlignment = NSTextAlignment.center
         emptyStateLabel.alpha = 0.0
@@ -92,7 +96,7 @@ class BasicUIElementFactory {
         complianceTextView.backgroundColor = .clear
 
         let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.primaryRegular(14.0),
-                                                         .foregroundColor: UIColor.customDarkGray1]
+                                                         .foregroundColor: GeneralColors.lightLabel]
         let privacyPolicyString = "Privacy Policy"
         let termsAndConditionsString = "Terms and Conditions"
         let complianceString = login ? "By continuing, you agree to the Political Debate app's \(privacyPolicyString) and \(termsAndConditionsString)." :
@@ -113,10 +117,11 @@ class BasicUIElementFactory {
         let versionLabel = UILabel(frame: .zero)
         versionLabel.textAlignment = .center
         versionLabel.font = .primaryLight(16.0)
-        versionLabel.textColor = .customDarkGray1
+        versionLabel.textColor = GeneralColors.lightLabel
         if let infoDict = Bundle.main.infoDictionary,
-            let version = infoDict["CFBundleShortVersionString"] as? String {
-            versionLabel.text = "Version \(version)"
+            let version = infoDict["CFBundleShortVersionString"] as? String,
+            let build = infoDict["CFBundleVersion"] as? String {
+            versionLabel.text = "Version \(version) (\(build))"
         }
         return versionLabel
     }

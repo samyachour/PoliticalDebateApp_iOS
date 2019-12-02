@@ -80,25 +80,19 @@ extension PointsNavigatorViewController {
         rebuttalsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         rebuttalsLabel.topAnchor.constraint(equalTo: pointHistoryTableViewController.view.bottomAnchor).isActive = true
         rebuttalsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        rebuttalsLabel.alpha = 0
-        toggleRebuttalsLabel(viewModel.rootPoint.rebuttals?.isEmpty == false)
+        toggleRebuttalsLabel(!(viewModel.rootPoint.rebuttals?.isEmpty ?? true), animated: false)
+        rebuttalsLabel.setContentCompressionResistancePriority(.required, for: .vertical)
 
         pointRebuttalsTableViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         pointRebuttalsTableViewController.view.topAnchor.constraint(equalTo: rebuttalsLabel.bottomAnchor).isActive = true
         pointRebuttalsTableViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         pointRebuttalsTableViewController.view.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
         pointRebuttalsTableViewController.didMove(toParent: self)
-
     }
 
-    private func toggleRebuttalsLabel(_ on: Bool) {
-        // Fading in the label must be delayed
-        // so it doesn't appear at the bottom of the screen
-        let delay = rebuttalsLabel.alpha == 0 ? 0.5 : 0
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            UIView.animate(withDuration: GeneralConstants.standardAnimationDuration) {
-                self.rebuttalsLabel.alpha = on ? 1 : 0
-            }
+    private func toggleRebuttalsLabel(_ on: Bool, animated: Bool = true) {
+        UIView.animate(withDuration: animated ? GeneralConstants.standardAnimationDuration : 0) {
+            self.rebuttalsLabel.alpha = on ? 1 : 0
         }
     }
 
@@ -106,7 +100,7 @@ extension PointsNavigatorViewController {
 
     private func installViewBinds() {
         pointHistoryTableViewModel.observe(newPointSignal: pointRebuttalsTableViewModel.newPointSignal)
-        pointHistoryTableViewModel.observe(completedShowingTableViewSignal: pointRebuttalsTableViewModel.completedShowingTableViewSignal)
+        pointHistoryTableViewModel.observe(completedRecomputingTableViewHeightSignal: pointRebuttalsTableViewModel.completedRecomputingTableViewHeightSignal)
         pointRebuttalsTableViewModel.observe(newRebuttalsSignal: pointHistoryTableViewModel.newRebuttalsSignal)
 
         pointHistoryTableViewModel.newRebuttalsSignal

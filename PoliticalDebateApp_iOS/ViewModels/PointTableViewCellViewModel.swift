@@ -1,5 +1,5 @@
 //
-//  SidedPointTableViewCellViewModel.swift
+//  PointTableViewCellViewModel.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 8/24/19.
@@ -12,7 +12,7 @@ import RxDataSources
 import RxSwift
 import UIKit
 
-class SidedPointTableViewCellViewModel: IdentifiableType, Equatable {
+class PointTableViewCellViewModel: IdentifiableType, Equatable {
     let point: Point
     let debatePrimaryKey: PrimaryKey
     let useFullDescription: Bool
@@ -48,7 +48,7 @@ class SidedPointTableViewCellViewModel: IdentifiableType, Equatable {
 
     // MARK: Equatable
 
-    static func == (lhs: SidedPointTableViewCellViewModel, rhs: SidedPointTableViewCellViewModel) -> Bool {
+    static func == (lhs: PointTableViewCellViewModel, rhs: PointTableViewCellViewModel) -> Bool {
         return lhs.point == rhs.point
     }
 

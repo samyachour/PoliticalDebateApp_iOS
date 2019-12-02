@@ -48,7 +48,7 @@ class DebateCollectionViewCell: UICollectionViewCell {
 
     // MARK: - UI Properties
 
-    private static let cellColor = UIColor.customLightGreen1
+    private static let cellColor = GeneralColors.cellColor
     private static let cornerRadius: CGFloat = 16.0
     private static let defaultTintViewColor: UIColor = .clear
 

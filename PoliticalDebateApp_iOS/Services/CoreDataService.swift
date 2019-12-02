@@ -74,7 +74,7 @@ struct CoreDataService {
         do {
             try context.save()
         } catch {
-            print(error)
+            debugLog(error)
             CoreDataService.showCoreDataSaveAlert()
         }
     }

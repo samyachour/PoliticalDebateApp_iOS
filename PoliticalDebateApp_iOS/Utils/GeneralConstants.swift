@@ -11,8 +11,10 @@ import UIKit
 
 enum GeneralConstants {
     static let standardAnimationDuration = 0.4
+    static let shortAnimationDuration = 0.2
     static let quickAnimationDuration = 0.1
     static let standardDebounceDuration = RxTimeInterval.milliseconds(500)
+    static let shortDebounceDuration = RxTimeInterval.milliseconds(200)
     static let minimumPasswordLength = 6 // dictated by backend
     static let retryErrorCodes = [408, 502, 503, 504]
     static let unauthorizedErrorCode = 401
@@ -33,10 +35,12 @@ enum GeneralColors {
     static let navBarButton = UIColor.customDarkGray1
     static let softButton = UIColor.customDarkGray1
     static let hardButton = UIColor.customDarkGray2
+    static let lightLabel = UIColor.customDarkGray1
     static let background = UIColor.customOffWhite1
     static let navBarTitle = UIColor.black
     static let text = UIColor.black
     static let selected = UIColor.customOffWhite2
+    static let cellColor = UIColor.customLightGreen1
     static let starredTint = UIColor.customLightGreen2
     static let unstarredTint = UIColor.customLightGray1
 }
