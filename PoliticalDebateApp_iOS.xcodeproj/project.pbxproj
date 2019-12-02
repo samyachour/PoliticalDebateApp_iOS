@@ -425,7 +425,6 @@
 				2E96743C226BDFEA00821A73 /* Services */,
 				2EEDE91322BEE985000A4F2B /* LocalData */,
 				2E23A6FB226ACDDD00B2DCC3 /* Networking */,
-				2E3EBCE32381EC97003C474F /* Utils */,
 				2E9C97582385600F00361094 /* Helpers */,
 				2E0D848B22A70B7D00E4B0E7 /* Resources */,
 				2E23A6C2226AC7B300B2DCC3 /* AppDelegate.swift */,
@@ -529,25 +528,6 @@
 			path = NotificationBanners;
 			sourceTree = "<group>";
 		};
-		2E3EBCE32381EC97003C474F /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				2E287CB822DC487F000A4CF2 /* NotificationBanners */,
-				2E23A712226AE36600B2DCC3 /* GeneralConstants.swift */,
-				2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */,
-				2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */,
-				2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */,
-				2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */,
-				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
-				2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */,
-				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
-				2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */,
-				2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */,
-				2EBE46C522BBD5180087BC56 /* DebugLog.swift */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
 		2E96743C226BDFEA00821A73 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -564,6 +544,18 @@
 		2E9C97582385600F00361094 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				2E287CB822DC487F000A4CF2 /* NotificationBanners */,
+				2E23A712226AE36600B2DCC3 /* GeneralConstants.swift */,
+				2E2BB06522F2C95D00ED02C0 /* BasicUIElementFactory.swift */,
+				2E2BB06122F2AA9D00ED02C0 /* EmailAndPasswordValidator.swift */,
+				2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */,
+				2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */,
+				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
+				2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */,
+				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
+				2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */,
+				2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */,
+				2EBE46C522BBD5180087BC56 /* DebugLog.swift */,
 				2E0D848322A6E60200E4B0E7 /* NSLayoutConstraint+Priority.swift */,
 				2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */,
 				2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */,
