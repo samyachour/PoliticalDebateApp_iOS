@@ -28,15 +28,15 @@ enum PointsTableViewState {
 }
 
 struct PointsTableViewSection: AnimatableSectionModelType {
-    var items: [SidedPointTableViewCellViewModel]
+    var items: [PointTableViewCellViewModel]
     var header = "" // Only using 1 section
     var identity: String { return header }
 
-    init(items: [SidedPointTableViewCellViewModel]) {
+    init(items: [PointTableViewCellViewModel]) {
         self.items = items
     }
 
-    init(original: PointsTableViewSection, items: [SidedPointTableViewCellViewModel]) {
+    init(original: PointsTableViewSection, items: [PointTableViewCellViewModel]) {
         self = original
         self.items = items
     }
@@ -63,7 +63,7 @@ class PointsTableViewModel: StarrableViewModel {
             subscribeToContextPointsUpdates()
         }
 
-        subscribeSidedPointsUpdates()
+        subscribePointsUpdates()
     }
 
     private let disposeBag = DisposeBag()
@@ -77,31 +77,38 @@ class PointsTableViewModel: StarrableViewModel {
     // Private
 
     private let sidedPointsRelay: BehaviorRelay<[Point]>
-    private lazy var sidedPointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
+    private lazy var pointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
 
-    private func subscribeSidedPointsUpdates() {
-        sidedPointsRelay
+    private func subscribePointsUpdates() {
+        var pointsDriver = sidedPointsRelay.asDriver()
+        if let contextPointsDriver = contextPointsDataSourceRelay?.asDriver() {
+            pointsDriver = Driver.combineLatest(contextPointsDriver, pointsDriver)
+                .map({ $0.0 + $0.1 })
+        }
+
+        pointsDriver
             .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] points in
+            .drive(onNext: { [weak self] points in
                 guard let debatePrimaryKey = self?.debate.primaryKey,
                     let viewState = self?.viewState,
-                    let currentSidedPointsDataSourceSection = self?.sidedPointsDataSourceRelay.value.first else {
+                    let currentPointsDataSourceSection = self?.pointsDataSourceRelay.value.first else {
                         return
                 }
 
-                let newSidedPointCellViewModels = points
-                    .map({ SidedPointTableViewCellViewModel(point: $0,
-                                                            debatePrimaryKey: debatePrimaryKey,
-                                                            useFullDescription: viewState.shouldCellsUseFullDescription) })
-                self?.sidedPointsDataSourceRelay.accept([PointsTableViewSection(original: currentSidedPointsDataSourceSection,
-                                                                                items: newSidedPointCellViewModels)])
+                let newPointCellViewModels = points
+                    .map({ PointTableViewCellViewModel(point: $0,
+                                                       debatePrimaryKey: debatePrimaryKey,
+                                                       useFullDescription: viewState.shouldCellsUseFullDescription ||
+                                                        $0.side?.isContext == true) })
+                self?.pointsDataSourceRelay.accept([PointsTableViewSection(original: currentPointsDataSourceSection,
+                                                                           items: newPointCellViewModels)])
         }).disposed(by: disposeBag)
     }
 
     // Internal
 
-    lazy var sidedPointsDataSourceDriver = sidedPointsDataSourceRelay.asDriver()
-    var sidedPointsCount: Int { return sidedPointsRelay.value.count }
+    lazy var pointsDataSourceDriver = pointsDataSourceRelay.asDriver()
+    var pointsCount: Int { return sidedPointsRelay.value.count + (contextPointsDataSourceRelay?.value.count ?? 0) }
 
     // MARK: Standalone dataSource
 
@@ -126,11 +133,6 @@ class PointsTableViewModel: StarrableViewModel {
                     .disposed(by: self.disposeBag)
             }).disposed(by: disposeBag)
     }
-
-    // Internal
-
-    lazy var contextPointsDataSourceDriver = contextPointsDataSourceRelay?.asDriver()
-    var shouldShowContextPointsView: Bool { return contextPointsDataSourceRelay?.value.isEmpty == false }
 
     // MARK: - Points tables synchronization
 
@@ -183,13 +185,16 @@ class PointsTableViewModel: StarrableViewModel {
     lazy var popSelfViewControllerSignal = popSelfViewControllerRelay.asSignal()
 
     func observe(indexPathSelected: ControlEvent<IndexPath>,
-                 modelSelected: ControlEvent<SidedPointTableViewCellViewModel>,
+                 modelSelected: ControlEvent<PointTableViewCellViewModel>,
                  undoSelected: ControlEvent<Void>) {
         switch viewState {
         case .standaloneRootPoints:
             modelSelected
             .subscribe(onNext: { [weak self] pointTableViewCellViewModel in
-                guard let debate = self?.debate else { return }
+                guard let debate = self?.debate,
+                    pointTableViewCellViewModel.point.side?.isContext == false else {
+                        return
+                }
 
                 self?.viewControllerToPushRelay
                     .accept(PointsNavigatorViewController(viewModel: PointsNavigatorViewModel(rootPoint: pointTableViewCellViewModel.point,
@@ -235,12 +240,12 @@ class PointsTableViewModel: StarrableViewModel {
     // Internal
 
     /// This acts as a producer for embeddedRebuttals and consumer for embeddedPointHistory
-    lazy var completedShowingTableViewRelay = PublishRelay<Void>()
-    lazy var completedShowingTableViewSignal = completedShowingTableViewRelay.asSignal()
+    lazy var completedRecomputingTableViewHeightRelay = PublishRelay<Void>()
+    lazy var completedRecomputingTableViewHeightSignal = completedRecomputingTableViewHeightRelay.asSignal()
 
-    func observe(completedShowingTableViewSignal: Signal<Void>) {
-        completedShowingTableViewSignal
-            .emit(to: completedShowingTableViewRelay)
+    func observe(completedRecomputingTableViewHeightSignal: Signal<Void>) {
+        completedRecomputingTableViewHeightSignal
+            .emit(to: completedRecomputingTableViewHeightRelay)
             .disposed(by: disposeBag)
     }
 

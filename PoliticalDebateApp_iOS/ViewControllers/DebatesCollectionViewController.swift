@@ -12,7 +12,9 @@ import RxDataSources
 import RxSwift
 import UIKit
 
-// Acts as our home view as well
+// swiftlint:disable file_length
+
+/// Root home view listing all debates
 class DebatesCollectionViewController: UIViewController {
 
     required init(viewModel: DebatesCollectionViewModel) {
@@ -51,7 +53,10 @@ class DebatesCollectionViewController: UIViewController {
     /// On this screen we are constantly running multiple animations at once and there is a problem when animation blocks are not called serially:
     /// They start to overlap and the parameters (duration, options, etc.) bleed into each other.
     /// To prevent this we enforce synchronization with a relay.
-    private var animationBlocksRelay = PublishRelay<() -> Void>()
+    private lazy var animationBlocksRelay = PublishRelay<() -> Void>()
+
+    private lazy var showLoadingIndicatorRelay = BehaviorRelay<Bool>(value: true)
+    private lazy var showRetryButtonRelay = BehaviorRelay<Bool>(value: false)
 
     // MARK: - UI Properties
 
@@ -118,7 +123,16 @@ class DebatesCollectionViewController: UIViewController {
 
     private lazy var debatesRefreshControl = UIRefreshControl()
 
+    private lazy var loadingIndicator: UIActivityIndicatorView = {
+        let loadingIndicator = UIActivityIndicatorView(style: .whiteLarge)
+        loadingIndicator.color = .customDarkGray2
+        loadingIndicator.hidesWhenStopped = true
+        return loadingIndicator
+    }()
+
     private lazy var emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No debates to show.")
+
+    private lazy var retryButton = BasicUIElementFactory.generateButton(title: GeneralCopies.retryTitle, font: UIFont.primaryRegular(24))
 
 }
 
@@ -163,6 +177,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         collectionViewContainer.addSubview(emptyStateLabel)
         collectionViewContainer.addSubview(debatesCollectionView)
         view.addSubview(headerElementsContainer)
+        view.addSubview(loadingIndicator)
+        view.addSubview(retryButton)
 
         headerElementsContainer.translatesAutoresizingMaskIntoConstraints = false
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -171,6 +187,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         collectionViewContainer.translatesAutoresizingMaskIntoConstraints = false
         debatesCollectionView.translatesAutoresizingMaskIntoConstraints = false
         emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
+        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
+        retryButton.translatesAutoresizingMaskIntoConstraints = false
 
         headerElementsContainer.backgroundColor = Self.backgroundColor
         headerElementsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor,
@@ -216,6 +234,13 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         emptyStateLabel.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
         emptyStateLabel.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
+
+        loadingIndicator.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
+        loadingIndicator.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
+
+        retryButton.centerXAnchor.constraint(equalTo: collectionViewContainer.centerXAnchor).isActive = true
+        retryButton.centerYAnchor.constraint(equalTo: collectionViewContainer.centerYAnchor).isActive = true
+        retryButton.alpha = 0
     }
 
     override func viewDidLayoutSubviews() {
@@ -266,16 +291,62 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             self?.updateSortBySelection(pickerChoice)
         }).disposed(by: disposeBag)
 
-        viewModel.subscribeToManualDebateUpdates(searchTriggeredRelay.asDriver(),
+        let searchTriggeredDriver = searchTriggeredRelay.asDriver()
+
+        Driver<Void>.merge(sortSelectionDriver.map({ _ in }),
+                           searchTriggeredDriver.map({ _ in }))
+            .drive(onNext: { [weak self] _ in
+                self?.showLoadingIndicatorRelay.accept(true)
+                UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
+                               animations: { self?.emptyStateLabel.alpha = 0.0 })
+            })
+            .disposed(by: disposeBag)
+
+        let manualRefreshDriver = manualRefreshRelay.asDriver()
+
+        manualRefreshDriver.map({ return false }).drive(showLoadingIndicatorRelay).disposed(by: disposeBag)
+
+        viewModel.subscribeToManualDebateUpdates(searchTriggeredDriver,
                                                  sortSelectionDriver,
-                                                 manualRefreshRelay.asDriver())
+                                                 manualRefreshDriver)
 
         animationBlocksRelay.subscribe(onNext: { animationBlock in
             animationBlock()
         }).disposed(by: disposeBag)
 
+        showLoadingIndicatorRelay.asDriver()
+            .debounce(GeneralConstants.shortDebounceDuration)
+            .distinctUntilChanged()
+            .drive(onNext: { [weak self] show in
+                // Need to start animating before showing, and stop after hiding
+                if show { self?.loadingIndicator.startAnimating() }
+                UIView.animate(withDuration: GeneralConstants.shortAnimationDuration,
+                               animations: { self?.loadingIndicator.alpha = show ? 1 : 0 },
+                               completion: { _ in if !show { self?.loadingIndicator.stopAnimating() }})
+            }).disposed(by: disposeBag)
+
         debatesRefreshControl.addTarget(self, action: #selector(userPulledToRefresh), for: .valueChanged)
         debatesCollectionView.refreshControl = debatesRefreshControl
+
+        retryButton.rx.tap.bind(to: manualRefreshRelay).disposed(by: disposeBag)
+        Driver<Void>.merge(sortSelectionDriver.map({ _ in }), searchTriggeredDriver.map({ _ in }), manualRefreshDriver)
+            .map({ return false }).drive(showRetryButtonRelay)
+            .disposed(by: disposeBag)
+        retryButton.rx.tap.map({ return true }).bind(to: showLoadingIndicatorRelay).disposed(by: disposeBag)
+
+        Driver.combineLatest(showRetryButtonRelay.asDriver(), viewModel.debatesDataSourceDriver.startWith([]))
+            .distinctUntilChanged({ (lhs, rhs) -> Bool in return lhs.0 == rhs.0 }) // only care when the showing retry button value changes
+            .drive(onNext: { [weak self] (show, debateCollectionViewSections) in
+                // Make sure we don't already have debates on screen before showing
+                guard !(show && debateCollectionViewSections.first?.items.isEmpty == false) else { return }
+
+                // Need to unhide before showing and hide after
+                if show { self?.retryButton.isHidden = false }
+                UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
+                               animations: { self?.retryButton.alpha = show ? 1 : 0 },
+                               completion: { _ in if !show { self?.retryButton.isHidden = true }})
+
+            }).disposed(by: disposeBag)
 
         debatesCollectionView.delegate = self
 
@@ -319,6 +390,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         viewModel.debatesDataSourceDriver
             .drive(onNext: { [weak self] debateCollectionViewSections in
                 self?.debatesRefreshControl.endRefreshing()
+                self?.showLoadingIndicatorRelay.accept(false)
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                     self?.emptyStateLabel.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 1.0 : 0.0
                     self?.debatesCollectionView.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 0.0 : 1.0
@@ -337,6 +409,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
 
         viewModel.debatesRetrievalErrorSignal.emit(onNext: { [weak self] error in
             self?.debatesRefreshControl.endRefreshing()
+            self?.showLoadingIndicatorRelay.accept(false)
+            self?.showRetryButtonRelay.accept(true)
 
             if let generalError = error as? GeneralError,
                 generalError == .alreadyHandled {

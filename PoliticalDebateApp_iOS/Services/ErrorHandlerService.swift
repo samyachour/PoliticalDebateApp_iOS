@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-class ErrorHandlerService {
+struct ErrorHandlerService {
 
     private init() {}
 
