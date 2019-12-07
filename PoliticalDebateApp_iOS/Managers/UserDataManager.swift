@@ -53,11 +53,12 @@ class UserDataManager {
     private func updateProgress(pointPrimaryKey: PrimaryKey,
                                 debatePrimaryKey: PrimaryKey) {
         var allProgress = allProgressRelay.value
-        if let debateProgress = allProgress[debatePrimaryKey],
-            !debateProgress.seenPoints.contains(pointPrimaryKey) {
-            var seenPoints = debateProgress.seenPoints
-            seenPoints.append(pointPrimaryKey)
-            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: seenPoints)
+        if let debateProgress = allProgress[debatePrimaryKey] {
+            if !debateProgress.seenPoints.contains(pointPrimaryKey) {
+                var seenPoints = debateProgress.seenPoints
+                seenPoints.append(pointPrimaryKey)
+                allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: seenPoints)
+            }
         } else {
             let seenPoints = [pointPrimaryKey]
             allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: seenPoints)

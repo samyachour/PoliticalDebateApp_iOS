@@ -67,11 +67,10 @@ struct ProgressCoreDataAPI {
 
         // Explicit type for generic method
         guard let localPointRecords: [LocalPoint] = CoreDataService
-            .fetchRecordsForEntity(CoreDataConstants.pointEntity, with: generatePrimaryKeyPredicate(pointPrimaryKey), unique: true) else {
+            .fetchRecordsForEntity(CoreDataConstants.pointEntity, with: generatePrimaryKeyPredicate(pointPrimaryKey), unique: true),
+            let localPoint = localPointRecords.first else {
                 return
         }
-
-        guard let localPoint = localPointRecords.first else { fatalError("Must know point exists to remove it") }
 
         CoreDataService.deleteRecord(localPoint)
     }

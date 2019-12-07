@@ -55,7 +55,7 @@ class PointsTableViewController: UIViewController {
         pointsTableView.separatorStyle = .none
         pointsTableView.backgroundColor = .clear
         pointsTableView.rowHeight = UITableView.automaticDimension
-        pointsTableView.estimatedRowHeight = 50
+        pointsTableView.estimatedRowHeight = 64
         pointsTableView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0)
         pointsTableView.delaysContentTouches = false
         return pointsTableView
@@ -174,6 +174,7 @@ extension PointsTableViewController {
 
     private func installViewBinds() {
         pointsTableView.register(PointTableViewCell.self, forCellReuseIdentifier: PointTableViewCell.reuseIdentifier)
+        pointsTableView.rx.setDelegate(self).disposed(by: disposeBag)
 
         let dataSource =
             RxTableViewSectionedAnimatedDataSourceWithReloadSignal<PointsTableViewSection>(configureCell: { (_, tableView, indexPath, viewModel) -> UITableViewCell in
@@ -266,6 +267,23 @@ extension PointsTableViewController: UITextViewDelegate {
         let webViewController = WKWebViewControllerFactory.generateWKWebViewController(with: URL)
         navigationController?.pushViewController(webViewController, animated: true)
         return false
+    }
+}
+
+// MARK: UITableViewDelegate
+
+extension PointsTableViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch viewModel.viewState {
+        case .embeddedRebuttals where indexPath.row == 0:
+            // There is a UITextView bug where the first tableView cell with a UITextView has a delay
+            // in loading the text, so we insert a dummy point with zero height to "take the fall"
+            return 0
+        case .embeddedRebuttals,
+             .embeddedPointHistory,
+             .standaloneRootPoints:
+            return UITableView.automaticDimension
+        }
     }
 }
 

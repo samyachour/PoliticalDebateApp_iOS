@@ -17,13 +17,13 @@ class PointTableViewCell: UITableViewCell {
     var viewModel: PointTableViewCellViewModel? {
         didSet {
             containerView.backgroundColor = viewModel?.backgroundColor
-            let description = (viewModel?.useFullDescription ?? false) ? viewModel?.point.description : viewModel?.point.shortDescription
+            let description = (viewModel?.useFullDescription == true) ? viewModel?.point.description : viewModel?.point.shortDescription
             pointTextView.attributedText = MarkDownFormatter.format(description, with: [.font: GeneralFonts.text,
                                                                                         .foregroundColor: GeneralColors.text],
                                                                     hyperlinks: viewModel?.point.hyperlinks)
             pointTextView.sizeToFit()
+            toggleCheckImage(viewModel?.hasCompletedPaths == true)
             reloadConstraints()
-            subscribeToCheckImageUpdates()
         }
     }
 
@@ -104,6 +104,8 @@ class PointTableViewCell: UITableViewCell {
             // Necessary to avoid conflicting with UIView-Encapsulated-Layout-Width
             .injectPriority(.required - 1).isActive = true
         containerViewBottomAnchor = containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -containerVerticalInset)
+            // Necessary to avoid conflicting with UIView-Encapsulated-Layout-Height
+            .injectPriority(.required - 1)
         containerViewBottomAnchor?.isActive = true
 
         textViewLeadingAnchor = pointTextView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: horizontalInset)
@@ -131,6 +133,12 @@ class PointTableViewCell: UITableViewCell {
     }
 
     private func toggleCheckImage(_ on: Bool) {
+        // Ensure we're toggling it to a new state
+        guard on && checkImageView.image == nil ||
+            !on && checkImageView.image != nil else {
+                return
+        }
+
         // Make sure we aren't adding a check image to a context point
         guard !(on && isContext) else { return }
 
@@ -142,14 +150,6 @@ class PointTableViewCell: UITableViewCell {
 
     private func installViewBinds() {
         pointTextView.delegate = self
-    }
-
-    private func subscribeToCheckImageUpdates() {
-        toggleCheckImage(false) // reset
-        viewModel?.shouldShowCheckImageDriver
-            .drive(onNext: { [weak self] shouldShowCheckImage in
-                self?.toggleCheckImage(shouldShowCheckImage)
-            }).disposed(by: disposeBag)
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
