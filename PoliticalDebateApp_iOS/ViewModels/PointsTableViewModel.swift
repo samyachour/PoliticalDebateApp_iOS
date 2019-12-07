@@ -64,6 +64,7 @@ class PointsTableViewModel: StarrableViewModel {
         }
 
         subscribePointsUpdates()
+        subscribeToProgressUpdates()
     }
 
     private let disposeBag = DisposeBag()
@@ -88,13 +89,15 @@ class PointsTableViewModel: StarrableViewModel {
 
         pointsDriver
             .distinctUntilChanged()
-            .drive(onNext: { [weak self] points in
+            .drive(onNext: { [weak self] newPoints in
+                var points = newPoints
                 guard let debatePrimaryKey = self?.debate.primaryKey,
                     let viewState = self?.viewState,
                     let currentPointsDataSourceSection = self?.pointsDataSourceRelay.value.first else {
                         return
                 }
 
+                self?.addDummyPointIfNeeded(&points)
                 let newPointCellViewModels = points
                     .map({ PointTableViewCellViewModel(point: $0,
                                                        debatePrimaryKey: debatePrimaryKey,
@@ -103,6 +106,19 @@ class PointsTableViewModel: StarrableViewModel {
                 self?.pointsDataSourceRelay.accept([PointsTableViewSection(original: currentPointsDataSourceSection,
                                                                            items: newPointCellViewModels)])
         }).disposed(by: disposeBag)
+    }
+
+    private func addDummyPointIfNeeded(_ points: inout [Point]) {
+        switch viewState {
+        case .embeddedRebuttals:
+            // There is a UITextView bug where the first tableView cell with a UITextView has a delay
+            // in loading the text, so we insert a dummy point with zero height to "take the fall"
+            let dummyPoint = Point(primaryKey: -1, shortDescription: "", description: "", side: nil, hyperlinks: [], rebuttals: nil)
+            points.insert(dummyPoint, at: 0)
+        case .embeddedPointHistory,
+             .standaloneRootPoints:
+            break
+        }
     }
 
     // Internal
@@ -131,6 +147,34 @@ class PointsTableViewModel: StarrableViewModel {
                                        debatePrimaryKey: self.debate.primaryKey)
                     .subscribe() // Don't care if this call succeeds or fails
                     .disposed(by: self.disposeBag)
+            }).disposed(by: disposeBag)
+    }
+
+    // MARK: - Reacting to updates
+
+    private func subscribeToProgressUpdates() {
+        UserDataManager.shared.allProgressDriver
+            .drive(onNext: { [weak self] allProgress in
+                guard let debatePrimaryKey = self?.debate.primaryKey,
+                    let seenPoints = allProgress[debatePrimaryKey]?.seenPoints,
+                    let viewState = self?.viewState,
+                    var points = self?.sidedPointsRelay.value,
+                    let currentPointsDataSourceSection = self?.pointsDataSourceRelay.value.first else {
+                    return
+                }
+
+                if let contextPoints = self?.contextPointsDataSourceRelay?.value {
+                    points = contextPoints + points
+                }
+                self?.addDummyPointIfNeeded(&points)
+                let newPointCellViewModels = points
+                    .map({ PointTableViewCellViewModel(point: $0,
+                                                       debatePrimaryKey: debatePrimaryKey,
+                                                       useFullDescription: viewState.shouldCellsUseFullDescription ||
+                                                        $0.side?.isContext == true,
+                                                       seenPoints: seenPoints) })
+                self?.pointsDataSourceRelay.accept([PointsTableViewSection(original: currentPointsDataSourceSection,
+                                                                           items: newPointCellViewModels)])
             }).disposed(by: disposeBag)
     }
 

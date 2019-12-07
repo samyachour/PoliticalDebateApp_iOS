@@ -19,27 +19,17 @@ class PointTableViewCellViewModel: IdentifiableType, Equatable {
     var backgroundColor: UIColor? {
         return point.side?.color
     }
+    var hasCompletedPaths: Bool
 
     init(point: Point,
          debatePrimaryKey: PrimaryKey,
-         useFullDescription: Bool = false) {
+         useFullDescription: Bool = false,
+         seenPoints: [PrimaryKey]? = nil) {
         self.point = point
         self.debatePrimaryKey = debatePrimaryKey
         self.useFullDescription = useFullDescription
+        hasCompletedPaths = Self.deriveHasCompletedPaths(point, seenPoints ?? UserDataManager.shared.getProgress(for: debatePrimaryKey).seenPoints)
     }
-
-    // MARK: Reacting to updates
-
-    // Need to observe global progress state to avoid reloading entire table
-    lazy var shouldShowCheckImageDriver = UserDataManager.shared.allProgressDriver
-        .map({ [weak self] allProgress -> Bool in
-            guard let point = self?.point,
-                let seenPoints = allProgress[self?.debatePrimaryKey]?.seenPoints else {
-                    return false
-            }
-
-            return Self.deriveHasCompletedPaths(point, seenPoints)
-        })
 
     // MARK: IdentifiableType
 
@@ -49,19 +39,19 @@ class PointTableViewCellViewModel: IdentifiableType, Equatable {
     // MARK: Equatable
 
     static func == (lhs: PointTableViewCellViewModel, rhs: PointTableViewCellViewModel) -> Bool {
-        return lhs.point == rhs.point
+        return lhs.point == rhs.point && lhs.hasCompletedPaths == rhs.hasCompletedPaths
     }
 
     // MARK: - Helpers
 
-    private static func deriveHasCompletedPaths(_ point: Point, _ seenPoints: [PrimaryKey]) -> Bool {
+    private static func deriveHasCompletedPaths(_ currentPoint: Point, _ seenPoints: [PrimaryKey]) -> Bool {
         // Base case
-        guard let rebuttals = point.rebuttals,
+        guard let rebuttals = currentPoint.rebuttals,
             !rebuttals.isEmpty else {
-            return seenPoints.contains(point.primaryKey)
+            return seenPoints.contains(currentPoint.primaryKey)
         }
         // Recursively check for completion for the current point & its rebuttals
-        return seenPoints.contains(point.primaryKey) && rebuttals.allSatisfy({
+        return seenPoints.contains(currentPoint.primaryKey) && rebuttals.allSatisfy({
             seenPoints.contains($0.primaryKey) &&
             deriveHasCompletedPaths($0, seenPoints)
         })
