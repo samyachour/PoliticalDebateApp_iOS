@@ -46,7 +46,10 @@ class DebatesCollectionViewController: UIViewController, SynchronizableAnimation
     private let viewModel: DebatesCollectionViewModel
     let disposeBag = DisposeBag()
 
-    private let searchTriggeredRelay = PublishRelay<String?>()
+    // User can dismiss the keyboard without manually triggering a new serach
+    // but on the next query we need to use that latest search string
+    typealias UpdatedSearch = (searchString: String?, manual: Bool)
+    private let searchUpdatedRelay = PublishRelay<UpdatedSearch>()
     private let sortSelectionRelay = PublishRelay<SortByOption>()
     private let manualRefreshRelay = PublishRelay<Void>()
 
@@ -268,7 +271,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     }
 
     @objc private func activateSearch() {
-        searchTriggeredRelay.accept(searchTextField.text)
+        searchUpdatedRelay.accept((searchTextField.text, true))
     }
 
     @objc private func userPulledToRefresh() {
@@ -320,24 +323,38 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     // swiftlint:disable:next function_body_length
     private func installUIDebateRequestTriggerBinds() {
         let sortSelectionSignal = sortSelectionRelay.asSignal()
-        let searchTriggeredSignal = searchTriggeredRelay.asSignal()
+        let searchUpdatedSignal = searchUpdatedRelay.asSignal()
         let manualRefreshSignal = manualRefreshRelay.asSignal()
 
-        viewModel.subscribeToManualDebateUpdates(searchTriggeredSignal,
-                                                 searchTextField.rx.text.asSignal(onErrorJustReturn: nil),
+        viewModel.subscribeToManualDebateUpdates(searchUpdatedSignal,
                                                  sortSelectionSignal,
                                                  manualRefreshSignal)
 
+        let searchTriggeredSignal = searchUpdatedSignal.filter({ $0.manual })
         let searchOrSortSignal = Signal<Void>.merge(sortSelectionSignal.map({ _ in }),
                                                     searchTriggeredSignal.map({ _ in }))
-        let allRequestSignal = Signal<Void>.merge(searchOrSortSignal, manualRefreshSignal)
+        let allRequestSignal = Signal<Void>.merge(manualRefreshSignal, searchOrSortSignal)
+
+        searchTextField.rx.text
+            .asSignal(onErrorJustReturn: nil)
+            .withLatestFrom(searchTriggeredSignal.map({ $0.searchString }).startWith(nil)) { ($0, $1) }
+            // Make sure these automatic searchString updates aren't the same as the latest manual one
+            // to avoid re-entrancy warnings
+            .filter({ $0 != $1 })
+            .map({ ($0.0, false) })
+            .emit(to: searchUpdatedRelay)
+            .disposed(by: disposeBag)
 
         sortSelectionSignal.emit(onNext: { [weak self] pickerChoice in
             self?.updateSortBySelection(pickerChoice)
         }).disposed(by: disposeBag)
 
+        searchOrSortSignal.map({ return true }).emit(to: showLoadingIndicatorRelay).disposed(by: disposeBag)
+
         searchOrSortSignal
             .emit(onNext: { [weak self] _ in
+                guard self?.emptyStateLabel.alpha != 0.0 else { return }
+
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
                                animations: { self?.emptyStateLabel.alpha = 0.0 })
             })
@@ -365,8 +382,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         retryButton.rx.tap
             .asSignal()
             .do(afterNext: { [weak self] _ in
-                // Typically manual refreshes hide the loading indicator but for this one case
-                // we want to show it, so we show it afterNext aka after being hidden
+                // Typically manual refreshes hide the loading indicator but for this one case we want
+                // to show it, so we show it afterNext aka after being hidden (by emitting to manual refresh)
                 self?.showLoadingIndicatorRelay.accept(true)
             })
             .emit(to: manualRefreshRelay)

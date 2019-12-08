@@ -110,39 +110,38 @@ class DebatesCollectionViewModel {
     typealias DebateRequest = (searchString: String?, sortSelection: SortByOption)
     private static let defaultSearchString = ""
 
-    func subscribeToManualDebateUpdates(_ searchTriggeredSignal: Signal<String?>,
-                                        // Need to extract search string in case text changes w/o triggering a search
-                                        _ searchTextChangedSignal: Signal<String?>,
+    func subscribeToManualDebateUpdates(_ searchUpdatedSignal: Signal<DebatesCollectionViewController.UpdatedSearch>,
                                         _ sortSelectionSignal: Signal<SortByOption>,
                                         _ manualRefreshSignal: Signal<Void>) {
+        let searchTriggeredRequestSignal = searchUpdatedSignal
+            .filter({ $0.manual }) // only from manually triggered searches
+            .map({ $0.searchString })
+            .withLatestFrom(sortSelectionSignal.startWith(SortByOption.defaultValue)) { ($0, $1) }
+            .map({ (searchString, sortSelection) -> DebateRequest in
+                return (searchString, sortSelection)
+        })
         let sortSelectionRequestSignal = sortSelectionSignal
-            .withLatestFrom(searchTextChangedSignal.startWith(nil)) { ($0, $1) }
+            .withLatestFrom(searchUpdatedSignal.startWith((nil, false)).map({ $0.searchString })) { ($0, $1) }
             .map({ (sortSelection, searchString) -> DebateRequest in
                 return (searchString, sortSelection)
         })
-        let searchTriggeredRequestSignal = searchTriggeredSignal
-            .withLatestFrom(sortSelectionSignal.startWith(SortByOption.defaultValue)) { ($0, $1) }
-            .map({ (searchString, sortSelection) -> DebateRequest in
-                return (searchString, sortSelection)
-        })
         let manualRefreshRequestSignal = manualRefreshSignal
-            .withLatestFrom(searchTextChangedSignal.startWith(nil)) { $1 }
+            .withLatestFrom(searchUpdatedSignal.startWith((nil, false)).map({ $0.searchString })) { $1 }
             .withLatestFrom(sortSelectionSignal.startWith(SortByOption.defaultValue)) { ($0, $1) }
-            .map({ (searchString, sortSelection) -> DebateRequest in
+            .map { (searchString, sortSelection) -> DebateRequest in
                 return (searchString, sortSelection)
-        })
-
-        let sortOrSearchTriggeredRequestSignal = Signal
-            .merge(sortSelectionRequestSignal, searchTriggeredRequestSignal)
-            .distinctUntilChanged { (lhs, rhs) -> Bool in
-                return lhs.0 == rhs.0 && lhs.1 == rhs.1
         }
-        Signal.merge(sortOrSearchTriggeredRequestSignal, manualRefreshRequestSignal)
+
+        let searchOrSortRequestSignal = Signal
+            .merge(searchTriggeredRequestSignal, sortSelectionRequestSignal)
+            .distinctUntilChanged({ (lhs, rhs) -> Bool in
+                return lhs.0 == rhs.0 && lhs.1 == rhs.1
+            })
+        Signal.merge(searchOrSortRequestSignal, manualRefreshRequestSignal)
             .startWith((Self.defaultSearchString, SortByOption.defaultValue)) // initial request
             .emit(onNext: { [weak self] (searchString, sortSelection) in
                 self?.retrieveDebates((searchString, sortSelection))
-            })
-            .disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
     }
 
     // MARK: - API calls
