@@ -104,7 +104,7 @@
 		2E3EBCE42381ECBD003C474F /* WKWebViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */; };
 		2E3EBCE52381ECC8003C474F /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */; };
 		2E3EBCE62381ECCD003C474F /* LinkResponsiveTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */; };
-		2E3EBCE72381ECE1003C474F /* StarrableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */; };
+		2E3EBCE72381ECE1003C474F /* StarrableViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701E2325AE5900398D6B /* StarrableViewModelProtocol.swift */; };
 		2E3EBCEB2381EDF0003C474F /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EDEEC5E2366C15400172D8D /* RxTableViewSectionedAnimatedDataSourceWithReloadSignal.swift */; };
 		2E3EBCEC2381EED9003C474F /* Collection+SafeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */; };
 		2E5C5F43226B08220007BCAF /* String+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5C5F42226B08220007BCAF /* String+Date.swift */; };
@@ -143,7 +143,7 @@
 		2EA87A40231DF31700FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */; };
 		2EAF701B2324E13B00398D6B /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701A2324E13B00398D6B /* UserDefaultsService.swift */; };
 		2EAF701D2325A5BF00398D6B /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */; };
-		2EAF701F2325AE5900398D6B /* StarrableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */; };
+		2EAF701F2325AE5900398D6B /* StarrableViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF701E2325AE5900398D6B /* StarrableViewModelProtocol.swift */; };
 		2EAF70232327853D00398D6B /* Collection+SafeIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */; };
 		2EAF70592329EE7400398D6B /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF704D2329EE7300398D6B /* Roboto-Thin.ttf */; };
 		2EAF705A2329EE7400398D6B /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF704E2329EE7300398D6B /* Roboto-Regular.ttf */; };
@@ -268,7 +268,7 @@
 		2EA87A3C231DEC7800FA6CB0 /* MoyaTargetType+ValidSuccessCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoyaTargetType+ValidSuccessCodes.swift"; sourceTree = "<group>"; };
 		2EAF701A2324E13B00398D6B /* UserDefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
 		2EAF701C2325A5BF00398D6B /* MarkdownFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatter.swift; sourceTree = "<group>"; };
-		2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarrableViewModel.swift; sourceTree = "<group>"; };
+		2EAF701E2325AE5900398D6B /* StarrableViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarrableViewModelProtocol.swift; sourceTree = "<group>"; };
 		2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+SafeIndex.swift"; sourceTree = "<group>"; };
 		2EAF704D2329EE7300398D6B /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		2EAF704E2329EE7300398D6B /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
@@ -560,8 +560,9 @@
 				2EDEEC602369414200172D8D /* WKWebViewControllerFactory.swift */,
 				2E5C5F44226B0DFD0007BCAF /* PlainDjangoEncoding.swift */,
 				2EF8D39623543CF7002EFE7C /* LinkResponsiveTextView.swift */,
-				2EAF701E2325AE5900398D6B /* StarrableViewModel.swift */,
+				2EAF701E2325AE5900398D6B /* StarrableViewModelProtocol.swift */,
 				2E2BB06322F2C05C00ED02C0 /* KeyboardReactableProtocol.swift */,
+				2E26EC52239C80C3006DF546 /* SynchronizableAnimationProtocol.swift */,
 				2E30A8E822BF4773007E386A /* SafelyShowAlert.swift */,
 				2EBE46C522BBD5180087BC56 /* DebugLog.swift */,
 				2EFB66FD239C1D6C003EA0F1 /* OptionalType.swift */,
@@ -576,7 +577,6 @@
 				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
 				2EFB66F9239C1C29003EA0F1 /* Observable+FilterNil.swift */,
 				2EFB66FB239C1C47003EA0F1 /* SharedSequence+FilterNil.swift */,
-				2E26EC52239C80C3006DF546 /* SynchronizableAnimationProtocol.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -948,7 +948,7 @@
 				2E23A6C3226AC7B300B2DCC3 /* AppDelegate.swift in Sources */,
 				2E5EC05322FA783600B41D54 /* DebateCollectionViewCell.swift in Sources */,
 				2EDEEC612369414200172D8D /* WKWebViewControllerFactory.swift in Sources */,
-				2EAF701F2325AE5900398D6B /* StarrableViewModel.swift in Sources */,
+				2EAF701F2325AE5900398D6B /* StarrableViewModelProtocol.swift in Sources */,
 				2E0D848622A6FA9C00E4B0E7 /* DebatesCollectionViewModel.swift in Sources */,
 				2EC7890822D059FE009402F1 /* ErrorHandlerService.swift in Sources */,
 				2E0D848822A7054A00E4B0E7 /* UIFont+Custom.swift in Sources */,
@@ -1018,7 +1018,7 @@
 				2E2E6DC62300D1140048B769 /* DebateCollectionViewCellViewModel.swift in Sources */,
 				2E30A90A22BF4BED007E386A /* KeychainService.swift in Sources */,
 				2E30A8FF22BF4BED007E386A /* DebatesCollectionViewController.swift in Sources */,
-				2E3EBCE72381ECE1003C474F /* StarrableViewModel.swift in Sources */,
+				2E3EBCE72381ECE1003C474F /* StarrableViewModelProtocol.swift in Sources */,
 				2E30A8FC22BF4BED007E386A /* DebatesCollectionViewModel.swift in Sources */,
 				2E12D7C72309DB310078B0DD /* PointsTableViewModel.swift in Sources */,
 				2E30A90E22BF4BED007E386A /* DebateAPI.swift in Sources */,
