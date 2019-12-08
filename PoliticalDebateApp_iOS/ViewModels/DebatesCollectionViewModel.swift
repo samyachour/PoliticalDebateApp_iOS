@@ -50,7 +50,7 @@ class DebatesCollectionViewModel {
 
     // Private
 
-    private lazy var debatesDataSourceRelay = BehaviorRelay<[DebatesCollectionViewSection]>(value: [DebatesCollectionViewSection(items: [])])
+    private lazy var debatesDataSourceRelay = BehaviorRelay<[DebatesCollectionViewSection]?>(value: nil)
     /// When we want to propogate errors, we can't do it through the viewModelRelay
     /// or else it will complete and the value will be invalidated
     private lazy var debatesRetrievalErrorRelay = PublishRelay<Error>()
@@ -68,7 +68,7 @@ class DebatesCollectionViewModel {
     /// Used to filter the latest debates array through our starred & progress user data
     /// and do local sorting if applicable
     private func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
-        guard let currentDebatesDataSourceSection = debatesDataSourceRelay.value.first else { return }
+        let currentDebatesDataSourceSection = debatesDataSourceRelay.value?.first ?? DebatesCollectionViewSection(items: [])
 
         var newDebateCollectionViewCellViewModels = debates.map(createNewDebateCellViewModel)
 
@@ -85,8 +85,8 @@ class DebatesCollectionViewModel {
     }
 
     private func refreshDebatesWithLocalData() {
-        guard let currentDebatesDataSourceSection = debatesDataSourceRelay.value.first,
-            // no point in refreshing 0 debates
+        // No point in refreshing 0 debates
+        guard let currentDebatesDataSourceSection = debatesDataSourceRelay.value?.first,
             !currentDebatesDataSourceSection.items.isEmpty else {
                 return
         }
@@ -100,31 +100,47 @@ class DebatesCollectionViewModel {
 
     // Internal
 
-    lazy var debatesDataSourceDriver = debatesDataSourceRelay.asDriver().skip(1) // empty array emission initialized w/ relay
+    lazy var debatesDataSourceDriver = debatesDataSourceRelay.asDriver().filterNil()
     lazy var debatesRetrievalErrorSignal = debatesRetrievalErrorRelay.asSignal()
 
     func triggerRefreshDebatesWithLocalData() { refreshDebatesWithLocalDataRelay.accept(()) }
 
     // MARK: - Input handling
 
-    func subscribeToManualDebateUpdates(_ searchTriggeredDriver: Driver<String>,
-                                        _ sortSelectionDriver: Driver<SortByOption>,
-                                        _ manualRefreshDriver: Driver<Void>) {
-        let searchAndSortDriver = Driver
-            .combineLatest(searchTriggeredDriver,
-                           sortSelectionDriver) { return ($0, $1) }
-            .distinctUntilChanged({ (lhs, rhs) -> Bool in
-                lhs.0 == rhs.0 && lhs.1 == rhs.1
-            })
+    typealias DebateRequest = (searchString: String?, sortSelection: SortByOption)
+    private static let defaultSearchString = ""
 
-        Driver
-            .combineLatest(searchAndSortDriver,
-                           manualRefreshDriver) { (searchAndSortValue, _) -> (String, SortByOption) in
-                                // Manual refresh can be ignored since it just uses the latest search and sort values
-                                return searchAndSortValue
-            }
-            .drive(onNext: { [weak self] (searchString, sortSelection) in
-                self?.retrieveDebates(searchString: searchString, sortSelection: sortSelection)
+    func subscribeToManualDebateUpdates(_ searchTriggeredSignal: Signal<String?>,
+                                        // Need to extract search string in case text changes w/o triggering a search
+                                        _ searchTextChangedSignal: Signal<String?>,
+                                        _ sortSelectionSignal: Signal<SortByOption>,
+                                        _ manualRefreshSignal: Signal<Void>) {
+        let sortSelectionRequestSignal = sortSelectionSignal
+            .withLatestFrom(searchTextChangedSignal.startWith(nil)) { ($0, $1) }
+            .map({ (sortSelection, searchString) -> DebateRequest in
+                return (searchString, sortSelection)
+        })
+        let searchTriggeredRequestSignal = searchTriggeredSignal
+            .withLatestFrom(sortSelectionSignal.startWith(SortByOption.defaultValue)) { ($0, $1) }
+            .map({ (searchString, sortSelection) -> DebateRequest in
+                return (searchString, sortSelection)
+        })
+        let manualRefreshRequestSignal = manualRefreshSignal
+            .withLatestFrom(searchTextChangedSignal.startWith(nil)) { $1 }
+            .withLatestFrom(sortSelectionSignal.startWith(SortByOption.defaultValue)) { ($0, $1) }
+            .map({ (searchString, sortSelection) -> DebateRequest in
+                return (searchString, sortSelection)
+        })
+
+        let sortOrSearchTriggeredRequestSignal = Signal
+            .merge(sortSelectionRequestSignal, searchTriggeredRequestSignal)
+            .distinctUntilChanged { (lhs, rhs) -> Bool in
+                return lhs.0 == rhs.0 && lhs.1 == rhs.1
+        }
+        Signal.merge(sortOrSearchTriggeredRequestSignal, manualRefreshRequestSignal)
+            .startWith((Self.defaultSearchString, SortByOption.defaultValue)) // initial request
+            .emit(onNext: { [weak self] (searchString, sortSelection) in
+                self?.retrieveDebates((searchString, sortSelection))
             })
             .disposed(by: disposeBag)
     }
@@ -133,15 +149,16 @@ class DebatesCollectionViewModel {
 
     private let debateNetworkService = NetworkService<DebateAPI>()
 
-    private func retrieveDebates(searchString: String, sortSelection: SortByOption) {
-        debateNetworkService.makeRequest(with: .debateFilter(searchString: searchString, filter: sortSelection))
+    private func retrieveDebates(_ debateRequest: DebateRequest) {
+        debateNetworkService.makeRequest(with: .debateFilter(searchString: debateRequest.searchString ?? Self.defaultSearchString,
+                                                             filter: debateRequest.sortSelection))
             .map([Debate].self)
             .flatMap({ debates -> Single<[Debate]> in
                 return UserDataManager.shared.userDataLoadedSingle
                     .map { _ in return debates } // don't care if user data loaded successfully, but want to wait anyway in case it did
             })
             .subscribe(onSuccess: { [weak self] debates in
-                self?.acceptNewDebates(debates, sortSelection: sortSelection)
+                self?.acceptNewDebates(debates, sortSelection: debateRequest.sortSelection)
             }) { [weak self] error in
                 self?.debatesRetrievalErrorRelay.accept(error)
         }.disposed(by: disposeBag)

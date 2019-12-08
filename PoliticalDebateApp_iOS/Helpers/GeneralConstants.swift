@@ -43,6 +43,7 @@ enum GeneralColors {
     static let cellColor = UIColor.customLightGreen1
     static let starredTint = UIColor.customLightGreen2
     static let unstarredTint = UIColor.customLightGray1
+    static let loadingIndicator = UIColor.customDarkGray2
 }
 
 enum GeneralFonts {

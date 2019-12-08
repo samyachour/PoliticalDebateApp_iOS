@@ -138,4 +138,11 @@ struct BasicUIElementFactory {
         return descriptionTextView
     }
 
+    static func generateLoadingIndicator(style: UIActivityIndicatorView.Style = .whiteLarge) -> UIActivityIndicatorView {
+        let loadingIndicator = UIActivityIndicatorView(style: style)
+        loadingIndicator.color = GeneralColors.loadingIndicator
+        loadingIndicator.hidesWhenStopped = true
+        return loadingIndicator
+    }
+
 }

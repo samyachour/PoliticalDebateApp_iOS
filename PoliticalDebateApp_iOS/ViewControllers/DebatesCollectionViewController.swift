@@ -15,7 +15,7 @@ import UIKit
 // swiftlint:disable file_length
 
 /// Root home view listing all debates
-class DebatesCollectionViewController: UIViewController {
+class DebatesCollectionViewController: UIViewController, SynchronizableAnimation {
 
     required init(viewModel: DebatesCollectionViewModel) {
         self.viewModel = viewModel
@@ -44,16 +44,14 @@ class DebatesCollectionViewController: UIViewController {
     // MARK: - Observers & Observables
 
     private let viewModel: DebatesCollectionViewModel
-    private let disposeBag = DisposeBag()
+    let disposeBag = DisposeBag()
 
-    private let searchTriggeredRelay = BehaviorRelay<String>(value: DebatesCollectionViewController.defaultSearchString)
-    private let sortSelectionRelay = BehaviorRelay<SortByOption>(value: SortByOption.defaultValue)
-    private let manualRefreshRelay = BehaviorRelay<Void>(value: ())
+    private let searchTriggeredRelay = PublishRelay<String?>()
+    private let sortSelectionRelay = PublishRelay<SortByOption>()
+    private let manualRefreshRelay = PublishRelay<Void>()
 
-    /// On this screen we are constantly running multiple animations at once and there is a problem when animation blocks are not called serially:
-    /// They start to overlap and the parameters (duration, options, etc.) bleed into each other.
-    /// To prevent this we enforce synchronization with a relay.
-    private lazy var animationBlocksRelay = PublishRelay<() -> Void>()
+    // SynchronizableAnimation
+    let isExecutingAnimation = BehaviorRelay<Bool>(value: false)
 
     private lazy var showLoadingIndicatorRelay = BehaviorRelay<Bool>(value: true)
     private lazy var showRetryButtonRelay = BehaviorRelay<Bool>(value: false)
@@ -63,7 +61,6 @@ class DebatesCollectionViewController: UIViewController {
     private static let headerElementsYDistance: CGFloat = 12.0
     private static let headerElementsXDistance: CGFloat = 16.0
     private static let sortByDefaultlabel = SortByOption.defaultValue.stringValue
-    private static let defaultSearchString = ""
     private static let cellSpacing: CGFloat = 24.0
     private var pickerIsOnScreen: Bool {
         return sortByPickerViewTopAnchor?.isActive ?? false &&
@@ -123,12 +120,7 @@ class DebatesCollectionViewController: UIViewController {
 
     private lazy var debatesRefreshControl = UIRefreshControl()
 
-    private lazy var loadingIndicator: UIActivityIndicatorView = {
-        let loadingIndicator = UIActivityIndicatorView(style: .whiteLarge)
-        loadingIndicator.color = .customDarkGray2
-        loadingIndicator.hidesWhenStopped = true
-        return loadingIndicator
-    }()
+    private lazy var loadingIndicator = BasicUIElementFactory.generateLoadingIndicator()
 
     private lazy var emptyStateLabel = BasicUIElementFactory.generateEmptyStateLabel(text: "No debates to show.")
 
@@ -140,11 +132,11 @@ extension DebatesCollectionViewController: UITextFieldDelegate {
 
     // Expand the text field
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        animationBlocksRelay.accept { [weak self] in
+        executeSynchronousAnimation { [weak self] completion in
             UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, delay: 0.0, options: .curveEaseInOut, animations: {
                 self?.searchTextFieldTrailingAnchor?.isActive = true
                 self?.view.layoutIfNeeded()
-            }, completion: nil)
+            }, completion: completion)
         }
     }
 
@@ -161,7 +153,7 @@ extension DebatesCollectionViewController: UITextFieldDelegate {
 // MARK: - View constraints & binding
 extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
-    // MARK: View constraints
+    // MARK: - View constraints
     // swiftlint:disable:next function_body_length
     private func installViewConstraints() {
         navigationItem.title = "Debates"
@@ -256,9 +248,43 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         return orientedCollectionViewItemSize
     }
 
-    // MARK: View binding
-    // swiftlint:disable:next function_body_length
+    // MARK: - View binding
+
     private func installViewBinds() {
+        installUIBinds()
+        installCollectionViewDataSource()
+    }
+
+    // MARK: UI Binds
+
+    @objc private func loginTapped() {
+        navigationController?.pushViewController(LoginOrRegisterViewController(viewModel: LoginOrRegisterViewModel()),
+                                                 animated: true)
+    }
+
+    @objc private func accountTapped() {
+        navigationController?.pushViewController(AccountViewController(viewModel: AccountViewModel()),
+                                                 animated: true)
+    }
+
+    @objc private func activateSearch() {
+        searchTriggeredRelay.accept(searchTextField.text)
+    }
+
+    @objc private func userPulledToRefresh() {
+        manualRefreshRelay.accept(())
+    }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        hideActiveUIElements()
+    }
+
+    private func installUIBinds() {
+        installUIActions()
+        installUIDebateRequestTriggerBinds()
+    }
+
+    private func installUIActions() {
         searchTextField.delegate = self
 
         SessionManager.shared.isActiveDriver
@@ -270,51 +296,57 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                 }
             }).disposed(by: disposeBag)
 
+        // Create picker options from SortByOption cases
+        Driver.just(SortByOption.allCases.map { $0.stringValue })
+            .drive(sortByPickerView.rx.itemTitles) { (_, optionLabel) in
+                optionLabel
+            }.disposed(by: disposeBag)
+
         loginButton.button.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         accountButton.button.addTarget(self, action: #selector(accountTapped), for: .touchUpInside)
         sortByButton.addTarget(self, action: #selector(togglePickerViewOnScreen), for: .touchUpInside)
 
-        // Set up picker options
-        Observable.just(SortByOption.allCases.map { $0.stringValue })
-            .bind(to: sortByPickerView.rx.itemTitles) { (_, optionLabel) in
-                optionLabel
-            }.disposed(by: disposeBag)
+        sortByPickerView.rx.itemSelected
+            .asSignal()
+            .map({ item in
+                guard let sortSelection = SortByOption(rawValue: item.row) else { fatalError("Sort by option doesn't exist for index \(item.row)") }
 
-        sortByPickerView.rx.itemSelected.subscribe(onNext: { [weak self] item in
-            self?.activateSearch() // make sure we search w/ the latest value
-            self?.sortSelectionRelay.accept(SortByOption(rawValue: item.row) ?? SortByOption.defaultValue)
-        }).disposed(by: disposeBag)
+                return sortSelection
+            })
+            .emit(to: sortSelectionRelay)
+            .disposed(by: disposeBag)
+    }
 
-        let sortSelectionDriver = sortSelectionRelay.asDriver()
+    // swiftlint:disable:next function_body_length
+    private func installUIDebateRequestTriggerBinds() {
+        let sortSelectionSignal = sortSelectionRelay.asSignal()
+        let searchTriggeredSignal = searchTriggeredRelay.asSignal()
+        let manualRefreshSignal = manualRefreshRelay.asSignal()
 
-        sortSelectionDriver.drive(onNext: { [weak self] pickerChoice in
+        viewModel.subscribeToManualDebateUpdates(searchTriggeredSignal,
+                                                 searchTextField.rx.text.asSignal(onErrorJustReturn: nil),
+                                                 sortSelectionSignal,
+                                                 manualRefreshSignal)
+
+        let searchOrSortSignal = Signal<Void>.merge(sortSelectionSignal.map({ _ in }),
+                                                    searchTriggeredSignal.map({ _ in }))
+        let allRequestSignal = Signal<Void>.merge(searchOrSortSignal, manualRefreshSignal)
+
+        sortSelectionSignal.emit(onNext: { [weak self] pickerChoice in
             self?.updateSortBySelection(pickerChoice)
         }).disposed(by: disposeBag)
 
-        let searchTriggeredDriver = searchTriggeredRelay.asDriver()
-
-        Driver<Void>.merge(sortSelectionDriver.map({ _ in }),
-                           searchTriggeredDriver.map({ _ in }))
-            .drive(onNext: { [weak self] _ in
-                self?.showLoadingIndicatorRelay.accept(true)
+        searchOrSortSignal
+            .emit(onNext: { [weak self] _ in
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
                                animations: { self?.emptyStateLabel.alpha = 0.0 })
             })
             .disposed(by: disposeBag)
 
-        let manualRefreshDriver = manualRefreshRelay.asDriver()
+        // Loading indicator & retry button
 
-        manualRefreshDriver.map({ return false }).drive(showLoadingIndicatorRelay).disposed(by: disposeBag)
-
-        viewModel.subscribeToManualDebateUpdates(searchTriggeredDriver,
-                                                 sortSelectionDriver,
-                                                 manualRefreshDriver)
-
-        animationBlocksRelay.subscribe(onNext: { animationBlock in
-            animationBlock()
-        }).disposed(by: disposeBag)
-
-        showLoadingIndicatorRelay.asDriver()
+        showLoadingIndicatorRelay
+            .asDriver()
             .debounce(GeneralConstants.shortDebounceDuration)
             .distinctUntilChanged()
             .drive(onNext: { [weak self] show in
@@ -328,11 +360,27 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
         debatesRefreshControl.addTarget(self, action: #selector(userPulledToRefresh), for: .valueChanged)
         debatesCollectionView.refreshControl = debatesRefreshControl
 
-        retryButton.rx.tap.bind(to: manualRefreshRelay).disposed(by: disposeBag)
-        Driver<Void>.merge(sortSelectionDriver.map({ _ in }), searchTriggeredDriver.map({ _ in }), manualRefreshDriver)
-            .map({ return false }).drive(showRetryButtonRelay)
+        manualRefreshSignal.map({ return false }).emit(to: showLoadingIndicatorRelay).disposed(by: disposeBag)
+
+        retryButton.rx.tap
+            .asSignal()
+            .do(afterNext: { [weak self] _ in
+                // Typically manual refreshes hide the loading indicator but for this one case
+                // we want to show it, so we show it afterNext aka after being hidden
+                self?.showLoadingIndicatorRelay.accept(true)
+            })
+            .emit(to: manualRefreshRelay)
             .disposed(by: disposeBag)
-        retryButton.rx.tap.map({ return true }).bind(to: showLoadingIndicatorRelay).disposed(by: disposeBag)
+
+        allRequestSignal
+            .map({ return false })
+            .emit(to: showRetryButtonRelay)
+            .disposed(by: disposeBag)
+
+        allRequestSignal
+            .emit(onNext: { [weak self] in
+                self?.hideActiveUIElements()
+            }).disposed(by: disposeBag)
 
         Driver.combineLatest(showRetryButtonRelay.asDriver(), viewModel.debatesDataSourceDriver.startWith([]))
             .distinctUntilChanged({ (lhs, rhs) -> Bool in return lhs.0 == rhs.0 }) // only care when the showing retry button value changes
@@ -345,10 +393,16 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
                                animations: { self?.retryButton.alpha = show ? 1 : 0 },
                                completion: { _ in if !show { self?.retryButton.isHidden = true }})
-
             }).disposed(by: disposeBag)
+    }
 
-        debatesCollectionView.delegate = self
+    // MARK: Datasource
+    // swiftlint:disable:next function_body_length
+    private func installCollectionViewDataSource() {
+
+        // Binds
+
+        debatesCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
 
         debatesCollectionView.rx
             .modelSelected(DebateCollectionViewCellViewModel.self)
@@ -360,32 +414,8 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                                         animated: true)
         }).disposed(by: disposeBag)
 
-        installCollectionViewDataSource()
-    }
+        // Datasource
 
-    @objc private func loginTapped() {
-        navigationController?.pushViewController(LoginOrRegisterViewController(viewModel: LoginOrRegisterViewModel()),
-                                                 animated: true)
-    }
-
-    @objc private func accountTapped() {
-        navigationController?.pushViewController(AccountViewController(viewModel: AccountViewModel()),
-                                                 animated: true)
-    }
-
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { hideActiveUIElements() }
-
-    @objc private func userPulledToRefresh() {
-        manualRefreshRelay.accept(())
-        hideActiveUIElements()
-    }
-
-    @objc private func activateSearch() {
-        searchTriggeredRelay.accept(searchTextField.text ?? Self.defaultSearchString)
-        hideActiveUIElements()
-    }
-
-    private func installCollectionViewDataSource() {
         debatesCollectionView.register(DebateCollectionViewCell.self, forCellWithReuseIdentifier: DebateCollectionViewCell.reuseIdentifier)
         viewModel.debatesDataSourceDriver
             .drive(onNext: { [weak self] debateCollectionViewSections in
@@ -438,29 +468,31 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     // MARK: - UI Animation handling
 
     @objc private func hideActiveUIElements() {
-        hidePickerView()
         resignSearchTextField()
+        hidePickerView()
     }
 
     private func resignSearchTextField() {
         if searchTextField.isFirstResponder {
             searchTextField.resignFirstResponder()
         }
-        if searchTextField.text?.isEmpty ?? true { // Shrink the text field if it's empty
-            animationBlocksRelay.accept { [weak self] in
+        // Shrink the text field if it's empty and expanded
+        if searchTextField.text?.isEmpty == true &&
+            searchTextFieldTrailingAnchor?.isActive == true {
+            executeSynchronousAnimation { [weak self] completion in
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration,
                                delay: 0.0,
                                options: .curveEaseInOut,
                                animations: {
                                 self?.searchTextFieldTrailingAnchor?.isActive = false
                                 self?.view.layoutIfNeeded()
-                }, completion: nil)
+                }, completion: completion)
             }
         }
     }
 
     private func updateSortBySelection(_ pickerChoice: SortByOption) {
-        animationBlocksRelay.accept { [weak self] in
+        executeSynchronousAnimation { [weak self] completion in
             guard let sortByButton = self?.sortByButton else { return }
 
             UIView.transition(with: sortByButton,
@@ -471,7 +503,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                                                             for: .normal)
                                 self?.sortByButton.setTitleColor(pickerChoice.selectionColor, for: .normal)
             },
-                              completion: nil)
+                              completion: completion)
         }
     }
 
@@ -482,7 +514,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
     @objc private func togglePickerViewOnScreen() {
         let toggle = !pickerIsOnScreen
 
-        animationBlocksRelay.accept { [weak self] in
+        executeSynchronousAnimation { [weak self] completion in
             UIView.animate(withDuration: 0.7, delay: 0.0, options: .curveEaseInOut, animations: {
                 // Need to disable and enable constraints in the correct order to prevent errors
                 if self?.sortByPickerViewTopAnchor?.isActive ?? false {
@@ -493,7 +525,7 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                     self?.sortByPickerViewTopAnchor?.isActive = toggle
                 }
                 self?.view.layoutIfNeeded()
-            })
+            }, completion: completion)
         }
     }
 }
