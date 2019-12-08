@@ -34,6 +34,8 @@ extension SynchronizableAnimation {
             self?.isExecutingAnimation.accept(true)
             block({ _ in self?.isExecutingAnimation.accept(false)})
         }
+        // If we're not currently executing an animation, run the animation block
+        // If we are currently executing an animation, wait for the next time we can
         !isExecutingAnimation.value ? fullAnimationBlock() : canExecuteAnimationSingle.subscribe(onSuccess: { fullAnimationBlock() }).disposed(by: disposeBag)
     }
 }
