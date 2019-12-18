@@ -31,7 +31,6 @@ struct NetworkService<T>: Networkable where T: CustomTargetType & AccessTokenAut
             .filter(statusCode: appAPI.validSuccessCode)
             .catchError(ErrorHandlerService.checkForThrottleError)
             .retryWhen(ErrorHandlerService.checkForConnectivityError)
-            .retryWhen(ErrorHandlerService.shouldRetryRequest)
 
         switch appAPI.authorizationType {
         case .none:

@@ -197,11 +197,6 @@ extension AccountViewController {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Failed to send a verification link.",
                                                                                                 subtitle: "Your current email is invalid."))
-            case _ where GeneralConstants.retryErrorCodes.contains(response.statusCode):
-                ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
-                    self?.requestVerificationLink()
-                }
-
             default:
                 ErrorHandlerService.showBasicRetryErrorBanner()
             }

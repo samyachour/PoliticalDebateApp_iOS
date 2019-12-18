@@ -38,23 +38,6 @@ struct ErrorHandlerService {
                                                                                         subtitle: GeneralError.report.localizedDescription))
     }
 
-    // MARK: - Server errors
-
-    // Retry w/ constant backoff closure
-    static func shouldRetryRequest(error: Observable<Error>) -> Observable<Void> {
-        return error.enumerated().flatMap { (index, error) -> Observable<Void> in
-            guard let moyaError = error as? MoyaError,
-                let errorCode = moyaError.response?.statusCode,
-                GeneralConstants.retryErrorCodes.contains(errorCode),
-                index <= GeneralConstants.maxAttemptCount else {
-                    return .error(error) // Pass the error along
-            }
-
-            Thread.sleep(forTimeInterval: GeneralConstants.timeBetweenRetries)
-            return .just(())
-        }
-    }
-
     // MARK: - Connectivity errors
 
     static func checkForConnectivityError(error: Observable<Error>) -> Observable<Void> {

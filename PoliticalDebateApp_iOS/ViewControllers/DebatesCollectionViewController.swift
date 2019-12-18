@@ -472,10 +472,6 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
             switch response.statusCode {
             case 400:
                 ErrorHandlerService.showBasicReportErrorBanner()
-            case _ where GeneralConstants.retryErrorCodes.contains(response.statusCode):
-                ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
-                    self?.manualRefreshRelay.accept(())
-                }
             default:
                 ErrorHandlerService.showBasicRetryErrorBanner()
             }

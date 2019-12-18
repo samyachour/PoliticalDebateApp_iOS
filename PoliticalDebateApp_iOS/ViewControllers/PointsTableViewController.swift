@@ -165,6 +165,7 @@ extension PointsTableViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+
         hasLaidOutSubviews = true
 
         tableViewContainer.fadeView(style: .vertical, percentage: 0.03)

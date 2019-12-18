@@ -20,6 +20,7 @@ class NotificationBannerQueue {
     @discardableResult func enqueueBanner(using viewModel: NotificationBannerViewModel) -> NotificationBannerID? {
         // Don't want the user to see duplicate banners
         guard !bannersToShow.contains(viewModel) else { return nil }
+
         bannersToShow.append(viewModel)
         return viewModel.identifier
     }
