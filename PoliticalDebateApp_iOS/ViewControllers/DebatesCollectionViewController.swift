@@ -330,14 +330,14 @@ extension DebatesCollectionViewController: UIScrollViewDelegate, UICollectionVie
                                                  sortSelectionSignal,
                                                  manualRefreshSignal)
 
-        let searchTriggeredSignal = searchUpdatedSignal.filter({ $0.manual })
-        let searchOrSortSignal = Signal<Void>.merge(sortSelectionSignal.map({ _ in }),
-                                                    searchTriggeredSignal.map({ _ in }))
+        let searchTriggeredSignal = searchUpdatedSignal.filter({ $0.manual }).map({ $0.searchString })
+        let searchOrSortSignal = Signal<Void>.merge(sortSelectionSignal.distinctUntilChanged().map({ _ in }),
+                                                    searchTriggeredSignal.distinctUntilChanged().map({ _ in }))
         let allRequestSignal = Signal<Void>.merge(manualRefreshSignal, searchOrSortSignal)
 
         searchTextField.rx.text
             .asSignal(onErrorJustReturn: nil)
-            .withLatestFrom(searchTriggeredSignal.map({ $0.searchString }).startWith(nil)) { ($0, $1) }
+            .withLatestFrom(searchTriggeredSignal.startWith(nil)) { ($0, $1) }
             // Make sure these automatic searchString updates aren't the same as the latest manual one
             // to avoid re-entrancy warnings
             .filter({ $0 != $1 })
