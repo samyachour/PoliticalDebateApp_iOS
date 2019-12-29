@@ -18,8 +18,6 @@ enum GeneralConstants {
     static let minimumPasswordLength = 6 // dictated by backend
     static let unauthorizedErrorCode = 401
     static let customErrorCode = 400
-    static let maxAttemptCount = 3
-    static let timeBetweenRetries = 1.0
     static let appBaseURL: String = {
         #if DEBUG
         return "https://politicaldebateapp-debug.herokuapp.com/api/"
@@ -71,7 +69,7 @@ enum GeneralError: Error {
         case .basic:
             return "Something weird happened."
         case .retry:
-            return "Please try again."
+            return "Please try again later."
         case .report:
             return "Please report this to the developer."
         case .connectivity:

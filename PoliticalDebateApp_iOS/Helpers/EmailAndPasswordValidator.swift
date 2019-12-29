@@ -32,7 +32,7 @@ struct EmailAndPasswordValidator {
     static func showInvalidPasswordError() {
         NotificationBannerQueue.shared
             .enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                              title: "Password must be at least \(GeneralConstants.minimumPasswordLength) characters."))
+                                                              title: "Your password must be at least \(GeneralConstants.minimumPasswordLength) characters."))
     }
 
     static func showInvalidPasswordMatchError() {

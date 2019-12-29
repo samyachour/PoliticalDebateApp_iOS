@@ -214,7 +214,7 @@ extension LoginOrRegisterViewController {
             case 401,
                  404:
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: "Couldn't find an account associated with those credentials."))
+                                                                                                title: "Couldn't find an account with those credentials."))
             default:
                 ErrorHandlerService.showBasicRetryErrorBanner()
             }
@@ -243,7 +243,15 @@ extension LoginOrRegisterViewController {
                     return
             }
 
-            ErrorHandlerService.emailUpdateError(response)
+            switch response.statusCode {
+            case GeneralConstants.customErrorCode:
+                if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
+                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                    title: backendErrorMessage.messageString))
+                }
+            default:
+                ErrorHandlerService.showBasicRetryErrorBanner()
+            }
         }.disposed(by: disposeBag)
     }
 
@@ -281,20 +289,14 @@ extension LoginOrRegisterViewController {
                                                            """,
                                                            preferredStyle: .alert)
                         errorAlert.addAction(UIAlertAction(title: "Force", style: .default, handler: { _ in
-                            // self already weakified
-                            guard let emailText = self?.emailTextField.text,
-                                EmailAndPasswordValidator.isValidEmail(emailText) else {
-                                    EmailAndPasswordValidator.showInvalidEmailError()
-                                    return
-                            }
                             self?.forgotPasswordTapped(forceSend: true)
                         }))
                         errorAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
                         self?.present(errorAlert, animated: true)
                         return
-                    } else if backendErrorMessage.messageString.contains(BackendErrorMessage.invalidEmailKeyword) {
+                    } else {
                         NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                        title: "Verification link couldn't be sent to the given email."))
+                                                                                                        title: backendErrorMessage.messageString))
                         return
                     }
                 }

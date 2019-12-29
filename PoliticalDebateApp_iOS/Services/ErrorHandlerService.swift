@@ -99,25 +99,4 @@ struct ErrorHandlerService {
         safelyShowAlert(alert: throttleAlert)
     }
 
-    // MARK: - Common API errors
-
-    static func emailUpdateError(_ response: Response) {
-        switch response.statusCode {
-        case GeneralConstants.customErrorCode:
-            if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
-                if backendErrorMessage.messageString.contains(BackendErrorMessage.alreadyUsingEmailKeyword) {
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: "Already using this email."))
-                } else if backendErrorMessage.messageString.contains(BackendErrorMessage.unverifiedEmailKeyword) {
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: "Verification link couldn't be sent to the given email."))
-                } else if backendErrorMessage.messageString.contains(BackendErrorMessage.accountExistsKeyword) {
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: "An account associated with that email already exists."))
-                }
-            }
-        default:
-            ErrorHandlerService.showBasicRetryErrorBanner()
-        }
-    }
 }
