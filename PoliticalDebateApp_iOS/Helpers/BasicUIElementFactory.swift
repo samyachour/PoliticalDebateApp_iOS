@@ -14,11 +14,13 @@ struct BasicUIElementFactory {
     private init() {}
 
     // Need to be able to add target to UIButton but use UIBarButtonItem in nav bar
-    static func generateBarButton(title: String) -> (button: UIButton, barButton: UIBarButtonItem) {
+    static func generateBarButton(title: String? = nil, image: UIImage? = nil) -> (button: UIButton, barButton: UIBarButtonItem) {
         let basicBarButton = UIButton(frame: .zero)
         basicBarButton.setTitle(title, for: .normal)
         basicBarButton.setTitleColor(GeneralColors.navBarButton, for: .normal)
         basicBarButton.titleLabel?.font = .primaryRegular(16.0)
+        basicBarButton.setImage(image, for: .normal)
+        basicBarButton.tintColor = GeneralColors.navBarButton
         return (basicBarButton, UIBarButtonItem(customView: basicBarButton))
     }
 
@@ -143,6 +145,20 @@ struct BasicUIElementFactory {
         loadingIndicator.color = GeneralColors.loadingIndicator
         loadingIndicator.hidesWhenStopped = true
         return loadingIndicator
+    }
+
+    static func generateTableView(contentInset: UIEdgeInsets = .zero,
+                                  separatorStyle: UITableViewCell.SeparatorStyle = .none,
+                                  rowHeight: CGFloat = UITableView.automaticDimension,
+                                  estimatedRowHeight: CGFloat = 64) -> UITableView {
+        let tableView = UITableView(frame: .zero)
+        tableView.separatorStyle = separatorStyle
+        tableView.backgroundColor = .clear
+        tableView.rowHeight = rowHeight
+        tableView.estimatedRowHeight = estimatedRowHeight
+        tableView.contentInset = contentInset
+        tableView.delaysContentTouches = false
+        return tableView
     }
 
 }

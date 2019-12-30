@@ -12,4 +12,5 @@ extension UIImage {
     static let star = UIImage(named: "Star")
     static let check = UIImage(named: "Check")
     static let undoArrow = UIImage(named: "UndoArrow")
+    static let gear = UIImage(named: "Gear")
 }

@@ -159,7 +159,7 @@ class PointTableViewCell: UITableViewCell {
         guard !isContext else { return }
 
         UIView.animate(withDuration: GeneralConstants.quickAnimationDuration) {
-            self.containerView.backgroundColor = highlighted ? GeneralColors.selected : self.viewModel?.backgroundColor
+            self.containerView.backgroundColor = highlighted ? GeneralColors.selectedPoint : self.viewModel?.backgroundColor
         }
     }
 

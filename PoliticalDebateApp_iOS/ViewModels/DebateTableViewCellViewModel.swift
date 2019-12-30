@@ -1,5 +1,5 @@
 //
-//  DebateCollectionViewCellViewModel.swift
+//  DebateTableViewCellViewModel.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 8/6/19.
@@ -12,7 +12,7 @@ import RxDataSources
 import RxSwift
 import UIKit
 
-class DebateCollectionViewCellViewModel: StarrableViewModel, IdentifiableType, Equatable {
+class DebateTableViewCellViewModel: StarrableViewModel, IdentifiableType, Equatable {
     let debate: Debate
     var completedPercentage: Int
     var isStarred: Bool
@@ -30,7 +30,7 @@ class DebateCollectionViewCellViewModel: StarrableViewModel, IdentifiableType, E
 
     // MARK: Equatable
 
-    static func == (lhs: DebateCollectionViewCellViewModel, rhs: DebateCollectionViewCellViewModel) -> Bool {
+    static func == (lhs: DebateTableViewCellViewModel, rhs: DebateTableViewCellViewModel) -> Bool {
         return lhs.debate == rhs.debate &&
             lhs.completedPercentage == rhs.completedPercentage &&
             lhs.isStarred == rhs.isStarred &&
