@@ -13,7 +13,7 @@ import RxSwift
 import UIKit
 
 /// Root home view listing all debates
-class DebatesTableViewController: UIViewController, SynchronizableAnimation {
+class DebatesTableViewController: UIViewController {
 
     required init(viewModel: DebatesTableViewModel) {
         self.viewModel = viewModel
@@ -51,9 +51,6 @@ class DebatesTableViewController: UIViewController, SynchronizableAnimation {
     private let sortSelectionRelay = PublishRelay<SortByOption>()
     private let manualRefreshRelay = PublishRelay<Void>()
 
-    // SynchronizableAnimation
-    let isExecutingAnimation = BehaviorRelay<Bool>(value: false)
-
     private lazy var showLoadingIndicatorRelay = BehaviorRelay<Bool>(value: true)
     private lazy var showRetryButtonRelay = BehaviorRelay<Bool>(value: false)
 
@@ -75,6 +72,7 @@ class DebatesTableViewController: UIViewController, SynchronizableAnimation {
         let debatesSearchController = UISearchController(searchResultsController: nil)
         debatesSearchController.obscuresBackgroundDuringPresentation = false
         debatesSearchController.searchBar.placeholder = "Search..."
+        debatesSearchController.searchBar.enablesReturnKeyAutomatically = false
         debatesSearchController.searchBar.scopeButtonTitles = SortByOption.allCases.map { $0.stringValue }
         debatesSearchController.searchBar.scopeBar?.apportionsSegmentWidthsByContent = true
         return debatesSearchController
@@ -83,8 +81,6 @@ class DebatesTableViewController: UIViewController, SynchronizableAnimation {
     private var debatesSearchBar: UISearchBar {
         return debatesSearchController.searchBar
     }
-
-    private lazy var debatesRefreshControl = UIRefreshControl()
 
     private lazy var loadingIndicator = BasicUIElementFactory.generateLoadingIndicator()
 
@@ -104,10 +100,10 @@ extension DebatesTableViewController {
         navigationItem.rightBarButtonItem = settingsButton.barButton
         if #available(iOS 11.0, *) {
             navigationController?.navigationBar.prefersLargeTitles = true
+            navigationItem.largeTitleDisplayMode = .always
             navigationItem.searchController = debatesSearchController
         }
         view.backgroundColor = Self.backgroundColor
-        extendedLayoutIncludesOpaqueBars = true
         definesPresentationContext = true
 
         view.addSubview(tableViewContainer)
@@ -123,9 +119,9 @@ extension DebatesTableViewController {
         retryButton.translatesAutoresizingMaskIntoConstraints = false
 
         tableViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tableViewContainer.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
         tableViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        tableViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        tableViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
 
         debatesTableView.leadingAnchor.constraint(equalTo: tableViewContainer.leadingAnchor).isActive = true
         debatesTableView.topAnchor.constraint(equalTo: tableViewContainer.topAnchor).isActive = true
@@ -133,14 +129,14 @@ extension DebatesTableViewController {
         debatesTableView.bottomAnchor.constraint(equalTo: tableViewContainer.bottomAnchor).isActive = true
         debatesTableView.alpha = 0.0
 
-        emptyStateLabel.centerXAnchor.constraint(equalTo: view.centerXLayoutAnchor).isActive = true
-        emptyStateLabel.centerYAnchor.constraint(equalTo: view.centerYLayoutAnchor).isActive = true
+        emptyStateLabel.centerXAnchor.constraint(equalTo: tableViewContainer.centerXAnchor).isActive = true
+        emptyStateLabel.centerYAnchor.constraint(equalTo: tableViewContainer.centerYAnchor).isActive = true
 
-        loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXLayoutAnchor).isActive = true
-        loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYLayoutAnchor).isActive = true
+        loadingIndicator.centerXAnchor.constraint(equalTo: tableViewContainer.centerXAnchor).isActive = true
+        loadingIndicator.centerYAnchor.constraint(equalTo: tableViewContainer.centerYAnchor).isActive = true
 
-        retryButton.centerXAnchor.constraint(equalTo: view.centerXLayoutAnchor).isActive = true
-        retryButton.centerYAnchor.constraint(equalTo: view.centerYLayoutAnchor).isActive = true
+        retryButton.centerXAnchor.constraint(equalTo: tableViewContainer.centerXAnchor).isActive = true
+        retryButton.centerYAnchor.constraint(equalTo: tableViewContainer.centerYAnchor).isActive = true
         retryButton.alpha = 0
     }
 
@@ -167,10 +163,6 @@ extension DebatesTableViewController {
             navigationController?.pushViewController(LoginOrRegisterViewController(viewModel: LoginOrRegisterViewModel()),
                                                      animated: true)
         }
-    }
-
-    @objc private func userPulledToRefresh() {
-        manualRefreshRelay.accept(())
     }
 
     // swiftlint:disable:next function_body_length
@@ -267,9 +259,6 @@ extension DebatesTableViewController {
                                completion: { _ in if !show { self?.loadingIndicator.stopAnimating() }})
             }).disposed(by: disposeBag)
 
-        debatesRefreshControl.addTarget(self, action: #selector(userPulledToRefresh), for: .valueChanged)
-        debatesTableView.refreshControl = debatesRefreshControl
-
         manualRefreshSignal.map({ return false }).emit(to: showLoadingIndicatorRelay).disposed(by: disposeBag)
 
         retryButton.rx.tap
@@ -322,7 +311,6 @@ extension DebatesTableViewController {
         debatesTableView.register(DebateTableViewCell.self, forCellReuseIdentifier: DebateTableViewCell.reuseIdentifier)
         viewModel.debatesDataSourceDriver
             .drive(onNext: { [weak self] debateCollectionViewSections in
-                self?.debatesRefreshControl.endRefreshing()
                 self?.showLoadingIndicatorRelay.accept(false)
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                     self?.emptyStateLabel.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 1.0 : 0.0
@@ -342,7 +330,6 @@ extension DebatesTableViewController {
             .disposed(by: disposeBag)
 
         viewModel.debatesRetrievalErrorSignal.emit(onNext: { [weak self] error in
-            self?.debatesRefreshControl.endRefreshing()
             self?.showLoadingIndicatorRelay.accept(false)
             self?.showRetryButtonRelay.accept(true)
 
