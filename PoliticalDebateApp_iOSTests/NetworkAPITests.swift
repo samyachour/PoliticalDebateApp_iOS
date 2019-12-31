@@ -33,7 +33,7 @@ class NetworkAPITests: XCTestCase {
                 XCTAssert(debate.title == "Test debate number #0")
                 XCTAssert(debate.sidedPoints[0].shortDescription == "Test point 1")
                 XCTAssert(debate.sidedPoints[0].description == "This is a longer description of test point 1.")
-                XCTAssert(debate.sidedPoints[0].side == .lib)
+                XCTAssert(debate.sidedPoints[0].side == .pro)
                 XCTAssert(debate.sidedPoints[0].rebuttals?[0].primaryKey == 1)
             }, onError: { err in
                 XCTAssert(false)
