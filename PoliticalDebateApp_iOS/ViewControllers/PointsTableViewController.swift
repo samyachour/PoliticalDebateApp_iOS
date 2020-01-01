@@ -50,16 +50,7 @@ class PointsTableViewController: UIViewController {
 
     private lazy var tableViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
 
-    private lazy var pointsTableView: UITableView = {
-        let pointsTableView = UITableView(frame: .zero)
-        pointsTableView.separatorStyle = .none
-        pointsTableView.backgroundColor = .clear
-        pointsTableView.rowHeight = UITableView.automaticDimension
-        pointsTableView.estimatedRowHeight = 64
-        pointsTableView.contentInset = UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0)
-        pointsTableView.delaysContentTouches = false
-        return pointsTableView
-    }()
+    private lazy var pointsTableView = BasicUIElementFactory.generateTableView(contentInset: UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0))
 
     private lazy var starredButton: UIButton = {
         let starredButton = UIButton(frame: .zero)
@@ -165,6 +156,7 @@ extension PointsTableViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+
         hasLaidOutSubviews = true
 
         tableViewContainer.fadeView(style: .vertical, percentage: 0.03)

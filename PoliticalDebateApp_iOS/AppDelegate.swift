@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
 
         if let window = window {
-            let rootVC = DebatesCollectionViewController(viewModel: DebatesCollectionViewModel())
+            let rootVC = DebatesTableViewController(viewModel: DebatesTableViewModel())
             mainNavigationController = UINavigationController(rootViewController: rootVC)
             window.rootViewController = mainNavigationController
             window.makeKeyAndVisible()

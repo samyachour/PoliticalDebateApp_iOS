@@ -11,10 +11,7 @@ struct BackendErrorMessage {
     let messageString: String
 
     // Key words to discern between multiple custom errors from the same endpoint
-    static let invalidEmailKeyword = "invalid"
-    static let unverifiedEmailKeyword = "verify"
-    static let alreadyUsingEmailKeyword = "already"
-    static let accountExistsKeyword = "exists"
+    static let unverifiedEmailKeyword = "unverified"
 }
 
 extension BackendErrorMessage: Decodable {
@@ -25,6 +22,6 @@ extension BackendErrorMessage: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: BackendErrorMessageCodingKeys.self)
 
-        messageString = try container.decode(String.self, forKey: .messageString).lowercased()
+        messageString = try container.decode(String.self, forKey: .messageString)
     }
 }

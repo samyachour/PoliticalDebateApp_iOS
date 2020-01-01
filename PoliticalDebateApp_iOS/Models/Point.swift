@@ -10,13 +10,13 @@ import Foundation
 import UIKit
 
 enum Side: String {
-    case lib
+    case pro
     case con
     case context
 
     var color: UIColor {
         switch self {
-        case .lib:
+        case .pro:
             return .customLightBlue
         case .con:
             return .customLightRed
@@ -29,7 +29,7 @@ enum Side: String {
         switch self {
         case .context:
             return true
-        case .lib,
+        case .pro,
              .con:
             return false
         }

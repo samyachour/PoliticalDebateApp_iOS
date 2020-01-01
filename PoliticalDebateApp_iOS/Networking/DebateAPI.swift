@@ -90,8 +90,7 @@ extension SortByOption {
 
     var backendFilterName: String {
         switch self {
-        case .sortBy, // backend sorting defaults to last updated
-             .lastUpdated:
+        case .lastUpdated:
             return DebateAPI.Constants.lastUpdatedFilterValue
         case .starred:
             return DebateAPI.Constants.starredFilterValue

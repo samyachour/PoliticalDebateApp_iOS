@@ -17,6 +17,7 @@ final class RxTableViewSectionedAnimatedDataSourceWithReloadSignal<S: Animatable
 
     override func tableView(_ tableView: UITableView, observedEvent: Event<[S]>) {
         super.tableView(tableView, observedEvent: observedEvent)
+
         relay.accept(())
     }
 }

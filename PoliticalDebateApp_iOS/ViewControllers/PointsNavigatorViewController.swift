@@ -61,6 +61,7 @@ extension PointsNavigatorViewController {
     private func installViewConstraints() {
         navigationController?.navigationBar.tintColor = GeneralColors.navBarButton
         view.backgroundColor = GeneralColors.background
+        if #available(iOS 11.0, *) { navigationItem.largeTitleDisplayMode = .never }
 
         addChild(pointHistoryTableViewController)
         view.addSubview(pointHistoryTableViewController.view)
