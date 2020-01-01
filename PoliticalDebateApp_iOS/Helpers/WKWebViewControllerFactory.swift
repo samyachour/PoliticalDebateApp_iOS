@@ -31,6 +31,7 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
     required init(with webView: WKWebView) {
         self.webView = webView
         super.init(nibName: nil, bundle: nil)
+
         webView.navigationDelegate = self
         installViewConstraints()
     }

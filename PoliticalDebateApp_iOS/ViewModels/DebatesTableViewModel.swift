@@ -1,5 +1,5 @@
 //
-//  DebatesCollectionViewModel.swift
+//  DebatesTableViewModel.swift
 //  PoliticalDebateApp_iOS
 //
 //  Created by Samy on 6/4/19.
@@ -11,22 +11,22 @@ import RxCocoa
 import RxDataSources
 import RxSwift
 
-struct DebatesCollectionViewSection: AnimatableSectionModelType {
-    var items: [DebateCollectionViewCellViewModel]
+struct DebatesTableViewSection: AnimatableSectionModelType {
+    var items: [DebateTableViewCellViewModel]
     var header = "" // Only using 1 section
     var identity: String { return header }
 
-    init(items: [DebateCollectionViewCellViewModel]) {
+    init(items: [DebateTableViewCellViewModel]) {
         self.items = items
     }
 
-    init(original: DebatesCollectionViewSection, items: [DebateCollectionViewCellViewModel]) {
+    init(original: DebatesTableViewSection, items: [DebateTableViewCellViewModel]) {
         self = original
         self.items = items
     }
 }
 
-class DebatesCollectionViewModel {
+class DebatesTableViewModel {
 
     init() {
         UserDataManager.shared.userDataLoadedDriver
@@ -50,38 +50,38 @@ class DebatesCollectionViewModel {
 
     // Private
 
-    private lazy var debatesDataSourceRelay = BehaviorRelay<[DebatesCollectionViewSection]?>(value: nil)
+    private lazy var debatesDataSourceRelay = BehaviorRelay<[DebatesTableViewSection]?>(value: nil)
     /// When we want to propogate errors, we can't do it through the viewModelRelay
     /// or else it will complete and the value will be invalidated
     private lazy var debatesRetrievalErrorRelay = PublishRelay<Error>()
     private lazy var refreshDebatesWithLocalDataRelay = PublishRelay<Void>()
 
-    private func createNewDebateCellViewModel(debate: Debate) -> DebateCollectionViewCellViewModel {
+    private func createNewDebateCellViewModel(debate: Debate) -> DebateTableViewCellViewModel {
         UserDataManager.shared.removeStaleLocalPoints(from: debate)
         let completedPercentage = Int((Float(UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints.count) / Float(debate.totalPoints)) * 100)
         // Always new instances so we don't modify objects of the array we're mapping
-        return DebateCollectionViewCellViewModel(debate: debate,
-                                                 completedPercentage: completedPercentage,
-                                                 isStarred: UserDataManager.shared.isStarred(debate.primaryKey))
+        return DebateTableViewCellViewModel(debate: debate,
+                                            completedPercentage: completedPercentage,
+                                            isStarred: UserDataManager.shared.isStarred(debate.primaryKey))
     }
 
     /// Used to filter the latest debates array through our starred & progress user data
     /// and do local sorting if applicable
     private func acceptNewDebates(_ debates: [Debate], sortSelection: SortByOption) {
-        let currentDebatesDataSourceSection = debatesDataSourceRelay.value?.first ?? DebatesCollectionViewSection(items: [])
+        let currentDebatesDataSourceSection = debatesDataSourceRelay.value?.first ?? DebatesTableViewSection(items: [])
 
-        var newDebateCollectionViewCellViewModels = debates.map(createNewDebateCellViewModel)
+        var newDebateTableViewCellViewModels = debates.map(createNewDebateCellViewModel)
 
         switch sortSelection {
         case .progressAscending:
-            newDebateCollectionViewCellViewModels.sort { $0.completedPercentage < $1.completedPercentage }
+            newDebateTableViewCellViewModels.sort { $0.completedPercentage < $1.completedPercentage }
         case .progressDescending:
-            newDebateCollectionViewCellViewModels.sort { $0.completedPercentage > $1.completedPercentage }
+            newDebateTableViewCellViewModels.sort { $0.completedPercentage > $1.completedPercentage }
         default:
             break
         }
 
-        debatesDataSourceRelay.accept([DebatesCollectionViewSection(original: currentDebatesDataSourceSection, items: newDebateCollectionViewCellViewModels)])
+        debatesDataSourceRelay.accept([DebatesTableViewSection(original: currentDebatesDataSourceSection, items: newDebateTableViewCellViewModels)])
     }
 
     private func refreshDebatesWithLocalData() {
@@ -91,11 +91,11 @@ class DebatesCollectionViewModel {
                 return
         }
 
-        let newDebateCollectionViewCellViewModels = currentDebatesDataSourceSection.items
+        let newDebateTableViewCellViewModels = currentDebatesDataSourceSection.items
             .map({ $0.debate })
             .map(createNewDebateCellViewModel)
 
-        debatesDataSourceRelay.accept([DebatesCollectionViewSection(original: currentDebatesDataSourceSection, items: newDebateCollectionViewCellViewModels)])
+        debatesDataSourceRelay.accept([DebatesTableViewSection(original: currentDebatesDataSourceSection, items: newDebateTableViewCellViewModels)])
     }
 
     // Internal
@@ -110,7 +110,7 @@ class DebatesCollectionViewModel {
     typealias DebateRequest = (searchString: String?, sortSelection: SortByOption)
     private static let defaultSearchString = ""
 
-    func subscribeToManualDebateUpdates(_ searchUpdatedSignal: Signal<DebatesCollectionViewController.UpdatedSearch>,
+    func subscribeToManualDebateUpdates(_ searchUpdatedSignal: Signal<DebatesTableViewController.UpdatedSearch>,
                                         _ sortSelectionSignal: Signal<SortByOption>,
                                         _ manualRefreshSignal: Signal<Void>) {
         let searchTriggeredRequestSignal = searchUpdatedSignal
@@ -139,6 +139,7 @@ class DebatesCollectionViewModel {
             })
         Signal.merge(searchOrSortRequestSignal, manualRefreshRequestSignal)
             .startWith((Self.defaultSearchString, SortByOption.defaultValue)) // initial request
+            .debounce(GeneralConstants.standardDebounceDuration)
             .emit(onNext: { [weak self] (searchString, sortSelection) in
                 self?.retrieveDebates((searchString, sortSelection))
             }).disposed(by: disposeBag)
@@ -147,8 +148,23 @@ class DebatesCollectionViewModel {
     // MARK: - API calls
 
     private let debateNetworkService = NetworkService<DebateAPI>()
+    private var plainDebates: [Debate]?
+    private var plainDebatesLastFetched: Date?
+
+    private static func isDebateRequestPlain(_ debateRequest: DebateRequest) -> Bool {
+        return (debateRequest.searchString ?? "").isEmpty && debateRequest.sortSelection == SortByOption.defaultValue
+    }
 
     private func retrieveDebates(_ debateRequest: DebateRequest) {
+        if let plainDebatesLastFetched = plainDebatesLastFetched,
+            Date().timeIntervalSince(plainDebatesLastFetched) >= 60*60*24 { // if our plain debates data is more than 24 hrs old, reset
+            plainDebates = nil
+        }
+        guard plainDebates == nil || !Self.isDebateRequestPlain(debateRequest) else {
+            if let plainDebates = plainDebates { acceptNewDebates(plainDebates, sortSelection: SortByOption.defaultValue) }
+            return
+        }
+
         debateNetworkService.makeRequest(with: .debateFilter(searchString: debateRequest.searchString ?? Self.defaultSearchString,
                                                              filter: debateRequest.sortSelection))
             .map([Debate].self)
@@ -158,6 +174,10 @@ class DebatesCollectionViewModel {
             })
             .subscribe(onSuccess: { [weak self] debates in
                 self?.acceptNewDebates(debates, sortSelection: debateRequest.sortSelection)
+                if Self.isDebateRequestPlain(debateRequest) {
+                    self?.plainDebates = debates
+                    self?.plainDebatesLastFetched = Date()
+                }
             }) { [weak self] error in
                 self?.debatesRetrievalErrorRelay.accept(error)
         }.disposed(by: disposeBag)
@@ -166,32 +186,23 @@ class DebatesCollectionViewModel {
 }
 
 enum SortByOption: Int, CaseIterable {
-    case sortBy // backend returns last updated by default
     case lastUpdated
     case random
     case starred
+    case noProgress
     case progressAscending
     case progressDescending
-    case noProgress
 
     var stringValue: String {
         switch self {
-        case .sortBy: return "Sort by"
-        case .lastUpdated: return "Last updated"
-        case .random: return "Random"
+        case .lastUpdated: return "Date"
+        case .random: return "Shuffle"
         case .starred: return "Starred"
-        case .progressAscending: return "Progress: Low to High"
-        case .progressDescending: return "Progress: High to Low"
-        case .noProgress: return "No progress"
+        case .noProgress: return "Unread"
+        case .progressAscending: return "<"
+        case .progressDescending: return ">"
         }
     }
 
-    var selectionColor: UIColor {
-        switch self {
-        case .sortBy: return GeneralColors.softButton
-        default: return GeneralColors.hardButton
-        }
-    }
-
-    static let defaultValue: SortByOption = .sortBy
+    static let defaultValue: SortByOption = .lastUpdated
 }

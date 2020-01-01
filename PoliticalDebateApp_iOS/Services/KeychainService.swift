@@ -51,7 +51,7 @@ struct KeychainService {
     }
 
     static func createUniqueID() -> String {
-        let uuid: CFUUID = CFUUIDCreate(nil)
+        let uuid = CFUUIDCreate(nil)
         let cfStr: CFString = CFUUIDCreateString(nil, uuid)
 
         let swiftString: String = cfStr as String

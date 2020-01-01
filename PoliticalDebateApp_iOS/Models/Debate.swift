@@ -67,7 +67,7 @@ extension Debate: Decodable {
 
         contextPoints = rootPoints.filter({ point -> Bool in
             switch point.side {
-            case .lib,
+            case .pro,
                  .con,
                  .none:
                 return false
@@ -77,7 +77,7 @@ extension Debate: Decodable {
         })
         sidedPoints = rootPoints.filter({ point -> Bool in
             switch point.side {
-            case .lib,
+            case .pro,
                  .con:
                 return true
             case .context,

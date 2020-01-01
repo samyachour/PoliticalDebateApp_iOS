@@ -15,12 +15,10 @@ enum GeneralConstants {
     static let quickAnimationDuration = 0.1
     static let standardDebounceDuration = RxTimeInterval.milliseconds(500)
     static let shortDebounceDuration = RxTimeInterval.milliseconds(200)
+    static let shortDelayDuration = RxTimeInterval.milliseconds(200)
     static let minimumPasswordLength = 6 // dictated by backend
-    static let retryErrorCodes = [408, 502, 503, 504]
     static let unauthorizedErrorCode = 401
     static let customErrorCode = 400
-    static let maxAttemptCount = 3
-    static let timeBetweenRetries = 1.0
     static let appBaseURL: String = {
         #if DEBUG
         return "https://politicaldebateapp-debug.herokuapp.com/api/"
@@ -31,16 +29,15 @@ enum GeneralConstants {
 }
 
 enum GeneralColors {
-    static let navBarTint = UIColor.customLightGreen1
     static let navBarButton = UIColor.customDarkGray1
     static let softButton = UIColor.customDarkGray1
     static let hardButton = UIColor.customDarkGray2
     static let lightLabel = UIColor.customDarkGray1
     static let background = UIColor.customOffWhite1
-    static let navBarTitle = UIColor.black
-    static let text = UIColor.black
-    static let selected = UIColor.customOffWhite2
-    static let cellColor = UIColor.customLightGreen1
+    static let navBarTitle = UIColor.customDarkBlue
+    static let text = UIColor.customDarkBlue
+    static let selectedPoint = UIColor.customLightGreen3
+    static let selectedDebate = UIColor.customLightGray1
     static let starredTint = UIColor.customLightGreen2
     static let unstarredTint = UIColor.customLightGray1
     static let loadingIndicator = UIColor.customDarkGray2
@@ -49,7 +46,8 @@ enum GeneralColors {
 enum GeneralFonts {
     static let button = UIFont.primaryRegular()
     static let text = UIFont.primaryLight()
-    static let navBarTitle = UIFont.primaryLight(24.0)
+    static let largeText = UIFont.primaryBold(22.0)
+    static let navBarTitle = UIFont.primaryBold(26.0)
 }
 
 enum GeneralCopies {
@@ -72,7 +70,7 @@ enum GeneralError: Error {
         case .basic:
             return "Something weird happened."
         case .retry:
-            return "Please try again."
+            return "Please try again later."
         case .report:
             return "Please report this to the developer."
         case .connectivity:

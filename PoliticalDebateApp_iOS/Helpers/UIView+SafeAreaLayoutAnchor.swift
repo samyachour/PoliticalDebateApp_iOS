@@ -18,4 +18,14 @@ extension UIView {
         if #available(iOS 11.0, *) { return safeAreaLayoutGuide.bottomAnchor }
         return bottomAnchor
     }
+
+    var centerXLayoutAnchor: NSLayoutXAxisAnchor {
+        if #available(iOS 11.0, *) { return safeAreaLayoutGuide.centerXAnchor }
+        return centerXAnchor
+    }
+
+    var centerYLayoutAnchor: NSLayoutYAxisAnchor {
+        if #available(iOS 11.0, *) { return safeAreaLayoutGuide.centerYAnchor }
+        return centerYAnchor
+    }
 }

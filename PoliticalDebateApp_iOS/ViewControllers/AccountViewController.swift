@@ -197,11 +197,6 @@ extension AccountViewController {
                 NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                 title: "Failed to send a verification link.",
                                                                                                 subtitle: "Your current email is invalid."))
-            case _ where GeneralConstants.retryErrorCodes.contains(response.statusCode):
-                ErrorHandlerService.showBasicRetryErrorBanner { [weak self] in
-                    self?.requestVerificationLink()
-                }
-
             default:
                 ErrorHandlerService.showBasicRetryErrorBanner()
             }
@@ -238,7 +233,15 @@ extension AccountViewController {
                         return
                 }
 
-                ErrorHandlerService.emailUpdateError(response)
+                switch response.statusCode {
+                case GeneralConstants.customErrorCode:
+                    if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
+                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                        title: backendErrorMessage.messageString))
+                    }
+                default:
+                    ErrorHandlerService.showBasicRetryErrorBanner()
+                }
             }.disposed(by: disposeBag)
         }
         if (!(currentPasswordTextField.text?.isEmpty ?? true) ||

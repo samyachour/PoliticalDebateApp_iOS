@@ -112,7 +112,7 @@ class PointTableViewCell: UITableViewCell {
         textViewLeadingAnchor?.isActive = true
         textViewTopAnchor = pointTextView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: verticalInset)
         textViewTopAnchor?.isActive = true
-        pointTextView.trailingAnchor.constraint(lessThanOrEqualTo: checkImageView.leadingAnchor, constant: -2).isActive = true
+        pointTextView.trailingAnchor.constraint(equalTo: checkImageView.leadingAnchor, constant: -2).isActive = true
         textViewBottomAnchor = pointTextView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -verticalInset)
         textViewBottomAnchor?.isActive = true
 
@@ -120,6 +120,7 @@ class PointTableViewCell: UITableViewCell {
         imageViewTrailingAnchor = checkImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -horizontalInset - 4)
         imageViewTrailingAnchor?.isActive = true
         checkImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        checkImageView.setContentHuggingPriority(.required, for: .horizontal)
     }
 
     // Constraints for sided and context points are different so we need to reload them when the viewModel changes
@@ -158,7 +159,7 @@ class PointTableViewCell: UITableViewCell {
         guard !isContext else { return }
 
         UIView.animate(withDuration: GeneralConstants.quickAnimationDuration) {
-            self.containerView.backgroundColor = highlighted ? GeneralColors.selected : self.viewModel?.backgroundColor
+            self.containerView.backgroundColor = highlighted ? GeneralColors.selectedPoint : self.viewModel?.backgroundColor
         }
     }
 

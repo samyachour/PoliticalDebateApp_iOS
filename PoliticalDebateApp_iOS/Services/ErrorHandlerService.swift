@@ -38,23 +38,6 @@ struct ErrorHandlerService {
                                                                                         subtitle: GeneralError.report.localizedDescription))
     }
 
-    // MARK: - Server errors
-
-    // Retry w/ constant backoff closure
-    static func shouldRetryRequest(error: Observable<Error>) -> Observable<Void> {
-        return error.enumerated().flatMap { (index, error) -> Observable<Void> in
-            guard let moyaError = error as? MoyaError,
-                let errorCode = moyaError.response?.statusCode,
-                GeneralConstants.retryErrorCodes.contains(errorCode),
-                index <= GeneralConstants.maxAttemptCount else {
-                    return .error(error) // Pass the error along
-            }
-
-            Thread.sleep(forTimeInterval: GeneralConstants.timeBetweenRetries)
-            return .just(())
-        }
-    }
-
     // MARK: - Connectivity errors
 
     static func checkForConnectivityError(error: Observable<Error>) -> Observable<Void> {
@@ -116,25 +99,4 @@ struct ErrorHandlerService {
         safelyShowAlert(alert: throttleAlert)
     }
 
-    // MARK: - Common API errors
-
-    static func emailUpdateError(_ response: Response) {
-        switch response.statusCode {
-        case GeneralConstants.customErrorCode:
-            if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
-                if backendErrorMessage.messageString.contains(BackendErrorMessage.alreadyUsingEmailKeyword) {
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: "Already using this email."))
-                } else if backendErrorMessage.messageString.contains(BackendErrorMessage.unverifiedEmailKeyword) {
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: "Verification link couldn't be sent to the given email."))
-                } else if backendErrorMessage.messageString.contains(BackendErrorMessage.accountExistsKeyword) {
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: "An account associated with that email already exists."))
-                }
-            }
-        default:
-            ErrorHandlerService.showBasicRetryErrorBanner()
-        }
-    }
 }
