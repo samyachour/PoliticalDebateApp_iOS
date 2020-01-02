@@ -45,6 +45,15 @@ class PointsTableViewController: UIViewController {
 
     private var tableViewContainerHeightAnchor: NSLayoutConstraint?
     private var pointsTableViewBottomAnchor: NSLayoutConstraint?
+    private var tableViewContainerTopAnchor: NSLayoutConstraint? {
+        didSet {
+            if let oldTopAnchor = oldValue {
+                oldTopAnchor.isActive = false
+                view.removeConstraint(oldTopAnchor)
+            }
+            tableViewContainerTopAnchor?.isActive = true
+        }
+    }
 
     // MARK: - UI Elements
 
@@ -66,12 +75,25 @@ class PointsTableViewController: UIViewController {
         return undoButton
     }()
 
+    private lazy var progressHeaderView: ProgressHeaderView = {
+        switch viewModel.viewState {
+        case .standaloneRootPoints:
+            return ProgressHeaderView(showFractionLabel: true)
+        case .embeddedPointHistory,
+             .embeddedRebuttals:
+            return ProgressHeaderView(showFractionLabel: false)
+        }
+    }()
+
+    private lazy var debateProgressView = BasicUIElementFactory.generateProgressView()
+
 }
 
 extension PointsTableViewController {
 
     // MARK: - View constraints
 
+    // swiftlint:disable:next function_body_length
     private func installViewConstraints() {
         switch viewModel.viewState {
         case .standaloneRootPoints:
@@ -82,6 +104,7 @@ extension PointsTableViewController {
             starredButton.tintColor = viewModel.starTintColor
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: starredButton)
             view.backgroundColor = GeneralColors.background
+            pointsTableView.tableHeaderView = progressHeaderView
         case .embeddedPointHistory:
             parent?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: undoButton)
             fallthrough
@@ -96,7 +119,7 @@ extension PointsTableViewController {
         pointsTableView.translatesAutoresizingMaskIntoConstraints = false
 
         tableViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
+        tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: topLayoutAnchor)
         tableViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         tableViewContainer.bottomAnchor.constraint(equalTo: bottomLayoutAnchor).isActive = true
 
@@ -114,6 +137,12 @@ extension PointsTableViewController {
             recomputeTableViewHeight(animated: false)
         case .embeddedPointHistory:
             updateTableViewContainerHeight(justLastCell: true)
+            view.addSubview(progressHeaderView)
+            progressHeaderView.translatesAutoresizingMaskIntoConstraints = false
+            progressHeaderView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+            progressHeaderView.topAnchor.constraint(equalTo: topLayoutAnchor).isActive = true
+            progressHeaderView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+            tableViewContainerTopAnchor = tableViewContainer.topAnchor.constraint(equalTo: progressHeaderView.bottomAnchor)
         case .standaloneRootPoints:
             break
         }
@@ -159,10 +188,11 @@ extension PointsTableViewController {
 
         hasLaidOutSubviews = true
 
-        tableViewContainer.fadeView(style: .vertical, percentage: 0.03)
+        tableViewContainer.fadeView(style: .vertical, percentage: 0.025)
+        pointsTableView.layoutHeaderView()
     }
 
-    // MARK: View binding
+    // MARK: - View binds
 
     private func installViewBinds() {
         pointsTableView.register(PointTableViewCell.self, forCellReuseIdentifier: PointTableViewCell.reuseIdentifier)
@@ -193,7 +223,12 @@ extension PointsTableViewController {
                           undoSelected: undoButton.rx.tap)
     }
 
-    // MARK: - View binds
+    private func subscribeToProgressUpdates() {
+        viewModel.progressDriver.drive(onNext: { [weak self] progressUpdate in
+            self?.progressHeaderView.setSeenPointsFraction(numerator: progressUpdate.seenPoints, denominator: progressUpdate.totalPoints)
+            self?.progressHeaderView.setProgress(progressUpdate.completedPercentage)
+        }).disposed(by: disposeBag)
+    }
 
     // MARK: Embedded rebuttals binds
 
@@ -217,6 +252,8 @@ extension PointsTableViewController {
                 self?.scrollToLastCell()
                 self?.updateTableViewContainerHeight(justLastCell: true)
         }).disposed(by: disposeBag)
+
+        subscribeToProgressUpdates()
     }
 
     // MARK: Standalone root points binds
@@ -227,6 +264,8 @@ extension PointsTableViewController {
         viewModel.viewControllerToPushSignal.emit(onNext: { [weak self] viewController in
             self?.navigationController?.pushViewController(viewController, animated: true)
         }).disposed(by: disposeBag)
+
+        subscribeToProgressUpdates()
     }
 
     @objc private func starredButtonTapped() {

@@ -19,6 +19,7 @@ enum GeneralConstants {
     static let minimumPasswordLength = 6 // dictated by backend
     static let unauthorizedErrorCode = 401
     static let customErrorCode = 400
+    static let progressViewHeight: CGFloat = 4.0
     static let appBaseURL: String = {
         #if DEBUG
         return "https://politicaldebateapp-debug.herokuapp.com/api/"

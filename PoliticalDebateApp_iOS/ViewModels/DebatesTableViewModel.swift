@@ -58,7 +58,7 @@ class DebatesTableViewModel {
 
     private func createNewDebateCellViewModel(debate: Debate) -> DebateTableViewCellViewModel {
         UserDataManager.shared.removeStaleLocalPoints(from: debate)
-        let completedPercentage = Int((Float(UserDataManager.shared.getProgress(for: debate.primaryKey).seenPoints.count) / Float(debate.totalPoints)) * 100)
+        let completedPercentage = UserDataManager.shared.getProgress(for: debate.primaryKey).calculateCompletedPercentage(totalPoints: debate.totalPoints)
         // Always new instances so we don't modify objects of the array we're mapping
         return DebateTableViewCellViewModel(debate: debate,
                                             completedPercentage: completedPercentage,

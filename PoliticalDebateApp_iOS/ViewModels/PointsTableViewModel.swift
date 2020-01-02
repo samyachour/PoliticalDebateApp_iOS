@@ -178,6 +178,19 @@ class PointsTableViewModel: StarrableViewModel {
             }).disposed(by: disposeBag)
     }
 
+    typealias ProgressUpdate = (seenPoints: Int, totalPoints: Int, completedPercentage: Int)
+    var progressDriver: Driver<ProgressUpdate> {
+        UserDataManager.shared.allProgressDriver
+            .map({ [weak self] allProgress -> ProgressUpdate in
+                guard let debate = self?.debate,
+                    let progress = allProgress[debate.primaryKey] else {
+                        return (0,0,0)
+                }
+
+                return (progress.seenPoints.count, debate.totalPoints, progress.calculateCompletedPercentage(totalPoints: debate.totalPoints))
+            })
+    }
+
     // MARK: - Points tables synchronization
 
     // MARK: Adding to point history
