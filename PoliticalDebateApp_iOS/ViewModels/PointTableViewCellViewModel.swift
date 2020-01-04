@@ -16,19 +16,28 @@ class PointTableViewCellViewModel: IdentifiableType, Equatable {
     let point: Point
     let debatePrimaryKey: PrimaryKey
     let useFullDescription: Bool
-    var backgroundColor: UIColor? {
-        return point.side?.color
-    }
     var hasCompletedPaths: Bool
+    let hasSeen: Bool
+    let shouldFormatAsHeaderLabel: Bool
+    let shouldShowSeparator: Bool
+    let isRootPoint: Bool
 
     init(point: Point,
          debatePrimaryKey: PrimaryKey,
          useFullDescription: Bool = false,
-         seenPoints: [PrimaryKey]? = nil) {
+         seenPoints: [PrimaryKey]? = nil,
+         shouldFormatAsHeaderLabel: Bool = false,
+         shouldShowSeparator: Bool = false,
+         isRootPoint: Bool = false) {
         self.point = point
         self.debatePrimaryKey = debatePrimaryKey
         self.useFullDescription = useFullDescription
-        hasCompletedPaths = Self.deriveHasCompletedPaths(point, seenPoints ?? UserDataManager.shared.getProgress(for: debatePrimaryKey).seenPoints)
+        let seenPoints = seenPoints ?? UserDataManager.shared.getProgress(for: debatePrimaryKey).seenPoints
+        hasCompletedPaths = Self.deriveHasCompletedPaths(point, seenPoints)
+        hasSeen = seenPoints.contains(point.primaryKey) || useFullDescription // if they're seeing the full description, it's seen
+        self.shouldFormatAsHeaderLabel = shouldFormatAsHeaderLabel
+        self.shouldShowSeparator = shouldShowSeparator || point.side?.isContext == false
+        self.isRootPoint = isRootPoint
     }
 
     // MARK: IdentifiableType
@@ -39,7 +48,7 @@ class PointTableViewCellViewModel: IdentifiableType, Equatable {
     // MARK: Equatable
 
     static func == (lhs: PointTableViewCellViewModel, rhs: PointTableViewCellViewModel) -> Bool {
-        return lhs.point == rhs.point && lhs.hasCompletedPaths == rhs.hasCompletedPaths
+        return lhs.point == rhs.point && lhs.hasCompletedPaths == rhs.hasCompletedPaths && lhs.hasSeen == rhs.hasSeen
     }
 
     // MARK: - Helpers

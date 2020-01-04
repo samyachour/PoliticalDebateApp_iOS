@@ -59,7 +59,8 @@ class PointsTableViewController: UIViewController {
 
     private lazy var tableViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
 
-    private lazy var pointsTableView = BasicUIElementFactory.generateTableView(contentInset: UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0))
+    private lazy var pointsTableView = BasicUIElementFactory.generateTableView(contentInset: UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0),
+                                                                               separatorStyle: viewModel.viewState.isStandaloneRootPoints ? .singleLine : .none)
 
     private lazy var starredButton: UIButton = {
         let starredButton = UIButton(frame: .zero)
@@ -103,8 +104,10 @@ extension PointsTableViewController {
                                                                        .font: GeneralFonts.navBarTitle]
             starredButton.tintColor = viewModel.starTintColor
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: starredButton)
+            if #available(iOS 11.0, *) { navigationItem.largeTitleDisplayMode = .always }
             view.backgroundColor = GeneralColors.background
             pointsTableView.tableHeaderView = progressHeaderView
+            pointsTableView.tableFooterView = UIView() // remove empty cell separators
         case .embeddedPointHistory:
             parent?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: undoButton)
             fallthrough

@@ -55,10 +55,11 @@ struct BasicUIElementFactory {
 
     static func generateLabel(text: String? = nil,
                               font: UIFont = GeneralFonts.text,
+                              color: UIColor = GeneralColors.text,
                               textAlignment: NSTextAlignment = .natural) -> UILabel {
         let basicHeadingLabel = UILabel(frame: .zero)
         basicHeadingLabel.text = text
-        basicHeadingLabel.textColor = GeneralColors.text
+        basicHeadingLabel.textColor = color
         basicHeadingLabel.font = font
         basicHeadingLabel.textAlignment = textAlignment
         basicHeadingLabel.numberOfLines = 0

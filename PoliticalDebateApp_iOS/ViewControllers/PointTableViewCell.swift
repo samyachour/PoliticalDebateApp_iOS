@@ -16,12 +16,17 @@ class PointTableViewCell: UITableViewCell {
 
     var viewModel: PointTableViewCellViewModel? {
         didSet {
-            containerView.backgroundColor = viewModel?.backgroundColor
+            containerView.backgroundColor = viewModel?.point.side?.color(seen: viewModel?.hasSeen == true)
             let description = (viewModel?.useFullDescription == true) ? viewModel?.point.description : viewModel?.point.shortDescription
-            pointTextView.attributedText = MarkDownFormatter.format(description, with: [.font: GeneralFonts.text,
-                                                                                        .foregroundColor: GeneralColors.text],
-                                                                    hyperlinks: viewModel?.point.hyperlinks)
+            pointTextView.attributedText = viewModel?.shouldFormatAsHeaderLabel == true ?
+                NSAttributedString(string: description ?? "", attributes: [.font: GeneralFonts.largeText,
+                                                                           .foregroundColor: GeneralColors.text]) :
+                MarkDownFormatter.format(description, with: [.font: GeneralFonts.text,
+                                                             .foregroundColor: GeneralColors.text],
+                                         hyperlinks: viewModel?.point.hyperlinks)
             pointTextView.sizeToFit()
+            separatorInset = viewModel?.shouldShowSeparator == true ? UIEdgeInsets(top: 0, left: Self.inset, bottom: 0, right: Self.inset) :
+                UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
             toggleCheckImage(viewModel?.hasCompletedPaths == true)
             reloadConstraints()
         }
@@ -50,11 +55,20 @@ class PointTableViewCell: UITableViewCell {
     // MARK: - UI Properties
 
     private var isContext: Bool { viewModel?.point.side?.isContext == true }
+    private var isRootPoint: Bool { viewModel?.isRootPoint == true }
     private static let cornerRadius: CGFloat = 26.0
     private static let inset: CGFloat = 10.0
     private var horizontalInset: CGFloat { isContext ? 0 : Self.inset }
     private var verticalInset: CGFloat { isContext ? 0 : Self.inset }
-    private var containerVerticalInset: CGFloat { isContext ? 0 : 8.0 }
+    private var containerVerticalInset: CGFloat {
+        if isContext {
+            return 0
+        } else if isRootPoint {
+            return 12.0
+        } else {
+            return 8.0
+        }
+    }
 
     // MARK: Stored constraints
 
@@ -159,7 +173,7 @@ class PointTableViewCell: UITableViewCell {
         guard !isContext else { return }
 
         UIView.animate(withDuration: GeneralConstants.quickAnimationDuration) {
-            self.containerView.backgroundColor = highlighted ? GeneralColors.selectedPoint : self.viewModel?.backgroundColor
+            self.containerView.backgroundColor = highlighted ? GeneralColors.selectedPoint : self.viewModel?.point.side?.color(seen: self.viewModel?.hasSeen == true)
         }
     }
 
