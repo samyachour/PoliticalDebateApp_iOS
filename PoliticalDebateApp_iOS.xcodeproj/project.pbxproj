@@ -155,6 +155,8 @@
 		2EAF70622329EE7400398D6B /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70562329EE7400398D6B /* Roboto-Medium.ttf */; };
 		2EAF70632329EE7400398D6B /* Roboto-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70572329EE7400398D6B /* Roboto-MediumItalic.ttf */; };
 		2EAF70642329EE7400398D6B /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EAF70582329EE7400398D6B /* Roboto-Bold.ttf */; };
+		2EB17D4A23BD6C7A00B66423 /* UITableView+LayoutHeaderVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB17D4923BD6C7A00B66423 /* UITableView+LayoutHeaderVIew.swift */; };
+		2EB17D4C23BD6EF800B66423 /* ProgressHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB17D4B23BD6EF800B66423 /* ProgressHeaderView.swift */; };
 		2EBE46C622BBD5180087BC56 /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE46C522BBD5180087BC56 /* DebugLog.swift */; };
 		2EC194BC22A6E54F006134F8 /* UIView+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */; };
 		2EC194BD22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */; };
@@ -280,6 +282,8 @@
 		2EAF70562329EE7400398D6B /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		2EAF70572329EE7400398D6B /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
 		2EAF70582329EE7400398D6B /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
+		2EB17D4923BD6C7A00B66423 /* UITableView+LayoutHeaderVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+LayoutHeaderVIew.swift"; sourceTree = "<group>"; };
+		2EB17D4B23BD6EF800B66423 /* ProgressHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHeaderView.swift; sourceTree = "<group>"; };
 		2EBE46C522BBD5180087BC56 /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
 		2EC194BA22A6E54E006134F8 /* UIView+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
 		2EC194BB22A6E54F006134F8 /* UIViewController+SafeAreaLayoutAnchor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SafeAreaLayoutAnchor.swift"; sourceTree = "<group>"; };
@@ -506,6 +510,7 @@
 				2EE1A1712311F1AB00DD8E4A /* PointTableViewCell.swift */,
 				2EEEC684231B3D2D00438154 /* PointsNavigatorViewController.swift */,
 				2E12D7C22309DB000078B0DD /* PointsTableViewController.swift */,
+				2EB17D4B23BD6EF800B66423 /* ProgressHeaderView.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -577,6 +582,7 @@
 				2EAF70222327853D00398D6B /* Collection+SafeIndex.swift */,
 				2EFB66F9239C1C29003EA0F1 /* Observable+FilterNil.swift */,
 				2EFB66FB239C1C47003EA0F1 /* SharedSequence+FilterNil.swift */,
+				2EB17D4923BD6C7A00B66423 /* UITableView+LayoutHeaderVIew.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -960,7 +966,9 @@
 				2E287CBD22DC4A7B000A4CF2 /* BannerOnScreen.swift in Sources */,
 				2EF1E59B22DC688200C93DFB /* ButtonWithActionClosure.swift in Sources */,
 				2E287CC022DC4A7B000A4CF2 /* NotificationBannerQueue.swift in Sources */,
+				2EB17D4C23BD6EF800B66423 /* ProgressHeaderView.swift in Sources */,
 				2ED2FDA22290CC210093B6A7 /* TokenPair.swift in Sources */,
+				2EB17D4A23BD6C7A00B66423 /* UITableView+LayoutHeaderVIew.swift in Sources */,
 				2E2BB06422F2C05C00ED02C0 /* KeyboardReactableProtocol.swift in Sources */,
 				2EAF701D2325A5BF00398D6B /* MarkdownFormatter.swift in Sources */,
 			);
@@ -1200,7 +1208,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
 				PRODUCT_NAME = "Political Debates";
 				SWIFT_VERSION = 5.0;
@@ -1222,7 +1230,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
 				PRODUCT_NAME = "Political Debates";
 				SWIFT_VERSION = 5.0;
@@ -1392,7 +1400,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.PoliticalDebateApp-iOS";
 				PRODUCT_NAME = "Political Debates";
 				SWIFT_VERSION = 5.0;

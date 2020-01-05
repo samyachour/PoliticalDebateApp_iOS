@@ -53,12 +53,15 @@ struct BasicUIElementFactory {
         return basicTextField
     }
 
-    static func generateHeadingLabel(text: String) -> UILabel {
+    static func generateLabel(text: String? = nil,
+                              font: UIFont = GeneralFonts.text,
+                              color: UIColor = GeneralColors.text,
+                              textAlignment: NSTextAlignment = .natural) -> UILabel {
         let basicHeadingLabel = UILabel(frame: .zero)
         basicHeadingLabel.text = text
-        basicHeadingLabel.textColor = GeneralColors.text
-        basicHeadingLabel.font = GeneralFonts.text
-        basicHeadingLabel.textAlignment = NSTextAlignment.center
+        basicHeadingLabel.textColor = color
+        basicHeadingLabel.font = font
+        basicHeadingLabel.textAlignment = textAlignment
         basicHeadingLabel.numberOfLines = 0
         return basicHeadingLabel
     }
@@ -159,6 +162,13 @@ struct BasicUIElementFactory {
         tableView.contentInset = contentInset
         tableView.delaysContentTouches = false
         return tableView
+    }
+
+    static func generateProgressView() -> UIProgressView {
+        let progressView = UIProgressView()
+        progressView.progressTintColor = .customLightGreen2
+        progressView.trackTintColor = .clear
+        return progressView
     }
 
 }

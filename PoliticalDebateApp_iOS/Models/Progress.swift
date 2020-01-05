@@ -11,6 +11,10 @@ import CoreData
 struct Progress {
     let debatePrimaryKey: PrimaryKey
     let seenPoints: [PrimaryKey]
+
+    func calculateCompletedPercentage(totalPoints: Int) -> Int {
+        return Int((Float(seenPoints.count) / Float(totalPoints)) * 100)
+    }
 }
 
 extension Progress: Codable {

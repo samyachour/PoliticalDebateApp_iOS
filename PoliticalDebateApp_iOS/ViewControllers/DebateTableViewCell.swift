@@ -18,6 +18,7 @@ class DebateTableViewCell: UITableViewCell {
         didSet {
             UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
                 self.debateTitleLabel.text = self.viewModel?.debate.title
+                self.tagsLabel.text = self.viewModel?.formattedTags
                 guard let viewModel = self.viewModel else { return }
 
                 self.starredButton.tintColor = viewModel.starTintColor
@@ -49,7 +50,6 @@ class DebateTableViewCell: UITableViewCell {
     // MARK: - UI Properties
 
     private static let defaultBackgroundColor = UIColor.clear
-    private static let progressViewHeight: CGFloat = 4.0
     private static let horizontalInset = DebatesTableViewController.horizontalInset
     private static let verticalInset = DebatesTableViewController.verticalInset
     private var progressViewTopAnchor: NSLayoutConstraint?
@@ -63,30 +63,22 @@ class DebateTableViewCell: UITableViewCell {
         return starredButton
     }()
 
-    private lazy var debateTitleLabel: UILabel = {
-        let debateTitleLabel = UILabel(frame: .zero)
-        debateTitleLabel.textColor = GeneralColors.text
-        debateTitleLabel.font = GeneralFonts.largeText
-        debateTitleLabel.numberOfLines = 0
-        return debateTitleLabel
-    }()
+    private lazy var debateTitleLabel = BasicUIElementFactory.generateLabel(font: GeneralFonts.largeText)
+    private lazy var tagsLabel = BasicUIElementFactory.generateLabel(font: GeneralFonts.smallText, color: GeneralColors.smallText)
 
-    private lazy var debateProgressView: UIProgressView = {
-        let debateProgressView = UIProgressView()
-        debateProgressView.progressTintColor = .customLightGreen2
-        debateProgressView.trackTintColor = .clear
-        return debateProgressView
-    }()
+    private lazy var debateProgressView = BasicUIElementFactory.generateProgressView()
 
     // MARK: - View constraints & Binding
 
     private func installConstraints() {
         selectionStyle = .none
         contentView.addSubview(debateTitleLabel)
+        contentView.addSubview(tagsLabel)
         contentView.addSubview(starredButton)
         contentView.addSubview(debateProgressView)
 
         debateTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        tagsLabel.translatesAutoresizingMaskIntoConstraints = false
         starredButton.translatesAutoresizingMaskIntoConstraints = false
         debateProgressView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -94,23 +86,28 @@ class DebateTableViewCell: UITableViewCell {
         debateTitleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Self.verticalInset).isActive = true
         debateTitleLabel.trailingAnchor.constraint(equalTo: starredButton.leadingAnchor, constant: -Self.horizontalInset).isActive = true
 
-        starredButton.topAnchor.constraint(equalTo: debateTitleLabel.topAnchor).isActive = true
+        tagsLabel.leadingAnchor.constraint(equalTo: debateTitleLabel.leadingAnchor).isActive = true
+        tagsLabel.topAnchor.constraint(equalTo: debateTitleLabel.bottomAnchor, constant: Self.verticalInset / 3).isActive = true
+        tagsLabel.trailingAnchor.constraint(equalTo: debateTitleLabel.trailingAnchor).isActive = true
+
+        starredButton.centerYAnchor.constraint(equalTo: centerYAnchor).injectPriority(.required - 1).isActive = true
+        starredButton.bottomAnchor.constraint(greaterThanOrEqualTo: debateProgressView.topAnchor, constant: -2.0).isActive = true
         starredButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Self.horizontalInset).isActive = true
         starredButton.setContentHuggingPriority(.required, for: .horizontal)
         starredButton.setContentCompressionResistancePriority(.required, for: .horizontal)
 
-        progressViewHeightAnchor = debateProgressView.heightAnchor.constraint(equalToConstant: Self.progressViewHeight)
+        progressViewHeightAnchor = debateProgressView.heightAnchor.constraint(equalToConstant: GeneralConstants.progressViewHeight)
         progressViewHeightAnchor?.isActive = true
-        debateProgressView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Self.horizontalInset).isActive = true
-        progressViewTopAnchor = debateProgressView.topAnchor.constraint(equalTo: debateTitleLabel.bottomAnchor, constant: Self.verticalInset)
+        debateProgressView.leadingAnchor.constraint(equalTo: debateTitleLabel.leadingAnchor).isActive = true
+        progressViewTopAnchor = debateProgressView.topAnchor.constraint(equalTo: tagsLabel.bottomAnchor, constant: Self.verticalInset)
         progressViewTopAnchor?.isActive = true
-        debateProgressView.trailingAnchor.constraint(equalTo: starredButton.leadingAnchor, constant: -Self.horizontalInset).isActive = true
+        debateProgressView.trailingAnchor.constraint(equalTo: starredButton.trailingAnchor).isActive = true
         debateProgressView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Self.verticalInset).isActive = true
     }
 
     private func changeProgress(to completedPercentage: Int) {
         if completedPercentage > 0 {
-            progressViewHeightAnchor?.constant = Self.progressViewHeight
+            progressViewHeightAnchor?.constant = GeneralConstants.progressViewHeight
             progressViewTopAnchor?.constant = Self.verticalInset
             debateProgressView.setProgress(Float(completedPercentage) / 100, animated: true)
         } else {

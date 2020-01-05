@@ -46,7 +46,7 @@ class PointsNavigatorViewController: UIViewController {
                                                                        viewState: .embeddedPointHistory(embeddedSidedPoints: [viewModel.rootPoint]))
     private lazy var pointHistoryTableViewController = PointsTableViewController(viewModel: pointHistoryTableViewModel)
 
-    private lazy var rebuttalsLabel = BasicUIElementFactory.generateHeadingLabel(text: "Rebuttals")
+    private lazy var rebuttalsLabel = BasicUIElementFactory.generateLabel(text: "Rebuttals", textAlignment: .center)
 
     private lazy var pointRebuttalsTableViewModel = PointsTableViewModel(debate: viewModel.debate,
                                                                          viewState: .embeddedRebuttals(embeddedSidedPoints: viewModel.rootPoint.rebuttals ?? []))

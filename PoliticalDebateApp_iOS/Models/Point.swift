@@ -14,17 +14,6 @@ enum Side: String {
     case con
     case context
 
-    var color: UIColor {
-        switch self {
-        case .pro:
-            return .customLightBlue
-        case .con:
-            return .customLightRed
-        case .context:
-            return .clear
-        }
-    }
-
     var isContext: Bool {
         switch self {
         case .context:
@@ -32,6 +21,24 @@ enum Side: String {
         case .pro,
              .con:
             return false
+        }
+    }
+
+    func color(seen: Bool) -> UIColor {
+        switch self {
+        case .pro where seen:
+            return .customLightBlue1
+        case .pro where !seen:
+            return .customLightBlue2
+        case .con where seen:
+            return .customLightRed1
+        case .con where !seen:
+            return .customLightRed2
+        case .context:
+            return .clear
+        case .pro,
+             .con:
+            fatalError("Impossible state")
         }
     }
 }

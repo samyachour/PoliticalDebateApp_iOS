@@ -20,8 +20,14 @@ struct UserDefaultsService {
         get { return userDefaults.bool(forKey: UserDefaultsKeys.hasSeenRegisterInfoAlert.rawValue) }
         set { userDefaults.set(newValue, forKey: UserDefaultsKeys.hasSeenRegisterInfoAlert.rawValue) }
     }
+
+    static var hasUsedSearchBar: Bool {
+        get { return userDefaults.bool(forKey: UserDefaultsKeys.hasSeenRegisterInfoAlert.rawValue) }
+        set { userDefaults.set(newValue, forKey: UserDefaultsKeys.hasSeenRegisterInfoAlert.rawValue) }
+    }
 }
 
 private enum UserDefaultsKeys: String {
     case hasSeenRegisterInfoAlert
+    case hasUsedSearchBar
 }

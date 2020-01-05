@@ -25,6 +25,16 @@ enum PointsTableViewState {
             return false
         }
     }
+
+    var isStandaloneRootPoints: Bool {
+        switch self {
+        case .standaloneRootPoints:
+            return true
+        case .embeddedPointHistory,
+             .embeddedRebuttals:
+            return false
+        }
+    }
 }
 
 struct PointsTableViewSection: AnimatableSectionModelType {
@@ -54,11 +64,14 @@ class PointsTableViewModel: StarrableViewModel {
         switch viewState {
         case .embeddedPointHistory(let embeddedSidedPoints):
             sidedPointsRelay = .init(value: embeddedSidedPoints)
+            initialPointSide = embeddedSidedPoints.first?.side
             markPointAsSeen(point: embeddedSidedPoints.first)
         case .embeddedRebuttals(let embeddedSidedPoints):
             sidedPointsRelay = .init(value: embeddedSidedPoints)
+            initialPointSide = embeddedSidedPoints.first?.side?.other
         case .standaloneRootPoints:
             sidedPointsRelay = .init(value: debate.sidedPoints)
+            initialPointSide = .context
             contextPointsDataSourceRelay = .init(value: debate.contextPoints)
             subscribeToContextPointsUpdates()
         }
@@ -79,6 +92,7 @@ class PointsTableViewModel: StarrableViewModel {
 
     private let sidedPointsRelay: BehaviorRelay<[Point]>
     private lazy var pointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
+    private let initialPointSide: Side?
 
     private func subscribePointsUpdates() {
         var pointsDriver = sidedPointsRelay.asDriver()
@@ -90,21 +104,23 @@ class PointsTableViewModel: StarrableViewModel {
         pointsDriver
             .distinctUntilChanged()
             .drive(onNext: { [weak self] newPoints in
-                var points = newPoints
-                guard let debatePrimaryKey = self?.debate.primaryKey,
-                    let viewState = self?.viewState,
-                    let currentPointsDataSourceSection = self?.pointsDataSourceRelay.value.first else {
+                guard let self = self,
+                    let currentPointsDataSourceSection = self.pointsDataSourceRelay.value.first else {
                         return
                 }
 
-                self?.addDummyPointIfNeeded(&points)
+                var points = newPoints
+                self.addDummyPointIfNeeded(&points)
                 let newPointCellViewModels = points
                     .map({ PointTableViewCellViewModel(point: $0,
-                                                       debatePrimaryKey: debatePrimaryKey,
-                                                       useFullDescription: viewState.shouldCellsUseFullDescription ||
-                                                        $0.side?.isContext == true) })
-                self?.pointsDataSourceRelay.accept([PointsTableViewSection(original: currentPointsDataSourceSection,
-                                                                           items: newPointCellViewModels)])
+                                                       debatePrimaryKey: self.debate.primaryKey,
+                                                       useFullDescription: self.viewState.shouldCellsUseFullDescription ||
+                                                        $0.side?.isContext == true,
+                                                       isRootPoint: self.viewState.isStandaloneRootPoints,
+                                                       bubbleTailSide: $0.side?.bubbleTailSide(initial: self.initialPointSide)
+                                                        ?? BubbleTailSide.defaultSide) })
+                self.pointsDataSourceRelay.accept([PointsTableViewSection(original: currentPointsDataSourceSection,
+                                                                          items: self.addHeaderContextPointCellViewModel(newPointCellViewModels))])
         }).disposed(by: disposeBag)
     }
 
@@ -119,6 +135,23 @@ class PointsTableViewModel: StarrableViewModel {
              .standaloneRootPoints:
             break
         }
+    }
+
+    private func addHeaderContextPointCellViewModel(_ pointCellViewModels: [PointTableViewCellViewModel]) -> [PointTableViewCellViewModel] {
+        var pointCellViewModelsWithHeader = pointCellViewModels
+        guard viewState.isStandaloneRootPoints,
+            let lastContextIndex = pointCellViewModels.firstIndex(where: { !($0.point.side?.isContext ?? false) }) else {
+            return pointCellViewModels
+        }
+
+        let headerPoint = Point(primaryKey: -1, shortDescription: "", description: "Pro 🔵 / Con 🔴 main arguments", side: .context, hyperlinks: [], rebuttals: nil)
+        let headerPointCellViewModel = PointTableViewCellViewModel(point: headerPoint,
+                                                                   debatePrimaryKey: debate.primaryKey,
+                                                                   useFullDescription: true,
+                                                                   shouldFormatAsHeaderLabel: true,
+                                                                   shouldShowSeparator: true)
+        pointCellViewModelsWithHeader.insert(headerPointCellViewModel, at: lastContextIndex)
+        return pointCellViewModelsWithHeader
     }
 
     // Internal
@@ -155,27 +188,42 @@ class PointsTableViewModel: StarrableViewModel {
     private func subscribeToProgressUpdates() {
         UserDataManager.shared.allProgressDriver
             .drive(onNext: { [weak self] allProgress in
-                guard let debatePrimaryKey = self?.debate.primaryKey,
-                    let seenPoints = allProgress[debatePrimaryKey]?.seenPoints,
-                    let viewState = self?.viewState,
-                    var points = self?.sidedPointsRelay.value,
-                    let currentPointsDataSourceSection = self?.pointsDataSourceRelay.value.first else {
+                guard let self = self,
+                    let seenPoints = allProgress[self.debate.primaryKey]?.seenPoints,
+                    let currentPointsDataSourceSection = self.pointsDataSourceRelay.value.first else {
                     return
                 }
 
-                if let contextPoints = self?.contextPointsDataSourceRelay?.value {
+                var points = self.sidedPointsRelay.value
+                if let contextPoints = self.contextPointsDataSourceRelay?.value {
                     points = contextPoints + points
                 }
-                self?.addDummyPointIfNeeded(&points)
+                self.addDummyPointIfNeeded(&points)
                 let newPointCellViewModels = points
                     .map({ PointTableViewCellViewModel(point: $0,
-                                                       debatePrimaryKey: debatePrimaryKey,
-                                                       useFullDescription: viewState.shouldCellsUseFullDescription ||
+                                                       debatePrimaryKey: self.debate.primaryKey,
+                                                       useFullDescription: self.viewState.shouldCellsUseFullDescription ||
                                                         $0.side?.isContext == true,
-                                                       seenPoints: seenPoints) })
-                self?.pointsDataSourceRelay.accept([PointsTableViewSection(original: currentPointsDataSourceSection,
-                                                                           items: newPointCellViewModels)])
+                                                       seenPoints: seenPoints,
+                                                       isRootPoint: self.viewState.isStandaloneRootPoints,
+                                                       bubbleTailSide: $0.side?.bubbleTailSide(initial: self.initialPointSide)
+                                                        ?? BubbleTailSide.defaultSide) })
+                self.pointsDataSourceRelay.accept([PointsTableViewSection(original: currentPointsDataSourceSection,
+                                                                          items: self.addHeaderContextPointCellViewModel(newPointCellViewModels))])
             }).disposed(by: disposeBag)
+    }
+
+    typealias ProgressUpdate = (seenPoints: Int, totalPoints: Int, completedPercentage: Int)
+    var progressDriver: Driver<ProgressUpdate> {
+        UserDataManager.shared.allProgressDriver
+            .map({ [weak self] allProgress -> ProgressUpdate in
+                guard let debate = self?.debate,
+                    let progress = allProgress[debate.primaryKey] else {
+                        return (0,0,0)
+                }
+
+                return (progress.seenPoints.count, debate.totalPoints, progress.calculateCompletedPercentage(totalPoints: debate.totalPoints))
+            })
     }
 
     // MARK: - Points tables synchronization
@@ -325,4 +373,23 @@ class PointsTableViewModel: StarrableViewModel {
         }
     }
 
+}
+
+// MARK: - Side extension
+
+private extension Side {
+    func bubbleTailSide(initial: Side?) -> BubbleTailSide {
+        return self == initial ? .right : .left
+    }
+
+    var other: Side {
+        switch self {
+        case .pro:
+            return .con
+        case .con:
+            return .pro
+        case .context:
+            fatalError("There is no inverse to context points")
+        }
+    }
 }

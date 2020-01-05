@@ -16,6 +16,16 @@ class DebateTableViewCellViewModel: StarrableViewModel, IdentifiableType, Equata
     let debate: Debate
     var completedPercentage: Int
     var isStarred: Bool
+    var formattedTags: String {
+        let tagsList = debate.tags
+            .components(separatedBy: ", ")
+            .map({ $0.uppercased() })
+        return (tagsList.count > Self.maxTagsCount ?
+            tagsList[0...(Self.maxTagsCount - 1)] :
+            tagsList[0...(tagsList.count - 1)])
+            .joined(separator: ", ")
+    }
+    private static let maxTagsCount = 3
 
     init(debate: Debate, completedPercentage: Int, isStarred: Bool) {
         self.debate = debate

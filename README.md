@@ -9,6 +9,6 @@ Dependencies:
 
 Instructions:
 - download or clone project
-- run pod install
+- run `pod install`
 - open workspace
 - build project
