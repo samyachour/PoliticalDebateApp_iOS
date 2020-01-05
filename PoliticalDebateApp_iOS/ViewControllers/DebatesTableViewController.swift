@@ -71,7 +71,11 @@ class DebatesTableViewController: UIViewController {
     private lazy var debatesSearchController: UISearchController = {
         let debatesSearchController = UISearchController(searchResultsController: nil)
         debatesSearchController.obscuresBackgroundDuringPresentation = false
-        debatesSearchController.searchBar.placeholder = "Search..."
+        if UserDefaultsService.hasUsedSearchBar {
+            debatesSearchController.searchBar.placeholder = "Search..."
+        } else {
+            debatesSearchController.searchBar.placeholder = "Try searching \"Immigration\"..."
+        }
         debatesSearchController.searchBar.enablesReturnKeyAutomatically = false
         debatesSearchController.searchBar.scopeButtonTitles = SortByOption.allCases.map { $0.stringValue }
         debatesSearchController.searchBar.scopeBar?.apportionsSegmentWidthsByContent = true
@@ -244,6 +248,11 @@ extension DebatesTableViewController {
                                animations: { self?.emptyStateLabel.alpha = 0.0 })
             })
             .disposed(by: disposeBag)
+
+        if !UserDefaultsService.hasUsedSearchBar {
+            searchUpdatedSignal.asObservable().take(1)
+                .subscribe(onNext: { _ in UserDefaultsService.hasUsedSearchBar = true }).disposed(by: disposeBag)
+        }
 
         // Loading indicator & retry button
 

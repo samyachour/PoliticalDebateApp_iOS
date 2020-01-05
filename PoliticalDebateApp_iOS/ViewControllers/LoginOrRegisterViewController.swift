@@ -79,14 +79,14 @@ class LoginOrRegisterViewController: UIViewController, KeyboardReactable {
                                                                                                               complianceTextView,
                                                                                                               versionLabel])
 
-    private let emailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Email")
+    private let emailLabel = BasicUIElementFactory.generateLabel(text: "Email", textAlignment: .center)
 
     private lazy var emailTextField = BasicUIElementFactory.generateTextField(placeholder: "Email...",
                                                                               keyboardType: .emailAddress,
                                                                               returnKeyType: .go,
                                                                               delegate: self)
 
-    private let passwordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Password")
+    private let passwordLabel = BasicUIElementFactory.generateLabel(text: "Password", textAlignment: .center)
 
     private lazy var passwordTextField = BasicUIElementFactory.generateTextField(placeholder: "Password...",
                                                                                  secureTextEntry: true,

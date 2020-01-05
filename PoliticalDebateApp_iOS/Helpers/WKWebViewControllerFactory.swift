@@ -49,8 +49,8 @@ class WKWebViewController: UIViewController, WKNavigationDelegate {
     private func installViewConstraints() {
         view.addSubview(loadingIndicator)
         loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
-        loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXLayoutAnchor).isActive = true
+        loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYLayoutAnchor).isActive = true
         loadingIndicator.startAnimating()
     }
 

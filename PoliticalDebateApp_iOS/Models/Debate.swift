@@ -15,6 +15,7 @@ struct Debate {
     let title: String
     let shortTitle: String
     let lastUpdated: Date?
+    let tags: String
 
     let rootPoints: [Point]
     let contextPoints: [Point]
@@ -50,6 +51,7 @@ extension Debate: Decodable {
         case shortTitle = "short_title"
         case lastUpdated = "last_updated"
         case rootPoints = "debate_map"
+        case tags
     }
 
     init(from decoder: Decoder) throws {
@@ -60,6 +62,7 @@ extension Debate: Decodable {
         title = try container.decode(String.self, forKey: .title)
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()
         rootPoints = try container.decode([Point].self, forKey: .rootPoints)
+        tags = try container.decode(String.self, forKey: .tags)
 
         allPoints = Self.getAllPoints(from: rootPoints)
         allPointsPrimaryKeys = allPoints.map({ $0.primaryKey })

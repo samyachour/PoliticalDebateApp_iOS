@@ -62,14 +62,14 @@ class AccountViewController: UIViewController, KeyboardReactable {
                                                                                                               complianceTextView,
                                                                                                               versionLabel])
 
-    private lazy var changeEmailLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change email")
+    private lazy var changeEmailLabel = BasicUIElementFactory.generateLabel(text: "Change email", textAlignment: .center)
 
     private lazy var newEmailTextField = BasicUIElementFactory.generateTextField(placeholder: "New email...",
                                                                                  keyboardType: .emailAddress,
                                                                                  returnKeyType: .go,
                                                                                  delegate: self)
 
-    private lazy var changePasswordLabel = BasicUIElementFactory.generateHeadingLabel(text: "Change password")
+    private lazy var changePasswordLabel = BasicUIElementFactory.generateLabel(text: "Change password", textAlignment: .center)
 
     private lazy var currentPasswordTextField = BasicUIElementFactory.generateTextField(placeholder: "Current password...",
                                                                                         secureTextEntry: true,

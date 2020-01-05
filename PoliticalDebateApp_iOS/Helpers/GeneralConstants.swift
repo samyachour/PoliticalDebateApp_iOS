@@ -19,6 +19,7 @@ enum GeneralConstants {
     static let minimumPasswordLength = 6 // dictated by backend
     static let unauthorizedErrorCode = 401
     static let customErrorCode = 400
+    static let progressViewHeight: CGFloat = 4.0
     static let appBaseURL: String = {
         #if DEBUG
         return "https://politicaldebateapp-debug.herokuapp.com/api/"
@@ -36,6 +37,7 @@ enum GeneralColors {
     static let background = UIColor.customOffWhite1
     static let navBarTitle = UIColor.customDarkBlue
     static let text = UIColor.customDarkBlue
+    static let smallText = UIColor.customLightBlue3
     static let selectedPoint = UIColor.customLightGreen3
     static let selectedDebate = UIColor.customLightGray1
     static let starredTint = UIColor.customLightGreen2
@@ -45,6 +47,7 @@ enum GeneralColors {
 
 enum GeneralFonts {
     static let button = UIFont.primaryRegular()
+    static let smallText = UIFont.primaryBold(12.0)
     static let text = UIFont.primaryLight()
     static let largeText = UIFont.primaryBold(22.0)
     static let navBarTitle = UIFont.primaryBold(26.0)
