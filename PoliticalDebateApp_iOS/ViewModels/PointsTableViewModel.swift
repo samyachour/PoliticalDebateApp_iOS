@@ -64,11 +64,14 @@ class PointsTableViewModel: StarrableViewModel {
         switch viewState {
         case .embeddedPointHistory(let embeddedSidedPoints):
             sidedPointsRelay = .init(value: embeddedSidedPoints)
+            initialPointSide = embeddedSidedPoints.first?.side
             markPointAsSeen(point: embeddedSidedPoints.first)
         case .embeddedRebuttals(let embeddedSidedPoints):
             sidedPointsRelay = .init(value: embeddedSidedPoints)
+            initialPointSide = embeddedSidedPoints.first?.side?.other
         case .standaloneRootPoints:
             sidedPointsRelay = .init(value: debate.sidedPoints)
+            initialPointSide = .context
             contextPointsDataSourceRelay = .init(value: debate.contextPoints)
             subscribeToContextPointsUpdates()
         }
@@ -89,6 +92,7 @@ class PointsTableViewModel: StarrableViewModel {
 
     private let sidedPointsRelay: BehaviorRelay<[Point]>
     private lazy var pointsDataSourceRelay = BehaviorRelay<[PointsTableViewSection]>(value: [PointsTableViewSection(items: [])])
+    private let initialPointSide: Side?
 
     private func subscribePointsUpdates() {
         var pointsDriver = sidedPointsRelay.asDriver()
@@ -112,7 +116,9 @@ class PointsTableViewModel: StarrableViewModel {
                                                        debatePrimaryKey: self.debate.primaryKey,
                                                        useFullDescription: self.viewState.shouldCellsUseFullDescription ||
                                                         $0.side?.isContext == true,
-                                                       isRootPoint: self.viewState.isStandaloneRootPoints) })
+                                                       isRootPoint: self.viewState.isStandaloneRootPoints,
+                                                       bubbleTailSide: $0.side?.bubbleTailSide(initial: self.initialPointSide)
+                                                        ?? BubbleTailSide.defaultSide) })
                 self.pointsDataSourceRelay.accept([PointsTableViewSection(original: currentPointsDataSourceSection,
                                                                           items: self.addHeaderContextPointCellViewModel(newPointCellViewModels))])
         }).disposed(by: disposeBag)
@@ -199,7 +205,9 @@ class PointsTableViewModel: StarrableViewModel {
                                                        useFullDescription: self.viewState.shouldCellsUseFullDescription ||
                                                         $0.side?.isContext == true,
                                                        seenPoints: seenPoints,
-                                                       isRootPoint: self.viewState.isStandaloneRootPoints) })
+                                                       isRootPoint: self.viewState.isStandaloneRootPoints,
+                                                       bubbleTailSide: $0.side?.bubbleTailSide(initial: self.initialPointSide)
+                                                        ?? BubbleTailSide.defaultSide) })
                 self.pointsDataSourceRelay.accept([PointsTableViewSection(original: currentPointsDataSourceSection,
                                                                           items: self.addHeaderContextPointCellViewModel(newPointCellViewModels))])
             }).disposed(by: disposeBag)
@@ -365,4 +373,23 @@ class PointsTableViewModel: StarrableViewModel {
         }
     }
 
+}
+
+// MARK: - Side extension
+
+private extension Side {
+    func bubbleTailSide(initial: Side?) -> BubbleTailSide {
+        return self == initial ? .right : .left
+    }
+
+    var other: Side {
+        switch self {
+        case .pro:
+            return .con
+        case .con:
+            return .pro
+        case .context:
+            fatalError("There is no inverse to context points")
+        }
+    }
 }

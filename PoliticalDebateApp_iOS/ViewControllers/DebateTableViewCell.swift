@@ -101,7 +101,7 @@ class DebateTableViewCell: UITableViewCell {
         debateProgressView.leadingAnchor.constraint(equalTo: debateTitleLabel.leadingAnchor).isActive = true
         progressViewTopAnchor = debateProgressView.topAnchor.constraint(equalTo: tagsLabel.bottomAnchor, constant: Self.verticalInset)
         progressViewTopAnchor?.isActive = true
-        debateProgressView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Self.horizontalInset).isActive = true
+        debateProgressView.trailingAnchor.constraint(equalTo: starredButton.trailingAnchor).isActive = true
         debateProgressView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Self.verticalInset).isActive = true
     }
 
