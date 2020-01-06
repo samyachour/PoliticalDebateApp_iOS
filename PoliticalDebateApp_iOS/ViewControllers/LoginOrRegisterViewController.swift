@@ -180,12 +180,12 @@ extension LoginOrRegisterViewController {
     @objc private func submitButtonTapped() {
         guard let emailText = emailTextField.text,
             EmailAndPasswordValidator.isValidEmail(emailText) else {
-                EmailAndPasswordValidator.showInvalidEmailError()
+                ErrorHandlerService.showInvalidEmailError()
                 return
         }
         guard let passwordText = passwordTextField.text,
             EmailAndPasswordValidator.isValidPassword(passwordText) else {
-                EmailAndPasswordValidator.showInvalidPasswordError()
+                ErrorHandlerService.showInvalidPasswordError()
                 return
         }
         switch viewModel.loginOrRegisterStateRelay.value.state {
@@ -224,7 +224,7 @@ extension LoginOrRegisterViewController {
     private func registerTapped(email: String, password: String) {
         guard let confirmPasswordText = confirmPasswordTextField.text,
             confirmPasswordText == password else {
-                EmailAndPasswordValidator.showInvalidPasswordMatchError()
+                ErrorHandlerService.showInvalidPasswordMatchError()
                 return
         }
         viewModel.register(email: email, password: password).subscribe(onSuccess: { [weak self] _ in
@@ -243,15 +243,7 @@ extension LoginOrRegisterViewController {
                     return
             }
 
-            switch response.statusCode {
-            case GeneralConstants.customErrorCode:
-                if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: backendErrorMessage.messageString))
-                }
-            default:
-                ErrorHandlerService.showBasicRetryErrorBanner()
-            }
+            ErrorHandlerService.showBadRequestError(from: response)
         }.disposed(by: disposeBag)
     }
 
@@ -259,7 +251,7 @@ extension LoginOrRegisterViewController {
     @objc private func forgotPasswordTapped(forceSend: Bool = false) {
         guard let emailText = emailTextField.text,
             EmailAndPasswordValidator.isValidEmail(emailText) else {
-                EmailAndPasswordValidator.showInvalidEmailError()
+                ErrorHandlerService.showInvalidEmailError()
                 return
         }
 

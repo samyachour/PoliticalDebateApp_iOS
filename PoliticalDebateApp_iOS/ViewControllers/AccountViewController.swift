@@ -45,6 +45,7 @@ class AccountViewController: UIViewController, KeyboardReactable {
         }
         return nil
     }
+    private static let changeEmailLabelText = "Change email"
 
     // MARK: - UI Elements
 
@@ -62,7 +63,7 @@ class AccountViewController: UIViewController, KeyboardReactable {
                                                                                                               complianceTextView,
                                                                                                               versionLabel])
 
-    private lazy var changeEmailLabel = BasicUIElementFactory.generateLabel(text: "Change email", textAlignment: .center)
+    private lazy var changeEmailLabel = BasicUIElementFactory.generateLabel(text: Self.changeEmailLabelText, textAlignment: .center)
 
     private lazy var newEmailTextField = BasicUIElementFactory.generateTextField(placeholder: "New email...",
                                                                                  keyboardType: .emailAddress,
@@ -136,6 +137,12 @@ extension AccountViewController {
         stackViewContainer.widthAnchor.constraint(equalTo: scrollViewContainer.widthAnchor).isActive = true
     }
 
+    private func updateEmailLabel(with email: String) {
+        UIView.transition(with: changeEmailLabel, duration: GeneralConstants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
+            self.changeEmailLabel.text = "\(Self.changeEmailLabelText) (\(email))"
+        }, completion: nil)
+    }
+
     private func installViewBinds() {
         getCurrentEmail()
         submitChangesButton.addTarget(self, action: #selector(submitChangesButtonTapped), for: .touchUpInside)
@@ -150,12 +157,7 @@ extension AccountViewController {
         viewModel.getCurrentEmail()
             .map(CurrentEmail.self)
             .subscribe(onSuccess: { [weak self] currentEmail in
-                if let changeEmailLabel = self?.changeEmailLabel,
-                    let currentChangeEmailLabelText = changeEmailLabel.text {
-                    UIView.transition(with: changeEmailLabel, duration: GeneralConstants.standardAnimationDuration, options: .transitionCrossDissolve, animations: {
-                        changeEmailLabel.text = "\(currentChangeEmailLabelText) (\(currentEmail.email))"
-                    }, completion: nil)
-                }
+                self?.updateEmailLabel(with: currentEmail.email)
                 if !currentEmail.isVerified {
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                                     title: "Your email is unverified.",
@@ -192,14 +194,7 @@ extension AccountViewController {
                     return
             }
 
-            switch response.statusCode {
-            case 400:
-                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: "Failed to send a verification link.",
-                                                                                                subtitle: "Your current email is invalid."))
-            default:
-                ErrorHandlerService.showBasicRetryErrorBanner()
-            }
+            ErrorHandlerService.showBadRequestError(from: response)
         }.disposed(by: disposeBag)
     }
 
@@ -212,7 +207,7 @@ extension AccountViewController {
             allFieldsEmpty = false
 
             guard EmailAndPasswordValidator.isValidEmail(newEmail) else {
-                EmailAndPasswordValidator.showInvalidEmailError()
+                ErrorHandlerService.showInvalidEmailError()
                 return
             }
 
@@ -222,6 +217,7 @@ extension AccountViewController {
                                                                       title: "Email change succeeded.",
                                                                       subtitle: "Please check your email for a verification link."))
                 self?.newEmailTextField.text = nil
+                self?.updateEmailLabel(with: newEmail)
             }) { error in
                 if let generalError = error as? GeneralError,
                     generalError == .alreadyHandled {
@@ -233,15 +229,7 @@ extension AccountViewController {
                         return
                 }
 
-                switch response.statusCode {
-                case GeneralConstants.customErrorCode:
-                    if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
-                        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                        title: backendErrorMessage.messageString))
-                    }
-                default:
-                    ErrorHandlerService.showBasicRetryErrorBanner()
-                }
+                ErrorHandlerService.showBadRequestError(from: response)
             }.disposed(by: disposeBag)
         }
         if (!(currentPasswordTextField.text?.isEmpty ?? true) ||
@@ -253,16 +241,16 @@ extension AccountViewController {
                 let newPassword = newPasswordTextField.text, !newPassword.isEmpty,
                 let confirmNewPassword = confirmNewPasswordTextField.text, !confirmNewPassword.isEmpty else {
                     NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: "Please fill in either all of or none of the password fields."))
+                                                                                                    title: "Please fill in either all or none of the password fields."))
                     return
             }
             guard EmailAndPasswordValidator.isValidPassword(currentPassword) &&
             EmailAndPasswordValidator.isValidPassword(newPassword) else {
-                EmailAndPasswordValidator.showInvalidPasswordError()
+                ErrorHandlerService.showInvalidPasswordError()
                 return
             }
             guard newPassword == confirmNewPassword else {
-                EmailAndPasswordValidator.showInvalidPasswordMatchError()
+                ErrorHandlerService.showInvalidPasswordMatchError()
                 return
             }
 
@@ -283,13 +271,7 @@ extension AccountViewController {
                         return
                 }
 
-                switch response.statusCode {
-                case GeneralConstants.customErrorCode:
-                    NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                    title: "Your current password is incorrect."))
-                default:
-                    ErrorHandlerService.showBasicRetryErrorBanner()
-                }
+                ErrorHandlerService.showBadRequestError(from: response)
             }.disposed(by: disposeBag)
         }
 
@@ -302,7 +284,7 @@ extension AccountViewController {
     @objc private func logOutButtonTapped() {
         SessionManager.shared.logout()
         NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
-                                                                                        title: "Successfully logged out"))
+                                                                                        title: "Successfully logged out."))
         navigationController?.popViewController(animated: true)
     }
 

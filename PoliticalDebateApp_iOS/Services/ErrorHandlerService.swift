@@ -38,6 +38,38 @@ struct ErrorHandlerService {
                                                                                         subtitle: GeneralError.report.localizedDescription))
     }
 
+    static func showBadRequestError(from response: Response) {
+        switch response.statusCode {
+        case GeneralConstants.customErrorCode:
+            if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {
+                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                                title: backendErrorMessage.messageString))
+            } else {
+                ErrorHandlerService.showBasicReportErrorBanner()
+            }
+        default:
+            ErrorHandlerService.showBasicRetryErrorBanner()
+        }
+    }
+
+    // MARK: - Email/Password errors
+
+    static func showInvalidEmailError() {
+        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                        title: "Please provide a proper email"))
+    }
+
+    static func showInvalidPasswordError() {
+        NotificationBannerQueue.shared
+            .enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                              title: "Your password must be at least \(GeneralConstants.minimumPasswordLength) characters."))
+    }
+
+    static func showInvalidPasswordMatchError() {
+        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                        title: "Passwords do not match."))
+    }
+
     // MARK: - Connectivity errors
 
     static func checkForConnectivityError(error: Observable<Error>) -> Observable<Void> {

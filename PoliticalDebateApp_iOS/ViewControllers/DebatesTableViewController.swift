@@ -353,7 +353,7 @@ extension DebatesTableViewController {
             }
 
             switch response.statusCode {
-            case 400:
+            case GeneralConstants.customErrorCode:
                 ErrorHandlerService.showBasicReportErrorBanner()
             default:
                 ErrorHandlerService.showBasicRetryErrorBanner()
