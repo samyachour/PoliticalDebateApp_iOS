@@ -31,6 +31,7 @@ extension Debate: Decodable {
         case shortTitle = "short_title"
         case lastUpdated = "last_updated"
         case rootPoints = "debate_map"
+        case totalPoints = "total_points"
         case allPointsPrimaryKeys = "all_points_primary_keys"
         case tags
     }
@@ -43,8 +44,8 @@ extension Debate: Decodable {
         title = try container.decode(String.self, forKey: .title)
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()
         tags = try container.decode(String.self, forKey: .tags)
-        allPointsPrimaryKeys = try container.decode(Set<Int>.self, forKey: .allPointsPrimaryKeys)
-        totalPoints = allPointsPrimaryKeys.count
+        totalPoints = try container.decode(Int.self, forKey: .totalPoints)
+        allPointsPrimaryKeys = try container.decodeIfPresent(Set<Int>.self, forKey: .allPointsPrimaryKeys) ?? []
         rootPoints = try container.decodeIfPresent([Point].self, forKey: .rootPoints) ?? []
 
         contextPoints = rootPoints.filter({ point -> Bool in
@@ -68,6 +69,7 @@ extension Debate: Decodable {
             }
         })
 
+        if !allPointsPrimaryKeys.isEmpty { UserDataManager.shared.removeStaleLocalPoints(from: self) }
     }
 
 }
