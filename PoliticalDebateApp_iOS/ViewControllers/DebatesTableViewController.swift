@@ -346,7 +346,6 @@ extension DebatesTableViewController {
         viewModel.retrieveFullDebate(debateTableViewCellViewModel.debate.primaryKey)
             .subscribe(onSuccess: { [weak self] debate in
                 self?.showLoadingIndicatorRelay.accept(false)
-                UserDataManager.shared.removeStaleLocalPoints(from: debate)
                 self?.navigationController?
                     .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debate,
                                                                                                   isStarred: debateTableViewCellViewModel.isStarred,
