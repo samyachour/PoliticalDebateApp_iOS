@@ -51,12 +51,13 @@ class UserDataManager {
     }
 
     private func updateProgress(pointPrimaryKey: PrimaryKey,
-                                debatePrimaryKey: PrimaryKey) {
+                                debatePrimaryKey: PrimaryKey,
+                                remove: Bool = false) {
         var allProgress = allProgressRelay.value
         if let debateProgress = allProgress[debatePrimaryKey] {
             if !debateProgress.seenPoints.contains(pointPrimaryKey) {
                 var seenPoints = debateProgress.seenPoints
-                seenPoints.append(pointPrimaryKey)
+                remove ? seenPoints.removeAll(where: { $0 == pointPrimaryKey }) : seenPoints.append(pointPrimaryKey)
                 allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: seenPoints)
             }
         } else {
@@ -162,13 +163,13 @@ class UserDataManager {
 
     /// Remove local points that don't exist on the backend anymore
     func removeStaleLocalPoints(from debate: Debate) {
-        let localSeenPoints = getProgress(for: debate.primaryKey).seenPoints
-        let allDebatePointsPrimaryKeys = debate.allPointsPrimaryKeys
-        localSeenPoints.filter { primaryKey -> Bool in
-            return !allDebatePointsPrimaryKeys.contains(primaryKey)
-        }.forEach { primaryKey in
-            ProgressCoreDataAPI.removePoint(primaryKey)
-        }
+        allProgressRelay.value[debate.primaryKey]?.seenPoints
+            .filter({ !debate.allPointsPrimaryKeys.contains($0) })
+            .forEach({ [unowned self] in self.updateProgress(pointPrimaryKey: $0, debatePrimaryKey: debate.primaryKey, remove: true)})
+
+        getProgress(for: debate.primaryKey).seenPoints
+            .filter { !debate.allPointsPrimaryKeys.contains($0) }
+            .forEach { ProgressCoreDataAPI.removePoint($0) }
     }
 
     // MARK: - Saving/Loading user data
@@ -338,7 +339,7 @@ class UserDataManager {
             }
             NotificationBannerQueue.shared
                 .enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                  title: "Could not sync your local starred data to the server.",
+                                                                  title: "Could not sync your local starred data to the cloud.",
                                                                   subtitle: "Please try logging out and back in again.",
                                                                   buttonConfig: NotificationBannerViewModel
                                                                     .ButtonConfiguration.customTitle(title: GeneralCopies.retryTitle,
@@ -374,7 +375,7 @@ class UserDataManager {
                 }
                 NotificationBannerQueue.shared
                     .enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                      title: "Could not sync your local progress data to the server.",
+                                                                      title: "Could not sync your local progress data to the cloud.",
                                                                       subtitle: "Please try logging out and back in again.",
                                                                       buttonConfig: NotificationBannerViewModel
                                                                         .ButtonConfiguration.customTitle(title: GeneralCopies.retryTitle,

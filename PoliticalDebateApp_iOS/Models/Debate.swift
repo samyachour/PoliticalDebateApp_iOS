@@ -16,32 +16,12 @@ struct Debate {
     let shortTitle: String
     let lastUpdated: Date?
     let tags: String
+    let allPointsPrimaryKeys: [Int]
+    let totalPoints: Int
 
     let rootPoints: [Point]
     let contextPoints: [Point]
     let sidedPoints: [Point]
-
-    let allPoints: [Point]
-    let allPointsPrimaryKeys: [PrimaryKey]
-    let totalPoints: Int
-
-    private static func getAllPoints(from rootPoints: [Point] = [],
-                                     with point: Point? = nil) -> [Point] {
-        guard let point = point else {
-            return rootPoints.reduce([]) { (allPoints, point) -> [Point] in
-                return allPoints + getAllPoints(with: point).filter({ !allPoints.contains($0) }) // avoid duplicates
-            }
-        }
-
-        guard let rebuttals = point.rebuttals,
-            !rebuttals.isEmpty else {
-                return [point]
-        }
-
-        return rebuttals.reduce([point]) { (allPoints, point) -> [Point] in
-            return allPoints + getAllPoints(with: point).filter({ !allPoints.contains($0) }) // avoid duplicates
-        }
-    }
 }
 
 extension Debate: Decodable {
@@ -51,6 +31,7 @@ extension Debate: Decodable {
         case shortTitle = "short_title"
         case lastUpdated = "last_updated"
         case rootPoints = "debate_map"
+        case allPointsPrimaryKeys = "all_points_primary_keys"
         case tags
     }
 
@@ -61,12 +42,10 @@ extension Debate: Decodable {
         shortTitle = try container.decode(String.self, forKey: .shortTitle)
         title = try container.decode(String.self, forKey: .title)
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()
-        rootPoints = try container.decode([Point].self, forKey: .rootPoints)
         tags = try container.decode(String.self, forKey: .tags)
-
-        allPoints = Self.getAllPoints(from: rootPoints)
-        allPointsPrimaryKeys = allPoints.map({ $0.primaryKey })
+        allPointsPrimaryKeys = try container.decode([Int].self, forKey: .allPointsPrimaryKeys)
         totalPoints = allPointsPrimaryKeys.count
+        rootPoints = try container.decodeIfPresent([Point].self, forKey: .rootPoints) ?? []
 
         contextPoints = rootPoints.filter({ point -> Bool in
             switch point.side {

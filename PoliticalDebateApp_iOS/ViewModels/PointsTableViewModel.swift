@@ -350,27 +350,8 @@ class PointsTableViewModel: StarrableViewModel {
 
         UserDataManager.shared.markProgress(pointPrimaryKey: point.primaryKey,
                                             debatePrimaryKey: debate.primaryKey)
-            .subscribe(onError: markPointAsSeenErrorHandler)
+            .subscribe(onError: { ErrorHandlerService.handleRequest(error: $0, withReportCode: 404) })
             .disposed(by: disposeBag)
-    }
-
-    private func markPointAsSeenErrorHandler(error: Error) {
-        if let generalError = error as? GeneralError,
-            generalError == .alreadyHandled {
-            return
-        }
-        guard let moyaError = error as? MoyaError,
-            let response = moyaError.response else {
-                ErrorHandlerService.showBasicRetryErrorBanner()
-                return
-        }
-
-        switch response.statusCode {
-        case 404:
-            ErrorHandlerService.showBasicReportErrorBanner()
-        default:
-            ErrorHandlerService.showBasicRetryErrorBanner()
-        }
     }
 
 }

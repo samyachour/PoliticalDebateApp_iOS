@@ -32,13 +32,58 @@ struct ErrorHandlerService {
                                                                                                                    action: buttonAction)))
     }
 
+    static func handleRequest(error: Error, withMessage title: String = GeneralError.basic.localizedDescription) {
+        if let generalError = error as? GeneralError,
+            generalError == .alreadyHandled {
+            return
+        }
+        guard error as? MoyaError != nil else {
+            ErrorHandlerService.showBasicRetryErrorBanner()
+            return
+        }
+
+        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
+                                                                                        title: title,
+                                                                                        subtitle: GeneralError.retry.localizedDescription))
+
+    }
+
     static func showBasicReportErrorBanner(_ title: String = GeneralError.basic.localizedDescription) {
         NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
                                                                                         title: title,
                                                                                         subtitle: GeneralError.report.localizedDescription))
     }
 
-    static func showBadRequestError(from response: Response) {
+    static func handleRequest(error: Error, withReportCode code: Int) {
+        if let generalError = error as? GeneralError,
+            generalError == .alreadyHandled {
+            return
+        }
+        guard let moyaError = error as? MoyaError,
+            let response = moyaError.response else {
+                ErrorHandlerService.showBasicRetryErrorBanner()
+                return
+        }
+
+        switch response.statusCode {
+        case code:
+            ErrorHandlerService.showBasicReportErrorBanner()
+        default:
+            ErrorHandlerService.showBasicRetryErrorBanner()
+        }
+    }
+
+    static func handleRequestBackendMessage(from error: Error) {
+        if let generalError = error as? GeneralError,
+            generalError == .alreadyHandled {
+            return
+        }
+        guard let moyaError = error as? MoyaError,
+            let response = moyaError.response else {
+                ErrorHandlerService.showBasicRetryErrorBanner()
+                return
+        }
+
         switch response.statusCode {
         case GeneralConstants.customErrorCode:
             if let backendErrorMessage = try? JSONDecoder().decode(BackendErrorMessage.self, from: response.data) {

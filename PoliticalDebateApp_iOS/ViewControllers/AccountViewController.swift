@@ -168,37 +168,19 @@ extension AccountViewController {
                                                                                                     })
                     ))
                 }
-            }) { error in
-                if let generalError = error as? GeneralError,
-                    generalError == .alreadyHandled {
-                    return
-                }
-
-                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: "Couldn't retrieve your current email."))
-        }.disposed(by: disposeBag)
+            }) { ErrorHandlerService.handleRequest(error: $0, withMessage: "Couldn't retrieve your current email.") }
+            .disposed(by: disposeBag)
     }
 
     private func requestVerificationLink() {
         viewModel.requestVerificationLink().subscribe(onSuccess: { _ in
             NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .success,
                                                                                             title: "Successfully sent verification link."))
-        }) { error in
-            if let generalError = error as? GeneralError,
-                generalError == .alreadyHandled {
-                return
-            }
-            guard let moyaError = error as? MoyaError,
-                let response = moyaError.response else {
-                    ErrorHandlerService.showBasicRetryErrorBanner()
-                    return
-            }
-
-            ErrorHandlerService.showBadRequestError(from: response)
-        }.disposed(by: disposeBag)
+        }) { ErrorHandlerService.handleRequestBackendMessage(from: $0) }
+            .disposed(by: disposeBag)
     }
 
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next function_body_length
     @objc private func submitChangesButtonTapped() {
         var allFieldsEmpty = true
 
@@ -218,19 +200,8 @@ extension AccountViewController {
                                                                       subtitle: "Please check your email for a verification link."))
                 self?.newEmailTextField.text = nil
                 self?.updateEmailLabel(with: newEmail)
-            }) { error in
-                if let generalError = error as? GeneralError,
-                    generalError == .alreadyHandled {
-                    return
-                }
-                guard let moyaError = error as? MoyaError,
-                    let response = moyaError.response else {
-                        ErrorHandlerService.showBasicRetryErrorBanner()
-                        return
-                }
-
-                ErrorHandlerService.showBadRequestError(from: response)
-            }.disposed(by: disposeBag)
+            }) { ErrorHandlerService.handleRequestBackendMessage(from: $0) }
+                .disposed(by: disposeBag)
         }
         if (!(currentPasswordTextField.text?.isEmpty ?? true) ||
             !(newPasswordTextField.text?.isEmpty ?? true) ||
@@ -260,19 +231,8 @@ extension AccountViewController {
                 self?.currentPasswordTextField.text = nil
                 self?.newPasswordTextField.text = nil
                 self?.confirmNewPasswordTextField.text = nil
-            }) { error in
-                if let generalError = error as? GeneralError,
-                    generalError == .alreadyHandled {
-                    return
-                }
-                guard let moyaError = error as? MoyaError,
-                    let response = moyaError.response else {
-                        ErrorHandlerService.showBasicRetryErrorBanner()
-                        return
-                }
-
-                ErrorHandlerService.showBadRequestError(from: response)
-            }.disposed(by: disposeBag)
+            }) { ErrorHandlerService.handleRequestBackendMessage(from: $0) }
+                .disposed(by: disposeBag)
         }
 
         if allFieldsEmpty {
@@ -300,14 +260,8 @@ extension AccountViewController {
                                                                                                 title: "Successfully deleted account."))
                 SessionManager.shared.logout()
                 self.navigationController?.popViewController(animated: true)
-            }) { error in
-                if let generalError = error as? GeneralError,
-                    generalError == .alreadyHandled {
-                    return
-                }
-
-                ErrorHandlerService.showBasicRetryErrorBanner()
-            }.disposed(by: self.disposeBag)
+            }) { ErrorHandlerService.handleRequest(error: $0) }
+                .disposed(by: self.disposeBag)
         }))
         confirmationPopUp.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
 

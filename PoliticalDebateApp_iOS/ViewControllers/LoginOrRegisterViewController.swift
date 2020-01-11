@@ -232,19 +232,8 @@ extension LoginOrRegisterViewController {
                                                                                             title: "Registration succeeded.",
                                                                                             subtitle: "Please check your email for a verification link."))
             self?.loginTapped(email: email, password: password) // log the user in after registering
-        }) { error in
-            if let generalError = error as? GeneralError,
-                generalError == .alreadyHandled {
-                return
-            }
-            guard let moyaError = error as? MoyaError,
-                let response = moyaError.response else {
-                    ErrorHandlerService.showBasicRetryErrorBanner()
-                    return
-            }
-
-            ErrorHandlerService.showBadRequestError(from: response)
-        }.disposed(by: disposeBag)
+        }) { ErrorHandlerService.handleRequestBackendMessage(from: $0) }
+            .disposed(by: disposeBag)
     }
 
     // swiftlint:disable:next function_body_length

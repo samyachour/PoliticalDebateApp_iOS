@@ -10,6 +10,7 @@ import RxSwift
 import UIKit
 
 enum GeneralConstants {
+    static let longAnimationDuration = 0.6
     static let standardAnimationDuration = 0.4
     static let shortAnimationDuration = 0.2
     static let quickAnimationDuration = 0.1
