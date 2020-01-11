@@ -57,12 +57,15 @@ class UserDataManager {
         if let debateProgress = allProgress[debatePrimaryKey] {
             if !debateProgress.seenPoints.contains(pointPrimaryKey) {
                 var seenPoints = debateProgress.seenPoints
-                remove ? seenPoints.removeAll(where: { $0 == pointPrimaryKey }) : seenPoints.append(pointPrimaryKey)
+                if remove {
+                    seenPoints.remove(pointPrimaryKey)
+                } else {
+                    seenPoints.insert(pointPrimaryKey)
+                }
                 allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: seenPoints)
             }
         } else {
-            let seenPoints = [pointPrimaryKey]
-            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: seenPoints)
+            allProgress[debatePrimaryKey] = Progress(debatePrimaryKey: debatePrimaryKey, seenPoints: [pointPrimaryKey])
         }
         allProgressRelay.accept(allProgress)
     }
@@ -134,7 +137,7 @@ class UserDataManager {
         }
     }
 
-    func markBatchProgress(pointPrimaryKeys: [PrimaryKey],
+    func markBatchProgress(pointPrimaryKeys: Set<PrimaryKey>,
                            debatePrimaryKey: PrimaryKey) -> Single<Response?> {
         let newPointPrimaryKeys = pointPrimaryKeys
             .filter({ !(allProgressRelay.value[debatePrimaryKey]?.seenPoints.contains($0) ?? false) })

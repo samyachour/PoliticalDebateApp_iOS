@@ -9,10 +9,10 @@
 import CoreData
 
 struct Starred {
-    var starredList: [PrimaryKey]
-    var unstarredList: [PrimaryKey]?
+    var starredList: Set<PrimaryKey>
+    var unstarredList: Set<PrimaryKey>?
 
-    init(starredList: [PrimaryKey], unstarredList: [PrimaryKey]? = nil) {
+    init(starredList: Set<PrimaryKey>, unstarredList: Set<PrimaryKey>? = nil) {
         self.starredList = starredList
         self.unstarredList = unstarredList
     }
@@ -27,7 +27,7 @@ extension Starred: Codable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        starredList = try container.decode([PrimaryKey].self, forKey: .starredList)
+        starredList = try container.decode(Set<PrimaryKey>.self, forKey: .starredList)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -44,6 +44,6 @@ extension Starred {
             return nil
         }
 
-        self.init(starredList: starredList.map { Int($0.primaryKey) })
+        self.init(starredList: Set(starredList.map { Int($0.primaryKey) }))
     }
 }

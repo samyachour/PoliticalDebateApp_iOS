@@ -176,7 +176,7 @@ class PointsTableViewModel: StarrableViewModel {
                 guard let self = self else { return }
 
                 UserDataManager.shared
-                    .markBatchProgress(pointPrimaryKeys: contextPoints.map { $0.primaryKey },
+                    .markBatchProgress(pointPrimaryKeys: Set(contextPoints.map { $0.primaryKey }),
                                        debatePrimaryKey: self.debate.primaryKey)
                     .subscribe() // Don't care if this call succeeds or fails
                     .disposed(by: self.disposeBag)

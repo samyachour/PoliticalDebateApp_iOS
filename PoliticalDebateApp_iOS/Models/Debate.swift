@@ -16,7 +16,7 @@ struct Debate {
     let shortTitle: String
     let lastUpdated: Date?
     let tags: String
-    let allPointsPrimaryKeys: [Int]
+    let allPointsPrimaryKeys: Set<Int>
     let totalPoints: Int
 
     let rootPoints: [Point]
@@ -43,7 +43,7 @@ extension Debate: Decodable {
         title = try container.decode(String.self, forKey: .title)
         lastUpdated = try container.decode(String.self, forKey: .lastUpdated).toDate()
         tags = try container.decode(String.self, forKey: .tags)
-        allPointsPrimaryKeys = try container.decode([Int].self, forKey: .allPointsPrimaryKeys)
+        allPointsPrimaryKeys = try container.decode(Set<Int>.self, forKey: .allPointsPrimaryKeys)
         totalPoints = allPointsPrimaryKeys.count
         rootPoints = try container.decodeIfPresent([Point].self, forKey: .rootPoints) ?? []
 
