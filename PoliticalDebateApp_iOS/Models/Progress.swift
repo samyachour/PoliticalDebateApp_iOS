@@ -10,7 +10,7 @@ import CoreData
 
 struct Progress {
     let debatePrimaryKey: PrimaryKey
-    let seenPoints: [PrimaryKey]
+    let seenPoints: Set<PrimaryKey>
 
     func calculateCompletedPercentage(totalPoints: Int) -> Int {
         return Int((Float(seenPoints.count) / Float(totalPoints)) * 100)
@@ -27,7 +27,7 @@ extension Progress: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         debatePrimaryKey = try container.decode(PrimaryKey.self, forKey: .debatePrimaryKey)
-        seenPoints = try container.decode([PrimaryKey].self, forKey: .seenPoints)
+        seenPoints = try container.decode(Set<PrimaryKey>.self, forKey: .seenPoints)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -52,7 +52,7 @@ extension Progress {
                 return nil
         }
         self.init(debatePrimaryKey: Int(debatePrimaryKey32),
-                  seenPoints: seenPoints.map { Int($0.primaryKey) })
+                  seenPoints: Set(seenPoints.map { Int($0.primaryKey) }))
     }
 }
 

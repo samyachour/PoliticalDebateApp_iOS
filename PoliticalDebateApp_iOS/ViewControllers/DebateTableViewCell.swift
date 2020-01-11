@@ -130,21 +130,10 @@ class DebateTableViewCell: UITableViewCell {
 
     @objc private func starredButtonTapped() {
         viewModel?.starOrUnstarDebate().subscribe(onSuccess: { [weak self] _ in
-            UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
+            UIView.animate(withDuration: GeneralConstants.longAnimationDuration, animations: {
                 self?.starredButton.tintColor = self?.viewModel?.starTintColor
             })
-        }, onError: { error in
-            if let generalError = error as? GeneralError,
-                generalError == .alreadyHandled {
-                return
-            }
-            guard error as? MoyaError != nil else {
-                ErrorHandlerService.showBasicRetryErrorBanner()
-                return
-            }
-
-            NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                            title: "Couldn't save starred debate to server."))
-        }).disposed(by: disposeBag)
+        }, onError: { ErrorHandlerService.handleRequest(error: $0, withMessage: "Couldn't save starred debate to server.") })
+            .disposed(by: disposeBag)
     }
 }

@@ -25,7 +25,7 @@ struct BasicUIElementFactory {
     }
 
     static func generateButton(title: String? = nil,
-                               titleColor: UIColor = GeneralColors.hardButton,
+                               titleColor: UIColor = GeneralColors.button,
                                font: UIFont = GeneralFonts.button) -> UIButton {
         let forgotPasswordButton = UIButton(frame: .zero)
         forgotPasswordButton.setTitle(title, for: .normal)
@@ -43,9 +43,9 @@ struct BasicUIElementFactory {
         basicTextField.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                                   attributes: [
                                                                     .font : GeneralFonts.text,
-                                                                    .foregroundColor: GeneralColors.softButton])
+                                                                    .foregroundColor: GeneralColors.placeholderText])
         basicTextField.font = GeneralFonts.text
-        basicTextField.textColor = GeneralColors.hardButton
+        basicTextField.textColor = GeneralColors.text
         basicTextField.borderStyle = .roundedRect
         basicTextField.isSecureTextEntry = secureTextEntry
         basicTextField.returnKeyType = returnKeyType
@@ -166,7 +166,7 @@ struct BasicUIElementFactory {
 
     static func generateProgressView() -> UIProgressView {
         let progressView = UIProgressView()
-        progressView.progressTintColor = .customLightGreen2
+        progressView.progressTintColor = .customLightGreen1
         progressView.trackTintColor = .clear
         return progressView
     }

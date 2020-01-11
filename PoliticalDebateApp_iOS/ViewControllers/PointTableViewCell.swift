@@ -97,7 +97,7 @@ class PointTableViewCell: UITableViewCell {
 
     private lazy var checkImageView: UIImageView = {
         let checkImageView = UIImageView(frame: .zero)
-        checkImageView.tintColor = .customLightGreen2
+        checkImageView.tintColor = .customLightGreen1
         return checkImageView
     }()
 

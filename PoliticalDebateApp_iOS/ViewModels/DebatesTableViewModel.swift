@@ -57,7 +57,6 @@ class DebatesTableViewModel {
     private lazy var refreshDebatesWithLocalDataRelay = PublishRelay<Void>()
 
     private func createNewDebateCellViewModel(debate: Debate) -> DebateTableViewCellViewModel {
-        UserDataManager.shared.removeStaleLocalPoints(from: debate)
         let completedPercentage = UserDataManager.shared.getProgress(for: debate.primaryKey).calculateCompletedPercentage(totalPoints: debate.totalPoints)
         // Always new instances so we don't modify objects of the array we're mapping
         return DebateTableViewCellViewModel(debate: debate,
@@ -147,6 +146,8 @@ class DebatesTableViewModel {
 
     // MARK: - API calls
 
+    // Private
+
     private let debateNetworkService = NetworkService<DebateAPI>()
     private var plainDebates: [Debate]?
     private var plainDebatesLastFetched: Date?
@@ -181,6 +182,13 @@ class DebatesTableViewModel {
             }) { [weak self] error in
                 self?.debatesRetrievalErrorRelay.accept(error)
         }.disposed(by: disposeBag)
+    }
+
+    // Internal
+
+    func retrieveFullDebate(_ primaryKey: PrimaryKey) -> Single<Debate> {
+        return debateNetworkService.makeRequest(with: .debate(primaryKey: primaryKey))
+            .map(Debate.self)
     }
 
 }
