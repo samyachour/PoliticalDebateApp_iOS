@@ -1,18 +1,57 @@
-{"debate_map": [{"description": "This is a longer description of test **point "
-                                "1**. (in debate 0)",
+{"all_points_primary_keys": [4402, 4403, 4404, 4405, 4406, 4407, 4408],
+ "debate_map": [{"description": "This is a **context description**, where you "
+                                "can give additional information needed to "
+                                "understand the debate.",
                  "hyperlinks": [],
-                 "pk": 903,
-                 "rebuttals": [{"description": "Test *point 2* description. "
-                                               "(in debate 0)",
-                                "hyperlinks": [{"substring": "point",
-                                                "url": "www.test.com/article"}],
-                                "pk": 902,
+                 "pk": 4402,
+                 "rebuttals": [],
+                 "short_description": "",
+                 "side": "context"},
+                {"description": "This is *another* context description.",
+                 "hyperlinks": [],
+                 "pk": 4403,
+                 "rebuttals": [],
+                 "short_description": "",
+                 "side": "context"},
+                {"description": "This is a **bolded point description**",
+                 "hyperlinks": [],
+                 "pk": 4404,
+                 "rebuttals": [{"description": "This is a rebuttal with a link",
+                                "hyperlinks": [{"substring": "link",
+                                                "url": "www.link.com"}],
+                                "pk": 4405,
+                                "rebuttals": [{"description": "This is another "
+                                                              "point",
+                                               "hyperlinks": [],
+                                               "pk": 4406,
+                                               "rebuttals": [],
+                                               "short_description": "Short "
+                                                                    "rebuttal "
+                                                                    "description",
+                                               "side": "pro"}],
+                                "short_description": "Short rebuttal "
+                                                     "description",
+                                "side": "con"},
+                               {"description": "This is an *italicized "
+                                               "rebuttal description*",
+                                "hyperlinks": [],
+                                "pk": 4407,
                                 "rebuttals": [],
-                                "short_description": "Test *point 2*",
+                                "short_description": "Another short rebuttal "
+                                                     "description",
                                 "side": "con"}],
-                 "short_description": "Test **point 1**",
-                 "side": "pro"}],
- "last_updated": "2019-11-10",
- "pk": 385,
- "short_title": "Debate #0",
- "title": "Test debate number #0"}
+                 "short_description": "Short point description",
+                 "side": "pro"},
+                {"description": "This is point description with a deeplink to "
+                                "another debate",
+                 "hyperlinks": [{"substring": "deeplink",
+                                 "url": "com.PoliticalDebateApp://debate?primaryKey=1"}],
+                 "pk": 4408,
+                 "rebuttals": [],
+                 "short_description": "Another short point description",
+                 "side": "con"}],
+ "last_updated": "2020-01-04T03:21:54.192080Z",
+ "pk": 1342,
+ "short_title": "Short title",
+ "tags": "tag 1, tag 2",
+ "title": "Title"}

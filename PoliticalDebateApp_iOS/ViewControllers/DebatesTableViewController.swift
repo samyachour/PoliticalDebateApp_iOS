@@ -64,7 +64,7 @@ class DebatesTableViewController: UIViewController {
 
     private lazy var settingsButton = BasicUIElementFactory.generateBarButton(image: UIImage.gear)
 
-    private lazy var tableViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the collectionView's scrollView
+    private lazy var tableViewContainer = UIView(frame: .zero) // so we can use gradient fade on container not the tableView's scrollView
 
     private lazy var debatesTableView = BasicUIElementFactory.generateTableView()
 
@@ -154,7 +154,7 @@ extension DebatesTableViewController {
 
     private func installViewBinds() {
         installUIBinds()
-        installCollectionViewDataSource()
+        installTableViewDataSource()
     }
 
     // MARK: UI Binds
@@ -287,9 +287,9 @@ extension DebatesTableViewController {
 
         Driver.combineLatest(showRetryButtonRelay.asDriver(), viewModel.debatesDataSourceDriver.startWith([]))
             .distinctUntilChanged({ (lhs, rhs) -> Bool in return lhs.0 == rhs.0 }) // only care when the showing retry button value changes
-            .drive(onNext: { [weak self] (show, debateCollectionViewSections) in
+            .drive(onNext: { [weak self] (show, debateTableViewSections) in
                 // Make sure we don't already have debates on screen before showing
-                guard !(show && debateCollectionViewSections.first?.items.isEmpty == false) else { return }
+                guard !(show && debateTableViewSections.first?.items.isEmpty == false) else { return }
 
                 // Need to unhide before showing and hide after
                 if show { self?.retryButton.isHidden = false }
@@ -300,30 +300,25 @@ extension DebatesTableViewController {
     }
 
     // MARK: Datasource
-    // swiftlint:disable:next function_body_length
-    private func installCollectionViewDataSource() {
+    private func installTableViewDataSource() {
 
         // Binds
 
         debatesTableView.rx
             .modelSelected(DebateTableViewCellViewModel.self)
-            .subscribe(onNext: { [weak self] debateCollectionViewCellViewModel in
-                self?.navigationController?
-                    .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debateCollectionViewCellViewModel.debate,
-                                                                                                  isStarred: debateCollectionViewCellViewModel.isStarred,
-                                                                                                  viewState: .standaloneRootPoints)),
-                                        animated: true)
+            .subscribe(onNext: { [weak self] debateTableViewCellViewModel in
+                self?.loadDebate(debateTableViewCellViewModel)
         }).disposed(by: disposeBag)
 
         // Datasource
 
         debatesTableView.register(DebateTableViewCell.self, forCellReuseIdentifier: DebateTableViewCell.reuseIdentifier)
         viewModel.debatesDataSourceDriver
-            .drive(onNext: { [weak self] debateCollectionViewSections in
+            .drive(onNext: { [weak self] debateTableViewSections in
                 self?.showLoadingIndicatorRelay.accept(false)
                 UIView.animate(withDuration: GeneralConstants.standardAnimationDuration, animations: {
-                    self?.emptyStateLabel.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 1.0 : 0.0
-                    self?.debatesTableView.alpha = debateCollectionViewSections.first?.items.isEmpty == true ? 0.0 : 1.0
+                    self?.emptyStateLabel.alpha = debateTableViewSections.first?.items.isEmpty == true ? 1.0 : 0.0
+                    self?.debatesTableView.alpha = debateTableViewSections.first?.items.isEmpty == true ? 0.0 : 1.0
                 })
             }).disposed(by: disposeBag)
 
@@ -342,23 +337,23 @@ extension DebatesTableViewController {
             self?.showLoadingIndicatorRelay.accept(false)
             self?.showRetryButtonRelay.accept(true)
 
-            if let generalError = error as? GeneralError,
-                generalError == .alreadyHandled {
-                return
-            }
-            guard let moyaError = error as? MoyaError,
-                let response = moyaError.response else {
-                    ErrorHandlerService.showBasicRetryErrorBanner()
-                    return
-            }
-
-            switch response.statusCode {
-            case 400:
-                ErrorHandlerService.showBasicReportErrorBanner()
-            default:
-                ErrorHandlerService.showBasicRetryErrorBanner()
-            }
+            ErrorHandlerService.handleRequest(error: error, withReportCode: GeneralConstants.customErrorCode)
         }).disposed(by: disposeBag)
+    }
+
+    private func loadDebate(_ debateTableViewCellViewModel: DebateTableViewCellViewModel) {
+        showLoadingIndicatorRelay.accept(true)
+        viewModel.retrieveFullDebate(debateTableViewCellViewModel.debate.primaryKey)
+            .subscribe(onSuccess: { [weak self] debate in
+                self?.showLoadingIndicatorRelay.accept(false)
+                UserDataManager.shared.removeStaleLocalPoints(from: debate)
+                self?.navigationController?
+                    .pushViewController(PointsTableViewController(viewModel: PointsTableViewModel(debate: debate,
+                                                                                                  isStarred: debateTableViewCellViewModel.isStarred,
+                                                                                                  viewState: .standaloneRootPoints)),
+                                        animated: true)
+            }) { ErrorHandlerService.handleRequest(error: $0, withReportCode: 404) }
+            .disposed(by: disposeBag)
     }
 }
 

@@ -10,6 +10,7 @@ import RxSwift
 import UIKit
 
 enum GeneralConstants {
+    static let longAnimationDuration = 0.6
     static let standardAnimationDuration = 0.4
     static let shortAnimationDuration = 0.2
     static let quickAnimationDuration = 0.1
@@ -31,16 +32,16 @@ enum GeneralConstants {
 
 enum GeneralColors {
     static let navBarButton = UIColor.customDarkGray1
-    static let softButton = UIColor.customDarkGray1
-    static let hardButton = UIColor.customDarkGray2
+    static let placeholderText = UIColor.customDarkGray1
+    static let button = UIColor.customDarkGray2
     static let lightLabel = UIColor.customDarkGray1
     static let background = UIColor.customOffWhite1
     static let navBarTitle = UIColor.customDarkBlue
     static let text = UIColor.customDarkBlue
-    static let smallText = UIColor.customLightBlue3
-    static let selectedPoint = UIColor.customLightGreen3
+    static let smallText = UIColor.customBlue
+    static let selectedPoint = UIColor.customLightGreen2
     static let selectedDebate = UIColor.customLightGray1
-    static let starredTint = UIColor.customLightGreen2
+    static let starredTint = UIColor.customLightGreen1
     static let unstarredTint = UIColor.customLightGray1
     static let loadingIndicator = UIColor.customDarkGray2
 }

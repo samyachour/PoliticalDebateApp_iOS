@@ -23,21 +23,4 @@ struct EmailAndPasswordValidator {
     static func isValidPassword(_ password: String) -> Bool {
         return password.count >= GeneralConstants.minimumPasswordLength
     }
-
-    static func showInvalidEmailError() {
-        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                        title: "Please provide a proper email"))
-    }
-
-    static func showInvalidPasswordError() {
-        NotificationBannerQueue.shared
-            .enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                              title: "Your password must be at least \(GeneralConstants.minimumPasswordLength) characters."))
-    }
-
-    static func showInvalidPasswordMatchError() {
-        NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                        title: "Passwords do not match."))
-    }
-
 }

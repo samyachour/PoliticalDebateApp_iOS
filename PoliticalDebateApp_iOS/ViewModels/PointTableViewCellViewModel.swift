@@ -29,7 +29,7 @@ class PointTableViewCellViewModel: IdentifiableType, Equatable {
     init(point: Point,
          debatePrimaryKey: PrimaryKey,
          useFullDescription: Bool = false,
-         seenPoints: [PrimaryKey]? = nil,
+         seenPoints: Set<PrimaryKey>? = nil,
          shouldFormatAsHeaderLabel: Bool = false,
          shouldShowSeparator: Bool = false,
          isRootPoint: Bool = false,
@@ -59,7 +59,7 @@ class PointTableViewCellViewModel: IdentifiableType, Equatable {
 
     // MARK: - Helpers
 
-    private static func deriveHasCompletedPaths(_ currentPoint: Point, _ seenPoints: [PrimaryKey]) -> Bool {
+    private static func deriveHasCompletedPaths(_ currentPoint: Point, _ seenPoints: Set<PrimaryKey>) -> Bool {
         // Base case
         guard let rebuttals = currentPoint.rebuttals,
             !rebuttals.isEmpty else {

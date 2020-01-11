@@ -44,7 +44,6 @@ class DebateTableViewCellViewModel: StarrableViewModel, IdentifiableType, Equata
         return lhs.debate == rhs.debate &&
             lhs.completedPercentage == rhs.completedPercentage &&
             lhs.isStarred == rhs.isStarred &&
-            lhs.debate.title == rhs.debate.title &&
-            lhs.debate.allPointsPrimaryKeys == rhs.debate.allPointsPrimaryKeys
+            lhs.debate.title == rhs.debate.title
     }
 }

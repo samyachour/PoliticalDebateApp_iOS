@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Moya
 
 enum UrlHosts: String {
     case debate
@@ -58,9 +59,6 @@ struct DeepLinkService {
                                                                 viewState: .standaloneRootPoints)
                 let pointsTableViewController = PointsTableViewController(viewModel: pointsTableViewModel)
                 AppDelegate.shared?.mainNavigationController?.pushViewController(pointsTableViewController, animated: true)
-            }) { error in
-                NotificationBannerQueue.shared.enqueueBanner(using: NotificationBannerViewModel(style: .error,
-                                                                                                title: "Could not open debate."))
-        }
+            }) { ErrorHandlerService.handleRequest(error: $0, withReportCode: 404) }
     }
 }
