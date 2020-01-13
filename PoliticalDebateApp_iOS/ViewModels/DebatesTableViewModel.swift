@@ -207,8 +207,8 @@ enum SortByOption: Int, CaseIterable {
         case .random: return "Shuffle"
         case .starred: return "Starred"
         case .noProgress: return "Unread"
-        case .progressAscending: return "<"
-        case .progressDescending: return ">"
+        case .progressAscending: return "Read (<)"
+        case .progressDescending: return "(>)"
         }
     }
 
