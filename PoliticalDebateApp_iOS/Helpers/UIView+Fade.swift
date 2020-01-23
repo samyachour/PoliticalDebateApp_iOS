@@ -17,6 +17,12 @@ extension UIView {
         case vertical
         case horizontal
     }
+
+    /// Add a gradient to a view
+    /// - Parameters:
+    ///   - style: the placement of the gradient
+    ///   - percentage: the percentage of the parent view that the gradient should extend into
+    /// - Important: should be called from `didLayoutSubviews`
     func fadeView(style: UIViewFadeStyle = .bottom, percentage: Double = 0.07) {
         let gradient = CAGradientLayer()
         gradient.frame = bounds // needs to be applied in didLayoutSubviews

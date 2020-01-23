@@ -6,7 +6,7 @@
 //  Copyright © 2019 PoliticalDebateApp. All rights reserved.
 //
 
-// Data the backend sends us in custom errors
+/// Data the backend sends us in custom errors
 struct BackendErrorMessage {
     let messageString: String
 

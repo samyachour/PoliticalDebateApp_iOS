@@ -13,6 +13,11 @@ import Alamofire
 /// Alamofire custom URL encoding automatically assumes parameters need to be encoded further e.g. 'debate/?=1'.
 struct PlainDjangoEncoding: ParameterEncoding {
 
+    /// Encode data into a GET request URL without any extra formatting
+    /// - Parameters:
+    ///   - urlRequest: the request
+    ///   - parameters: the parameters to encode in the URL
+    /// - Returns: the formatted request
     func encode(_ urlRequest: URLRequestConvertible, with parameters: Parameters?) throws -> URLRequest {
         var urlRequest = try urlRequest.asURLRequest()
 

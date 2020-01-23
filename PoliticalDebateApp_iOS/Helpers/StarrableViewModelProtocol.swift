@@ -12,6 +12,7 @@ import RxCocoa
 import RxSwift
 import UIKit
 
+/// Protocol to implement for ViewModels that can star/unstar debates
 protocol StarrableViewModel: AnyObject {
     var debate: Debate { get }
     var isStarred: Bool { get set }

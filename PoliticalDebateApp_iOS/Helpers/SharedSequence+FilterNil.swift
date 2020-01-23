@@ -11,6 +11,7 @@ import RxCocoa
 import RxSwift
 
 extension SharedSequence where Element: OptionalType {
+    /// Safely unwrap and compact map the values of a sequence
     func filterNil() -> SharedSequence<SharingStrategy, Element.Wrapped> {
         return self.flatMap { element -> SharedSequence<SharingStrategy, Element.Wrapped> in
             guard let value = element.value else {

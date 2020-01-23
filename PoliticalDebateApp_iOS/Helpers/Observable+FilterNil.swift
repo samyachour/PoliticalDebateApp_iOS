@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 
 extension ObservableType where Element: OptionalType {
+    /// Safely unwrap and compact map the values of a sequence
     func filterNil() -> Observable<Element.Wrapped> {
         return self.flatMap { element -> Observable<Element.Wrapped> in
             guard let value = element.value else {

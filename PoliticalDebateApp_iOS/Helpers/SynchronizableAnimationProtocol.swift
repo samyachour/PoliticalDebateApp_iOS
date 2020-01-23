@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 
 /// When animation blocks need to be run directly after one another
-/// Without allowing properties to bleed into each other
+/// without allowing properties to bleed into each other
 protocol SynchronizableAnimation: NSObjectProtocol {
     var isExecutingAnimation: BehaviorRelay<Bool> { get } // initial value should be false
     var canExecuteAnimationSingle: Single<Void> { get }

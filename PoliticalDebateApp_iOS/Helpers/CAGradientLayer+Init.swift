@@ -42,6 +42,7 @@ extension CAGradientLayer {
             }
         }
     }
+
     convenience init(start: Point, end: Point, colors: [UIColor], type: CAGradientLayerType) {
         self.init()
         self.startPoint = start.point

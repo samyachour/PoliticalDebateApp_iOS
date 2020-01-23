@@ -8,7 +8,7 @@
 
 import UIKit
 
-/// Several of our screens (e.g. Login/Register & Account ViewControllers) use the same boilerplate UI elements
+/// Factory methods for boilerplate UI elements
 struct BasicUIElementFactory {
 
     private init() {}

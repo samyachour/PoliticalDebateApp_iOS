@@ -11,6 +11,9 @@ import WebKit
 struct WKWebViewControllerFactory {
     private init() {}
 
+    /// Generate a basic WKWebViewController with a loading indicator
+    /// - Parameter url: the url to open
+    /// - Returns: the generated WKWebViewController
     static func generateWKWebViewController(with url: URL) -> WKWebViewController {
         let webView = WKWebView()
         webView.load(URLRequest(url: url))

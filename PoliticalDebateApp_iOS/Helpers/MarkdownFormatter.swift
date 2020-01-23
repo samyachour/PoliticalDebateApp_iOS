@@ -18,6 +18,12 @@ struct MarkDownFormatter {
         static let italicsKey = "*"
     }
 
+    /// Format a string with markdown styling
+    /// - Parameters:
+    ///   - sourceString: the string to format
+    ///   - regularAttributes: the default attributes for the string
+    ///   - hyperlinks: hyperlinks that need to be added to the string
+    /// - Returns: A styled attributed string
     static func format(_ sourceString: String?,
                        with regularAttributes: [NSAttributedString.Key: Any],
                        hyperlinks: [PointHyperlink]? = nil) -> NSMutableAttributedString? {

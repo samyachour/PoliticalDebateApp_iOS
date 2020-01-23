@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 class BannerOnScreen {
-
     init(viewModel: NotificationBannerViewModel,
          view: NotificationBannerView) {
         self.viewModel = viewModel

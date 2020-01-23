@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// Show an alert from outside a VC 
 func safelyShowAlert(alert: UIAlertController) {
     if let appDelegate = AppDelegate.shared,
         let mainNavigationController = appDelegate.mainNavigationController,

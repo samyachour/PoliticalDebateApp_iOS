@@ -8,6 +8,7 @@
 
 import Moya
 
+/// Protocol to enforce the success condition so it only occurs when the expected success code comes back
 protocol CustomTargetType: TargetType {
     var validSuccessCode: Int { get }
 }

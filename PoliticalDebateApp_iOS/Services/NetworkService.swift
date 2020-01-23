@@ -21,7 +21,7 @@ struct NetworkService<T>: Networkable where T: CustomTargetType & AccessTokenAut
     fileprivate let provider = MoyaProvider<T>(plugins: [
         NetworkLoggerPlugin(),
         AccessTokenPlugin { SessionManager.shared.publicAccessToken }
-        ])
+    ])
 
     func makeRequest(with appAPI: T) -> Single<Response> {
         #if TEST

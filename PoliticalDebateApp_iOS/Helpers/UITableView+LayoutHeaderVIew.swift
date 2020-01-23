@@ -9,6 +9,10 @@
 import UIKit
 
 extension UITableView {
+
+    /// Table header views do not support automatic resizing based on intrinsic size
+    /// so this method will grab the size and set the frame manually
+    /// - Important: Should be called from `didLayoutSubviews`
     func layoutHeaderView() {
         guard let headerView = tableHeaderView else { return }
 
